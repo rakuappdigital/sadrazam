@@ -11,17 +11,65 @@
 
   <!-- ── GİRİŞ EKRANI ── -->
   <div id="intro-screen">
-    <div id="intro-bg"></div>
+    <div id="intro-radial"></div>
+    <div id="intro-pattern"></div>
+
     <div id="intro-content">
-      <div id="intro-ornament">✦ ✦ ✦</div>
-      <h1 id="intro-title">SADRAZAM</h1>
-      <p id="intro-subtitle">Osmanlı İmparatorluğu'nda denge peşindeki bir vezirin hikayesi</p>
-      <div id="intro-divider"></div>
-      <button id="btn-start" class="intro-btn">OYUNA BAŞLA</button>
-      <button id="btn-pasa-mode" class="intro-btn secondary">PAŞALIK MODUNDA BAŞLA</button>
-      <button id="btn-howto" class="intro-btn secondary">NASIL OYNANIR?</button>
+
+      <!-- Dekoratif tuğra / hilal -->
+      <div id="intro-tugra">
+        <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+          <!-- Kavisli çerçeve -->
+          <path d="M10,110 Q10,10 100,10 Q190,10 190,110" fill="none" stroke="rgba(201,162,39,0.55)" stroke-width="1.2"/>
+          <path d="M30,110 Q30,30 100,30 Q170,30 170,110" fill="none" stroke="rgba(201,162,39,0.25)" stroke-width="0.8"/>
+          <!-- Hilal -->
+          <circle cx="100" cy="58" r="22" fill="none" stroke="rgba(201,162,39,0.7)" stroke-width="1.5"/>
+          <circle cx="110" cy="54" r="18" fill="#080612"/>
+          <!-- Yıldız -->
+          <polygon points="100,38 102.5,46 111,46 104.5,51 107,59 100,54 93,59 95.5,51 89,46 97.5,46" fill="rgba(201,162,39,0.8)"/>
+          <!-- Yan süsler -->
+          <line x1="10" y1="110" x2="45" y2="110" stroke="rgba(201,162,39,0.4)" stroke-width="0.8"/>
+          <line x1="155" y1="110" x2="190" y2="110" stroke="rgba(201,162,39,0.4)" stroke-width="0.8"/>
+          <circle cx="45" cy="110" r="2" fill="rgba(201,162,39,0.5)"/>
+          <circle cx="155" cy="110" r="2" fill="rgba(201,162,39,0.5)"/>
+          <circle cx="100" cy="10" r="2.5" fill="rgba(201,162,39,0.6)"/>
+        </svg>
+      </div>
+
+      <!-- Başlık bloğu -->
+      <div id="intro-header-block">
+        <div id="intro-era">١٢٩٩ — ١٧٠٠</div>
+        <h1 id="intro-title">SADRAZAM</h1>
+        <div id="intro-title-line">
+          <span class="tline"></span>
+          <span class="tdot">✦</span>
+          <span class="tline"></span>
+        </div>
+        <p id="intro-subtitle">Osmanlı İmparatorluğu'nda<br/>denge peşindeki bir vezirin hikâyesi</p>
+      </div>
+
+      <!-- Stat önizleme -->
+      <div id="intro-stats-preview">
+        <div class="isp"><span>👑</span><span>Saray</span></div>
+        <div class="isp"><span>⚔️</span><span>Ordu</span></div>
+        <div class="isp"><span>🕌</span><span>Ulema</span></div>
+        <div class="isp"><span>💰</span><span>Hazine</span></div>
+      </div>
+
+      <!-- Butonlar -->
+      <div id="intro-buttons">
+        <button id="btn-start" class="intro-btn primary">
+          <span class="btn-icon">⚜</span> OYUNA BAŞLA
+        </button>
+        <button id="btn-pasa-mode" class="intro-btn secondary">
+          <span class="btn-icon">📜</span> PAŞALIK MODUNDA BAŞLA
+        </button>
+        <button id="btn-howto" class="intro-btn ghost">NASIL OYNANIR?</button>
+      </div>
+
     </div>
-    <div id="intro-footer">v3.0 · rakuappdigital</div>
+
+    <div id="intro-footer">v4.0 · rakuappdigital · 2025</div>
   </div>
 
   <!-- ── NASIL OYNANIR ── -->
