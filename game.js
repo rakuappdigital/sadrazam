@@ -1241,14 +1241,12 @@ function showLetterCard(c) {
 
   if (window.playLetterArrival) playLetterArrival();
 
+  // no-swipe: swipe'ı engeller ama pointer events açık kalır — DEVAM butonu çalışır
+  card.classList.add("no-swipe");
   animateCardIn();
-  card.style.pointerEvents = "none";
 
-  // Devam butonu — kartın DIŞINDA, #card-area seviyesinde (transform/pointer sorununu önler)
   const devamBtn = document.getElementById("letter-devam-btn");
-  if (devamBtn) {
-    devamBtn.classList.remove("hidden");
-  }
+  if (devamBtn) devamBtn.classList.remove("hidden");
 
   window._letterDevamCard = c;
 }
@@ -1259,7 +1257,7 @@ function handleLetterDevam() {
 
   const c = window._letterDevamCard;
   card.classList.remove("letter-card");
-  card.style.pointerEvents = "auto";
+  card.classList.remove("no-swipe");
 
   if (c) {
     // Stat efektleri (mektup etkileri artık gerçek stat'ları etkiliyor)
