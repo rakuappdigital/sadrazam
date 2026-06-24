@@ -64,6 +64,9 @@
         <button id="btn-pasa-mode" class="intro-btn secondary">
           <span class="btn-icon">📜</span> PAŞALIK MODUNDA BAŞLA
         </button>
+        <button id="btn-achievements" class="intro-btn secondary">
+          <span class="btn-icon">🏆</span> BAŞARIMLARIM <span id="ach-count-badge"></span>
+        </button>
         <button id="btn-howto" class="intro-btn ghost">NASIL OYNANIR?</button>
       </div>
 
@@ -128,6 +131,29 @@
       </div>
 
       <button id="btn-play-now" class="intro-btn">ANLADIM, BAŞLAYALIM</button>
+    </div>
+  </div>
+
+  <!-- ── BAŞARIMLAR EKRANI ── -->
+  <div id="achievements-screen" class="hidden selection-screen">
+    <div class="selection-content" style="padding-bottom:60px">
+      <div class="sel-ornament">🏆</div>
+      <h2 class="sel-title">BAŞARIMLARIM</h2>
+      <div id="ach-progress-bar-wrap">
+        <div id="ach-progress-text"></div>
+        <div id="ach-progress-track"><div id="ach-progress-fill"></div></div>
+      </div>
+      <div class="sel-divider"></div>
+      <div id="ach-filter-tabs">
+        <button class="ach-tab active" data-tier="all">Tümü</button>
+        <button class="ach-tab" data-tier="bronze">Bronz</button>
+        <button class="ach-tab" data-tier="silver">Gümüş</button>
+        <button class="ach-tab" data-tier="gold">Altın</button>
+        <button class="ach-tab" data-tier="platinum">Platin</button>
+        <button class="ach-tab" data-tier="secret">Gizli</button>
+      </div>
+      <div id="ach-grid"></div>
+      <button id="btn-ach-back" class="intro-btn secondary" style="margin-top:16px">← GERİ</button>
     </div>
   </div>
 

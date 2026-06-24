@@ -120,15 +120,73 @@ const ARCS = {
 };
 
 // ── Başarımlar ────────────────────────────────────────────────────
+// ── BAŞARIMLAR ────────────────────────────────────────────────────
+// tier: bronze | silver | gold | platinum | secret
 const ACHIEVEMENTS = [
-  { id: "survivor_5",    label: "⚔️ Beş Yıl Ayakta",     check: (s) => s.year >= 5 },
-  { id: "survivor_10",   label: "👑 On Yıl Sadrazam",     check: (s) => s.year >= 10 },
-  { id: "survivor_20",   label: "🏛️ Efsane Sadrazam",    check: (s) => s.year >= 20 },
-  { id: "balanced",      label: "⚖️ Denge Ustası",        check: (s) => Object.values(s.stats).every(v => v >= 40 && v <= 60) },
-  { id: "traitor_found", label: "🕵️ Haini Buldun",       check: (s) => s.traitorInvestigated >= 2 },
-  { id: "no_curse",      label: "🌙 Lanet Yok",           check: (s) => !s.cursedEver },
-  { id: "pasa_mode",     label: "📜 Paşadan Sadrazama",   check: (s) => s.isPasaMode && s.pasaPromoted },
+  // ── BRONZ ──
+  { id: "first_step",     tier:"bronze", icon:"📜", name:"İlk Adım",             desc:"İlk oyununu tamamla.",                        check: s => s.year >= 1 },
+  { id: "three_years",    tier:"bronze", icon:"⚔️", name:"Üç Yıl Direniş",       desc:"3 yıl hayatta kal.",                          check: s => s.year >= 3 },
+  { id: "five_chars",     tier:"bronze", icon:"👥", name:"Saray Tanıdıkları",     desc:"Tek oyunda 5 farklı karakter gör.",            check: s => (s.seenCharacters||new Set()).size >= 5 },
+  { id: "first_letter",   tier:"bronze", icon:"🔏", name:"Sultan'dan Haber",      desc:"Sultan'dan mektup al.",                       check: s => s.receivedLetters > 0 },
+  { id: "first_chance",   tier:"bronze", icon:"🪙", name:"Kader Sınavı",          desc:"Bir şans kartını tamamla.",                   check: s => s.chanceCardsPlayed > 0 },
+  { id: "first_death",    tier:"bronze", icon:"☠️", name:"İlk Son",               desc:"Oyunu bir kez bitir.",                        check: s => true },
+  { id: "item_user",      tier:"bronze", icon:"🪙", name:"Hazır Hazineci",        desc:"İlk item'ını kullan.",                        check: s => s.itemsUsed > 0 },
+
+  // ── GÜMÜŞ ──
+  { id: "five_years",     tier:"silver", icon:"🌙", name:"Beş Yıl Sadrazam",     desc:"5 yıl hayatta kal.",                          check: s => s.year >= 5 },
+  { id: "balanced",       tier:"silver", icon:"⚖️", name:"Denge Ustası",          desc:"Oyun bitiminde tüm statlar 40-65 arası.",     check: s => Object.values(s.stats).every(v=>v>=40&&v<=65) },
+  { id: "hazine_guard",   tier:"silver", icon:"💰", name:"Hazine Bekçisi",        desc:"5 yıl hazine hiç 30'un altına düşmesin.",     check: s => s.year >= 5 && s.minHazine >= 30 },
+  { id: "saray_high",     tier:"silver", icon:"👑", name:"Sultan'ın Gözdesi",     desc:"Saray 80+'a çıksın.",                        check: s => s.maxSaray >= 80 },
+  { id: "chain_complete", tier:"silver", icon:"⛓️", name:"İplik Takipçisi",       desc:"Bir zincirleme karar dizisi tamamla.",        check: s => s.chainsCompleted > 0 },
+  { id: "traitor_found",  tier:"silver", icon:"🕵️", name:"Haini Buldun",         desc:"Gizli haini tespit et (2+ soruştur).",       check: s => s.traitorInvestigated >= 2 },
+  { id: "war_victory",    tier:"silver", icon:"🏹", name:"Zafer Habercisi",       desc:"Savaşı kabul et ve zaferi gör.",              check: s => s.warVictory },
+  { id: "all_letters",    tier:"silver", icon:"📨", name:"Tüm Mektuplar",         desc:"Tek oyunda 4 sultan mektubunu al.",           check: s => s.receivedLetters >= 4 },
+
+  // ── ALTIN ──
+  { id: "ten_years",      tier:"gold",   icon:"🏛️", name:"On Yıl Sadrazam",     desc:"10 yıl hayatta kal.",                         check: s => s.year >= 10 },
+  { id: "kanuni_ten",     tier:"gold",   icon:"🌟", name:"Kanunî'nin Mirası",    desc:"Kanuni ile 10 yıl hayatta kal.",              check: s => s.sultanId==="kanuni" && s.year>=10 },
+  { id: "yavuz_eight",    tier:"gold",   icon:"⚡", name:"Yavuz'a Layık",        desc:"Yavuz ile 8 yıl hayatta kal.",               check: s => s.sultanId==="yavuz" && s.year>=8 },
+  { id: "murad_treasure", tier:"gold",   icon:"💎", name:"Murad'ın Serveti",     desc:"III. Murad ile hazineyi 80+'a çıkar.",       check: s => s.sultanId==="murad3" && s.maxHazine>=80 },
+  { id: "all_deaths",     tier:"gold",   icon:"💀", name:"Her Şeyi Gördüm",      desc:"8 farklı ölüm sebebini yaşa.",               check: s => (s.deathsSeen||[]).length >= 6 },
+  { id: "curse_master",   tier:"gold",   icon:"🔥", name:"Lanet Ustası",          desc:"Toplamda 3 kez lanet tetikle.",               check: s => s.totalCurses >= 3 },
+  { id: "chance_streak",  tier:"gold",   icon:"🎰", name:"Şans Tanrısı",          desc:"Arka arkaya 3 şans kartı kazan.",             check: s => s.chanceStreak >= 3 },
+  { id: "no_curse",       tier:"gold",   icon:"🕊️", name:"Lanet Yok",            desc:"15 yıl boyunca lanetle karşılaşma.",         check: s => !s.cursedEver && s.year>=15 },
+
+  // ── PLATİN ──
+  { id: "legend",         tier:"platinum", icon:"✨", name:"Efsane Sadrazam",     desc:"20 yıl hayatta kal.",                         check: s => s.year >= 20 },
+  { id: "all_chars",      tier:"platinum", icon:"🗺️", name:"Osmanlı Ansiklopedisi",desc:"Tek oyunda tüm 26 karakteri gör.",           check: s => (s.seenCharacters||new Set()).size >= 26 },
+  { id: "no_low_stat",    tier:"platinum", icon:"🔱", name:"Sıfır Kriz",          desc:"Hiçbir stat 15'in altına inmeden 10 yıl.",   check: s => s.year>=10 && s.minAnyStat>=15 },
+  { id: "pasa_mode",      tier:"platinum", icon:"📜", name:"Paşadan Sultana",     desc:"Paşalık modunda Sadrazam ol ve 5 yıl devam et.", check: s => s.isPasaMode && s.pasaPromoted && s.year>=8 },
+  { id: "item_collector", tier:"platinum", icon:"🎭", name:"Koleksiyoncu",        desc:"Tek oyunda 5 farklı item topla.",             check: s => s.uniqueItemsCollected >= 5 },
+
+  // ── GİZLİ ──
+  { id: "rival_five",     tier:"secret",   icon:"🗡️", name:"Rakibin Rakibi",     desc:"Rakip Vezir ile 5 kez yüzleş.",              check: s => (s.characterMemory?.["8-rakip-vezir"]?.left||0)+(s.characterMemory?.["8-rakip-vezir"]?.right||0) >= 5 },
+  { id: "zimmet",         tier:"secret",   icon:"💸", name:"Zimmet Şüphelisi",    desc:"Zimmet suçuyla öl.",                          check: s => s.deathReason?.includes("zimmet") },
+  { id: "valide_loyal",   tier:"secret",   icon:"💫", name:"Valide'nin Gözdesi",  desc:"Tek oyunda Valide Sultan'ın tüm isteklerini kabul et.", check: s => (s.characterMemory?.["5-valide-sultan"]?.left||0)===0 && (s.characterMemory?.["5-valide-sultan"]?.right||0)>=3 },
+  { id: "diplomat",       tier:"secret",   icon:"🤝", name:"Zekice Elçi",         desc:"Yabancı Elçi ile 4+ kez müzakere yap.",      check: s => (s.characterMemory?.["7-yabanci-elci"]?.left||0)+(s.characterMemory?.["7-yabanci-elci"]?.right||0) >= 4 },
+  { id: "deli_dervis_right", tier:"secret", icon:"🔮", name:"Kehanet Tuttu",      desc:"Deli Derviş'i 2 kez ziyaret et.",            check: s => (s.characterMemory?.["25-deli_dervis"]?.left||0)+(s.characterMemory?.["25-deli_dervis"]?.right||0) >= 2 },
 ];
+
+// Cross-game tracking için localStorage yardımcıları
+function getCrossGameData() {
+  try { return JSON.parse(localStorage.getItem('sadrazam_crossgame') || '{}'); } catch(e) { return {}; }
+}
+function saveCrossGameData(d) {
+  try { localStorage.setItem('sadrazam_crossgame', JSON.stringify(d)); } catch(e) {}
+}
+function updateCrossGame(updates) {
+  const d = getCrossGameData();
+  for (const [k,v] of Object.entries(updates)) {
+    if (Array.isArray(v)) {
+      d[k] = [...new Set([...(d[k]||[]), ...v])];
+    } else if (typeof v === 'number') {
+      d[k] = (d[k]||0) + v;
+    } else {
+      d[k] = v;
+    }
+  }
+  saveCrossGameData(d);
+}
 
 // ── Görev Havuzu ──────────────────────────────────────────────────
 const MISSION_POOL = [
@@ -258,6 +316,19 @@ let currentTitle = "SADRAZAM";
 // Yeni özellik state'leri
 let isNight = false;
 let nightCardCount = 0;
+// Achievement tracking
+let seenCharacters = new Set();
+let receivedLetters = 0;
+let chanceCardsPlayed = 0;
+let chanceStreak = 0;
+let chainsCompleted = 0;
+let warVictory = false;
+let itemsUsed = 0;
+let uniqueItemsCollected = new Set();
+let minHazine = 100;
+let maxSaray = 0;
+let maxHazine = 0;
+let minAnyStat = 100;
 let consecutiveSameDir = 0;
 let lastDir = null;
 let cursedEver = false;
@@ -449,6 +520,19 @@ function startGame() {
   activeItemIndex = null;
   pendingItemEffect = null;
   updateItemBar();
+  // Achievement tracking sıfırla
+  seenCharacters = new Set();
+  receivedLetters = 0;
+  chanceCardsPlayed = 0;
+  chanceStreak = 0;
+  chainsCompleted = 0;
+  warVictory = false;
+  itemsUsed = 0;
+  uniqueItemsCollected = new Set();
+  minHazine = 100;
+  maxSaray = 0;
+  maxHazine = 0;
+  minAnyStat = 100;
 
   // Hicri takvim başlangıcı
   const sultanId = selectedSultan ? selectedSultan.id : "kanuni";
@@ -1355,6 +1439,7 @@ function showStatDelta(statKey, delta) {
 
 function gainItem(itemId) {
   if (!ITEMS[itemId]) return;
+  uniqueItemsCollected.add(itemId);
   const emptySlot = playerItems.indexOf(null);
   if (emptySlot === -1) {
     playerItems[0] = itemId;
@@ -1402,6 +1487,7 @@ function activateItem(slotIndex) {
 
 function consumeActiveItem() {
   if (activeItemIndex === null) return;
+  itemsUsed++;
   playerItems[activeItemIndex] = null;
   activeItemIndex = null;
   pendingItemEffect = null;
@@ -1606,6 +1692,25 @@ function decide(dir) {
   applyEffects(currentCard[dir + "_effects"] || {});
   if (isGameOver) return;
   checkMissions();
+
+  // ── Achievement tracking ──────────────────────────────────────
+  if (charKey) seenCharacters.add(charKey);
+  if (currentCard.type === 'chance') chanceCardsPlayed++;
+  if (currentCard.type === 'letter') receivedLetters++;
+  if (currentCard.type === 'chance' && dir === 'right') {
+    chanceStreak = (chanceStreak||0) + 1;
+  } else if (currentCard.type === 'chance') {
+    chanceStreak = 0;
+  }
+  if (currentCard.id === 'savaş_zafer') warVictory = true;
+  if (currentCard.triggers_on_right || currentCard.triggers_on_left) chainsCompleted++;
+
+  // Stat min/max track
+  for (const [s, v] of Object.entries(stats)) {
+    if (s === 'hazine') { minHazine = Math.min(minHazine, v); maxHazine = Math.max(maxHazine, v); }
+    if (s === 'saray') maxSaray = Math.max(maxSaray, v);
+    minAnyStat = Math.min(minAnyStat, v);
+  }
 
   // Ses
   if (dir === "right" && window.playSwipeRight) playSwipeRight();
@@ -1905,10 +2010,10 @@ function showGameOver(reason) {
   saveHighScore();
   saveDeathArchive(reason);
 
-  const newAchievements = checkAchievements();
+  const newAchievements = checkAchievements(reason);
   if (newAchievements.length > 0) {
     newAchievements.forEach((a, i) => {
-      setTimeout(() => showAchievementToast(a), 500 + i * 3200);
+      setTimeout(() => showAchievementToast(a), 600 + i * 3600);
     });
   }
 
@@ -1973,31 +2078,50 @@ function getDynamicDeathTitle(reason) {
 }
 
 // ── Başarımlar ────────────────────────────────────────────────────
-function checkAchievements() {
-  const state = { year, stats, traitorInvestigated, cursedEver, isPasaMode, pasaPromoted };
+function buildAchievementState(deathReason) {
+  const cg = getCrossGameData();
+  return {
+    year, stats, isPasaMode, pasaPromoted, cursedEver, sultanId: selectedSultan?.id,
+    traitorInvestigated, seenCharacters, receivedLetters, chanceCardsPlayed,
+    chanceStreak, chainsCompleted, warVictory, itemsUsed, uniqueItemsCollected,
+    minHazine, maxSaray, maxHazine, minAnyStat, characterMemory,
+    deathReason: deathReason || "",
+    // Cross-game
+    deathsSeen: [...new Set([...(cg.deathsSeen||[]), ...(deathReason?[deathReason]:[])])],
+    totalCurses: (cg.totalCurses||0) + (cursedEver?1:0),
+  };
+}
+
+function checkAchievements(deathReason) {
+  const state = buildAchievementState(deathReason);
+  // Cross-game güncelle
+  updateCrossGame({
+    deathsSeen: state.deathsSeen,
+    totalCurses: cursedEver ? 1 : 0,
+  });
+
   const saved = JSON.parse(localStorage.getItem("sadrazam_achievements") || "[]");
   const newlyUnlocked = [];
-
   ACHIEVEMENTS.forEach(a => {
     if (!saved.includes(a.id) && a.check(state)) {
       saved.push(a.id);
       newlyUnlocked.push(a);
     }
   });
-
   localStorage.setItem("sadrazam_achievements", JSON.stringify(saved));
   return newlyUnlocked;
 }
 
-function showAchievementToast(achievement) {
+function showAchievementToast(a) {
+  const tierColors = { bronze:"#cd7f32", silver:"#aaa", gold:"#C9A227", platinum:"#e5e4e2", secret:"#9b59b6" };
+  const color = tierColors[a.tier] || "#C9A227";
   const toast = document.createElement("div");
   toast.className = "achievement-toast";
-  toast.textContent = `${achievement.label} kazanıldı!`;
+  toast.innerHTML = `<span style="font-size:18px">${a.icon}</span><span style="color:${color}">${a.name}</span><span style="font-size:10px;opacity:0.7">${a.tier === 'secret' ? 'Gizli Başarım' : a.tier.toUpperCase()}</span>`;
+  toast.style.cssText += `border-color:${color};`;
   document.body.appendChild(toast);
   if (window.playAchievement) playAchievement();
-  setTimeout(() => {
-    toast.remove();
-  }, 3200);
+  setTimeout(() => toast.remove(), 3400);
 }
 
 function renderAchievementBadges() {
@@ -2120,6 +2244,85 @@ function restartGame() {
 
   introScreen.style.display = "";
 }
+
+// ── Başarımlar Ekranı ─────────────────────────────────────────────
+const achievementsScreen = document.getElementById("achievements-screen");
+
+function openAchievementsScreen() {
+  introScreen.style.display = "none";
+  achievementsScreen.classList.remove("hidden");
+  renderAchievementsScreen("all");
+}
+
+function renderAchievementsScreen(filterTier) {
+  const unlocked = JSON.parse(localStorage.getItem("sadrazam_achievements") || "[]");
+  const total = ACHIEVEMENTS.length;
+  const count = unlocked.length;
+  const pct = Math.round(count / total * 100);
+
+  // Progress
+  const progText = document.getElementById("ach-progress-text");
+  const progFill = document.getElementById("ach-progress-fill");
+  if (progText) progText.textContent = `${count} / ${total} Başarım · %${pct}`;
+  if (progFill) progFill.style.width = pct + "%";
+
+  // Intro badge
+  const badge = document.getElementById("ach-count-badge");
+  if (badge) badge.textContent = `${count}/${total}`;
+
+  // Filter tabs
+  document.querySelectorAll(".ach-tab").forEach(tab => {
+    tab.classList.toggle("active", tab.dataset.tier === filterTier);
+    tab.onclick = () => renderAchievementsScreen(tab.dataset.tier);
+  });
+
+  // Grid
+  const grid = document.getElementById("ach-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+
+  const TIER_ORDER = ["bronze","silver","gold","platinum","secret"];
+  const tierLabels = { bronze:"Bronz", silver:"Gümüş", gold:"Altın", platinum:"Platin", secret:"Gizli" };
+
+  const toShow = filterTier === "all"
+    ? [...ACHIEVEMENTS].sort((a,b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier))
+    : ACHIEVEMENTS.filter(a => a.tier === filterTier);
+
+  toShow.forEach(a => {
+    const isUnlocked = unlocked.includes(a.id);
+    const isSecret = a.tier === "secret";
+    const card = document.createElement("div");
+    card.className = `ach-card ${a.tier} ${isUnlocked ? "unlocked" : "locked"} ${isSecret ? "secret" : ""}`;
+
+    const icon = isUnlocked ? a.icon : (isSecret ? "🔒" : "🔒");
+    const name = (isSecret && !isUnlocked) ? "???" : a.name;
+    const desc = (isSecret && !isUnlocked) ? "Gizemli bir başarım…" : a.desc;
+
+    card.innerHTML = `
+      <div class="ach-icon ${isUnlocked ? "" : "locked-icon"}">${icon}</div>
+      <div class="ach-info">
+        <div class="ach-name">${name}</div>
+        <div class="ach-desc">${desc}</div>
+      </div>
+      <div class="ach-tier-badge tier-${a.tier}">${tierLabels[a.tier]}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// Ekran butonları
+document.getElementById("btn-achievements")?.addEventListener("click", openAchievementsScreen);
+document.getElementById("btn-ach-back")?.addEventListener("click", () => {
+  achievementsScreen.classList.add("hidden");
+  introScreen.style.display = "";
+});
+
+// Intro yüklendiğinde badge'i güncelle
+(function initAchBadge() {
+  const unlocked = JSON.parse(localStorage.getItem("sadrazam_achievements") || "[]");
+  const badge = document.getElementById("ach-count-badge");
+  if (badge && unlocked.length > 0) badge.textContent = `${unlocked.length}/${ACHIEVEMENTS.length}`;
+})();
 
 // ── Init ──────────────────────────────────────────────────────────
 updateStatUI();
