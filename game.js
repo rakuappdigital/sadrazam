@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 const CARDS_PER_YEAR = 10;
-const PASSIVE_HAZINE_DRAIN = 5;
+const PASSIVE_HAZINE_DRAIN = 2;
 
 // ── Osmanlı Takvimi ───────────────────────────────────────────────
 const HICRI_MONTHS = [
@@ -999,9 +999,19 @@ function hasAdvisor(id) {
 
 function amplify(stat, delta) {
   const val = stats[stat] ?? 50;
-  const dist = Math.abs(val - 50);
-  const mult = 1.0 + dist / 100;
-  return Math.round(delta * mult);
+  if (delta === 0) return 0;
+
+  if (delta > 0) {
+    // Stat yükselirken: 65+ üzerinde yavaşla (saray 100'e gitmesin)
+    if (val >= 75) return Math.round(delta * 0.5);
+    if (val >= 65) return Math.round(delta * 0.75);
+    return delta;
+  } else {
+    // Stat düşerken: 30- altında hafif güçlen (tehlike gerçek hissettirsin)
+    if (val <= 25) return Math.round(delta * 1.3);
+    if (val <= 35) return Math.round(delta * 1.15);
+    return delta;
+  }
 }
 
 function showStatDelta(statKey, delta) {
