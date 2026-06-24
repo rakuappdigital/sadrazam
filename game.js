@@ -159,6 +159,7 @@ const ACHIEVEMENTS = [
   { id: "no_low_stat",    tier:"platinum", icon:"🔱", name:"Sıfır Kriz",          desc:"Hiçbir stat 15'in altına inmeden 10 yıl.",   check: s => s.year>=10 && s.minAnyStat>=15 },
   { id: "pasa_mode",      tier:"platinum", icon:"📜", name:"Paşadan Sultana",     desc:"Paşalık modunda Sadrazam ol ve 5 yıl devam et.", check: s => s.isPasaMode && s.pasaPromoted && s.year>=8 },
   { id: "item_collector", tier:"platinum", icon:"🎭", name:"Koleksiyoncu",        desc:"Tek oyunda 5 farklı item topla.",             check: s => s.uniqueItemsCollected >= 5 },
+  { id: "gizli_ustat",   tier:"platinum", icon:"🌟", name:"Gizli Üstat",          desc:"Tek oyunda 3 gizli görevi tamamla.",          check: s => s.allMissionsCompleted },
 
   // ── GİZLİ ──
   { id: "rival_five",     tier:"secret",   icon:"🗡️", name:"Rakibin Rakibi",     desc:"Rakip Vezir ile 5 kez yüzleş.",              check: s => (s.characterMemory?.["8-rakip-vezir"]?.left||0)+(s.characterMemory?.["8-rakip-vezir"]?.right||0) >= 5 },
@@ -243,6 +244,7 @@ const MISSION_POOL = [
 
 let activeMissions = [];
 let completedMissions = [];
+let allMissionsCompleted = false;
 
 function initMissions() {
   const pool = [...MISSION_POOL];
@@ -253,6 +255,7 @@ function initMissions() {
     pool.splice(idx, 1);
   }
   completedMissions = [];
+  allMissionsCompleted = false;
   updateMissionBar();
 }
 
@@ -266,6 +269,52 @@ function checkMissions() {
       if (window.playAchievement) setTimeout(playAchievement, 200);
     }
   });
+
+  // 3/3 tamamlandı — ödül ver
+  if (!allMissionsCompleted && completedMissions.length === 3) {
+    allMissionsCompleted = true;
+    setTimeout(showAllMissionsReward, 800);
+  }
+}
+
+function showAllMissionsReward() {
+  if (isGameOver) return;
+
+  // Overlay
+  const overlay = document.createElement("div");
+  overlay.id = "mission-reward-overlay";
+  overlay.innerHTML = `
+    <div id="mission-reward-box">
+      <div id="mr-ornament">✦ ✦ ✦</div>
+      <div id="mr-title">3 GİZLİ GÖREV TAMAM</div>
+      <div id="mr-divider"></div>
+      <div id="mr-text">Sultan'ın gözüne girdiniz.<br>Devlet size minnettar.</div>
+      <div id="mr-bonus">Tüm değerler <span>+10</span></div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  // Haptik + ses
+  Haptics.achievement();
+  if (window.playAchievement) playAchievement();
+
+  // Tüm statlara +10 bonus
+  setTimeout(() => {
+    for (const stat of Object.keys(stats)) {
+      const bonus = 10;
+      stats[stat] = Math.min(100, stats[stat] + bonus);
+      showStatDelta(stat, bonus);
+    }
+    updateStatUI();
+  }, 600);
+
+  // 3.5 saniye sonra kapan
+  setTimeout(() => {
+    overlay.style.opacity = "0";
+    setTimeout(() => overlay.remove(), 400);
+  }, 3200);
+
+  overlay.addEventListener("click",    () => overlay.remove());
+  overlay.addEventListener("touchend", () => overlay.remove(), { passive: true });
 }
 
 function updateMissionBar() {
@@ -2297,6 +2346,7 @@ function buildAchievementState(deathReason) {
   const cg = getCrossGameData();
   return {
     year, stats, isPasaMode, pasaPromoted, cursedEver, sultanId: selectedSultan?.id,
+    allMissionsCompleted,
     traitorInvestigated, seenCharacters, receivedLetters, chanceCardsPlayed,
     chanceStreak, chainsCompleted, warVictory, itemsUsed, uniqueItemsCollected,
     minHazine, maxSaray, maxHazine, minAnyStat, characterMemory,

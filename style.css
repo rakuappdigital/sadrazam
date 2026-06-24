@@ -1726,3 +1726,71 @@ html, body {
   cursor: pointer;
   touch-action: manipulation;
 }
+
+/* ── 3/3 Görev Ödülü Overlay ── */
+#mission-reward-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background: rgba(5,3,16,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: introFadeIn 0.5s ease;
+  transition: opacity 0.4s ease;
+  cursor: pointer;
+}
+#mission-reward-box {
+  background: var(--card-bg);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: 36px 32px;
+  max-width: 300px;
+  width: 88%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 0 60px rgba(201,162,39,0.25), 0 8px 40px rgba(0,0,0,0.8);
+  animation: missionRewardPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes missionRewardPop {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+#mr-ornament {
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 8px;
+}
+#mr-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 16px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  line-height: 1.4;
+}
+#mr-divider {
+  height: 1px;
+  background: var(--gold-dim);
+  margin: 0 16px;
+}
+#mr-text {
+  font-family: 'IM Fell English', serif;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  font-style: italic;
+  opacity: 0.85;
+}
+#mr-bonus {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: rgba(240,230,208,0.7);
+  letter-spacing: 1px;
+}
+#mr-bonus span {
+  color: #55dd66;
+  font-weight: bold;
+  font-size: 16px;
+}
