@@ -575,52 +575,87 @@ function startAmbientMusic() {
   try {
     ambientCtx = new (window.AudioContext || window.webkitAudioContext)();
     ambientRunning = true;
-    playAmbientLayer();
+    // iOS/Chrome: context suspend'den çık
+    const resumeAndPlay = () => {
+      ambientCtx.resume().then(() => playAmbientLayer());
+    };
+    if (ambientCtx.state === 'suspended') {
+      resumeAndPlay();
+    } else {
+      playAmbientLayer();
+    }
   } catch(e) {}
 }
 
 function playAmbientLayer() {
   if (!ambientCtx || !ambientRunning) return;
+  if (ambientCtx.state === 'suspended') { ambientCtx.resume(); return; }
 
-  // Düşük ney benzeri drone
+  const now = ambientCtx.currentTime;
+
+  // Drone — ney benzeri, güçlendirilmiş
   const osc1 = ambientCtx.createOscillator();
   const gain1 = ambientCtx.createGain();
   const filter1 = ambientCtx.createBiquadFilter();
   osc1.type = 'sine';
-  osc1.frequency.value = isNight ? 138 : 146; // gece biraz daha alçak
+  osc1.frequency.value = isNight ? 110 : 123;
   filter1.type = 'lowpass';
-  filter1.frequency.value = 400;
-  gain1.gain.value = 0.04;
+  filter1.frequency.value = 600;
+  gain1.gain.setValueAtTime(0, now);
+  gain1.gain.linearRampToValueAtTime(0.12, now + 1.5); // fade in
   osc1.connect(filter1);
   filter1.connect(gain1);
   gain1.connect(ambientCtx.destination);
-  osc1.start();
+  osc1.start(now);
 
-  // Tremolo harmonik
+  // Harmonik tremolo
   const osc2 = ambientCtx.createOscillator();
   const gain2 = ambientCtx.createGain();
   const lfo = ambientCtx.createOscillator();
   const lfoGain = ambientCtx.createGain();
   osc2.type = 'triangle';
-  osc2.frequency.value = isNight ? 220 : 233;
-  lfo.frequency.value = 0.4;
-  lfoGain.gain.value = 0.015;
-  gain2.gain.value = 0.018;
+  osc2.frequency.value = isNight ? 165 : 185;
+  lfo.frequency.value = 0.3;
+  lfoGain.gain.value = 0.03;
+  gain2.gain.setValueAtTime(0, now);
+  gain2.gain.linearRampToValueAtTime(0.06, now + 2);
   lfo.connect(lfoGain);
   lfoGain.connect(gain2.gain);
   osc2.connect(gain2);
   gain2.connect(ambientCtx.destination);
-  osc2.start();
-  lfo.start();
+  osc2.start(now);
+  lfo.start(now);
 
-  ambientNodes = [osc1, osc2, lfo];
+  // Çok hafif yüksek frekans (saray atmosferi)
+  const osc3 = ambientCtx.createOscillator();
+  const gain3 = ambientCtx.createGain();
+  osc3.type = 'sine';
+  osc3.frequency.value = isNight ? 330 : 370;
+  gain3.gain.setValueAtTime(0, now);
+  gain3.gain.linearRampToValueAtTime(0.025, now + 3);
+  osc3.connect(gain3);
+  gain3.connect(ambientCtx.destination);
+  osc3.start(now);
 
-  // Her 8 saniyede yenile (gece/gündüz değişimini yakala)
+  ambientNodes = [osc1, osc2, osc3, lfo];
+
+  // Fade out öncesinde yenile
+  const duration = 9000;
   setTimeout(() => {
-    ambientNodes.forEach(n => { try { n.stop(); } catch(e) {} });
+    ambientNodes.forEach(n => {
+      try {
+        if (ambientCtx && gain1) {
+          const t = ambientCtx.currentTime;
+          gain1.gain.linearRampToValueAtTime(0, t + 1);
+          gain2.gain.linearRampToValueAtTime(0, t + 1);
+          gain3.gain.linearRampToValueAtTime(0, t + 1);
+        }
+        setTimeout(() => { try { n.stop(); } catch(e) {} }, 1200);
+      } catch(e) {}
+    });
     ambientNodes = [];
-    if (ambientRunning && !isGameOver) playAmbientLayer();
-  }, 8000);
+    if (ambientRunning && !isGameOver) setTimeout(playAmbientLayer, 300);
+  }, duration);
 }
 
 function stopAmbientMusic() {

@@ -4949,9 +4949,15 @@
       "left_text": "—",
       "right_text": "Devam",
       "left_effects": {},
-      "right_effects": {},
-      "left_flags_set": [],
+      "right_effects": {
+        "hazine": -6,
+        "saray": -4
+      },
+      "left_flags_set": [
+        "sultan_mektup_1_okundu"
+      ],
       "right_flags_set": [
+        "sultan_vergi_baskisi",
         "sultan_mektup_1_okundu"
       ],
       "required_flags": [],
@@ -4973,9 +4979,11 @@
       "right_text": "Devam",
       "left_effects": {},
       "right_effects": {
-        "sultanSabir": -5
+        "yeniçeri": -5
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "sultan_mektup_2_okundu"
+      ],
       "right_flags_set": [
         "sultan_mektup_2_okundu"
       ],
@@ -4998,10 +5006,13 @@
       "right_text": "Devam",
       "left_effects": {},
       "right_effects": {
-        "sultanSabir": 8
+        "saray": 8
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "sultan_mektup_3_okundu"
+      ],
       "right_flags_set": [
+        "sultan_memnun",
         "sultan_mektup_3_okundu"
       ],
       "required_flags": [],
@@ -5022,9 +5033,16 @@
       "left_text": "—",
       "right_text": "Devam",
       "left_effects": {},
-      "right_effects": {},
-      "left_flags_set": [],
+      "right_effects": {
+        "yeniçeri": -6,
+        "hazine": -4
+      },
+      "left_flags_set": [
+        "sultan_mektup_4_okundu",
+        "sefer_tartışması"
+      ],
       "right_flags_set": [
+        "doğu_tehdit",
         "sultan_mektup_4_okundu",
         "sefer_tartışması"
       ],
