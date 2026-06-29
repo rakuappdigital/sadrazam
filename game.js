@@ -1979,13 +1979,15 @@ function dealNext() {
   const imgName = getCharacterImageName(key) + ".jpg";
   const imgPath = "assets/characters/" + encodeURIComponent(imgName);
 
+  const _isEN = window.LANG === 'en';
+
   // Gizli hain hint
-  let displayText = c.text || "";
+  let displayText = (_isEN && c.text_en) ? c.text_en : (c.text || "");
   if (key === hiddenTraitor && !traitorRevealed) {
     const mem = characterMemory[key] || {};
     const totalMem = (mem.left || 0) + (mem.right || 0);
     if (totalMem > 0 && totalMem % 7 === 0) {
-      displayText += " — gözleri anlık bir şeye takıldı.";
+      displayText += _isEN ? " — his eyes caught on something for a moment." : " — gözleri anlık bir şeye takıldı.";
     }
   }
 
@@ -1994,10 +1996,10 @@ function dealNext() {
     displayText += getRakipSuffix();
   }
 
-  charName.textContent = c.character_name || "";
+  charName.textContent = (_isEN && c.character_name_en) ? c.character_name_en : (c.character_name || "");
   cardText.textContent = displayText;
-  choiceLeft.textContent  = c.left_text  || (window.LANG === 'en' ? "No"  : "Hayır");
-  choiceRight.textContent = c.right_text || (window.LANG === 'en' ? "Yes" : "Evet");
+  choiceLeft.textContent  = (_isEN && c.left_text_en)  ? c.left_text_en  : (c.left_text  || (_isEN ? "No"  : "Hayır"));
+  choiceRight.textContent = (_isEN && c.right_text_en) ? c.right_text_en : (c.right_text || (_isEN ? "Yes" : "Evet"));
 
   choiceLeft.style.opacity  = "0";
   choiceRight.style.opacity = "0";
@@ -2062,7 +2064,7 @@ function setupInvestigateBtn(c, displayText) {
         isInvestigating = false;
       } else {
         // Soruştur
-        cardText.textContent = c.investigate_text;
+        cardText.textContent = (window.LANG === 'en' && c.investigate_text_en) ? c.investigate_text_en : c.investigate_text;
         btn.textContent = "↩";
         isInvestigating = true;
         // Traitor sayacı
@@ -3547,9 +3549,10 @@ function onMove(x) {
   const speechText = document.getElementById("speech-text");
   if (bubble && currentCard) {
     if (Math.abs(dx) > 50) {
+      const _spEN = window.LANG === 'en';
       const text = dx < 0
-        ? (currentCard.speech_left || "")
-        : (currentCard.speech_right || "");
+        ? ((_spEN && currentCard.speech_left_en)  ? currentCard.speech_left_en  : (currentCard.speech_left  || ""))
+        : ((_spEN && currentCard.speech_right_en) ? currentCard.speech_right_en : (currentCard.speech_right || ""));
       if (text) {
         speechText.textContent = text;
         bubble.className = dx < 0 ? "left-dir" : "right-dir";

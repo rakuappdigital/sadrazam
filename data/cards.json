@@ -31,7 +31,14 @@
       "category": "royal",
       "investigate_text": "Defterdar'ın dosyasına baktın — suçlamaların büyük kısmı Rakip Vezir'den geliyor. Belki siyasi bir tasfiye bu.",
       "speech_left": "Sadrazam, bu beni memnun etmez.",
-      "speech_right": "Bilge bir karar, hayırlı olsun."
+      "speech_right": "Bilge bir karar, hayırlı olsun.",
+      "character_name_en": "Sultan",
+      "text_en": "Grand Vizier, the former Treasurer who awaits in the dungeon has been brought before me on charges of selling state secrets. I am awaiting your signature on the execution order.",
+      "left_text_en": "Order an investigation",
+      "right_text_en": "Sign the order",
+      "investigate_text_en": "You looked into the Treasurer's file — most of the accusations come from the Rival Vizier. This may be a political purge.",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "sultan_tımar_ödülü",
@@ -64,7 +71,14 @@
       "category": "royal",
       "speech_left": "Sadrazam, bu beni memnun etmez.",
       "speech_right": "Bilge bir karar, hayırlı olsun.",
-      "grants_item_on_right": "sultan_ferman"
+      "grants_item_on_right": "sultan_ferman",
+      "character_name_en": "Sultan",
+      "text_en": "I am pleased with your service, Grand Vizier. I wish to grant you a fertile timar in Rumelia. However, this land is currently held by another governor.",
+      "left_text_en": "Thank him, but decline",
+      "right_text_en": "Accept with gratitude",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "sultan_rüya_yorumu",
@@ -96,7 +110,14 @@
       "min_year": 1,
       "category": "royal",
       "speech_left": "Sadrazam, bu beni memnun etmez.",
-      "speech_right": "Bilge bir karar, hayırlı olsun."
+      "speech_right": "Bilge bir karar, hayırlı olsun.",
+      "character_name_en": "Sultan",
+      "text_en": "I had an ill omen in my sleep last night, Grand Vizier. The Bosphorus ran with blood instead of water. Shall I send for the Şeyhülislam, or shall I hear your counsel?",
+      "left_text_en": "Send for the Şeyhülislam",
+      "right_text_en": "I will interpret it",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "sultan_sefer_emri",
@@ -135,7 +156,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Sultan",
+      "text_en": "A fortress on the Hungarian border continues to defy us. I propose leading the campaign myself. You will govern the palace in my absence.",
+      "left_text_en": "I urge you to stay",
+      "right_text_en": "Safe travels, my Sultan",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "sultan_rakip_şikayeti",
@@ -167,7 +195,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Sadrazam, bu beni memnun etmez.",
-      "speech_right": "Bilge bir karar, hayırlı olsun."
+      "speech_right": "Bilge bir karar, hayırlı olsun.",
+      "character_name_en": "Sultan",
+      "text_en": "Complaints are coming from the other viziers, Grand Vizier. They say you are 'concentrating all power in one hand.' What do you say?",
+      "left_text_en": "They are right — I will share power",
+      "right_text_en": "Bring the accusers to me",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "yeni_kışla",
@@ -204,7 +239,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Janissary Commander",
+      "text_en": "Pasha, our soldiers are demanding new barracks. The old structure is rotting. If they endure the winter in these conditions, rebellion is inevitable.",
+      "left_text_en": "Wait for now",
+      "right_text_en": "Order the construction",
+      "investigate_text_en": "",
+      "speech_left_en": "A hungry soldier's weapon weeps.",
+      "speech_right_en": "Inform your Sultan — we are pleased."
     },
     {
       "id": "yeniceri_maaş_gecikmesi",
@@ -241,7 +283,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Janissary Commander",
+      "text_en": "Pasha, wages have gone unpaid for three months. Grumbling spreads among the troops. Act before someone raises the cauldron.",
+      "left_text_en": "Wait a little longer",
+      "right_text_en": "Pay from the treasury",
+      "investigate_text_en": "",
+      "speech_left_en": "A hungry soldier's weapon weeps.",
+      "speech_right_en": "Inform your Sultan — we are pleased."
     },
     {
       "id": "yeniceri_tüfek_talebi",
@@ -279,7 +328,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Janissary Commander",
+      "text_en": "The European powers have developed new musket technology. Our army is falling behind. I recommend we place a large order.",
+      "left_text_en": "Unnecessary expense",
+      "right_text_en": "Place the order",
+      "investigate_text_en": "",
+      "speech_left_en": "A hungry soldier's weapon weeps.",
+      "speech_right_en": "Inform your Sultan — we are pleased."
     },
     {
       "id": "yeniceri_disiplin",
@@ -311,7 +367,14 @@
       "min_year": 1,
       "category": "military",
       "speech_left": "Asker aç kalırsa silah ağlar.",
-      "speech_right": "Sultanınıza bildirin, memnunuz."
+      "speech_right": "Sultanınıza bildirin, memnunuz.",
+      "character_name_en": "Janissary Commander",
+      "text_en": "Two Janissary companies clashed — a soldier lost his life. I am recommending strict disciplinary measures.",
+      "left_text_en": "Do not be harsh",
+      "right_text_en": "Do what must be done",
+      "investigate_text_en": "",
+      "speech_left_en": "A hungry soldier's weapon weeps.",
+      "speech_right_en": "Inform your Sultan — we are pleased."
     },
     {
       "id": "yeniceri_yaşlı_birlik",
@@ -341,7 +404,14 @@
       "min_year": 3,
       "category": "military",
       "speech_left": "Asker aç kalırsa silah ağlar.",
-      "speech_right": "Sultanınıza bildirin, memnunuz."
+      "speech_right": "Sultanınıza bildirin, memnunuz.",
+      "character_name_en": "Janissary Commander",
+      "text_en": "A group from the founding companies is now too old to fight. Shall I retire them with honor, or keep them in service out of respect?",
+      "left_text_en": "Retire them with honor",
+      "right_text_en": "Let them remain in the corps",
+      "investigate_text_en": "",
+      "speech_left_en": "A hungry soldier's weapon weeps.",
+      "speech_right_en": "Inform your Sultan — we are pleased."
     },
     {
       "id": "fetva_talebi",
@@ -373,7 +443,14 @@
       "min_year": 1,
       "category": "religious",
       "speech_left": "Allah'ın yolu bu değil, Paşam.",
-      "speech_right": "Şeriat böyle emreder, isabetli."
+      "speech_right": "Şeriat böyle emreder, isabetli.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "Grand Vizier, there is a request for a fatwa concerning the activities of a Venetian merchant. I can issue it as 'conditionally permissible.'",
+      "left_text_en": "Delay the fatwa",
+      "right_text_en": "Issue it as conditionally permissible",
+      "investigate_text_en": "",
+      "speech_left_en": "This is not the path of God, Pasha.",
+      "speech_right_en": "So sharia commands — rightly done."
     },
     {
       "id": "seyhulislam_medrese",
@@ -410,7 +487,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Şeyhülislam",
+      "text_en": "I am requesting the allocation of land for a new madrasa in Üsküdar. Without a house of learning, the state cannot stand.",
+      "left_text_en": "No land available for now",
+      "right_text_en": "Allocate the land",
+      "investigate_text_en": "",
+      "speech_left_en": "This is not the path of God, Pasha.",
+      "speech_right_en": "So sharia commands — rightly done."
     },
     {
       "id": "seyhulislam_zındıklık",
@@ -443,7 +527,14 @@
       "category": "religious",
       "investigate_text": "Kâtibin yazıları incelendiğinde bid'atten çok hiciv içerdiği görülüyor. Asıl hedef Şeyhülislam'ın rakibi olabilir.",
       "speech_left": "Allah'ın yolu bu değil, Paşam.",
-      "speech_right": "Şeriat böyle emreder, isabetli."
+      "speech_right": "Şeriat böyle emreder, isabetli.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "A scribe in the palace is producing writings containing heretical content. Approve the opening of an investigation on charges of heresy.",
+      "left_text_en": "Bring evidence first",
+      "right_text_en": "Begin the investigation",
+      "investigate_text_en": "Upon examining the scribe's writings, they appear to contain satire rather than heresy. The real target seems to be someone in the Şeyhülislam's circle.",
+      "speech_left_en": "This is not the path of God, Pasha.",
+      "speech_right_en": "So sharia commands — rightly done."
     },
     {
       "id": "seyhulislam_hutbe",
@@ -475,7 +566,14 @@
       "min_year": 3,
       "category": "religious",
       "speech_left": "Allah'ın yolu bu değil, Paşam.",
-      "speech_right": "Şeriat böyle emreder, isabetli."
+      "speech_right": "Şeriat böyle emreder, isabetli.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "I am considering adding your title alongside the Sultan's in the Friday sermon. There is historical precedent.",
+      "left_text_en": "No need — the Sultan suffices",
+      "right_text_en": "If you see fit",
+      "investigate_text_en": "",
+      "speech_left_en": "This is not the path of God, Pasha.",
+      "speech_right_en": "So sharia commands — rightly done."
     },
     {
       "id": "seyhulislam_vakıf",
@@ -507,7 +605,14 @@
       "min_year": 2,
       "category": "religious",
       "speech_left": "Allah'ın yolu bu değil, Paşam.",
-      "speech_right": "Şeriat böyle emreder, isabetli."
+      "speech_right": "Şeriat böyle emreder, isabetli.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "I wish to bring a portion of foundation revenues directly under clergy oversight. This would bring both transparency and efficiency.",
+      "left_text_en": "The current order is sufficient",
+      "right_text_en": "Transfer them",
+      "investigate_text_en": "",
+      "speech_left_en": "This is not the path of God, Pasha.",
+      "speech_right_en": "So sharia commands — rightly done."
     },
     {
       "id": "defterdar_bütçe",
@@ -539,7 +644,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Pişman olursunuz efendim.",
-      "speech_right": "Devlet selamete kavuştu."
+      "speech_right": "Devlet selamete kavuştu.",
+      "character_name_en": "Treasurer",
+      "text_en": "My lord, the year-end budget is in deficit. We must either cut the campaign allocation or raise taxes.",
+      "left_text_en": "Cut the campaign budget",
+      "right_text_en": "Raise taxes",
+      "investigate_text_en": "",
+      "speech_left_en": "You will regret this, my lord.",
+      "speech_right_en": "The state has found safety."
     },
     {
       "id": "defterdar_vergi_tahsil",
@@ -571,7 +683,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Pişman olursunuz efendim.",
-      "speech_right": "Devlet selamete kavuştu."
+      "speech_right": "Devlet selamete kavuştu.",
+      "character_name_en": "Treasurer",
+      "text_en": "The Anatolian tax collectors have returned. The yield is far below projections. Are the villagers unable to pay, or are the collectors pocketing the difference?",
+      "left_text_en": "Investigate the collectors",
+      "right_text_en": "Impose penalties on the villagers",
+      "investigate_text_en": "",
+      "speech_left_en": "You will regret this, my lord.",
+      "speech_right_en": "The state has found safety."
     },
     {
       "id": "defterdar_borç_teklifi",
@@ -604,7 +723,14 @@
       "category": "economic",
       "speech_left": "Pişman olursunuz efendim.",
       "speech_right": "Devlet selamete kavuştu.",
-      "grants_item_on_right": "altin_muhur"
+      "grants_item_on_right": "altin_muhur",
+      "character_name_en": "Treasurer",
+      "text_en": "Genoese bankers are offering the treasury a loan at favorable interest. We gain breathing room in the short term, but risks mount long term.",
+      "left_text_en": "Do not take on debt",
+      "right_text_en": "Accept the offer",
+      "investigate_text_en": "",
+      "speech_left_en": "You will regret this, my lord.",
+      "speech_right_en": "The state has found safety."
     },
     {
       "id": "defterdar_pazar_ruhsatı",
@@ -636,7 +762,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Pişman olursunuz efendim.",
-      "speech_right": "Devlet selamete kavuştu."
+      "speech_right": "Devlet selamete kavuştu.",
+      "character_name_en": "Treasurer",
+      "text_en": "There is a request for a permit to establish a new market in Galata. Both artisans and the treasury would benefit — but the old guilds object.",
+      "left_text_en": "Respect the guild's objection",
+      "right_text_en": "Grant the permit",
+      "investigate_text_en": "",
+      "speech_left_en": "You will regret this, my lord.",
+      "speech_right_en": "The state has found safety."
     },
     {
       "id": "defterdar_gümrük",
@@ -668,7 +801,14 @@
       "min_year": 2,
       "category": "economic",
       "speech_left": "Pişman olursunuz efendim.",
-      "speech_right": "Devlet selamete kavuştu."
+      "speech_right": "Devlet selamete kavuştu.",
+      "character_name_en": "Treasurer",
+      "text_en": "The customs duty applied to foreign ships passing through the Bosphorus has not changed in ten years. I propose doubling it.",
+      "left_text_en": "Preserve the status quo",
+      "right_text_en": "Raise the tariff",
+      "investigate_text_en": "",
+      "speech_left_en": "You will regret this, my lord.",
+      "speech_right_en": "The state has found safety."
     },
     {
       "id": "valide_evlilik",
@@ -700,7 +840,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Annenizi dinlemek lazım, Paşam.",
-      "speech_right": "Bilge bir karar, Allah razı olsun."
+      "speech_right": "Bilge bir karar, Allah razı olsun.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "I have found a suitable bride for the prince — the daughter of the Khan of Crimea. Valuable from an alliance standpoint as well. Do you approve?",
+      "left_text_en": "Let us not rush",
+      "right_text_en": "May it be blessed",
+      "investigate_text_en": "",
+      "speech_left_en": "You should listen to your mother, Pasha.",
+      "speech_right_en": "A wise decision — may God be pleased."
     },
     {
       "id": "valide_harem_harcaması",
@@ -730,7 +877,14 @@
       "min_year": 1,
       "category": "political",
       "speech_left": "Annenizi dinlemek lazım, Paşam.",
-      "speech_right": "Bilge bir karar, Allah razı olsun."
+      "speech_right": "Bilge bir karar, Allah razı olsun.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "The Harem's annual allocation is falling short. Garments, repairs, servants' wages... An increase is necessary.",
+      "left_text_en": "This amount is sufficient",
+      "right_text_en": "Increase it",
+      "investigate_text_en": "",
+      "speech_left_en": "You should listen to your mother, Pasha.",
+      "speech_right_en": "A wise decision — may God be pleased."
     },
     {
       "id": "valide_hoca_seçimi",
@@ -760,7 +914,14 @@
       "min_year": 1,
       "category": "political",
       "speech_left": "Annenizi dinlemek lazım, Paşam.",
-      "speech_right": "Bilge bir karar, Allah razı olsun."
+      "speech_right": "Bilge bir karar, Allah razı olsun.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "There are two tutor candidates for the young prince's education. One is from the clergy, the other has come from the Persian court. Which do you prefer?",
+      "left_text_en": "Choose from the clergy",
+      "right_text_en": "Take the Persian tutor",
+      "investigate_text_en": "",
+      "speech_left_en": "You should listen to your mother, Pasha.",
+      "speech_right_en": "A wise decision — may God be pleased."
     },
     {
       "id": "valide_cariyer_şüphesi",
@@ -793,7 +954,14 @@
       "category": "intrigue",
       "investigate_text": "Casuslardan edinilen bilgiye göre cariyer değil, ona yakın bir saray görevlisi şüpheli konumda.",
       "speech_left": "Annenizi dinlemek lazım, Paşam.",
-      "speech_right": "Bilge bir karar, Allah razı olsun."
+      "speech_right": "Bilge bir karar, Allah razı olsun.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "There are rumors about a concubine in the Harem. She is said to be connected to a foreign power. Let us investigate.",
+      "left_text_en": "Do not act without evidence",
+      "right_text_en": "Investigate quietly",
+      "investigate_text_en": "According to intelligence, it is not the concubine but a palace official close to her who is suspect.",
+      "speech_left_en": "You should listen to your mother, Pasha.",
+      "speech_right_en": "A wise decision — may God be pleased."
     },
     {
       "id": "valide_vasiyet",
@@ -825,7 +993,14 @@
       "min_year": 3,
       "category": "political",
       "speech_left": "Annenizi dinlemek lazım, Paşam.",
-      "speech_right": "Bilge bir karar, Allah razı olsun."
+      "speech_right": "Bilge bir karar, Allah razı olsun.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "A sealed testament from the late Sultan has surfaced. The Valide Sultan brought it to you. Should it be opened?",
+      "left_text_en": "Leave it sealed",
+      "right_text_en": "Open it and read it",
+      "investigate_text_en": "",
+      "speech_left_en": "You should listen to your mother, Pasha.",
+      "speech_right_en": "A wise decision — may God be pleased."
     },
     {
       "id": "kaptan_korsan",
@@ -862,7 +1037,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "Genoese pirates are attacking Ottoman merchant vessels in the Mediterranean. Shall I dispatch a detachment?",
+      "left_text_en": "Ignore it for now",
+      "right_text_en": "Send the detachment",
+      "investigate_text_en": "",
+      "speech_left_en": "The seas are unforgiving, Grand Vizier.",
+      "speech_right_en": "The fleet is ready, awaiting your orders."
     },
     {
       "id": "kaptan_tersane",
@@ -899,7 +1081,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "Our shipyard has aged. We can build six new galleys, but it requires a major investment.",
+      "left_text_en": "The existing fleet is sufficient",
+      "right_text_en": "Begin construction",
+      "investigate_text_en": "",
+      "speech_left_en": "The seas are unforgiving, Grand Vizier.",
+      "speech_right_en": "The fleet is ready, awaiting your orders."
     },
     {
       "id": "kaptan_gizli_harekât",
@@ -931,7 +1120,14 @@
       "min_year": 3,
       "category": "military",
       "speech_left": "Denizler bağışlamaz, Sadrazam.",
-      "speech_right": "Filo hazır, emirleriniz bekler."
+      "speech_right": "Filo hazır, emirleriniz bekler.",
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "We could launch a night raid on Venice's harbor in Crete — without a formal declaration of war. There is risk, but also great gain.",
+      "left_text_en": "Go through official channels",
+      "right_text_en": "Approve the covert operation",
+      "investigate_text_en": "",
+      "speech_left_en": "The seas are unforgiving, Grand Vizier.",
+      "speech_right_en": "The fleet is ready, awaiting your orders."
     },
     {
       "id": "kaptan_fırtına_hasarı",
@@ -966,7 +1162,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "Three of our ships were damaged in a great storm; one sank. Emergency repair funds are needed.",
+      "left_text_en": "Wait until the treasury recovers",
+      "right_text_en": "Transfer the funds",
+      "investigate_text_en": "",
+      "speech_left_en": "The seas are unforgiving, Grand Vizier.",
+      "speech_right_en": "The fleet is ready, awaiting your orders."
     },
     {
       "id": "kaptan_malta_ittifak",
@@ -998,7 +1201,14 @@
       "min_year": 4,
       "category": "diplomatic",
       "speech_left": "Denizler bağışlamaz, Sadrazam.",
-      "speech_right": "Filo hazır, emirleriniz bekler."
+      "speech_right": "Filo hazır, emirleriniz bekler.",
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "Naples has proposed a joint operation against the Knights of Malta — an unusual potential ally for the Ottomans.",
+      "left_text_en": "We decline",
+      "right_text_en": "We are open to negotiation",
+      "investigate_text_en": "",
+      "speech_left_en": "The seas are unforgiving, Grand Vizier.",
+      "speech_right_en": "The fleet is ready, awaiting your orders."
     },
     {
       "id": "elci_ticaret_imtiyazı",
@@ -1030,7 +1240,14 @@
       "min_year": 1,
       "category": "diplomatic",
       "speech_left": "Bu red savaş demek, Paşam.",
-      "speech_right": "Memleketim teşekkür eder."
+      "speech_right": "Memleketim teşekkür eder.",
+      "character_name_en": "Foreign Ambassador",
+      "text_en": "On behalf of the Republic of Venice, I am requesting rights to a warehouse and representation in Istanbul. In return, silk and glass.",
+      "left_text_en": "These rights are too broad",
+      "right_text_en": "Sign the agreement",
+      "investigate_text_en": "",
+      "speech_left_en": "This refusal means war, Pasha.",
+      "speech_right_en": "My homeland thanks you."
     },
     {
       "id": "elci_sınır_müzakere",
@@ -1062,7 +1279,14 @@
       "min_year": 2,
       "category": "diplomatic",
       "speech_left": "Bu red savaş demek, Paşam.",
-      "speech_right": "Memleketim teşekkür eder."
+      "speech_right": "Memleketim teşekkür eder.",
+      "character_name_en": "Foreign Ambassador",
+      "text_en": "As an envoy from the Habsburgs, I propose mediation to resolve the village dispute on the Hungarian border.",
+      "left_text_en": "No need for mediation",
+      "right_text_en": "Sit at the table",
+      "investigate_text_en": "",
+      "speech_left_en": "This refusal means war, Pasha.",
+      "speech_right_en": "My homeland thanks you."
     },
     {
       "id": "elci_fransız_ittifak",
@@ -1094,7 +1318,14 @@
       "min_year": 2,
       "category": "diplomatic",
       "speech_left": "Bu red savaş demek, Paşam.",
-      "speech_right": "Memleketim teşekkür eder."
+      "speech_right": "Memleketim teşekkür eder.",
+      "character_name_en": "Foreign Ambassador",
+      "text_en": "The King of France proposes a secret defensive pact against our common enemy, the Habsburgs. No one need know.",
+      "left_text_en": "We want no secret pact",
+      "right_text_en": "Begin negotiations",
+      "investigate_text_en": "",
+      "speech_left_en": "This refusal means war, Pasha.",
+      "speech_right_en": "My homeland thanks you."
     },
     {
       "id": "elci_esir_takası",
@@ -1126,7 +1357,14 @@
       "min_year": 1,
       "category": "diplomatic",
       "speech_left": "Bu red savaş demek, Paşam.",
-      "speech_right": "Memleketim teşekkür eder."
+      "speech_right": "Memleketim teşekkür eder.",
+      "character_name_en": "Foreign Ambassador",
+      "text_en": "I propose a prisoner exchange: ten Ottoman soldiers for five European nobles. With an honorable ceremony, no less.",
+      "left_text_en": "We do not accept the ratio",
+      "right_text_en": "Complete the exchange",
+      "investigate_text_en": "",
+      "speech_left_en": "This refusal means war, Pasha.",
+      "speech_right_en": "My homeland thanks you."
     },
     {
       "id": "elci_portekiz",
@@ -1158,7 +1396,14 @@
       "min_year": 3,
       "category": "economic",
       "speech_left": "Bu red savaş demek, Paşam.",
-      "speech_right": "Memleketim teşekkür eder."
+      "speech_right": "Memleketim teşekkür eder.",
+      "character_name_en": "Portuguese Ambassador",
+      "text_en": "A peculiar offer regarding the spice trade in the Indian Ocean: Portuguese ships would sail under Ottoman colors — on paper only.",
+      "left_text_en": "A fictitious agreement is unacceptable",
+      "right_text_en": "Hear the terms",
+      "investigate_text_en": "",
+      "speech_left_en": "This refusal means war, Pasha.",
+      "speech_right_en": "My homeland thanks you."
     },
     {
       "id": "rakip_şikayeti",
@@ -1190,7 +1435,14 @@
       "min_year": 2,
       "category": "intrigue",
       "speech_left": "Hata ettiniz, hatırlayacaksınız.",
-      "speech_right": "Beklenmedik bir anlayış, Paşam."
+      "speech_right": "Beklenmedik bir anlayış, Paşam.",
+      "character_name_en": "Rival Vizier",
+      "text_en": "It was heard in the Divan: your rival has formally complained to the Sultan. 'He is draining the treasury,' he said. How will you respond?",
+      "left_text_en": "Silence is best",
+      "right_text_en": "Explain yourself to the Sultan",
+      "investigate_text_en": "",
+      "speech_left_en": "You have made a mistake — you will remember it.",
+      "speech_right_en": "Unexpected understanding, Pasha."
     },
     {
       "id": "rakip_sır",
@@ -1223,7 +1475,14 @@
       "category": "intrigue",
       "investigate_text": "Rakip Vezir'in bu bilgiyi neden size verdiği şüpheli. Şeyhülislam'ı zayıflatmak onun çıkarına.",
       "speech_left": "Hata ettiniz, hatırlayacaksınız.",
-      "speech_right": "Beklenmedik bir anlayış, Paşam."
+      "speech_right": "Beklenmedik bir anlayış, Paşam.",
+      "character_name_en": "Rival Vizier",
+      "text_en": "Your rival leaned close and whispered a secret: he claims the Şeyhülislam is corrupt. What will you do with this claim?",
+      "left_text_en": "Do not even entertain it",
+      "right_text_en": "Investigate",
+      "investigate_text_en": "It is suspicious why the Rival Vizier is bringing this to you. He may be trying to weaken the Şeyhülislam — while setting a trap for you.",
+      "speech_left_en": "You have made a mistake — you will remember it.",
+      "speech_right_en": "Unexpected understanding, Pasha."
     },
     {
       "id": "rakip_yeni_unvan",
@@ -1255,7 +1514,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Hata ettiniz, hatırlayacaksınız.",
-      "speech_right": "Beklenmedik bir anlayış, Paşam."
+      "speech_right": "Beklenmedik bir anlayış, Paşam.",
+      "character_name_en": "Rival Vizier",
+      "text_en": "Your rival has received a new title from the Sultan: 'Chief Advisor.' His weight in the Divan has grown. Will you remain silent?",
+      "left_text_en": "A title does not move me",
+      "right_text_en": "Request a title for yourself as well",
+      "investigate_text_en": "",
+      "speech_left_en": "You have made a mistake — you will remember it.",
+      "speech_right_en": "Unexpected understanding, Pasha."
     },
     {
       "id": "rakip_ittifak_teklifi",
@@ -1287,7 +1553,14 @@
       "min_year": 3,
       "category": "intrigue",
       "speech_left": "Hata ettiniz, hatırlayacaksınız.",
-      "speech_right": "Beklenmedik bir anlayış, Paşam."
+      "speech_right": "Beklenmedik bir anlayış, Paşam.",
+      "character_name_en": "Rival Vizier",
+      "text_en": "'Rather than tearing each other down, let us govern the Sultan together,' he says. But his terms are heavy and he is untrustworthy.",
+      "left_text_en": "I do not trust him — I refuse",
+      "right_text_en": "Form a temporary alliance",
+      "investigate_text_en": "",
+      "speech_left_en": "You have made a mistake — you will remember it.",
+      "speech_right_en": "Unexpected understanding, Pasha."
     },
     {
       "id": "rakip_hakaret",
@@ -1317,7 +1590,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Hata ettiniz, hatırlayacaksınız.",
-      "speech_right": "Beklenmedik bir anlayış, Paşam."
+      "speech_right": "Beklenmedik bir anlayış, Paşam.",
+      "character_name_en": "Rival Vizier",
+      "text_en": "He made a speech before the Sultan in the Divan that humiliated you. Everyone waited. What will you do?",
+      "left_text_en": "Stay composed",
+      "right_text_en": "Respond in the Divan",
+      "investigate_text_en": "",
+      "speech_left_en": "You have made a mistake — you will remember it.",
+      "speech_right_en": "Unexpected understanding, Pasha."
     },
     {
       "id": "cellat_masumiyet",
@@ -1349,7 +1629,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Merhamet mi? Nadir görülür.",
-      "speech_right": "Emriniz oldu, efendim."
+      "speech_right": "Emriniz oldu, efendim.",
+      "character_name_en": "Executioner",
+      "text_en": "Pasha, the condemned man who is to be executed tomorrow still cries out that he is innocent. His family is at the door; he had no lawyer.",
+      "left_text_en": "The court's verdict stands",
+      "right_text_en": "Review the case again",
+      "investigate_text_en": "",
+      "speech_left_en": "Mercy? Rarely seen.",
+      "speech_right_en": "As you command, my lord."
     },
     {
       "id": "cellat_iş_yükü",
@@ -1379,7 +1666,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Merhamet mi? Nadir görülür.",
-      "speech_right": "Emriniz oldu, efendim."
+      "speech_right": "Emriniz oldu, efendim.",
+      "character_name_en": "Executioner",
+      "text_en": "My lord, execution orders have increased in recent months. I cannot keep up alone. May I take on a second assistant?",
+      "left_text_en": "One man is sufficient",
+      "right_text_en": "Hire an assistant",
+      "investigate_text_en": "",
+      "speech_left_en": "Mercy? Rarely seen.",
+      "speech_right_en": "As you command, my lord."
     },
     {
       "id": "cellat_rüşvet",
@@ -1411,7 +1705,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Merhamet mi? Nadir görülür.",
-      "speech_right": "Emriniz oldu, efendim."
+      "speech_right": "Emriniz oldu, efendim.",
+      "character_name_en": "Executioner",
+      "text_en": "The condemned man's family offered a large bribe. I am not pocketing it — I brought it to you to decide about a pardon.",
+      "left_text_en": "Return the bribe",
+      "right_text_en": "Consider the pardon",
+      "investigate_text_en": "",
+      "speech_left_en": "Mercy? Rarely seen.",
+      "speech_right_en": "As you command, my lord."
     },
     {
       "id": "cellat_çocuk",
@@ -1443,7 +1744,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Merhamet mi? Nadir görülür.",
-      "speech_right": "Emriniz oldu, efendim."
+      "speech_right": "Emriniz oldu, efendim.",
+      "character_name_en": "Executioner",
+      "text_en": "Pasha, there is a fourteen-year-old child on the execution list. The crime — he was used as a tool by adults. My hand trembles.",
+      "left_text_en": "The law is equal for all",
+      "right_text_en": "Pardon the minor and send him to exile",
+      "investigate_text_en": "",
+      "speech_left_en": "Mercy? Rarely seen.",
+      "speech_right_en": "As you command, my lord."
     },
     {
       "id": "cellat_casus",
@@ -1477,7 +1785,14 @@
       "min_year": 2,
       "category": "intrigue",
       "speech_left": "Merhamet mi? Nadir görülür.",
-      "speech_right": "Emriniz oldu, efendim."
+      "speech_right": "Emriniz oldu, efendim.",
+      "character_name_en": "Executioner",
+      "text_en": "The sentence for the captured foreign spy has not been determined. Execution, dungeon, or exchange — the decision awaits you.",
+      "left_text_en": "Throw him in the dungeon",
+      "right_text_en": "Execute him",
+      "investigate_text_en": "",
+      "speech_left_en": "Mercy? Rarely seen.",
+      "speech_right_en": "As you command, my lord."
     },
     {
       "id": "hekimbasi_humma",
@@ -1509,7 +1824,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Bedeni ihmal etmek pahalıya mal.",
-      "speech_right": "Sağlıklı devlet, güçlü devlet."
+      "speech_right": "Sağlıklı devlet, güçlü devlet.",
+      "character_name_en": "Chief Physician",
+      "text_en": "Cases of fever are multiplying rapidly in Istanbul, Pasha. They are spreading in the eastern districts. Early action is critical.",
+      "left_text_en": "Do not exaggerate — monitor the situation",
+      "right_text_en": "Take precautions",
+      "investigate_text_en": "",
+      "speech_left_en": "Neglecting the body is costly.",
+      "speech_right_en": "A healthy state is a strong state."
     },
     {
       "id": "hekimbasi_karantina",
@@ -1541,7 +1863,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Bedeni ihmal etmek pahalıya mal.",
-      "speech_right": "Sağlıklı devlet, güçlü devlet."
+      "speech_right": "Sağlıklı devlet, güçlü devlet.",
+      "character_name_en": "Chief Physician",
+      "text_en": "The merchant caravan arriving from the East is suspicious. I advise against letting them in without quarantine.",
+      "left_text_en": "Trade cannot stop — let them pass",
+      "right_text_en": "Put them in quarantine",
+      "investigate_text_en": "",
+      "speech_left_en": "Neglecting the body is costly.",
+      "speech_right_en": "A healthy state is a strong state."
     },
     {
       "id": "hekimbasi_darüşşifa",
@@ -1579,7 +1908,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Chief Physician",
+      "text_en": "I propose the establishment of a healing house (darüşşifa) in Üsküdar. A great blessing for poor and ailing citizens.",
+      "left_text_en": "The treasury cannot afford it",
+      "right_text_en": "Approve the construction",
+      "investigate_text_en": "",
+      "speech_left_en": "Neglecting the body is costly.",
+      "speech_right_en": "A healthy state is a strong state."
     },
     {
       "id": "hekimbasi_sultan_sağlık",
@@ -1612,7 +1948,14 @@
       "category": "political",
       "investigate_text": "Bu bilgi doğruysa ciddi bir veraset meselesi baş gösterebilir. Şehzadeler hazır mı?",
       "speech_left": "Bedeni ihmal etmek pahalıya mal.",
-      "speech_right": "Sağlıklı devlet, güçlü devlet."
+      "speech_right": "Sağlıklı devlet, güçlü devlet.",
+      "character_name_en": "Chief Physician",
+      "text_en": "Pasha, there is a serious matter regarding the Sultan's health that I must tell only you. It could last months.",
+      "left_text_en": "Do not tell me — I do not wish to know",
+      "right_text_en": "I am listening",
+      "investigate_text_en": "If this information is accurate, a grave succession issue could arise. The princes are not yet prepared.",
+      "speech_left_en": "Neglecting the body is costly.",
+      "speech_right_en": "A healthy state is a strong state."
     },
     {
       "id": "hekimbasi_avrupa_ilaç",
@@ -1642,7 +1985,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Bedeni ihmal etmek pahalıya mal.",
-      "speech_right": "Sağlıklı devlet, güçlü devlet."
+      "speech_right": "Sağlıklı devlet, güçlü devlet.",
+      "character_name_en": "Chief Physician",
+      "text_en": "A new herbal remedy has arrived from Europe. There are treated cases, but not yet sufficient proof. Should we experiment?",
+      "left_text_en": "Use proven medicines",
+      "right_text_en": "Try it and report the results",
+      "investigate_text_en": "",
+      "speech_left_en": "Neglecting the body is costly.",
+      "speech_right_en": "A healthy state is a strong state."
     },
     {
       "id": "sipahi_tımar_dağıtımı",
@@ -1672,7 +2022,14 @@
       "min_year": 2,
       "category": "military",
       "speech_left": "Sipahi sabır taşımaz, Paşam.",
-      "speech_right": "Ordunuz hazır ve istekli."
+      "speech_right": "Ordunuz hazır ve istekli.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "The timars in Rumelia will be redistributed. There are two candidates: one close to the Sultan, the other the most seasoned cavalry officer.",
+      "left_text_en": "Give it to the experienced officer",
+      "right_text_en": "Give it to the Sultan's man",
+      "investigate_text_en": "",
+      "speech_left_en": "The Sipahi have no patience, Pasha.",
+      "speech_right_en": "Your army is ready and eager."
     },
     {
       "id": "sipahi_erzak_yokluğu",
@@ -1702,7 +2059,14 @@
       "min_year": 1,
       "category": "military",
       "speech_left": "Sipahi sabır taşımaz, Paşam.",
-      "speech_right": "Ordunuz hazır ve istekli."
+      "speech_right": "Ordunuz hazır ve istekli.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "The border outposts are waiting but supplies were never sent. The cavalry will be forced to fight on empty stomachs.",
+      "left_text_en": "Let them wait one more week",
+      "right_text_en": "Send emergency supplies",
+      "investigate_text_en": "",
+      "speech_left_en": "The Sipahi have no patience, Pasha.",
+      "speech_right_en": "Your army is ready and eager."
     },
     {
       "id": "sipahi_emeklilik",
@@ -1732,7 +2096,14 @@
       "min_year": 2,
       "category": "military",
       "speech_left": "Sipahi sabır taşımaz, Paşam.",
-      "speech_right": "Ordunuz hazır ve istekli."
+      "speech_right": "Ordunuz hazır ve istekli.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "A cavalry commander with thirty years of service is requesting an honorable retirement — and to keep his timar.",
+      "left_text_en": "The timar returns to the treasury",
+      "right_text_en": "Let him keep his timar",
+      "investigate_text_en": "",
+      "speech_left_en": "The Sipahi have no patience, Pasha.",
+      "speech_right_en": "Your army is ready and eager."
     },
     {
       "id": "sipahi_rüşvet",
@@ -1764,7 +2135,14 @@
       "min_year": 2,
       "category": "military",
       "speech_left": "Sipahi sabır taşımaz, Paşam.",
-      "speech_right": "Ordunuz hazır ve istekli."
+      "speech_right": "Ordunuz hazır ve istekli.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "There is a report that a cavalry commander accepted money from the enemy. It may be false, but it may not. Should we investigate?",
+      "left_text_en": "There are no accusations without evidence",
+      "right_text_en": "Launch an investigation",
+      "investigate_text_en": "",
+      "speech_left_en": "The Sipahi have no patience, Pasha.",
+      "speech_right_en": "Your army is ready and eager."
     },
     {
       "id": "sipahi_talim",
@@ -1794,7 +2172,14 @@
       "min_year": 1,
       "category": "military",
       "speech_left": "Sipahi sabır taşımaz, Paşam.",
-      "speech_right": "Ordunuz hazır ve istekli."
+      "speech_right": "Ordunuz hazır ve istekli.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "You are recommending that I personally inspect the new cavalry regiment. But during the inspection, a few men may face disciplinary punishment.",
+      "left_text_en": "Do not be harsh",
+      "right_text_en": "Apply the necessary discipline",
+      "investigate_text_en": "",
+      "speech_left_en": "The Sipahi have no patience, Pasha.",
+      "speech_right_en": "Your army is ready and eager."
     },
     {
       "id": "saray_sairi_kaside",
@@ -1824,7 +2209,14 @@
       "min_year": 1,
       "category": "cultural",
       "speech_left": "Şiir de bir silah, unutmayın.",
-      "speech_right": "İlhama vesile oldunuz, Paşam."
+      "speech_right": "İlhama vesile oldunuz, Paşam.",
+      "character_name_en": "Court Poet",
+      "text_en": "I have written a new ode in your praise, Pasha. I wish it to be read in the Divan. In return, a modest gift would suffice.",
+      "left_text_en": "Not for now",
+      "right_text_en": "Let him recite it — and give the gift",
+      "investigate_text_en": "",
+      "speech_left_en": "Poetry too is a weapon, do not forget.",
+      "speech_right_en": "You have been a source of inspiration, Pasha."
     },
     {
       "id": "saray_sairi_hiciv",
@@ -1856,7 +2248,14 @@
       "min_year": 2,
       "category": "cultural",
       "speech_left": "Şiir de bir silah, unutmayın.",
-      "speech_right": "İlhama vesile oldunuz, Paşam."
+      "speech_right": "İlhama vesile oldunuz, Paşam.",
+      "character_name_en": "Court Poet",
+      "text_en": "A satirical poem targeting your rival is circulating in the palace. Its author is unknown. Should it be silenced?",
+      "left_text_en": "Do not interfere with poetry",
+      "right_text_en": "Find its author and silence them",
+      "investigate_text_en": "",
+      "speech_left_en": "Poetry too is a weapon, do not forget.",
+      "speech_right_en": "You have been a source of inspiration, Pasha."
     },
     {
       "id": "saray_sairi_divan",
@@ -1886,7 +2285,14 @@
       "min_year": 1,
       "category": "cultural",
       "speech_left": "Şiir de bir silah, unutmayın.",
-      "speech_right": "İlhama vesile oldunuz, Paşam."
+      "speech_right": "İlhama vesile oldunuz, Paşam.",
+      "character_name_en": "Court Poet",
+      "text_en": "I wish to compose a special poem for the Divan council. What should the theme be — victory, justice, or the crescent?",
+      "left_text_en": "Write a poem on victory",
+      "right_text_en": "Write a poem on justice",
+      "investigate_text_en": "",
+      "speech_left_en": "Poetry too is a weapon, do not forget.",
+      "speech_right_en": "You have been a source of inspiration, Pasha."
     },
     {
       "id": "saray_sairi_dil",
@@ -1916,7 +2322,14 @@
       "min_year": 1,
       "category": "cultural",
       "speech_left": "Şiir de bir silah, unutmayın.",
-      "speech_right": "İlhama vesile oldunuz, Paşam."
+      "speech_right": "İlhama vesile oldunuz, Paşam.",
+      "character_name_en": "Court Poet",
+      "text_en": "The debate over whether court poetry should be written in Arabic or Persian has flared up. The Şeyhülislam says Arabic; the palace prefers Persian.",
+      "left_text_en": "Prefer Arabic",
+      "right_text_en": "Persian is more beautiful",
+      "investigate_text_en": "",
+      "speech_left_en": "Poetry too is a weapon, do not forget.",
+      "speech_right_en": "You have been a source of inspiration, Pasha."
     },
     {
       "id": "saray_sairi_kehanet",
@@ -1948,7 +2361,14 @@
       "min_year": 2,
       "category": "cultural",
       "speech_left": "Şiir de bir silah, unutmayın.",
-      "speech_right": "İlhama vesile oldunuz, Paşam."
+      "speech_right": "İlhama vesile oldunuz, Paşam.",
+      "character_name_en": "Court Poet",
+      "text_en": "A strange verse came from the poet's mouth: 'The hands that hold the throne will forge their own chains.' The palace is uneasy.",
+      "left_text_en": "The poet is mad — pay no attention",
+      "right_text_en": "Send him away quietly",
+      "investigate_text_en": "",
+      "speech_left_en": "Poetry too is a weapon, do not forget.",
+      "speech_right_en": "You have been a source of inspiration, Pasha."
     },
     {
       "id": "tüccar_ipek_tekel",
@@ -1980,7 +2400,14 @@
       "min_year": 2,
       "category": "economic",
       "speech_left": "Ticaret durur, devlet acıkır.",
-      "speech_right": "İstanbul zenginleşecek, Paşam."
+      "speech_right": "İstanbul zenginleşecek, Paşam.",
+      "character_name_en": "Grand Merchant",
+      "text_en": "I am requesting a monopoly right on the Istanbul passage of the Silk Road. In return, I guarantee the state a fixed annual income.",
+      "left_text_en": "We grant no monopolies",
+      "right_text_en": "Make the deal",
+      "investigate_text_en": "",
+      "speech_left_en": "Trade stops, the state goes hungry.",
+      "speech_right_en": "Istanbul will prosper, Pasha."
     },
     {
       "id": "tüccar_gümrük_sorunu",
@@ -2012,7 +2439,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Ticaret durur, devlet acıkır.",
-      "speech_right": "İstanbul zenginleşecek, Paşam."
+      "speech_right": "İstanbul zenginleşecek, Paşam.",
+      "character_name_en": "Grand Merchant",
+      "text_en": "My goods have been held at customs for two weeks. The officials will not release them without a bribe. I need a solution from you.",
+      "left_text_en": "Customs runs its own course",
+      "right_text_en": "Launch an investigation",
+      "investigate_text_en": "",
+      "speech_left_en": "Trade stops, the state goes hungry.",
+      "speech_right_en": "Istanbul will prosper, Pasha."
     },
     {
       "id": "tüccar_kervan_saldırı",
@@ -2042,7 +2476,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Ticaret durur, devlet acıkır.",
-      "speech_right": "İstanbul zenginleşecek, Paşam."
+      "speech_right": "İstanbul zenginleşecek, Paşam.",
+      "character_name_en": "Grand Merchant",
+      "text_en": "My caravan was attacked on the Cappadocian road. Ten men were killed, the goods stolen. I am requesting state compensation.",
+      "left_text_en": "The state bears no responsibility",
+      "right_text_en": "Pay reasonable compensation",
+      "investigate_text_en": "",
+      "speech_left_en": "Trade stops, the state goes hungry.",
+      "speech_right_en": "Istanbul will prosper, Pasha."
     },
     {
       "id": "tüccar_baharat",
@@ -2079,7 +2520,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Grand Merchant",
+      "text_en": "The Portuguese are cutting off the Indian route and spice prices have skyrocketed. Shall we consider an Ottoman maritime trade company?",
+      "left_text_en": "A costly project",
+      "right_text_en": "Support the project",
+      "investigate_text_en": "",
+      "speech_left_en": "Trade stops, the state goes hungry.",
+      "speech_right_en": "Istanbul will prosper, Pasha."
     },
     {
       "id": "tüccar_ihbar",
@@ -2111,7 +2559,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Ticaret durur, devlet acıkır.",
-      "speech_right": "İstanbul zenginleşecek, Paşam."
+      "speech_right": "İstanbul zenginleşecek, Paşam.",
+      "character_name_en": "Grand Merchant",
+      "text_en": "My competitor is smuggling goods outside customs. I witnessed it myself and have a witness. I am requesting that my complaint be recorded.",
+      "left_text_en": "Go to court",
+      "right_text_en": "Open an investigation",
+      "investigate_text_en": "",
+      "speech_left_en": "Trade stops, the state goes hungry.",
+      "speech_right_en": "Istanbul will prosper, Pasha."
     },
     {
       "id": "casuslar_sızdırma",
@@ -2143,7 +2598,14 @@
       "min_year": 1,
       "category": "intrigue",
       "speech_left": "Gölgeler sessizce konuşur.",
-      "speech_right": "Doğru karar, bilgi güçtür."
+      "speech_right": "Doğru karar, bilgi güçtür.",
+      "character_name_en": "Head of Spies",
+      "text_en": "Someone in the palace is leaking state secrets. If I expand my network, I can find the source. Do I have permission?",
+      "left_text_en": "Do not expand the network",
+      "right_text_en": "Find the source",
+      "investigate_text_en": "",
+      "speech_left_en": "Shadows speak in silence.",
+      "speech_right_en": "The right decision — knowledge is power."
     },
     {
       "id": "casuslar_tutuklama",
@@ -2175,7 +2637,14 @@
       "min_year": 2,
       "category": "intrigue",
       "speech_left": "Gölgeler sessizce konuşur.",
-      "speech_right": "Doğru karar, bilgi güçtür."
+      "speech_right": "Doğru karar, bilgi güçtür.",
+      "character_name_en": "Head of Spies",
+      "text_en": "I have caught a foreign spy. I need a little time to extract a confession. What shall I do?",
+      "left_text_en": "The dungeon is enough — no harsh methods",
+      "right_text_en": "Do what is necessary",
+      "investigate_text_en": "",
+      "speech_left_en": "Shadows speak in silence.",
+      "speech_right_en": "The right decision — knowledge is power."
     },
     {
       "id": "casuslar_rakip_yazışma",
@@ -2208,7 +2677,14 @@
       "category": "intrigue",
       "investigate_text": "Casuslar Başı'nın kendisi de bu yazışmalardan yararlanmış olabilir. Size getirmesi tesadüf değil.",
       "speech_left": "Gölgeler sessizce konuşur.",
-      "speech_right": "Doğru karar, bilgi güçtür."
+      "speech_right": "Doğru karar, bilgi güçtür.",
+      "character_name_en": "Head of Spies",
+      "text_en": "I have gained access to your rival vizier's private correspondence. Would you like to read it? Once opened, there is no going back.",
+      "left_text_en": "Do not touch it",
+      "right_text_en": "Show me",
+      "investigate_text_en": "The Head of Spies may have already benefited from this correspondence himself. Consider why he is bringing it to you now.",
+      "speech_left_en": "Shadows speak in silence.",
+      "speech_right_en": "The right decision — knowledge is power."
     },
     {
       "id": "casuslar_avrupa_ajan",
@@ -2240,7 +2716,14 @@
       "min_year": 3,
       "category": "intrigue",
       "speech_left": "Gölgeler sessizce konuşur.",
-      "speech_right": "Doğru karar, bilgi güçtür."
+      "speech_right": "Doğru karar, bilgi güçtür.",
+      "character_name_en": "Head of Spies",
+      "text_en": "I want to place an agent in the Vienna court. A long-term investment — it may not bear fruit for years.",
+      "left_text_en": "Do not waste resources",
+      "right_text_en": "Place the agent",
+      "investigate_text_en": "",
+      "speech_left_en": "Shadows speak in silence.",
+      "speech_right_en": "The right decision — knowledge is power."
     },
     {
       "id": "casuslar_çifte_ajan",
@@ -2272,7 +2755,14 @@
       "min_year": 3,
       "category": "intrigue",
       "speech_left": "Gölgeler sessizce konuşur.",
-      "speech_right": "Doğru karar, bilgi güçtür."
+      "speech_right": "Doğru karar, bilgi güçtür.",
+      "character_name_en": "Head of Spies",
+      "text_en": "I learned that my most valuable agent is working for both sides. How shall we use him — misinformation, or a trap?",
+      "left_text_en": "Eliminate him immediately",
+      "right_text_en": "Use him with false information",
+      "investigate_text_en": "",
+      "speech_left_en": "Shadows speak in silence.",
+      "speech_right_en": "The right decision — knowledge is power."
     },
     {
       "id": "isyan_uyarısı",
@@ -2307,7 +2797,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "People's Representative",
+      "text_en": "Pasha, the villagers are crushed under heavy taxes. Some villages have begun to empty. If nothing is done, rebellion is coming.",
+      "left_text_en": "Tell the people to be patient",
+      "right_text_en": "Reduce the tax",
+      "investigate_text_en": "",
+      "speech_left_en": "The people's patience is running thin, Pasha.",
+      "speech_right_en": "The people pray for you — may God be pleased."
     },
     {
       "id": "halk_ekmek_fiyatı",
@@ -2339,7 +2836,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Halk sabır tükeniyor, Paşam.",
-      "speech_right": "Halk duacı, Allah razı olsun."
+      "speech_right": "Halk duacı, Allah razı olsun.",
+      "character_name_en": "People's Representative",
+      "text_en": "In Istanbul, bread prices have doubled in the past month. Bakers are accused of profiteering. What is to be done?",
+      "left_text_en": "The market will regulate itself",
+      "right_text_en": "Set a price ceiling for bakers",
+      "investigate_text_en": "",
+      "speech_left_en": "The people's patience is running thin, Pasha.",
+      "speech_right_en": "The people pray for you — may God be pleased."
     },
     {
       "id": "halk_kıtlık",
@@ -2376,7 +2880,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "People's Representative",
+      "text_en": "Three villages in Central Anatolia are facing famine. If the state does not open its grain stores, people will starve.",
+      "left_text_en": "The stores are a strategic reserve",
+      "right_text_en": "Open the stores",
+      "investigate_text_en": "",
+      "speech_left_en": "The people's patience is running thin, Pasha.",
+      "speech_right_en": "The people pray for you — may God be pleased."
     },
     {
       "id": "halk_lonca_muafiyet",
@@ -2408,7 +2919,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Halk sabır tükeniyor, Paşam.",
-      "speech_right": "Halk duacı, Allah razı olsun."
+      "speech_right": "Halk duacı, Allah razı olsun.",
+      "character_name_en": "People's Representative",
+      "text_en": "The artisan guilds are requesting a tax exemption this year. Trade has slowed, profits have fallen, they say.",
+      "left_text_en": "Everyone pays this year",
+      "right_text_en": "Grant a partial exemption",
+      "investigate_text_en": "",
+      "speech_left_en": "The people's patience is running thin, Pasha.",
+      "speech_right_en": "The people pray for you — may God be pleased."
     },
     {
       "id": "halk_kalabalık",
@@ -2440,7 +2958,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Halk sabır tükeniyor, Paşam.",
-      "speech_right": "Halk duacı, Allah razı olsun."
+      "speech_right": "Halk duacı, Allah razı olsun.",
+      "character_name_en": "People's Representative",
+      "text_en": "A crowd from the provinces has gathered in front of the palace. Groups I represent are among them. What message do you send them?",
+      "left_text_en": "They must leave the palace grounds",
+      "right_text_en": "Meet with a representative",
+      "investigate_text_en": "",
+      "speech_left_en": "The people's patience is running thin, Pasha.",
+      "speech_right_en": "The people pray for you — may God be pleased."
     },
     {
       "id": "saray_yetkisiz_kişi",
@@ -2474,7 +2999,14 @@
       "min_year": 1,
       "category": "intrigue",
       "speech_left": "Saray dedikodu ile yaşar.",
-      "speech_right": "Sarayı korudunuz, Paşam."
+      "speech_right": "Sarayı korudunuz, Paşam.",
+      "character_name_en": "Palace Steward",
+      "text_en": "An unauthorized person was caught at the Harem gates. Their identity is not yet known. I wanted to inform you.",
+      "left_text_en": "Release them — keep them under watch",
+      "right_text_en": "Interrogate them immediately",
+      "investigate_text_en": "",
+      "speech_left_en": "The palace lives on gossip.",
+      "speech_right_en": "You have protected the palace, Pasha."
     },
     {
       "id": "saray_elçi_protokol",
@@ -2504,7 +3036,14 @@
       "min_year": 1,
       "category": "diplomatic",
       "speech_left": "Saray dedikodu ile yaşar.",
-      "speech_right": "Sarayı korudunuz, Paşam."
+      "speech_right": "Sarayı korudunuz, Paşam.",
+      "character_name_en": "Palace Steward",
+      "text_en": "The European ambassador violated palace protocol — he spoke before bowing. Shall we let it create a diplomatic incident?",
+      "left_text_en": "Let it pass — it is trivial",
+      "right_text_en": "Issue a formal warning",
+      "investigate_text_en": "",
+      "speech_left_en": "The palace lives on gossip.",
+      "speech_right_en": "You have protected the palace, Pasha."
     },
     {
       "id": "saray_sır_ifşası",
@@ -2536,7 +3075,14 @@
       "min_year": 2,
       "category": "intrigue",
       "speech_left": "Saray dedikodu ile yaşar.",
-      "speech_right": "Sarayı korudunuz, Paşam."
+      "speech_right": "Sarayı korudunuz, Paşam.",
+      "character_name_en": "Palace Steward",
+      "text_en": "A palace servant has leaked very confidential information to the outside. We know who it is, but he is very young.",
+      "left_text_en": "Pardon him and remove him from service",
+      "right_text_en": "Punish him",
+      "investigate_text_en": "",
+      "speech_left_en": "The palace lives on gossip.",
+      "speech_right_en": "You have protected the palace, Pasha."
     },
     {
       "id": "saray_yeni_hizmetkar",
@@ -2566,7 +3112,14 @@
       "min_year": 1,
       "category": "political",
       "speech_left": "Saray dedikodu ile yaşar.",
-      "speech_right": "Sarayı korudunuz, Paşam."
+      "speech_right": "Sarayı korudunuz, Paşam.",
+      "character_name_en": "Palace Steward",
+      "text_en": "We will be taking on new staff for palace interior services. Two options: the devşirme system, or from free Muslim families. Which?",
+      "left_text_en": "Take through the devşirme system",
+      "right_text_en": "Select from Muslim families",
+      "investigate_text_en": "",
+      "speech_left_en": "The palace lives on gossip.",
+      "speech_right_en": "You have protected the palace, Pasha."
     },
     {
       "id": "saray_sultan_görüşme",
@@ -2598,7 +3151,14 @@
       "min_year": 2,
       "category": "intrigue",
       "speech_left": "Saray dedikodu ile yaşar.",
-      "speech_right": "Sarayı korudunuz, Paşam."
+      "speech_right": "Sarayı korudunuz, Paşam.",
+      "character_name_en": "Palace Steward",
+      "text_en": "A person is insisting on a private audience with the Sultan. I do not know them, but they do not appear suspicious. What shall I do?",
+      "left_text_en": "Do not let them through",
+      "right_text_en": "I will meet them — not the Sultan",
+      "investigate_text_en": "",
+      "speech_left_en": "The palace lives on gossip.",
+      "speech_right_en": "You have protected the palace, Pasha."
     },
     {
       "id": "veba_haber",
@@ -2630,7 +3190,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Vebayı durdurmak zor olacak.",
-      "speech_right": "Tedbir alındı, Allah korusun."
+      "speech_right": "Tedbir alındı, Allah korusun.",
+      "character_name_en": "Plague Herald",
+      "text_en": "Pasha, dark reports are coming from the east of Anatolia. Signs of plague. Still distant, but approaching.",
+      "left_text_en": "You may be exaggerating",
+      "right_text_en": "Begin preparations",
+      "investigate_text_en": "",
+      "speech_left_en": "Stopping the plague will be difficult.",
+      "speech_right_en": "Precautions taken — God protect us."
     },
     {
       "id": "veba_köy_boşaltma",
@@ -2664,7 +3231,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Vebayı durdurmak zor olacak.",
-      "speech_right": "Tedbir alındı, Allah korusun."
+      "speech_right": "Tedbir alındı, Allah korusun.",
+      "character_name_en": "Plague Herald",
+      "text_en": "I am recommending complete evacuation of the affected villages. But the villagers do not want to leave — shall we compel them?",
+      "left_text_en": "Not by force — persuade them",
+      "right_text_en": "Carry out a mandatory evacuation",
+      "investigate_text_en": "",
+      "speech_left_en": "Stopping the plague will be difficult.",
+      "speech_right_en": "Precautions taken — God protect us."
     },
     {
       "id": "veba_şehir_kapıları",
@@ -2696,7 +3270,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Vebayı durdurmak zor olacak.",
-      "speech_right": "Tedbir alındı, Allah korusun."
+      "speech_right": "Tedbir alındı, Allah korusun.",
+      "character_name_en": "Plague Herald",
+      "text_en": "I propose closing Istanbul's gates. Trade will halt, but the epidemic will be contained. A difficult decision.",
+      "left_text_en": "The gates remain open",
+      "right_text_en": "Close the gates",
+      "investigate_text_en": "",
+      "speech_left_en": "Stopping the plague will be difficult.",
+      "speech_right_en": "Precautions taken — God protect us."
     },
     {
       "id": "veba_mülk",
@@ -2726,7 +3307,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Vebayı durdurmak zor olacak.",
-      "speech_right": "Tedbir alındı, Allah korusun."
+      "speech_right": "Tedbir alındı, Allah korusun.",
+      "character_name_en": "Plague Herald",
+      "text_en": "An urgent decision is needed for the ownerless properties of plague victims. Transfer to the state, or to their heirs?",
+      "left_text_en": "Search for heirs",
+      "right_text_en": "Transfer to the state",
+      "investigate_text_en": "",
+      "speech_left_en": "Stopping the plague will be difficult.",
+      "speech_right_en": "Precautions taken — God protect us."
     },
     {
       "id": "veba_köy_hoca",
@@ -2756,7 +3344,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Vebayı durdurmak zor olacak.",
-      "speech_right": "Tedbir alındı, Allah korusun."
+      "speech_right": "Tedbir alındı, Allah korusun.",
+      "character_name_en": "Plague Herald",
+      "text_en": "The surviving villages need an imam and a physician. We cannot find volunteers. Should the state assign personnel?",
+      "left_text_en": "Let the volunteer system work",
+      "right_text_en": "The state will send assigned officials",
+      "investigate_text_en": "",
+      "speech_left_en": "Stopping the plague will be difficult.",
+      "speech_right_en": "Precautions taken — God protect us."
     },
     {
       "id": "isyan_baş_gösteriyor",
@@ -2790,7 +3385,14 @@
       "min_year": 3,
       "category": "military",
       "speech_left": "Kazan kalktı, geri dönmez.",
-      "speech_right": "İsyan söndürüldü, şimdilik."
+      "speech_right": "İsyan söndürüldü, şimdilik.",
+      "character_name_en": "Janissary Rebel",
+      "text_en": "Pasha, a group of Janissaries has raised the cauldron. Small for now, but it can grow. Negotiation or force?",
+      "left_text_en": "Set up a negotiation table",
+      "right_text_en": "Suppress it by force",
+      "investigate_text_en": "",
+      "speech_left_en": "Once the cauldron is raised, there is no return.",
+      "speech_right_en": "The rebellion is quelled — for now."
     },
     {
       "id": "isyan_lider_mesaj",
@@ -2822,7 +3424,14 @@
       "min_year": 3,
       "category": "military",
       "speech_left": "Kazan kalktı, geri dönmez.",
-      "speech_right": "İsyan söndürüldü, şimdilik."
+      "speech_right": "İsyan söndürüldü, şimdilik.",
+      "character_name_en": "Janissary Rebel",
+      "text_en": "The rebel leader sent a secret message: 'We have five demands; if they are met, we will stand down.' Should they be heard?",
+      "left_text_en": "Ignore them",
+      "right_text_en": "Hear the demands",
+      "investigate_text_en": "",
+      "speech_left_en": "Once the cauldron is raised, there is no return.",
+      "speech_right_en": "The rebellion is quelled — for now."
     },
     {
       "id": "isyan_elebaşı_af",
@@ -2856,7 +3465,14 @@
       "min_year": 3,
       "category": "military",
       "speech_left": "Kazan kalktı, geri dönmez.",
-      "speech_right": "İsyan söndürüldü, şimdilik."
+      "speech_right": "İsyan söndürüldü, şimdilik.",
+      "character_name_en": "Janissary Rebel",
+      "text_en": "The revolt has been suppressed but the leader escaped. Should he be pardoned and recalled, or hunted down?",
+      "left_text_en": "Release him — let him go",
+      "right_text_en": "Search until he is caught",
+      "investigate_text_en": "",
+      "speech_left_en": "Once the cauldron is raised, there is no return.",
+      "speech_right_en": "The rebellion is quelled — for now."
     },
     {
       "id": "isyan_cami_geçit",
@@ -2886,7 +3502,14 @@
       "min_year": 2,
       "category": "military",
       "speech_left": "Kazan kalktı, geri dönmez.",
-      "speech_right": "İsyan söndürüldü, şimdilik."
+      "speech_right": "İsyan söndürüldü, şimdilik.",
+      "character_name_en": "Janissary Rebel",
+      "text_en": "A company of Janissaries is requesting a procession through the Sultan's mosque. Demonstration or reverence — their intentions are unclear.",
+      "left_text_en": "Do not grant permission",
+      "right_text_en": "Grant permission under supervision",
+      "investigate_text_en": "",
+      "speech_left_en": "Once the cauldron is raised, there is no return.",
+      "speech_right_en": "The rebellion is quelled — for now."
     },
     {
       "id": "isyan_tövbeli",
@@ -2916,7 +3539,14 @@
       "min_year": 3,
       "category": "military",
       "speech_left": "Kazan kalktı, geri dönmez.",
-      "speech_right": "İsyan söndürüldü, şimdilik."
+      "speech_right": "İsyan söndürüldü, şimdilik.",
+      "character_name_en": "Janissary Rebel",
+      "text_en": "A repentant rebel wants to return. Should he be allowed to join the loyal troops?",
+      "left_text_en": "Untrustworthy — refused",
+      "right_text_en": "Accept him and keep him under observation",
+      "investigate_text_en": "",
+      "speech_left_en": "Once the cauldron is raised, there is no return.",
+      "speech_right_en": "The rebellion is quelled — for now."
     },
     {
       "id": "köylü_toprak",
@@ -2948,7 +3578,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Köylü ağlar, kimse duymaz.",
-      "speech_right": "Devlet unutmadı bizi, şükür."
+      "speech_right": "Devlet unutmadı bizi, şükür.",
+      "character_name_en": "Peasant",
+      "text_en": "Pasha, our field — which was my father's — has been seized. A lord's men moved the boundary stone. I am seeking justice from you.",
+      "left_text_en": "Go to court",
+      "right_text_en": "Open an investigation",
+      "investigate_text_en": "",
+      "speech_left_en": "The peasant cries — no one hears.",
+      "speech_right_en": "The state has not forgotten us — thanks be."
     },
     {
       "id": "köylü_eşkıya",
@@ -2980,7 +3617,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Köylü ağlar, kimse duymaz.",
-      "speech_right": "Devlet unutmadı bizi, şükür."
+      "speech_right": "Devlet unutmadı bizi, şükür.",
+      "character_name_en": "Peasant",
+      "text_en": "Bandits are roaming near our village. They have been pillaging our harvest for three weeks. Help must come.",
+      "left_text_en": "Let the local lord handle it",
+      "right_text_en": "Send a military detachment",
+      "investigate_text_en": "",
+      "speech_left_en": "The peasant cries — no one hears.",
+      "speech_right_en": "The state has not forgotten us — thanks be."
     },
     {
       "id": "köylü_vergi_erteleme",
@@ -3012,7 +3656,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Köylü ağlar, kimse duymaz.",
-      "speech_right": "Devlet unutmadı bizi, şükür."
+      "speech_right": "Devlet unutmadı bizi, şükür.",
+      "character_name_en": "Peasant",
+      "text_en": "This year's harvest was terrible. We cannot pay the tax — must we sell our homes? One year's deferral would suffice.",
+      "left_text_en": "The rule is equal for all",
+      "right_text_en": "Defer it for this year",
+      "investigate_text_en": "",
+      "speech_left_en": "The peasant cries — no one hears.",
+      "speech_right_en": "The state has not forgotten us — thanks be."
     },
     {
       "id": "köylü_su_kanalı",
@@ -3044,7 +3695,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Köylü ağlar, kimse duymaz.",
-      "speech_right": "Devlet unutmadı bizi, şükür."
+      "speech_right": "Devlet unutmadı bizi, şükür.",
+      "character_name_en": "Peasant",
+      "text_en": "If a water canal is dug through our village, the drought problem will be solved. Dozens of villages would benefit. A modest investment.",
+      "left_text_en": "The treasury cannot afford it",
+      "right_text_en": "Approve the canal construction",
+      "investigate_text_en": "",
+      "speech_left_en": "The peasant cries — no one hears.",
+      "speech_right_en": "The state has not forgotten us — thanks be."
     },
     {
       "id": "köylü_göç",
@@ -3076,7 +3734,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Köylü ağlar, kimse duymaz.",
-      "speech_right": "Devlet unutmadı bizi, şükür."
+      "speech_right": "Devlet unutmadı bizi, şükür.",
+      "character_name_en": "Peasant",
+      "text_en": "I want to leave the land and settle in Istanbul. We have decided as a family. Is there work in the city?",
+      "left_text_en": "It is better for you to stay in the village",
+      "right_text_en": "Istanbul's doors are open to all",
+      "investigate_text_en": "",
+      "speech_left_en": "The peasant cries — no one hears.",
+      "speech_right_en": "The state has not forgotten us — thanks be."
     },
     {
       "id": "rum_kilise_onarım",
@@ -3108,7 +3773,14 @@
       "min_year": 1,
       "category": "religious",
       "speech_left": "Kilisemiz baskı altında, Paşam.",
-      "speech_right": "Hoşgörünüz tarihe geçecek."
+      "speech_right": "Hoşgörünüz tarihe geçecek.",
+      "character_name_en": "Greek Patriarch",
+      "text_en": "The Patriarchate building in Fener has fallen into disrepair over the years. I am requesting permission and a small amount of support.",
+      "left_text_en": "Permission granted — but no support",
+      "right_text_en": "Grant permission and support",
+      "investigate_text_en": "",
+      "speech_left_en": "Our church is under pressure, Pasha.",
+      "speech_right_en": "Your tolerance will go down in history."
     },
     {
       "id": "rum_vergi_şikayeti",
@@ -3140,7 +3812,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Kilisemiz baskı altında, Paşam.",
-      "speech_right": "Hoşgörünüz tarihe geçecek."
+      "speech_right": "Hoşgörünüz tarihe geçecek.",
+      "character_name_en": "Greek Patriarch",
+      "text_en": "The Rum community pays twice the tax of their Muslim neighbors. This inequality is damaging community harmony.",
+      "left_text_en": "This is how the millet system works",
+      "right_text_en": "Balance the rates",
+      "investigate_text_en": "",
+      "speech_left_en": "Our church is under pressure, Pasha.",
+      "speech_right_en": "Your tolerance will go down in history."
     },
     {
       "id": "rum_din_baskı",
@@ -3172,7 +3851,14 @@
       "min_year": 2,
       "category": "religious",
       "speech_left": "Kilisemiz baskı altında, Paşam.",
-      "speech_right": "Hoşgörünüz tarihe geçecek."
+      "speech_right": "Hoşgörünüz tarihe geçecek.",
+      "character_name_en": "Greek Patriarch",
+      "text_en": "A governor is applying pressure on our community to convert to Islam. I am formally complaining. What will you do?",
+      "left_text_en": "The governor is free in his own province",
+      "right_text_en": "Issue a warning to the governor",
+      "investigate_text_en": "",
+      "speech_left_en": "Our church is under pressure, Pasha.",
+      "speech_right_en": "Your tolerance will go down in history."
     },
     {
       "id": "rum_patrik_seçimi",
@@ -3204,7 +3890,14 @@
       "min_year": 3,
       "category": "religious",
       "speech_left": "Kilisemiz baskı altında, Paşam.",
-      "speech_right": "Hoşgörünüz tarihe geçecek."
+      "speech_right": "Hoşgörünüz tarihe geçecek.",
+      "character_name_en": "Greek Patriarch",
+      "text_en": "On grounds of old age, I wish to elect a new Patriarch. Ottoman approval is required. There are two candidates — one closer to the Ottomans.",
+      "left_text_en": "The community's own decision",
+      "right_text_en": "Approve the one closer to the Ottomans",
+      "investigate_text_en": "",
+      "speech_left_en": "Our church is under pressure, Pasha.",
+      "speech_right_en": "Your tolerance will go down in history."
     },
     {
       "id": "rum_türkçe_eğitim",
@@ -3234,7 +3927,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Kilisemiz baskı altında, Paşam.",
-      "speech_right": "Hoşgörünüz tarihe geçecek."
+      "speech_right": "Hoşgörünüz tarihe geçecek.",
+      "character_name_en": "Greek Patriarch",
+      "text_en": "I object to the compulsory Turkish education decision for Rum schools. We have the right to teach in our own language.",
+      "left_text_en": "The decision belongs to the state — comply",
+      "right_text_en": "Make it optional",
+      "investigate_text_en": "",
+      "speech_left_en": "Our church is under pressure, Pasha.",
+      "speech_right_en": "Your tolerance will go down in history."
     },
     {
       "id": "ermeni_lonca",
@@ -3266,7 +3966,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Ticaret yolu kapanırsa hepimiz.",
-      "speech_right": "İstanbul'a hizmetimiz sürer."
+      "speech_right": "İstanbul'a hizmetimiz sürer.",
+      "character_name_en": "Armenian Merchant",
+      "text_en": "I want to join the goldsmiths' guild but they say 'Christians are not accepted.' I am requesting state mediation.",
+      "left_text_en": "The guild knows its own rules",
+      "right_text_en": "Mediate",
+      "investigate_text_en": "",
+      "speech_left_en": "If the trade route closes, we all suffer.",
+      "speech_right_en": "Our service to Istanbul continues."
     },
     {
       "id": "ermeni_istihbarat",
@@ -3298,7 +4005,14 @@
       "min_year": 2,
       "category": "intrigue",
       "speech_left": "Ticaret yolu kapanırsa hepimiz.",
-      "speech_right": "İstanbul'a hizmetimiz sürer."
+      "speech_right": "İstanbul'a hizmetimiz sürer.",
+      "character_name_en": "Armenian Merchant",
+      "text_en": "Through my trade network in the East, I have access to important intelligence from the Safavid court. Mutual interest is the basis.",
+      "left_text_en": "Thank you, but we do not buy paid information",
+      "right_text_en": "Ask what he wants",
+      "investigate_text_en": "",
+      "speech_left_en": "If the trade route closes, we all suffer.",
+      "speech_right_en": "Our service to Istanbul continues."
     },
     {
       "id": "ermeni_vergi_cezası",
@@ -3328,7 +4042,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Ticaret yolu kapanırsa hepimiz.",
-      "speech_right": "İstanbul'a hizmetimiz sürer."
+      "speech_right": "İstanbul'a hizmetimiz sürer.",
+      "character_name_en": "Armenian Merchant",
+      "text_en": "I received a large tax penalty following an unfair assessment. Did I not have the right to appeal? I am requesting a pardon.",
+      "left_text_en": "The rule is equal for all",
+      "right_text_en": "Re-examine the file",
+      "investigate_text_en": "",
+      "speech_left_en": "If the trade route closes, we all suffer.",
+      "speech_right_en": "Our service to Istanbul continues."
     },
     {
       "id": "ermeni_kilise_bağış",
@@ -3360,7 +4081,14 @@
       "min_year": 1,
       "category": "religious",
       "speech_left": "Ticaret yolu kapanırsa hepimiz.",
-      "speech_right": "İstanbul'a hizmetimiz sürer."
+      "speech_right": "İstanbul'a hizmetimiz sürer.",
+      "character_name_en": "Armenian Merchant",
+      "text_en": "As a community, we want to collect donations for church repairs. May we do so openly, with official approval?",
+      "left_text_en": "You may do it quietly",
+      "right_text_en": "Grant official approval",
+      "investigate_text_en": "",
+      "speech_left_en": "If the trade route closes, we all suffer.",
+      "speech_right_en": "Our service to Istanbul continues."
     },
     {
       "id": "ermeni_anlaşmazlık",
@@ -3390,7 +4118,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Ticaret yolu kapanırsa hepimiz.",
-      "speech_right": "İstanbul'a hizmetimiz sürer."
+      "speech_right": "İstanbul'a hizmetimiz sürer.",
+      "character_name_en": "Armenian Merchant",
+      "text_en": "I have a promissory note dispute with a Jewish merchant. Both of us maintain we are right. Can it be resolved in the Divan?",
+      "left_text_en": "Go to court",
+      "right_text_en": "Appoint a mediator",
+      "investigate_text_en": "",
+      "speech_left_en": "If the trade route closes, we all suffer.",
+      "speech_right_en": "Our service to Istanbul continues."
     },
     {
       "id": "yahudi_bankacı_borç",
@@ -3422,7 +4157,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Para korkudan büyük faiz ister.",
-      "speech_right": "Hazineniz büyüyecek, Paşam."
+      "speech_right": "Hazineniz büyüyecek, Paşam.",
+      "character_name_en": "Jewish Banker",
+      "text_en": "Pasha, if the treasury tightens, you may borrow from me. Low interest, long term. My family has been loyal to the Ottomans.",
+      "left_text_en": "Let us avoid external debt",
+      "right_text_en": "Make the deal",
+      "investigate_text_en": "",
+      "speech_left_en": "Fear demands a higher interest than money.",
+      "speech_right_en": "Your treasury will grow, Pasha."
     },
     {
       "id": "yahudi_cemaat_hak",
@@ -3454,7 +4196,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Para korkudan büyük faiz ister.",
-      "speech_right": "Hazineniz büyüyecek, Paşam."
+      "speech_right": "Hazineniz büyüyecek, Paşam.",
+      "character_name_en": "Jewish Banker",
+      "text_en": "Some rights of the Istanbul Jewish community have quietly been restricted. I am requesting an official letter of guarantee.",
+      "left_text_en": "The current order is sufficient",
+      "right_text_en": "Issue a letter of guarantee",
+      "investigate_text_en": "",
+      "speech_left_en": "Fear demands a higher interest than money.",
+      "speech_right_en": "Your treasury will grow, Pasha."
     },
     {
       "id": "yahudi_zimmet_bilgisi",
@@ -3487,7 +4236,14 @@
       "category": "intrigue",
       "investigate_text": "Bankacının bu bilgiyi neden getirdiğini düşünmek lazım. Belki söz konusu paşa onun rakibi.",
       "speech_left": "Para korkudan büyük faiz ister.",
-      "speech_right": "Hazineniz büyüyecek, Paşam."
+      "speech_right": "Hazineniz büyüyecek, Paşam.",
+      "character_name_en": "Jewish Banker",
+      "text_en": "There is a large discrepancy in an Ottoman pasha's accounts. I brought this to you. The state's interests must be protected.",
+      "left_text_en": "Thank you for bringing this information",
+      "right_text_en": "Launch an official investigation",
+      "investigate_text_en": "It is worth considering why the banker brought this information. Perhaps the pasha in question owes him a significant debt.",
+      "speech_left_en": "Fear demands a higher interest than money.",
+      "speech_right_en": "Your treasury will grow, Pasha."
     },
     {
       "id": "yahudi_avrupa_haber",
@@ -3519,7 +4275,14 @@
       "min_year": 3,
       "category": "diplomatic",
       "speech_left": "Para korkudan büyük faiz ister.",
-      "speech_right": "Hazineniz büyüyecek, Paşam."
+      "speech_right": "Hazineniz büyüyecek, Paşam.",
+      "character_name_en": "Jewish Banker",
+      "text_en": "My kinship network in Europe has reported an important development: the Habsburgs are preparing a major eastern alliance.",
+      "left_text_en": "Verify it first",
+      "right_text_en": "Report it to the Head of Spies",
+      "investigate_text_en": "",
+      "speech_left_en": "Fear demands a higher interest than money.",
+      "speech_right_en": "Your treasury will grow, Pasha."
     },
     {
       "id": "yahudi_müsadere_korkusu",
@@ -3551,7 +4314,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Para korkudan büyük faiz ister.",
-      "speech_right": "Hazineniz büyüyecek, Paşam."
+      "speech_right": "Hazineniz büyüyecek, Paşam.",
+      "character_name_en": "Jewish Banker",
+      "text_en": "There are rumors that my wealth could be confiscated. I came to request assurance. What do you say?",
+      "left_text_en": "The rumors are empty — do not fear",
+      "right_text_en": "Give a written guarantee",
+      "investigate_text_en": "",
+      "speech_left_en": "Fear demands a higher interest than money.",
+      "speech_right_en": "Your treasury will grow, Pasha."
     },
     {
       "id": "safevi_sınır",
@@ -3583,7 +4353,14 @@
       "min_year": 2,
       "category": "diplomatic",
       "speech_left": "Şah bunu affetmeyecek, Paşam.",
-      "speech_right": "Barış iki tarafa da yarar."
+      "speech_right": "Barış iki tarafa da yarar.",
+      "character_name_en": "Safavid Ambassador",
+      "text_en": "On behalf of the Shah, I am offering mediation in the border dispute. A resolution without bloodshed is possible.",
+      "left_text_en": "We recognize no mediator",
+      "right_text_en": "Sit at the table",
+      "investigate_text_en": "",
+      "speech_left_en": "The Shah will not forgive this, Pasha.",
+      "speech_right_en": "Peace benefits both sides."
     },
     {
       "id": "safevi_alevi_güvence",
@@ -3615,7 +4392,14 @@
       "min_year": 2,
       "category": "religious",
       "speech_left": "Şah bunu affetmeyecek, Paşam.",
-      "speech_right": "Barış iki tarafa da yarar."
+      "speech_right": "Barış iki tarafa da yarar.",
+      "character_name_en": "Safavid Ambassador",
+      "text_en": "We are requesting guarantees for the Alevi communities in Anatolia. The Shah sees himself as their protector.",
+      "left_text_en": "Do not interfere in our internal affairs",
+      "right_text_en": "Establish an inquiry commission",
+      "investigate_text_en": "",
+      "speech_left_en": "The Shah will not forgive this, Pasha.",
+      "speech_right_en": "Peace benefits both sides."
     },
     {
       "id": "safevi_gizli_ateşkes",
@@ -3648,7 +4432,14 @@
       "category": "diplomatic",
       "investigate_text": "Bu teklifin Sultan'dan önce size gelmesi tesadüf değil. Şah sizi Sultan'dan bağımsız bir güç olarak test ediyor.",
       "speech_left": "Şah bunu affetmeyecek, Paşam.",
-      "speech_right": "Barış iki tarafa da yarar."
+      "speech_right": "Barış iki tarafa da yarar.",
+      "character_name_en": "Safavid Ambassador",
+      "text_en": "The Shah proposes a secret ceasefire. The Sultan will not know — only you. The bloody clashes on the border would stop.",
+      "left_text_en": "I make no agreements without the Sultan",
+      "right_text_en": "Hear the secret terms",
+      "investigate_text_en": "It is not coincidence that this proposal comes to you before the Sultan. The Shah wants to separate you from him.",
+      "speech_left_en": "The Shah will not forgive this, Pasha.",
+      "speech_right_en": "Peace benefits both sides."
     },
     {
       "id": "safevi_esir_teklifi",
@@ -3680,7 +4471,14 @@
       "min_year": 2,
       "category": "diplomatic",
       "speech_left": "Şah bunu affetmeyecek, Paşam.",
-      "speech_right": "Barış iki tarafa da yarar."
+      "speech_right": "Barış iki tarafa da yarar.",
+      "character_name_en": "Safavid Ambassador",
+      "text_en": "I propose exchanging prisoners from both countries. Equal numbers, without ceremony, quietly.",
+      "left_text_en": "Not an exchange — a ransom",
+      "right_text_en": "Complete the exchange",
+      "investigate_text_en": "",
+      "speech_left_en": "The Shah will not forgive this, Pasha.",
+      "speech_right_en": "Peace benefits both sides."
     },
     {
       "id": "safevi_şifreli_mektup",
@@ -3712,7 +4510,14 @@
       "min_year": 2,
       "category": "intrigue",
       "speech_left": "Şah bunu affetmeyecek, Paşam.",
-      "speech_right": "Barış iki tarafa da yarar."
+      "speech_right": "Barış iki tarafa da yarar.",
+      "character_name_en": "Safavid Ambassador",
+      "text_en": "An encrypted letter was found in the ambassador's bag. The ambassador objects. Diplomatic crisis, or investigation?",
+      "left_text_en": "Do not touch it — send the ambassador back",
+      "right_text_en": "Open the letter and examine it",
+      "investigate_text_en": "",
+      "speech_left_en": "The Shah will not forgive this, Pasha.",
+      "speech_right_en": "Peace benefits both sides."
     },
     {
       "id": "korsan_hizmet",
@@ -3744,7 +4549,14 @@
       "min_year": 2,
       "category": "military",
       "speech_left": "Denizde kural benim koyarım.",
-      "speech_right": "Osmanlı sancağı dalgalanır."
+      "speech_right": "Osmanlı sancağı dalgalanır.",
+      "character_name_en": "Corsair Captain",
+      "text_en": "I wish to enter Ottoman service, Pasha. My fleet is ready, my men are loyal. In exchange for annual patronage.",
+      "left_text_en": "A corsair cannot be trusted",
+      "right_text_en": "Make the deal",
+      "investigate_text_en": "",
+      "speech_left_en": "On the sea, I set the rules.",
+      "speech_right_en": "The Ottoman banner waves on."
     },
     {
       "id": "korsan_ganimet",
@@ -3776,7 +4588,14 @@
       "min_year": 2,
       "category": "military",
       "speech_left": "Denizde kural benim koyarım.",
-      "speech_right": "Osmanlı sancağı dalgalanır."
+      "speech_right": "Osmanlı sancağı dalgalanır.",
+      "character_name_en": "Corsair Captain",
+      "text_en": "I am requesting my share of the spoils from the enemy vessel I captured. That was our agreement, was it not?",
+      "left_text_en": "No share — that was the job",
+      "right_text_en": "Give the agreed share",
+      "investigate_text_en": "",
+      "speech_left_en": "On the sea, I set the rules.",
+      "speech_right_en": "The Ottoman banner waves on."
     },
     {
       "id": "korsan_şikayet",
@@ -3806,7 +4625,14 @@
       "min_year": 2,
       "category": "military",
       "speech_left": "Denizde kural benim koyarım.",
-      "speech_right": "Osmanlı sancağı dalgalanır."
+      "speech_right": "Osmanlı sancağı dalgalanır.",
+      "character_name_en": "Corsair Captain",
+      "text_en": "My corsair struck a merchant vessel. The merchant is complaining. But that ship was apparently carrying goods for the enemy.",
+      "left_text_en": "Punish the corsair",
+      "right_text_en": "Dismiss the merchant's complaint",
+      "investigate_text_en": "",
+      "speech_left_en": "On the sea, I set the rules.",
+      "speech_right_en": "The Ottoman banner waves on."
     },
     {
       "id": "korsan_liman",
@@ -3843,7 +4669,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Corsair Captain",
+      "text_en": "I want to establish a base on the North African coast — under the Ottoman flag. I can control the western Mediterranean.",
+      "left_text_en": "We cannot go that far",
+      "right_text_en": "Establish the base",
+      "investigate_text_en": "",
+      "speech_left_en": "On the sea, I set the rules.",
+      "speech_right_en": "The Ottoman banner waves on."
     },
     {
       "id": "korsan_esir",
@@ -3875,7 +4708,14 @@
       "min_year": 2,
       "category": "diplomatic",
       "speech_left": "Denizde kural benim koyarım.",
-      "speech_right": "Osmanlı sancağı dalgalanır."
+      "speech_right": "Osmanlı sancağı dalgalanır.",
+      "character_name_en": "Corsair Captain",
+      "text_en": "I have a captured important European nobleman as my prisoner. Shall I collect the ransom myself, or hand him over to the state?",
+      "left_text_en": "Hand him over to the state",
+      "right_text_en": "Negotiate yourselves",
+      "investigate_text_en": "",
+      "speech_left_en": "On the sea, I set the rules.",
+      "speech_right_en": "The Ottoman banner waves on."
     },
     {
       "id": "derviş_kıyamet",
@@ -3908,7 +4748,14 @@
       "category": "religious",
       "speech_left": "Rüzgar tersine döner, dikkat.",
       "speech_right": "Kalp temizse yol açılır.",
-      "grants_item_on_left": "dervis_muska"
+      "grants_item_on_left": "dervis_muska",
+      "character_name_en": "Mad Dervish",
+      "text_en": "He is shouting outside the mosques: 'Istanbul will fall in forty days!' The crowd is growing. Concerning.",
+      "left_text_en": "Ignore it",
+      "right_text_en": "Remove him immediately",
+      "investigate_text_en": "",
+      "speech_left_en": "The wind can turn — be careful.",
+      "speech_right_en": "If the heart is pure, the way opens."
     },
     {
       "id": "derviş_mektup",
@@ -3940,7 +4787,14 @@
       "min_year": 2,
       "category": "intrigue",
       "speech_left": "Rüzgar tersine döner, dikkat.",
-      "speech_right": "Kalp temizse yol açılır."
+      "speech_right": "Kalp temizse yol açılır.",
+      "character_name_en": "Mad Dervish",
+      "text_en": "He left a mysterious letter at your door. Inside are only three sentences: 'You trust someone you shouldn't...'",
+      "left_text_en": "Empty prophecy — ignore it",
+      "right_text_en": "Send it to the Head of Spies",
+      "investigate_text_en": "",
+      "speech_left_en": "The wind can turn — be careful.",
+      "speech_right_en": "If the heart is pure, the way opens."
     },
     {
       "id": "derviş_kalabalık",
@@ -3972,7 +4826,14 @@
       "min_year": 1,
       "category": "religious",
       "speech_left": "Rüzgar tersine döner, dikkat.",
-      "speech_right": "Kalp temizse yol açılır."
+      "speech_right": "Kalp temizse yol açılır.",
+      "character_name_en": "Mad Dervish",
+      "text_en": "The crowd gathering around the dervish is becoming unmanageable. Guild representatives are uneasy; the Şeyhülislam is troubled.",
+      "left_text_en": "Let the Şeyhülislam handle it",
+      "right_text_en": "Meet the dervish yourself",
+      "investigate_text_en": "",
+      "speech_left_en": "The wind can turn — be careful.",
+      "speech_right_en": "If the heart is pure, the way opens."
     },
     {
       "id": "derviş_zındıklık",
@@ -4004,7 +4865,14 @@
       "min_year": 2,
       "category": "religious",
       "speech_left": "Rüzgar tersine döner, dikkat.",
-      "speech_right": "Kalp temizse yol açılır."
+      "speech_right": "Kalp temizse yol açılır.",
+      "character_name_en": "Mad Dervish",
+      "text_en": "The Şeyhülislam has charged the dervish with heresy. But the people consider him a saint. Will you approve the accusation?",
+      "left_text_en": "Let the people decide",
+      "right_text_en": "Approve the heresy charge",
+      "investigate_text_en": "",
+      "speech_left_en": "The wind can turn — be careful.",
+      "speech_right_en": "If the heart is pure, the way opens."
     },
     {
       "id": "derviş_ihanet_uyarısı",
@@ -4036,7 +4904,14 @@
       "min_year": 2,
       "category": "intrigue",
       "speech_left": "Rüzgar tersine döner, dikkat.",
-      "speech_right": "Kalp temizse yol açılır."
+      "speech_right": "Kalp temizse yol açılır.",
+      "character_name_en": "Mad Dervish",
+      "text_en": "The dervish drew you close: 'A great betrayal is coming soon. I know who it is, but I will not say — you must find it yourself.'",
+      "left_text_en": "I do not let myself be misled by a madman's words",
+      "right_text_en": "Alert your spies",
+      "investigate_text_en": "",
+      "speech_left_en": "The wind can turn — be careful.",
+      "speech_right_en": "If the heart is pure, the way opens."
     },
     {
       "id": "genç_eyalet_talebi",
@@ -4068,7 +4943,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Gençlik aceledir, biliyorum.",
-      "speech_right": "Devlet için canımı veririm."
+      "speech_right": "Devlet için canımı veririm.",
+      "character_name_en": "Young Pasha",
+      "text_en": "I wish to take on the administration of a province, Pasha. I believe I am ready. I need your support.",
+      "left_text_en": "Too soon",
+      "right_text_en": "Send someone worthy",
+      "investigate_text_en": "",
+      "speech_left_en": "Youth is impatient — I know.",
+      "speech_right_en": "I would give my life for the state."
     },
     {
       "id": "genç_büyük_hata",
@@ -4098,7 +4980,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Gençlik aceledir, biliyorum.",
-      "speech_right": "Devlet için canımı veririm."
+      "speech_right": "Devlet için canımı veririm.",
+      "character_name_en": "Young Pasha",
+      "text_en": "He made his first great political mistake — he gave his word to the wrong ally. How will you handle it?",
+      "left_text_en": "Let him solve it himself — he must learn",
+      "right_text_en": "Intervene and retract the promise",
+      "investigate_text_en": "",
+      "speech_left_en": "Youth is impatient — I know.",
+      "speech_right_en": "I would give my life for the state."
     },
     {
       "id": "genç_akıl_hocalığı",
@@ -4130,7 +5019,14 @@
       "min_year": 1,
       "category": "political",
       "speech_left": "Gençlik aceledir, biliyorum.",
-      "speech_right": "Devlet için canımı veririm."
+      "speech_right": "Devlet için canımı veririm.",
+      "character_name_en": "Young Pasha",
+      "text_en": "He is requesting regular mentorship from you. A few hours a week, but it could nurture a powerful ally.",
+      "left_text_en": "I have no time",
+      "right_text_en": "With pleasure",
+      "investigate_text_en": "",
+      "speech_left_en": "Youth is impatient — I know.",
+      "speech_right_en": "I would give my life for the state."
     },
     {
       "id": "genç_kavga",
@@ -4160,7 +5056,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Gençlik aceledir, biliyorum.",
-      "speech_right": "Devlet için canımı veririm."
+      "speech_right": "Devlet için canımı veririm.",
+      "character_name_en": "Young Pasha",
+      "text_en": "He got into a brawl with the young men of a rival vizier. A minor drunken scuffle, but it could escalate.",
+      "left_text_en": "His own problem — do not interfere",
+      "right_text_en": "They used you as a pawn — warn him",
+      "investigate_text_en": "",
+      "speech_left_en": "Youth is impatient — I know.",
+      "speech_right_en": "I would give my life for the state."
     },
     {
       "id": "genç_sultan_bypass",
@@ -4192,7 +5095,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Gençlik aceledir, biliyorum.",
-      "speech_right": "Devlet için canımı veririm."
+      "speech_right": "Devlet için canımı veririm.",
+      "character_name_en": "Young Pasha",
+      "text_en": "He bypassed you and went directly to the Sultan. He had a proposal — and got approval. You expected to be informed first.",
+      "left_text_en": "Stay calm and patient",
+      "right_text_en": "Speak with the Sultan",
+      "investigate_text_en": "",
+      "speech_left_en": "Youth is impatient — I know.",
+      "speech_right_en": "I would give my life for the state."
     },
     {
       "id": "savaş_teklifi",
@@ -4227,7 +5137,14 @@
       "triggers_on_left": "savaş_barış",
       "trigger_delay": 4,
       "speech_left": "Sadrazam, bu beni memnun etmez.",
-      "speech_right": "Bilge bir karar, hayırlı olsun."
+      "speech_right": "Bilge bir karar, hayırlı olsun.",
+      "character_name_en": "Sultan",
+      "text_en": "Grand Vizier, a principality in the west continues to defy us. Shall we draw the sword, or open negotiations?",
+      "left_text_en": "Sit at the negotiation table",
+      "right_text_en": "Issue the war proclamation",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "casuslar_operasyonu",
@@ -4262,7 +5179,14 @@
       "trigger_delay": 3,
       "investigate_text": "Casuslar Başı bu operasyon için üç aydır hazırlık yapmış. Ama hedef saray değil — belgeler size çok yakın birini işaret ediyor. Kim olduğunu bilmeden karar vermek tehlikeli.",
       "speech_left": "Gölgeler sessizce konuşur.",
-      "speech_right": "Doğru karar, bilgi güçtür."
+      "speech_right": "Doğru karar, bilgi güçtür.",
+      "character_name_en": "Head of Spies",
+      "text_en": "Pasha, an opportunity has emerged in the enemy's court. I can launch a covert operation and obtain vital intelligence.",
+      "left_text_en": "Stand down",
+      "right_text_en": "Begin",
+      "investigate_text_en": "The Head of Spies has been preparing for this operation for three months — but the real target may not be the enemy court.",
+      "speech_left_en": "Shadows speak in silence.",
+      "speech_right_en": "The right decision — knowledge is power."
     },
     {
       "id": "venedik_1",
@@ -4296,7 +5220,14 @@
       "arc_id": "venedik",
       "arc_order": 1,
       "speech_left": "Bu red savaş demek, Paşam.",
-      "speech_right": "Memleketim teşekkür eder."
+      "speech_right": "Memleketim teşekkür eder.",
+      "character_name_en": "Venetian Ambassador",
+      "text_en": "The alliance talks have begun, Pasha. Venice wants to share the trade routes across the Mediterranean.",
+      "left_text_en": "Keep it limited",
+      "right_text_en": "Expand it",
+      "investigate_text_en": "",
+      "speech_left_en": "This refusal means war, Pasha.",
+      "speech_right_en": "My homeland thanks you."
     },
     {
       "id": "venedik_2",
@@ -4335,7 +5266,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Venetian Ambassador",
+      "text_en": "The ambassador returned. This time they are proposing a joint naval operation. Both gain and risk are involved.",
+      "left_text_en": "Too risky — withdraw",
+      "right_text_en": "Approve the operation",
+      "investigate_text_en": "",
+      "speech_left_en": "This refusal means war, Pasha.",
+      "speech_right_en": "My homeland thanks you."
     },
     {
       "id": "venedik_3",
@@ -4371,7 +5309,14 @@
       "arc_id": "venedik",
       "arc_order": 3,
       "speech_left": "Bu red savaş demek, Paşam.",
-      "speech_right": "Memleketim teşekkür eder."
+      "speech_right": "Memleketim teşekkür eder.",
+      "character_name_en": "Venetian Ambassador",
+      "text_en": "The final link in the Venetian alliance: a permanent embassy. If accepted, gifts arrive every year.",
+      "left_text_en": "I refuse a permanent bond",
+      "right_text_en": "Approve the embassy",
+      "investigate_text_en": "",
+      "speech_left_en": "This refusal means war, Pasha.",
+      "speech_right_en": "My homeland thanks you."
     },
     {
       "id": "dogu_1",
@@ -4410,7 +5355,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Eastern Border Commander",
+      "text_en": "There is activity on the eastern front, Pasha. Safavid forces are approaching the border. We must act.",
+      "left_text_en": "Fall back to a defensive position",
+      "right_text_en": "Establish an advance outpost",
+      "investigate_text_en": "",
+      "speech_left_en": "The Shah will not forgive this, Pasha.",
+      "speech_right_en": "Peace benefits both sides."
     },
     {
       "id": "dogu_2",
@@ -4449,7 +5401,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Eastern Border Commander",
+      "text_en": "The outpost has been established but supplies are dwindling. We need reinforcements and resupply, Pasha.",
+      "left_text_en": "Fall back",
+      "right_text_en": "Launch an offensive",
+      "investigate_text_en": "",
+      "speech_left_en": "The Shah will not forgive this, Pasha.",
+      "speech_right_en": "Peace benefits both sides."
     },
     {
       "id": "dogu_3",
@@ -4483,7 +5442,14 @@
       "arc_id": "dogu_seferi",
       "arc_order": 3,
       "speech_left": "Şah bunu affetmeyecek, Paşam.",
-      "speech_right": "Barış iki tarafa da yarar."
+      "speech_right": "Barış iki tarafa da yarar.",
+      "character_name_en": "Eastern Border Commander",
+      "text_en": "The eastern campaign is over. We gained territory and pushed back the Safavid threat. Shall we send a victory dispatch to Istanbul?",
+      "left_text_en": "Make concessions",
+      "right_text_en": "Sign the treaty",
+      "investigate_text_en": "",
+      "speech_left_en": "The Shah will not forgive this, Pasha.",
+      "speech_right_en": "Peace benefits both sides."
     },
     {
       "id": "elci_muzakere",
@@ -4542,7 +5508,14 @@
         }
       ],
       "speech_left": "Bu red savaş demek, Paşam.",
-      "speech_right": "Memleketim teşekkür eder."
+      "speech_right": "Memleketim teşekkür eder.",
+      "character_name_en": "Foreign Ambassador",
+      "text_en": "Pasha, I have brought three different proposals for the trade agreement. Which will you accept?",
+      "left_text_en": "Low offer — 5,000 akçe",
+      "right_text_en": "Middle offer — 12,000 akçe",
+      "investigate_text_en": "",
+      "speech_left_en": "This refusal means war, Pasha.",
+      "speech_right_en": "My homeland thanks you."
     },
     {
       "id": "vergi_muzakere",
@@ -4601,7 +5574,14 @@
         }
       ],
       "speech_left": "Pişman olursunuz efendim.",
-      "speech_right": "Devlet selamete kavuştu."
+      "speech_right": "Devlet selamete kavuştu.",
+      "character_name_en": "Treasurer",
+      "text_en": "Pasha, we must reorganize the tax system. Which group will you prioritize?",
+      "left_text_en": "Protect the artisans",
+      "right_text_en": "Take from the wealthy",
+      "investigate_text_en": "",
+      "speech_left_en": "You will regret this, my lord.",
+      "speech_right_en": "The state has found safety."
     },
     {
       "id": "event_veba",
@@ -4635,7 +5615,14 @@
       "is_event": true,
       "sound": "veba",
       "speech_left": "Vebayı durdurmak zor olacak.",
-      "speech_right": "Tedbir alındı, Allah korusun."
+      "speech_right": "Tedbir alındı, Allah korusun.",
+      "character_name_en": "Plague Herald",
+      "text_en": "YEAR EVENT: A plague epidemic has broken out in the city! The people are panicking.",
+      "left_text_en": "Establish quarantine",
+      "right_text_en": "Pray",
+      "investigate_text_en": "",
+      "speech_left_en": "Stopping the plague will be difficult.",
+      "speech_right_en": "Precautions taken — God protect us."
     },
     {
       "id": "event_kuraklık",
@@ -4668,7 +5655,14 @@
       "faction": "halk",
       "is_event": true,
       "speech_left": "Halk sabır tükeniyor, Paşam.",
-      "speech_right": "Halk duacı, Allah razı olsun."
+      "speech_right": "Halk duacı, Allah razı olsun.",
+      "character_name_en": "People's Representative",
+      "text_en": "YEAR EVENT: Great drought! The harvest is burnt, the people starve.",
+      "left_text_en": "Aid from the treasury",
+      "right_text_en": "Leave it to fate",
+      "investigate_text_en": "",
+      "speech_left_en": "The people's patience is running thin, Pasha.",
+      "speech_right_en": "The people pray for you — may God be pleased."
     },
     {
       "id": "event_yangın",
@@ -4700,7 +5694,14 @@
       "is_event": true,
       "sound": "veba",
       "speech_left": "Saray dedikodu ile yaşar.",
-      "speech_right": "Sarayı korudunuz, Paşam."
+      "speech_right": "Sarayı korudunuz, Paşam.",
+      "character_name_en": "Palace Steward",
+      "text_en": "YEAR EVENT: A great fire! The bazaar district is burning.",
+      "left_text_en": "Send soldiers",
+      "right_text_en": "Leave it be",
+      "investigate_text_en": "",
+      "speech_left_en": "The palace lives on gossip.",
+      "speech_right_en": "You have protected the palace, Pasha."
     },
     {
       "id": "event_bol_hasat",
@@ -4732,7 +5733,14 @@
       "is_event": true,
       "sound": "hasat",
       "speech_left": "Halk sabır tükeniyor, Paşam.",
-      "speech_right": "Halk duacı, Allah razı olsun."
+      "speech_right": "Halk duacı, Allah razı olsun.",
+      "character_name_en": "People's Representative",
+      "text_en": "YEAR EVENT: An abundant harvest this year! The stores are full, the people are happy.",
+      "left_text_en": "Transfer to the treasury",
+      "right_text_en": "Distribute to the people",
+      "investigate_text_en": "",
+      "speech_left_en": "The people's patience is running thin, Pasha.",
+      "speech_right_en": "The people pray for you — may God be pleased."
     },
     {
       "id": "event_dis_tehdit",
@@ -4768,7 +5776,14 @@
       "is_event": true,
       "sound": "savas",
       "speech_left": "Sipahi sabır taşımaz, Paşam.",
-      "speech_right": "Ordunuz hazır ve istekli."
+      "speech_right": "Ordunuz hazır ve istekli.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "YEAR EVENT: News has arrived that enemy forces are massing at the border!",
+      "left_text_en": "Shift to defense",
+      "right_text_en": "Counter-attack",
+      "investigate_text_en": "",
+      "speech_left_en": "The Sipahi have no patience, Pasha.",
+      "speech_right_en": "Your army is ready and eager."
     },
     {
       "id": "faction_ordu_baskisi",
@@ -4801,7 +5816,14 @@
       "faction": "ordu",
       "required_faction_pressure": "ordu",
       "speech_left": "Sipahi sabır taşımaz, Paşam.",
-      "speech_right": "Ordunuz hazır ve istekli."
+      "speech_right": "Ordunuz hazır ve istekli.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "Pasha, the clergy keep obstructing the army. The Janissaries now want to move without waiting for a fatwa.",
+      "left_text_en": "Support religious authority",
+      "right_text_en": "Free the army",
+      "investigate_text_en": "",
+      "speech_left_en": "The Sipahi have no patience, Pasha.",
+      "speech_right_en": "Your army is ready and eager."
     },
     {
       "id": "faction_din_baskisi",
@@ -4834,7 +5856,14 @@
       "faction": "din",
       "required_faction_pressure": "din",
       "speech_left": "Allah'ın yolu bu değil, Paşam.",
-      "speech_right": "Şeriat böyle emreder, isabetli."
+      "speech_right": "Şeriat böyle emreder, isabetli.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "Pasha, the army is overreaching. War revenues are ruining the people. As the clergy, we warn you: either listen, or...",
+      "left_text_en": "Support the army",
+      "right_text_en": "Heed the clergy",
+      "investigate_text_en": "",
+      "speech_left_en": "This is not the path of God, Pasha.",
+      "speech_right_en": "So sharia commands — rightly done."
     },
     {
       "id": "faction_saray_baskisi",
@@ -4869,7 +5898,14 @@
       "faction": "saray",
       "required_faction_pressure": "saray",
       "speech_left": "Annenizi dinlemek lazım, Paşam.",
-      "speech_right": "Bilge bir karar, Allah razı olsun."
+      "speech_right": "Bilge bir karar, Allah razı olsun.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "The Valide Sultan speaks harshly: Pasha, stop listening to the people. Who governs this country — the palace or the street?",
+      "left_text_en": "Listen to the people",
+      "right_text_en": "Align with the palace",
+      "investigate_text_en": "",
+      "speech_left_en": "You should listen to your mother, Pasha.",
+      "speech_right_en": "A wise decision — may God be pleased."
     },
     {
       "id": "faction_halk_baskisi",
@@ -4904,7 +5940,14 @@
       "faction": "halk",
       "required_faction_pressure": "halk",
       "speech_left": "Halk sabır tükeniyor, Paşam.",
-      "speech_right": "Halk duacı, Allah razı olsun."
+      "speech_right": "Halk duacı, Allah razı olsun.",
+      "character_name_en": "People's Representative",
+      "text_en": "An uprising is beginning in Istanbul's bazaars. Palace decisions are suffocating the people. Either stand with us or against us.",
+      "left_text_en": "Support the palace",
+      "right_text_en": "Stand with the people",
+      "investigate_text_en": "",
+      "speech_left_en": "The people's patience is running thin, Pasha.",
+      "speech_right_en": "The people pray for you — may God be pleased."
     },
     {
       "id": "traitor_reveal",
@@ -4939,7 +5982,14 @@
       "faction": "saray",
       "is_traitor_reveal": true,
       "speech_left": "Gölgeler sessizce konuşur.",
-      "speech_right": "Doğru karar, bilgi güçtür."
+      "speech_right": "Doğru karar, bilgi güçtür.",
+      "character_name_en": "Head of Spies",
+      "text_en": "Pasha, there has been a traitor among us for years. We have finally unmasked them. A report is being prepared for the Sultan. But it is your call.",
+      "left_text_en": "Continue",
+      "right_text_en": "Continue",
+      "investigate_text_en": "",
+      "speech_left_en": "Shadows speak in silence.",
+      "speech_right_en": "The right decision — knowledge is power."
     },
     {
       "id": "sultan_mektup_1",
@@ -4968,7 +6018,14 @@
       "faction": "saray",
       "type": "letter",
       "speech_left": "Sadrazam, bu beni memnun etmez.",
-      "speech_right": "Bilge bir karar, hayırlı olsun."
+      "speech_right": "Bilge bir karar, hayırlı olsun.",
+      "character_name_en": "Sultan",
+      "text_en": "🔏 Letter from the Sultan\n\nGrand Vizier,\n\nReports have arrived from the southern provinces. Tax collection has fallen ten percent. The people are suffering. What have you done?",
+      "left_text_en": "—",
+      "right_text_en": "Continue",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "sultan_mektup_2",
@@ -4995,7 +6052,14 @@
       "faction": "saray",
       "type": "letter",
       "speech_left": "Sadrazam, bu beni memnun etmez.",
-      "speech_right": "Bilge bir karar, hayırlı olsun."
+      "speech_right": "Bilge bir karar, hayırlı olsun.",
+      "character_name_en": "Sultan",
+      "text_en": "🔏 Letter from the Sultan\n\nGrand Vizier,\n\nThe Janissaries' latest demands have reached my ears. Your response seemed too lenient. Command must be firm.",
+      "left_text_en": "—",
+      "right_text_en": "Continue",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "sultan_mektup_3",
@@ -5023,7 +6087,14 @@
       "faction": "saray",
       "type": "letter",
       "speech_left": "Sadrazam, bu beni memnun etmez.",
-      "speech_right": "Bilge bir karar, hayırlı olsun."
+      "speech_right": "Bilge bir karar, hayırlı olsun.",
+      "character_name_en": "Sultan",
+      "text_en": "🔏 Letter from the Sultan\n\nGrand Vizier,\n\nI commend what you have done this year. The people of Istanbul are at peace, the treasury has grown. Well done.",
+      "left_text_en": "—",
+      "right_text_en": "Continue",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "sultan_mektup_4",
@@ -5054,7 +6125,14 @@
       "faction": "saray",
       "type": "letter",
       "speech_left": "Sadrazam, bu beni memnun etmez.",
-      "speech_right": "Bilge bir karar, hayırlı olsun."
+      "speech_right": "Bilge bir karar, hayırlı olsun.",
+      "character_name_en": "Sultan",
+      "text_en": "🔏 Letter from the Sultan\n\nGrand Vizier,\n\nWorrying news comes from the eastern border. Delay the campaign decision for now. We must remain cautious.",
+      "left_text_en": "—",
+      "right_text_en": "Continue",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "kader_zar_1",
@@ -5085,7 +6163,14 @@
       "speech_left": "Kader kapı çalmaz, girer.",
       "speech_right": "Şans güler, ama bazen ağlar.",
       "left_text": "Sikkeyi çevirin",
-      "right_text": "Kaderime razıyım"
+      "right_text": "Kaderime razıyım",
+      "character_name_en": "Mad Dervish",
+      "text_en": "The dervish placed a golden coin before you. 'Heads means victory, tails means a lesson,' he said — and left.",
+      "left_text_en": "Flip the coin",
+      "right_text_en": "I accept whatever fate brings",
+      "investigate_text_en": "",
+      "speech_left_en": "Fate does not knock — it enters.",
+      "speech_right_en": "Fortune smiles — but sometimes it weeps."
     },
     {
       "id": "kader_zar_2",
@@ -5116,7 +6201,14 @@
       "speech_left": "Hata ettiniz, hatırlayacaksınız.",
       "speech_right": "Beklenmedik bir anlayış, Paşam.",
       "left_text": "Bahse giriyorum",
-      "right_text": "Bahisten kaçınıyorum"
+      "right_text": "Bahisten kaçınıyorum",
+      "character_name_en": "Rival Vizier",
+      "text_en": "Your rival proposes a wager: 'One of us is right — let chance decide.' Refusal is not allowed; either you play or you forfeit.",
+      "left_text_en": "I accept the bet",
+      "right_text_en": "I avoid the bet",
+      "investigate_text_en": "",
+      "speech_left_en": "You have made a mistake — you will remember it.",
+      "speech_right_en": "Unexpected understanding, Pasha."
     },
     {
       "id": "kader_zar_3",
@@ -5143,7 +6235,14 @@
       "min_year": 2,
       "category": "economic",
       "speech_left": "Para korkudan büyük faiz ister.",
-      "speech_right": "Hazineniz büyüyecek, Paşam."
+      "speech_right": "Hazineniz büyüyecek, Paşam.",
+      "character_name_en": "Jewish Banker",
+      "text_en": "The banker proposes a risky investment. 'Fifty percent chance of doubling, fifty percent chance of losing everything.' With the treasury.",
+      "left_text_en": "",
+      "right_text_en": "",
+      "investigate_text_en": "",
+      "speech_left_en": "Fear demands a higher interest than money.",
+      "speech_right_en": "Your treasury will grow, Pasha."
     },
     {
       "id": "kader_zar_4",
@@ -5174,7 +6273,14 @@
       "min_year": 3,
       "category": "military",
       "speech_left": "Denizler bağışlamaz, Sadrazam.",
-      "speech_right": "Filo hazır, emirleriniz bekler."
+      "speech_right": "Filo hazır, emirleriniz bekler.",
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "A sea battle became inevitable. The wind is against us or in our favor — we have left it to God.",
+      "left_text_en": "",
+      "right_text_en": "",
+      "investigate_text_en": "",
+      "speech_left_en": "The seas are unforgiving, Grand Vizier.",
+      "speech_right_en": "The fleet is ready, awaiting your orders."
     },
     {
       "id": "kader_zar_5",
@@ -5201,7 +6307,14 @@
       "min_year": 4,
       "category": "royal",
       "speech_left": "Sadrazam, bu beni memnun etmez.",
-      "speech_right": "Bilge bir karar, hayırlı olsun."
+      "speech_right": "Bilge bir karar, hayırlı olsun.",
+      "character_name_en": "Sultan",
+      "text_en": "The Sultan is conducting a surprise test. How fortunate is the Grand Vizier? 'Today is your day of destiny,' he said.",
+      "left_text_en": "",
+      "right_text_en": "",
+      "investigate_text_en": "",
+      "speech_left_en": "Grand Vizier, this displeases me.",
+      "speech_right_en": "A wise decision — may it be blessed."
     },
     {
       "id": "savaş_zafer",
@@ -5235,7 +6348,14 @@
       "min_year": 1,
       "category": "military",
       "speech_left": "Bilgelik zaman zaman susmaktır.",
-      "speech_right": "Zafer haber salar kendini!"
+      "speech_right": "Zafer haber salar kendini!",
+      "character_name_en": "Janissary Commander",
+      "text_en": "Pasha, victory reports have arrived! Your decision to enter the war has borne fruit. Our soldiers have succeeded, the enemy is in retreat.",
+      "left_text_en": "Conceal the casualties",
+      "right_text_en": "Declare the victory",
+      "investigate_text_en": "",
+      "speech_left_en": "Wisdom is sometimes silence.",
+      "speech_right_en": "Victory announces itself!"
     },
     {
       "id": "savaş_barış",
@@ -5269,7 +6389,14 @@
       "min_year": 1,
       "category": "diplomatic",
       "speech_left": "Aceleci olmayalım, Paşam.",
-      "speech_right": "Akıl, kılıçtan keskindir."
+      "speech_right": "Akıl, kılıçtan keskindir.",
+      "character_name_en": "Foreign Ambassador",
+      "text_en": "Pasha, following your peace decision, the other side has come to the negotiation table. The terms are not harsh — but concessions must be made.",
+      "left_text_en": "Wait for better terms",
+      "right_text_en": "Sign the treaty",
+      "investigate_text_en": "",
+      "speech_left_en": "Let us not be hasty, Pasha.",
+      "speech_right_en": "Reason is sharper than the sword."
     },
     {
       "id": "operasyon_başarı",
@@ -5305,7 +6432,14 @@
       "min_year": 1,
       "category": "intrigue",
       "speech_left": "Bilgi en güçlü silahtır.",
-      "speech_right": "Zamanı geldiğinde kullanırız."
+      "speech_right": "Zamanı geldiğinde kullanırız.",
+      "character_name_en": "Head of Spies",
+      "text_en": "Pasha, the covert operation was completed successfully. We obtained critical documents from the enemy court. How shall we use this intelligence?",
+      "left_text_en": "Archive it — keep it secret",
+      "right_text_en": "Use it as a diplomatic lever",
+      "investigate_text_en": "",
+      "speech_left_en": "Knowledge is the most powerful weapon.",
+      "speech_right_en": "We will use it when the time comes."
     },
     {
       "id": "kışla_sonuç",
@@ -5344,7 +6478,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Janissary Commander",
+      "text_en": "Pasha, months have passed since you rejected the barracks proposal. The soldiers are even more restless now. This time there are consequences.",
+      "left_text_en": "I still refuse — hold on",
+      "right_text_en": "All right — begin construction",
+      "investigate_text_en": "",
+      "speech_left_en": "Being refused is considered an insult, Pasha.",
+      "speech_right_en": "A late decision does not count as the first."
     },
     {
       "id": "maaş_isyan_tehlikesi",
@@ -5381,7 +6522,14 @@
         "hazine": {
           "min": 22
         }
-      }
+      },
+      "character_name_en": "Janissary Rebel",
+      "text_en": "Since the wage delay, conversations inside the barracks have changed. A group is talking about raising the cauldron. Here is the intelligence.",
+      "left_text_en": "Reward the informers",
+      "right_text_en": "Pay wages urgently",
+      "investigate_text_en": "",
+      "speech_left_en": "The sound of money is louder than a war cry.",
+      "speech_right_en": "These words saved a life, Pasha."
     },
     {
       "id": "veba_kontrol",
@@ -5415,7 +6563,14 @@
       "min_year": 1,
       "category": "social",
       "speech_left": "Devlet her şeyi karşılayamaz.",
-      "speech_right": "Sağlık olmadan devlet olmaz."
+      "speech_right": "Sağlık olmadan devlet olmaz.",
+      "character_name_en": "Chief Physician",
+      "text_en": "Our measures worked, Pasha. The plague has stopped spreading. But continuing treatment requires state support.",
+      "left_text_en": "That is enough — leave it to run its course",
+      "right_text_en": "Continue the support",
+      "investigate_text_en": "",
+      "speech_left_en": "The state cannot cover everything.",
+      "speech_right_en": "Without health, there is no state."
     },
     {
       "id": "isyan_sonrası_istikrar",
@@ -5449,7 +6604,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Korku en kısa yoldur, Paşam.",
-      "speech_right": "Akıl, güçten önce gelir."
+      "speech_right": "Akıl, güçten önce gelir.",
+      "character_name_en": "Palace Steward",
+      "text_en": "After the rebellion was suppressed, the palace relaxed. But you showed force without examining the causes.",
+      "left_text_en": "Force is sufficient",
+      "right_text_en": "Let us investigate the causes",
+      "investigate_text_en": "",
+      "speech_left_en": "Fear is the shortest path, Pasha.",
+      "speech_right_en": "Reason comes before force."
     },
     {
       "id": "venedik_ticaret_bonusu",
@@ -5483,7 +6645,14 @@
       "min_year": 2,
       "category": "economic",
       "speech_left": "Denge en büyük kazanımdır.",
-      "speech_right": "Fırsatlar beklenince geçer, Paşam."
+      "speech_right": "Fırsatlar beklenince geçer, Paşam.",
+      "character_name_en": "Grand Merchant",
+      "text_en": "Following the Venetian alliance, the trade routes have opened, Pasha. Istanbul's harbor is thriving. Tax revenues are up.",
+      "left_text_en": "Good news — continue",
+      "right_text_en": "Grant broader privileges",
+      "investigate_text_en": "",
+      "speech_left_en": "Balance is the greatest achievement.",
+      "speech_right_en": "Opportunities pass when you wait, Pasha."
     },
     {
       "id": "medrese_etkisi",
@@ -5517,7 +6686,14 @@
       "min_year": 2,
       "category": "religious",
       "speech_left": "İlim engel tanımaz, Paşam.",
-      "speech_right": "Devlet ve din aynı ağaçtan."
+      "speech_right": "Devlet ve din aynı ağaçtan.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "The first graduates from the Üsküdar madrasa have emerged. Young clergy are now present in every neighborhood. Should they be given state positions?",
+      "left_text_en": "Let them be free",
+      "right_text_en": "Take them into state service",
+      "investigate_text_en": "",
+      "speech_left_en": "Learning knows no barriers, Pasha.",
+      "speech_right_en": "State and faith grow from the same tree."
     },
     {
       "id": "ganimet_paylaşımı",
@@ -5549,7 +6725,14 @@
       "min_year": 1,
       "category": "military",
       "speech_left": "Hazine devletin canıdır.",
-      "speech_right": "Verilen söz tutulmalı, Paşam."
+      "speech_right": "Verilen söz tutulmalı, Paşam.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "The distribution of spoils captured after victory is anticipated. The soldiers want what they believe they deserve. How shall it be handled?",
+      "left_text_en": "Transfer to the treasury",
+      "right_text_en": "Distribute to the soldiers",
+      "investigate_text_en": "",
+      "speech_left_en": "The treasury is the lifeblood of the state.",
+      "speech_right_en": "A given word must be kept, Pasha."
     },
     {
       "id": "barış_temettüsü",
@@ -5581,7 +6764,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "İhtiyat altın değerindedir.",
-      "speech_right": "Taş üstüne taş koymak devlet kurar."
+      "speech_right": "Taş üstüne taş koymak devlet kurar.",
+      "character_name_en": "Treasurer",
+      "text_en": "In a period of peace, war expenditures have decreased. Where shall we direct these savings? Fill the treasury, or invest?",
+      "left_text_en": "Transfer to the treasury",
+      "right_text_en": "Invest in infrastructure",
+      "investigate_text_en": "",
+      "speech_left_en": "Caution is worth gold.",
+      "speech_right_en": "Stone upon stone — that is how a state is built."
     },
     {
       "id": "yeniceri_sadık_dost",
@@ -5617,7 +6807,14 @@
       "min_year": 3,
       "category": "military",
       "speech_left": "Sınır çizmek de bir güvendir.",
-      "speech_right": "Bu söz kılıçtan sağlamdır."
+      "speech_right": "Bu söz kılıçtan sağlamdır.",
+      "character_name_en": "Janissary Commander",
+      "text_en": "Pasha, my support for you over the years has not been in vain. Your name is spoken with respect inside the corps. May I ask a favor?",
+      "left_text_en": "I trust you, but you have limits",
+      "right_text_en": "I always trust you",
+      "investigate_text_en": "",
+      "speech_left_en": "Drawing a boundary is also a form of security.",
+      "speech_right_en": "A word is more durable than a sword."
     },
     {
       "id": "valide_teşekkür",
@@ -5653,7 +6850,14 @@
       "min_year": 3,
       "category": "political",
       "speech_left": "Mahçup etmeyin bizi, Paşam.",
-      "speech_right": "Sadakat ödülsüz kalmaz."
+      "speech_right": "Sadakat ödülsüz kalmaz.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "Last time you did not refuse my request. I have not forgotten this. I wish to offer a small token in return — the Harem's support in a difficult matter.",
+      "left_text_en": "No need — you were doing your duty",
+      "right_text_en": "I am grateful",
+      "investigate_text_en": "",
+      "speech_left_en": "Do not embarrass us, Pasha.",
+      "speech_right_en": "Loyalty does not go unrewarded."
     },
     {
       "id": "sultan_sabırsızlığı",
@@ -5687,7 +6891,14 @@
       "min_year": 2,
       "category": "royal",
       "speech_left": "Bilge olan geri adım atar.",
-      "speech_right": "Devlet şahsın üstündedir."
+      "speech_right": "Devlet şahsın üstündedir.",
+      "character_name_en": "Sultan",
+      "text_en": "Grand Vizier, lately you have refused many of my proposals. I know you have valid reasons, but the Sultan's patience is not infinite.",
+      "left_text_en": "You are right — forgive me",
+      "right_text_en": "My decisions are for the state's good",
+      "investigate_text_en": "",
+      "speech_left_en": "The wise man knows when to step back.",
+      "speech_right_en": "The state is above the individual."
     },
     {
       "id": "şehzade_ittifak_etkisi",
@@ -5719,7 +6930,14 @@
       "min_year": 3,
       "category": "political",
       "speech_left": "Ağaç büyüyünce gölgesi de büyür.",
-      "speech_right": "Aile bağı devlet bağıdır."
+      "speech_right": "Aile bağı devlet bağıdır.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "After the prince's marriage, our relations with the Khan of Crimea have strengthened. But the prince is now pursuing his own interests.",
+      "left_text_en": "A natural process",
+      "right_text_en": "Keep him close",
+      "investigate_text_en": "",
+      "speech_left_en": "When the tree grows, so does its shadow.",
+      "speech_right_en": "Family bonds are state bonds."
     },
     {
       "id": "event_vergi_reformu",
@@ -5750,7 +6968,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Devlet devam ediyor, Paşam.",
-      "speech_right": "Rakamlar yalan söylemez."
+      "speech_right": "Rakamlar yalan söylemez.",
+      "character_name_en": "Treasurer",
+      "text_en": "Year-end tax collection is complete. The governors brought better results than expected. The treasury has filled this period.",
+      "left_text_en": "Good news",
+      "right_text_en": "Record it",
+      "investigate_text_en": "",
+      "speech_left_en": "The state endures, Pasha.",
+      "speech_right_en": "Numbers do not lie."
     },
     {
       "id": "event_ticaret_geliri",
@@ -5781,7 +7006,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Ticaret damar, Paşam.",
-      "speech_right": "Devlet payını alır."
+      "speech_right": "Devlet payını alır.",
+      "character_name_en": "Grand Merchant",
+      "text_en": "This season the trade routes stayed open. Customs and market taxes exceeded expectations.",
+      "left_text_en": "Add to capital",
+      "right_text_en": "Transfer to the treasury",
+      "investigate_text_en": "",
+      "speech_left_en": "Trade is the vein, Pasha.",
+      "speech_right_en": "The state takes its share."
     },
     {
       "id": "kanuni_viyana_seferi",
@@ -5817,7 +7049,14 @@
       "max_year": 10,
       "category": "military",
       "speech_left": "Akıl cesurdan önce gelir.",
-      "speech_right": "Tarih bizi yazacak, Paşam."
+      "speech_right": "Tarih bizi yazacak, Paşam.",
+      "character_name_en": "Suleiman the Magnificent",
+      "text_en": "Pasha, the plans for the campaign on Vienna are ready. The army is strong, the time is right. If we miss this chance, another may never come.",
+      "left_text_en": "Too soon for the campaign — wait",
+      "right_text_en": "March on Vienna",
+      "investigate_text_en": "",
+      "speech_left_en": "Reason comes before courage.",
+      "speech_right_en": "History will write about us, Pasha."
     },
     {
       "id": "kanuni_kanunname",
@@ -5852,7 +7091,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Allah'ın kanunu üstündür.",
-      "speech_right": "Devlet hukuku yaşatır."
+      "speech_right": "Devlet hukuku yaşatır.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "The Sultan wants a new code of law drawn up. You will need to blend Islamic law with Ottoman custom.",
+      "left_text_en": "Base it on sharia",
+      "right_text_en": "Emphasize customary law",
+      "investigate_text_en": "",
+      "speech_left_en": "God's law is supreme.",
+      "speech_right_en": "The state keeps the law alive."
     },
     {
       "id": "yavuz_misir_seferi",
@@ -5886,7 +7132,14 @@
       "max_year": 8,
       "category": "military",
       "speech_left": "Acele eden pişman olur.",
-      "speech_right": "Mısır'ın altınını düşünün!"
+      "speech_right": "Mısır'ın altınını düşünün!",
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "The Mamluks have weakened and Egypt is open. The Sultan plans to crush the Mamluk army at Ridaniyya. Fleet support is needed.",
+      "left_text_en": "The fleet is not ready — wait",
+      "right_text_en": "Full support for the campaign",
+      "investigate_text_en": "",
+      "speech_left_en": "Haste makes waste.",
+      "speech_right_en": "Think of Egypt's gold!"
     },
     {
       "id": "yavuz_şii_meselesi",
@@ -5920,7 +7173,14 @@
       "max_year": 7,
       "category": "religious",
       "speech_left": "Kin değil, adalet.",
-      "speech_right": "Sultan'ın sabrı taşmamalı."
+      "speech_right": "Sultan'ın sabrı taşmamalı.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "The Shia communities in eastern Anatolia are being stirred up by Safavid propaganda. The Sultan expects a stern fatwa.",
+      "left_text_en": "Be moderate — restrain them",
+      "right_text_en": "Issue a firm fatwa",
+      "investigate_text_en": "",
+      "speech_left_en": "Justice, not vengeance.",
+      "speech_right_en": "The Sultan's patience must not overflow."
     },
     {
       "id": "murad_harem_entrikası",
@@ -5954,7 +7214,14 @@
       "max_year": 8,
       "category": "intrigue",
       "speech_left": "Ateşe odun koymayın.",
-      "speech_right": "Saray düzeni herkese lazım."
+      "speech_right": "Saray düzeni herkese lazım.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "The power struggle among the concubines in the Harem has reached its peak. The Sultan's favorites are rumored to be poisoning each other.",
+      "left_text_en": "The Harem is an internal matter — do not interfere",
+      "right_text_en": "Begin an investigation",
+      "investigate_text_en": "",
+      "speech_left_en": "Do not add fuel to the fire.",
+      "speech_right_en": "Palace order is necessary for all."
     },
     {
       "id": "murad_safevi_savaşı",
@@ -5988,7 +7255,14 @@
       "max_year": 10,
       "category": "military",
       "speech_left": "Her savaşın bedeli var.",
-      "speech_right": "Tebriz bizim olacak!"
+      "speech_right": "Tebriz bizim olacak!",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "The conflict with the Safavids has flared up again. A campaign toward Tabriz is being planned. The cavalry are ready but the Janissaries are reluctant.",
+      "left_text_en": "Postpone the campaign",
+      "right_text_en": "Launch the Safavid campaign",
+      "investigate_text_en": "",
+      "speech_left_en": "Every war has its price.",
+      "speech_right_en": "Tabriz will be ours!"
     },
     {
       "id": "ilişki_rakip_valide",
@@ -6020,7 +7294,14 @@
       "min_year": 3,
       "category": "intrigue",
       "speech_left": "Gölgeler konuşuyor, Paşam.",
-      "speech_right": "Sultan her şeyi bilmeli."
+      "speech_right": "Sultan her şeyi bilmeli.",
+      "character_name_en": "Rival Vizier",
+      "text_en": "I have learned: the Rival Vizier and the Valide Sultan met in secret. It seems the two are plotting against you together.",
+      "left_text_en": "Deploy spies",
+      "right_text_en": "Speak with the Sultan",
+      "investigate_text_en": "",
+      "speech_left_en": "The shadows are talking, Pasha.",
+      "speech_right_en": "The Sultan must know everything."
     },
     {
       "id": "ilişki_seyhulislam_hekim",
@@ -6052,7 +7333,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "İlim dine düşman değil.",
-      "speech_right": "İman önce gelir."
+      "speech_right": "İman önce gelir.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "The Şeyhülislam claims the Chief Physician uses 'heretical medicines.' Open conflict between the two has begun.",
+      "left_text_en": "Protect the Chief Physician",
+      "right_text_en": "The Şeyhülislam is right",
+      "investigate_text_en": "",
+      "speech_left_en": "Learning is not the enemy of faith.",
+      "speech_right_en": "Faith comes first."
     },
     {
       "id": "ilişki_yeniceri_kaptan",
@@ -6082,7 +7370,14 @@
       "min_year": 2,
       "category": "military",
       "speech_left": "Denge her zaman kazandırır.",
-      "speech_right": "Kara kuvvet denizden önce."
+      "speech_right": "Kara kuvvet denizden önce.",
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "There is a resource conflict between the Admiral of the Fleet and the Janissary Commander. Both want a larger share from you.",
+      "left_text_en": "Make an equal distribution",
+      "right_text_en": "Give priority to the army",
+      "investigate_text_en": "",
+      "speech_left_en": "Balance always wins.",
+      "speech_right_en": "Land forces come before the sea."
     },
     {
       "id": "ilişki_tuccar_banker",
@@ -6114,7 +7409,14 @@
       "min_year": 2,
       "category": "economic",
       "speech_left": "Tekeller tehlikelidir.",
-      "speech_right": "Birlik güçtür, Paşam."
+      "speech_right": "Birlik güçtür, Paşam.",
+      "character_name_en": "Grand Merchant",
+      "text_en": "The Grand Merchant and the Jewish Banker are requesting permission for a joint project. Their collaboration is powerful — but also risky.",
+      "left_text_en": "Let them work separately",
+      "right_text_en": "Approve the partnership",
+      "investigate_text_en": "",
+      "speech_left_en": "Monopolies are dangerous.",
+      "speech_right_en": "Unity is strength, Pasha."
     },
     {
       "id": "ilişki_defterdar_casuslar",
@@ -6148,7 +7450,14 @@
       "min_year": 3,
       "category": "intrigue",
       "speech_left": "Hesap verecek biri var.",
-      "speech_right": "Gözler her yerde, Paşam."
+      "speech_right": "Gözler her yerde, Paşam.",
+      "character_name_en": "Head of Spies",
+      "text_en": "The Head of Spies has accessed some of the Treasurer's secret accounts. Embezzlement, or a covert project — unknown.",
+      "left_text_en": "Ask the Treasurer",
+      "right_text_en": "Watch quietly",
+      "investigate_text_en": "",
+      "speech_left_en": "Someone will answer for this.",
+      "speech_right_en": "Eyes are everywhere, Pasha."
     },
     {
       "id": "tarih_viyana_sonucu",
@@ -6183,7 +7492,14 @@
       "min_year": 1,
       "category": "military",
       "speech_left": "Akıllı komutan geri çekilir.",
-      "speech_right": "Buraya kadar geldik, Paşam."
+      "speech_right": "Buraya kadar geldik, Paşam.",
+      "character_name_en": "Janissary Commander",
+      "text_en": "We halted before the walls of Vienna. Winter is approaching, supplies are dwindling. Retreat and wait for another year, or press the siege?",
+      "left_text_en": "Withdraw — wait",
+      "right_text_en": "Continue to press the walls",
+      "investigate_text_en": "",
+      "speech_left_en": "A wise commander knows when to retreat.",
+      "speech_right_en": "We have come this far, Pasha."
     },
     {
       "id": "tarih_misir_hazinesi",
@@ -6216,7 +7532,14 @@
       "min_year": 1,
       "category": "economic",
       "speech_left": "Tasarruf zenginliğin temelidir.",
-      "speech_right": "Harcayan kazanır, Paşam."
+      "speech_right": "Harcayan kazanır, Paşam.",
+      "character_name_en": "Treasurer",
+      "text_en": "After the Egyptian campaign, the Mamluk treasuries were seized. How shall we use this wealth? Army, infrastructure, or the treasury?",
+      "left_text_en": "Add it to the treasury",
+      "right_text_en": "Invest in the army and public works",
+      "investigate_text_en": "",
+      "speech_left_en": "Saving is the foundation of wealth.",
+      "speech_right_en": "He who spends, gains, Pasha."
     },
     {
       "id": "tarih_tuna_seferi",
@@ -6252,7 +7575,14 @@
       "max_year": 12,
       "category": "military",
       "speech_left": "Barış kazandırır, Paşam.",
-      "speech_right": "Tarih kahramanları sever."
+      "speech_right": "Tarih kahramanları sever.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "Negotiations with Austria on the Danube front have collapsed. A long war is at the door. The cavalry morale is low, the Janissaries are ready.",
+      "left_text_en": "Request a ceasefire",
+      "right_text_en": "Go to war",
+      "investigate_text_en": "",
+      "speech_left_en": "Peace brings gain, Pasha.",
+      "speech_right_en": "History loves its heroes."
     },
     {
       "id": "tarih_istanbul_yangını",
@@ -6284,7 +7614,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Devletin gücü sınırlıdır.",
-      "speech_right": "Halk devleti burada görür."
+      "speech_right": "Halk devleti burada görür.",
+      "character_name_en": "People's Representative",
+      "text_en": "A great fire broke out in Istanbul. Hundreds of homes were turned to ash. The people are waiting for help and resources for reconstruction.",
+      "left_text_en": "Let the people find their own solution",
+      "right_text_en": "Open an emergency relief fund",
+      "investigate_text_en": "",
+      "speech_left_en": "The state's power has limits.",
+      "speech_right_en": "The people see the state here."
     },
     {
       "id": "tarih_veba_büyük",
@@ -6316,7 +7653,14 @@
       "min_year": 3,
       "category": "social",
       "speech_left": "Ölüm Allah'tandır.",
-      "speech_right": "Devlet korur, Paşam."
+      "speech_right": "Devlet korur, Paşam.",
+      "character_name_en": "Plague Herald",
+      "text_en": "The great plague wave has reached Istanbul. Hundreds die every day. History is writing down this calamity. What will you do?",
+      "left_text_en": "Prayer and patience — submit to fate",
+      "right_text_en": "Impose strict quarantine",
+      "investigate_text_en": "",
+      "speech_left_en": "Death comes from God.",
+      "speech_right_en": "The state protects, Pasha."
     },
     {
       "id": "kriz_savas",
@@ -6354,7 +7698,14 @@
       "min_year": 4,
       "category": "military",
       "speech_left": "Kan dökmeden çözüm.",
-      "speech_right": "Ya zafer ya şehadet!"
+      "speech_right": "Ya zafer ya şehadet!",
+      "character_name_en": "Sultan",
+      "text_en": "Pasha, a great enemy army is coming from the east. Our border forces are insufficient. Shall we go to war, or seek a settlement?",
+      "left_text_en": "Sit at the settlement table",
+      "right_text_en": "Enter the war",
+      "investigate_text_en": "",
+      "speech_left_en": "A solution without bloodshed.",
+      "speech_right_en": "Victory or martyrdom!"
     },
     {
       "id": "kriz_savas_ally",
@@ -6392,7 +7743,14 @@
       "min_year": 4,
       "category": "military",
       "speech_left": "Ocak buyruğunuzu bekliyor.",
-      "speech_right": "Bismillah Paşam, ocak hazır!"
+      "speech_right": "Bismillah Paşam, ocak hazır!",
+      "character_name_en": "Janissary Commander",
+      "text_en": "Pasha, the enemy is coming. But the Janissary corps stands with you — our relationship is strong, the soldiers trust you. Your orders?",
+      "left_text_en": "Seek a settlement",
+      "right_text_en": "Fight with the Janissaries",
+      "investigate_text_en": "",
+      "speech_left_en": "The corps awaits your command.",
+      "speech_right_en": "In the name of God, Pasha — the corps is ready!"
     },
     {
       "id": "kriz_veba",
@@ -6428,7 +7786,14 @@
       "min_year": 3,
       "category": "social",
       "speech_left": "Allah kerim, kader ne derse.",
-      "speech_right": "Bu şehri korumak şart."
+      "speech_right": "Bu şehri korumak şart.",
+      "character_name_en": "Plague Herald",
+      "text_en": "Pasha, plague has engulfed the city. Hundreds die every day. Shall we impose quarantine — trade will stop, but lives will be saved?",
+      "left_text_en": "Keep the city open",
+      "right_text_en": "Impose strict quarantine",
+      "investigate_text_en": "",
+      "speech_left_en": "God is generous — whatever fate decrees.",
+      "speech_right_en": "Protecting this city is essential."
     },
     {
       "id": "kriz_veba_ally",
@@ -6464,7 +7829,14 @@
       "min_year": 3,
       "category": "social",
       "speech_left": "Ulema emre amade.",
-      "speech_right": "Allah'ın rahmeti bizimle."
+      "speech_right": "Allah'ın rahmeti bizimle.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "Pasha, the plague is great. But the clergy and physicians are ready to work together — our relationship is strong. Open the mosques as quarantine centers?",
+      "left_text_en": "Leave it be",
+      "right_text_en": "Quarantine under clergy leadership",
+      "investigate_text_en": "",
+      "speech_left_en": "The clergy stands ready.",
+      "speech_right_en": "God's mercy is with us."
     },
     {
       "id": "kriz_kitlik",
@@ -6500,7 +7872,14 @@
       "min_year": 2,
       "category": "social",
       "speech_left": "Hazine her şeyi karşılayamaz.",
-      "speech_right": "Halk ölürken devlet duramaZ."
+      "speech_right": "Halk ölürken devlet duramaZ.",
+      "character_name_en": "People's Representative",
+      "text_en": "Pasha, famine has broken out in three districts. People are dying of hunger. The stores must be opened — but this year the harvest was poor.",
+      "left_text_en": "The people will find their own solution",
+      "right_text_en": "Open the stores",
+      "investigate_text_en": "",
+      "speech_left_en": "The treasury cannot cover everything.",
+      "speech_right_en": "The state cannot stand still while people die."
     },
     {
       "id": "kriz_kitlik_ally",
@@ -6536,7 +7915,14 @@
       "min_year": 2,
       "category": "economic",
       "speech_left": "Temkinli olun Paşam.",
-      "speech_right": "Güvenin bana, bu işi bilirim."
+      "speech_right": "Güvenin bana, bu işi bilirim.",
+      "character_name_en": "Treasurer",
+      "text_en": "Pasha, there is famine but I have found a solution for the treasury — our relationship is good, I will support you. I found secret reserves.",
+      "left_text_en": "Do not take the risk",
+      "right_text_en": "Apply the Treasurer's plan",
+      "investigate_text_en": "",
+      "speech_left_en": "Be cautious, Pasha.",
+      "speech_right_en": "Trust me — I know this business."
     },
     {
       "id": "sadakat_yeniceri",
@@ -6570,7 +7956,14 @@
       "min_year": 3,
       "category": "military",
       "speech_left": "Sadakat karşılık ister, Paşam.",
-      "speech_right": "Bu ocak sizin için her şey!"
+      "speech_right": "Bu ocak sizin için her şey!",
+      "character_name_en": "Janissary Commander",
+      "text_en": "Pasha, as the corps, we wanted to express our trust in you. Your decisions have always supported us. We wish to offer something in return.",
+      "left_text_en": "Thank you — there is no need",
+      "right_text_en": "I warmly welcome the corps' loyalty",
+      "investigate_text_en": "",
+      "speech_left_en": "Loyalty expects a return, Pasha.",
+      "speech_right_en": "This corps gives everything for you!"
     },
     {
       "id": "sadakat_valide",
@@ -6604,7 +7997,14 @@
       "min_year": 4,
       "category": "political",
       "speech_left": "İyilik asla unutulmaz.",
-      "speech_right": "Saray kapıları size açık."
+      "speech_right": "Saray kapıları size açık.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "Grand Vizier, you have always treated us with respect over the years. I appreciate this trust. The palace has a suggestion for you.",
+      "left_text_en": "I accept your gratitude",
+      "right_text_en": "Palace support is most valuable",
+      "investigate_text_en": "",
+      "speech_left_en": "Kindness is never forgotten.",
+      "speech_right_en": "The palace doors are open to you."
     },
     {
       "id": "sadakat_defterdar",
@@ -6636,7 +8036,14 @@
       "min_year": 3,
       "category": "economic",
       "speech_left": "Hesap doğru yerde.",
-      "speech_right": "Hazine şimdi daha güçlü!"
+      "speech_right": "Hazine şimdi daha güçlü!",
+      "character_name_en": "Treasurer",
+      "text_en": "My lord, you have always supported my accounts. This year I found a secret source of savings for the treasury — for your approval.",
+      "left_text_en": "I appreciate it — continue",
+      "right_text_en": "Use this source immediately",
+      "investigate_text_en": "",
+      "speech_left_en": "The accounts are in the right place.",
+      "speech_right_en": "The treasury is stronger now!"
     },
     {
       "id": "intikam_rakip_vezir",
@@ -6670,7 +8077,14 @@
       "min_year": 3,
       "category": "intrigue",
       "speech_left": "Pişman olacaksınız Paşam.",
-      "speech_right": "Hesap ödeme vakti geldi!"
+      "speech_right": "Hesap ödeme vakti geldi!",
+      "character_name_en": "Rival Vizier",
+      "text_en": "Grand Vizier, for years you ignored me and rejected my proposals. Today I formally file my complaint with the Sultan.",
+      "left_text_en": "Accept the accusations",
+      "right_text_en": "Defend yourself to the Sultan",
+      "investigate_text_en": "",
+      "speech_left_en": "You will regret this, Pasha.",
+      "speech_right_en": "The time for reckoning has come!"
     },
     {
       "id": "intikam_seyhulislam",
@@ -6702,7 +8116,14 @@
       "min_year": 3,
       "category": "religious",
       "speech_left": "Allah adalet eder.",
-      "speech_right": "Haksızlığa boyun eğmem!"
+      "speech_right": "Haksızlığa boyun eğmem!",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "Grand Vizier, the harm you have done to religion must be known by the people. Today I am compelled to mention your name in a religious gathering.",
+      "left_text_en": "Stay silent — it will pass",
+      "right_text_en": "Object to the Şeyhülislam",
+      "investigate_text_en": "",
+      "speech_left_en": "God delivers justice.",
+      "speech_right_en": "I will not bow to injustice!"
     },
     {
       "id": "intikam_yeniceri_isyancisi",
@@ -6736,7 +8157,14 @@
       "min_year": 4,
       "category": "military",
       "speech_left": "Altın sesi keser, Paşam.",
-      "speech_right": "Ateş söndürülmeli!"
+      "speech_right": "Ateş söndürülmeli!",
+      "character_name_en": "Janissary Rebel",
+      "text_en": "The Janissaries are furious, Pasha. For years you turned your back on the corps. Tonight the barracks are lit — the cauldron is about to be raised.",
+      "left_text_en": "Placate them with treasury funds",
+      "right_text_en": "Suppress it by force",
+      "investigate_text_en": "",
+      "speech_left_en": "Gold silences all, Pasha.",
+      "speech_right_en": "The fire must be extinguished!"
     },
     {
       "id": "sehzade_avcisi_1",
@@ -6769,7 +8197,14 @@
       "category": "intrigue",
       "investigate_text": "Bu emir doğrudan Sultan'dan mı geliyor, yoksa saray entrikasının parçası mı?",
       "speech_left": "Pişman olursunuz Paşam.",
-      "speech_right": "Devlet böyle ayakta durur."
+      "speech_right": "Devlet böyle ayakta durur.",
+      "character_name_en": "Prince Hunter",
+      "text_en": "Pasha... There is an imperial decree. A prince is posing a danger. This matter must be handled quietly. Do you give the order?",
+      "left_text_en": "I will not be part of this",
+      "right_text_en": "Carry out the decree",
+      "investigate_text_en": "Does this order truly come directly from the Sultan, or is it part of a palace intrigue?",
+      "speech_left_en": "You will regret it, Pasha.",
+      "speech_right_en": "This is how the state stands."
     },
     {
       "id": "osmanlı_kadisi_1",
@@ -6801,7 +8236,14 @@
       "min_year": 2,
       "category": "political",
       "speech_left": "Adalet kör olmalı.",
-      "speech_right": "Devlet her zaman kazanmalı."
+      "speech_right": "Devlet her zaman kazanmalı.",
+      "character_name_en": "Ottoman Judge",
+      "text_en": "Pasha, there is a case in court that cannot be resolved. Both parties are powerful, and I am under pressure. I need guidance from you.",
+      "left_text_en": "Let the court decide independently",
+      "right_text_en": "Guide it discreetly",
+      "investigate_text_en": "",
+      "speech_left_en": "Justice must be blind.",
+      "speech_right_en": "The state must always prevail."
     },
     {
       "id": "kendi_ajan_1",
@@ -6837,7 +8279,14 @@
       "min_year": 3,
       "category": "intrigue",
       "speech_left": "Bilgi güçtür, zamanı gelir.",
-      "speech_right": "Bu fırsatı kaçırmayın!"
+      "speech_right": "Bu fırsatı kaçırmayın!",
+      "character_name_en": "Your Own Agent",
+      "text_en": "My lord, you placed me inside the palace. Today I obtained very important information — but it could not come out publicly.",
+      "left_text_en": "Keep the information hidden",
+      "right_text_en": "Report it to me and take action",
+      "investigate_text_en": "",
+      "speech_left_en": "Knowledge is power — its time will come.",
+      "speech_right_en": "Do not miss this opportunity!"
     },
     {
       "id": "halk_onderi_1",
@@ -6871,7 +8320,14 @@
       "min_year": 3,
       "category": "social",
       "speech_left": "Halk sabrının sınırı var.",
-      "speech_right": "Halk bizi dinledi, biz de halkı."
+      "speech_right": "Halk bizi dinledi, biz de halkı.",
+      "character_name_en": "People's Leader",
+      "text_en": "Pasha, there is someone from among the people — everyone listens to him. He criticizes you, but he also wants to speak with you.",
+      "left_text_en": "Silence him",
+      "right_text_en": "Arrange a meeting",
+      "investigate_text_en": "",
+      "speech_left_en": "The people's patience has its limits.",
+      "speech_right_en": "The people listened to us, and we to them."
     },
     {
       "id": "dogu_alim_1",
@@ -6904,7 +8360,14 @@
       "category": "cultural",
       "investigate_text": "Alim gerçekten Bağdat'tan mı, yoksa Safevi ajanı mı? Casuslar başı araştırabilir.",
       "speech_left": "Bilge kapısı kapatılmaz.",
-      "speech_right": "Doğu'nun sırrı Osmanlı'dadır."
+      "speech_right": "Doğu'nun sırrı Osmanlı'dadır.",
+      "character_name_en": "Scholar from the East",
+      "text_en": "Grand Vizier, I have come from Baghdad. I carry a mathematical analysis — not a prophecy — about the Ottoman future.",
+      "left_text_en": "I have no time — be gone",
+      "right_text_en": "I am listening",
+      "investigate_text_en": "Is the Scholar truly from Baghdad, or a Safavid agent? The Head of Spies could investigate.",
+      "speech_left_en": "The door to wisdom cannot be closed.",
+      "speech_right_en": "The secret of the East lies with the Ottomans."
     },
     {
       "id": "casuslar_gizli_kimlik",
@@ -6931,7 +8394,14 @@
       "category": "espionage",
       "speech_left": "Anlıyorum, Paşam. Ama teklif açık.",
       "speech_right": "Akıllıca. Umarım hiç kullanmak gerekmez.",
-      "grants_item_on_right": "casus_maskesi"
+      "grants_item_on_right": "casus_maskesi",
+      "character_name_en": "Head of Spies",
+      "text_en": "Pasha, sometimes the safest path is concealment. I have prepared a special identity mask for use in our private network.",
+      "left_text_en": "No need — I refuse",
+      "right_text_en": "Take it — it will be useful",
+      "investigate_text_en": "",
+      "speech_left_en": "I understand, Pasha. But the offer remains open.",
+      "speech_right_en": "Wise. I hope it never needs to be used."
     },
     {
       "id": "sehzade_avcisi_2",
@@ -6961,7 +8431,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Prince Hunter",
+      "text_en": "Pasha, the ordered prince was caught — but managed to escape during handover. I lost his trail. What are your orders?",
+      "left_text_en": "Stay calm — conceal the incident",
+      "right_text_en": "Find him by any means",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "sehzade_avcisi_3",
@@ -6991,7 +8468,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Prince Hunter",
+      "text_en": "This time the list is different, Pasha. Not a political danger — someone is using this to eliminate a business rival.",
+      "left_text_en": "Question the order",
+      "right_text_en": "An order is an order",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "sehzade_avcisi_4",
@@ -7021,7 +8505,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Prince Hunter",
+      "text_en": "While carrying out my mission, I found a document proving that prince was innocent. Should I destroy it or keep it?",
+      "left_text_en": "Burn the document",
+      "right_text_en": "Keep the document",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "osmanlı_kadisi_2",
@@ -7051,7 +8542,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Ottoman Judge",
+      "text_en": "An inheritance case — sharia is clear but the elder brother is a powerful lord. I am under pressure; I need your guidance.",
+      "left_text_en": "Rule according to sharia",
+      "right_text_en": "Rule with regard to the lord",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "osmanlı_kadisi_3",
@@ -7081,7 +8579,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Ottoman Judge",
+      "text_en": "A woman wishes to divorce her husband; she has valid reasons. But her husband is an influential Janissary officer.",
+      "left_text_en": "Accept the case",
+      "right_text_en": "Reject the case",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "osmanlı_kadisi_4",
@@ -7111,7 +8616,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Ottoman Judge",
+      "text_en": "The merchant lent money at interest — contrary to sharia, but the contract was drawn up under Venetian law. What is to be done?",
+      "left_text_en": "Islamic law prevails",
+      "right_text_en": "Recognize the foreign law",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "kendi_ajan_2",
@@ -7141,7 +8653,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Your Own Agent",
+      "text_en": "My lord, my identity may have been exposed. Either you pull me out to safety, or I take the risk and continue.",
+      "left_text_en": "Pull him out — keep him safe",
+      "right_text_en": "Let him continue",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "kendi_ajan_3",
@@ -7171,7 +8690,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Your Own Agent",
+      "text_en": "One of my agents is selling information to your rival vizier. I cannot prove it, but I believe it.",
+      "left_text_en": "Wait until evidence comes",
+      "right_text_en": "Eliminate the agent immediately",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "kendi_ajan_4",
@@ -7201,7 +8727,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Your Own Agent",
+      "text_en": "I obtained the corruption file of a senior Divan official. Revealing it will shake everyone — what shall I do?",
+      "left_text_en": "Conceal the file",
+      "right_text_en": "Bring the file to me",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "halk_onderi_2",
@@ -7231,7 +8764,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "People's Leader",
+      "text_en": "With the support of neighborhood imams, I have launched a campaign objecting to bread prices. I am requesting permission for a gathering.",
+      "left_text_en": "No permission — disperse them",
+      "right_text_en": "Grant permission",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "halk_onderi_3",
@@ -7261,7 +8801,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "People's Leader",
+      "text_en": "I have prepared a petition on behalf of the people — we want tax justice. I am asking you to deliver it to the Sultan.",
+      "left_text_en": "There is no such channel",
+      "right_text_en": "You may deliver it",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "halk_onderi_4",
@@ -7291,7 +8838,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "People's Leader",
+      "text_en": "I want to establish a foundation to feed the poor. I only need official approval.",
+      "left_text_en": "No need — do it on your own",
+      "right_text_en": "Grant the approval",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "dogu_alim_2",
@@ -7321,7 +8875,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Scholar from the East",
+      "text_en": "I saw it in Baghdad — the plague is coming from the east. The eastern gates must be quarantined, but this will disrupt trade.",
+      "left_text_en": "Do not disrupt the merchants",
+      "right_text_en": "Apply the quarantine",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "dogu_alim_3",
@@ -7351,7 +8912,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Scholar from the East",
+      "text_en": "I found ancient maps in an old library — trade routes the Ottomans do not know about. May I present them to the Divan?",
+      "left_text_en": "We have other priorities",
+      "right_text_en": "Present them — let us examine them",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "dogu_alim_4",
@@ -7381,7 +8949,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Scholar from the East",
+      "text_en": "I wish to establish a madrasa in mathematics, astronomy, and medicine. The Şeyhülislam does not want me here.",
+      "left_text_en": "Respect the Şeyhülislam's decision",
+      "right_text_en": "Mediate",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "cellat_subay",
@@ -7411,7 +8986,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Executioner",
+      "text_en": "There is an officer on the execution list. The Sultan personally approved it — but that officer once did the Sultan a great favor.",
+      "left_text_en": "Carry out the decree",
+      "right_text_en": "Remind the Sultan",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "cellat_aile",
@@ -7441,7 +9023,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Executioner",
+      "text_en": "The executed person's family is asking for their belongings. Should I seize them as state property, or return them?",
+      "left_text_en": "Seize them as state property",
+      "right_text_en": "Return them to the family",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "cellat_maaş",
@@ -7471,7 +9060,14 @@
       "min_year": 1,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Executioner",
+      "text_en": "No one was executed last month. Should I continue receiving my wages, Pasha?",
+      "left_text_en": "Wages are according to duty",
+      "right_text_en": "Duty means standing ready",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "saray_sairi_rakip",
@@ -7501,7 +9097,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Court Poet",
+      "text_en": "A young poet praising you has gone too far — almost making you out to be a rival to the Sultan. Those around you are worried.",
+      "left_text_en": "Remove the poet",
+      "right_text_en": "Take it in stride",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "saray_sairi_yazma",
@@ -7531,7 +9134,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Court Poet",
+      "text_en": "I want to have manuscripts brought from Europe for the palace library. Learning other languages will be required.",
+      "left_text_en": "Unnecessary expense",
+      "right_text_en": "Approve it",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "saray_sairi_tiyatro",
@@ -7561,7 +9171,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Court Poet",
+      "text_en": "I have written a theatrical play on a historical victory. I wish to have it staged in the palace.",
+      "left_text_en": "The palace is not for such things",
+      "right_text_en": "Make preparations",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "koylu_medrese",
@@ -7591,7 +9208,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Peasant",
+      "text_en": "The village imam wants us to send our children to the madrasa, but we are losing our farmhands.",
+      "left_text_en": "Children are needed in the field",
+      "right_text_en": "Support the madrasa",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "koylu_aga_suistimal",
@@ -7621,7 +9245,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Peasant",
+      "text_en": "The local lord is using soldiers on his own land. The villagers complain but cannot speak out.",
+      "left_text_en": "The army is under state command",
+      "right_text_en": "Investigate the lord",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "koylu_iyi_hasat",
@@ -7651,7 +9282,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Peasant",
+      "text_en": "This year the harvest was bountiful. We could pay our tax in full — or save it, and our prosperity continues.",
+      "left_text_en": "Pay the fair tax",
+      "right_text_en": "I will be understanding",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "rum_genc_yesim",
@@ -7681,7 +9319,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Greek Patriarch",
+      "text_en": "A young Rum wishes to convert to Islam and become a Janissary. His family has not consented. The community is divided.",
+      "left_text_en": "This is entirely a personal decision",
+      "right_text_en": "Make the family's approval mandatory",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "rum_venedik_heyet",
@@ -7711,7 +9356,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Greek Patriarch",
+      "text_en": "A delegation from Venice is coming to meet with the Rum community. Should the Ottomans be informed?",
+      "left_text_en": "Notification is not required",
+      "right_text_en": "Record the visit",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "rum_koy_kilise",
@@ -7741,7 +9393,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Greek Patriarch",
+      "text_en": "Rum merchants want to open a small church in a village outside Istanbul. I am asking you to serve as intermediary.",
+      "left_text_en": "Taking initiative in the provinces is dangerous",
+      "right_text_en": "Issue a permit",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "ermeni_kooperatif",
@@ -7771,7 +9430,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Armenian Merchant",
+      "text_en": "We want to establish an Armenian merchant cooperative on the Silk Road. Not state support — just a guarantee.",
+      "left_text_en": "Trade bears its own risks",
+      "right_text_en": "Issue the guarantee document",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "ermeni_vali_vergi",
@@ -7801,7 +9467,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Armenian Merchant",
+      "text_en": "A governor in the East is illegally collecting extra taxes from Armenian merchants. I wanted to report this.",
+      "left_text_en": "We will not interfere in the governor's authority",
+      "right_text_en": "Warn the governor",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "korsan_yazisma",
@@ -7831,7 +9504,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Corsair Captain",
+      "text_en": "I captured a Venetian merchant vessel — inside was secret correspondence. I brought it to you, Pasha.",
+      "left_text_en": "The correspondence will cause a diplomatic incident",
+      "right_text_en": "Examine it",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "korsan_portekiz",
@@ -7861,7 +9541,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Corsair Captain",
+      "text_en": "I need fleet support to destroy the Portuguese base in North Africa. I cannot do it alone.",
+      "left_text_en": "Too soon for this operation",
+      "right_text_en": "Give support",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "genç_valide_uyari",
@@ -7891,7 +9578,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Young Pasha",
+      "text_en": "I heard the Valide Sultan is gathering information to undermine you. I had to warn you.",
+      "left_text_en": "Knowing is enough",
+      "right_text_en": "Send a gentle message to the Valide Sultan",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "genç_birlik",
@@ -7921,7 +9615,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Young Pasha",
+      "text_en": "I want to form a Janissary unit in my own name. I need the Sultan's approval — yours must come first.",
+      "left_text_en": "The time is not yet right",
+      "right_text_en": "Grant your approval",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "hekimbasi_salgın",
@@ -7951,7 +9652,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Chief Physician",
+      "text_en": "An epidemic is beginning in the palace. Quarantine is needed — but this will block the Divan meeting.",
+      "left_text_en": "The Divan takes priority",
+      "right_text_en": "Apply the quarantine",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "hekimbasi_ilaç",
@@ -7981,7 +9689,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Chief Physician",
+      "text_en": "I have found a new medicine of Indian origin. The Şeyhülislam disapproves, but patients have recovered.",
+      "left_text_en": "Abide by the Şeyhülislam's ruling",
+      "right_text_en": "Permit its use",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "sipahi_ret",
@@ -8011,7 +9726,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "One of the cavalry regiments refused the assigned duty. A punitive example is needed for discipline.",
+      "left_text_en": "A warning is sufficient",
+      "right_text_en": "Punish the regiment",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "sipahi_yeni_anlaşmazlık",
@@ -8041,7 +9763,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "In a border region, there is a land dispute between the cavalry and the Janissaries — and it is growing.",
+      "left_text_en": "Warn both sides",
+      "right_text_en": "Give priority to the cavalry",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "tuccar_aracilar",
@@ -8071,7 +9800,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Grand Merchant",
+      "text_en": "Intermediary tax collectors are taking exorbitant commissions. I propose a direct system.",
+      "left_text_en": "The current system is working",
+      "right_text_en": "Examine the system",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "tuccar_rakip_teklif",
@@ -8101,7 +9837,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Grand Merchant",
+      "text_en": "The Dubrovnik merchants are asking for privileges. I can block them — for a price.",
+      "left_text_en": "The state grants no privileges",
+      "right_text_en": "Grant the privilege",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "casuslar_cift_ajan",
@@ -8131,7 +9874,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Head of Spies",
+      "text_en": "There is a double agent inside — working for both us and the rival. If we catch him, the network collapses; if we leave him, it is dangerous.",
+      "left_text_en": "Seize him immediately",
+      "right_text_en": "Use him, then eliminate him",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "casuslar_yeniden_kur",
@@ -8161,7 +9911,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Head of Spies",
+      "text_en": "My spy network in the eastern province has collapsed. I need resources to rebuild it.",
+      "left_text_en": "Not now",
+      "right_text_en": "Allocate the resources",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "halk_vakif",
@@ -8191,7 +9948,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "People's Representative",
+      "text_en": "We want to establish a solidarity foundation among artisans. Not a state connection — just approval.",
+      "left_text_en": "No need — do it on your own",
+      "right_text_en": "Grant approval",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "halk_su",
@@ -8221,7 +9985,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "People's Representative",
+      "text_en": "The water shortage in our neighborhood has become unbearable. We are requesting an intervention.",
+      "left_text_en": "A local problem — a local solution",
+      "right_text_en": "Send an inspection team",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "saray_agasi_kaçış",
@@ -8251,7 +10022,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Palace Steward",
+      "text_en": "A concubine has fled the Harem — she has not yet made it outside. Shall we resolve this quietly?",
+      "left_text_en": "Resolve it quietly",
+      "right_text_en": "Keep an official record",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "saray_agasi_baskı",
@@ -8281,7 +10059,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Palace Steward",
+      "text_en": "Some palace officials do not want to speak — out of fear. There is pressure, according to my information.",
+      "left_text_en": "Palace matters do not go outside",
+      "right_text_en": "Investigate",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "veba_saray_taşı",
@@ -8311,7 +10096,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Plague Herald",
+      "text_en": "The plague has reached Edirne. Should we relocate the palace, or remain in place?",
+      "left_text_en": "Stay in place — do not cause panic",
+      "right_text_en": "Move the palace to a safe location",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "veba_toplu_defin",
@@ -8341,7 +10133,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Plague Herald",
+      "text_en": "The plague casualties are immense. Mass burial permission is needed — the Şeyhülislam's approval is pending.",
+      "left_text_en": "Hasty decisions lead to errors",
+      "right_text_en": "Grant permission immediately",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "yeniceri_isyan_jest",
@@ -8371,7 +10170,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Janissary Rebel",
+      "text_en": "We are on the verge of raising the cauldron. It is not about wages — it is about honor. A small gesture would be enough.",
+      "left_text_en": "We do not negotiate with rebels",
+      "right_text_en": "Make a symbolic gesture",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "yeniceri_isyan_klik",
@@ -8401,7 +10207,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Janissary Rebel",
+      "text_en": "The statue of old commanders in the barracks was smashed — it was not us. There is another faction within.",
+      "left_text_en": "Let the barracks clean itself up",
+      "right_text_en": "Open an investigation",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "yahudi_kredi",
@@ -8431,7 +10244,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Jewish Banker",
+      "text_en": "For the treasury's cash flow, I can offer a short-term credit — low interest, with documentation.",
+      "left_text_en": "The state does not borrow",
+      "right_text_en": "Make the deal",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "yahudi_rakip_banka",
@@ -8461,7 +10281,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Jewish Banker",
+      "text_en": "A better offer has arrived from a European bank. I can match those terms.",
+      "left_text_en": "Consider the European offer",
+      "right_text_en": "Continue with your loyal partner",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "safevi_gizli_baris",
@@ -8491,7 +10318,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Safavid Ambassador",
+      "text_en": "I have brought a secret ceasefire proposal. Your Sultan may not know. I chose you as the intermediary.",
+      "left_text_en": "We refuse any offer that bypasses the Sultan",
+      "right_text_en": "Hear the proposal",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "safevi_sinir_ihlali",
@@ -8521,7 +10355,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Safavid Ambassador",
+      "text_en": "On the eastern border, Ottoman soldiers entered Safavid shepherds' land. A small matter but it could grow.",
+      "left_text_en": "The border is ours",
+      "right_text_en": "Investigate",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "dervis_keramet",
@@ -8551,7 +10392,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Mad Dervish",
+      "text_en": "The dervish's prophecy came true — what he said happened. Now the people believe him and come to him instead of me for fatwas.",
+      "left_text_en": "Warn the people",
+      "right_text_en": "If it is true prophecy, show respect",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "dervis_valide",
@@ -8581,7 +10429,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Mad Dervish",
+      "text_en": "The dervish said yesterday that the Valide Sultan had fallen ill. Tonight the news arrived: it was true. How do you explain it?",
+      "left_text_en": "It is a coincidence",
+      "right_text_en": "Follow him closely",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "defterdar_denetim",
@@ -8611,7 +10466,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Treasurer",
+      "text_en": "I found irregularities in the treasury ledger — the signatures do not match. Someone senior may be involved.",
+      "left_text_en": "Trust the current system",
+      "right_text_en": "Begin an audit",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "defterdar_vergi",
@@ -8641,7 +10503,14 @@
       "min_year": 5,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Treasurer",
+      "text_en": "This year's war expenditures are forty percent over budget. Shall we impose an extraordinary tax?",
+      "left_text_en": "Continue with the existing budget",
+      "right_text_en": "Apply a temporary tax",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "valide_cariye",
@@ -8671,7 +10540,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Valide Sultan",
+      "text_en": "I have taken a new concubine under my supervision in the Harem — the Sultan is showing interest. Should I support you?",
+      "left_text_en": "The Valide Sultan's choice",
+      "right_text_en": "Do not interfere",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "valide_aracı",
@@ -8701,7 +10577,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Valide Sultan",
+      "text_en": "A decision the Sultan has taken is troubling me. I wish to use you as an intermediary.",
+      "left_text_en": "Do not involve yourself in politics",
+      "right_text_en": "You may convey the message",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "kaptan_onarim",
@@ -8731,7 +10614,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "Half the fleet is in dry dock for repairs. What do we do if a coastal attack comes during this period, Pasha?",
+      "left_text_en": "God will help us",
+      "right_text_en": "Open an emergency shipyard budget",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "kaptan_venedik",
@@ -8761,7 +10651,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Admiral of the Fleet",
+      "text_en": "The Ottoman fleet aided corsairs who attacked Venetian ships. A diplomatic incident has broken out.",
+      "left_text_en": "The ships did their duty",
+      "right_text_en": "Recall the captain and issue an apology",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "yabanci_hediye",
@@ -8791,7 +10688,14 @@
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Foreign Ambassador",
+      "text_en": "I have brought great gifts. I am requesting mutual trading privileges. You may take the gift and decline the privilege.",
+      "left_text_en": "Accept the gift — decline the privilege",
+      "right_text_en": "Accept both",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "yabanci_rapor",
@@ -8821,7 +10725,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Foreign Ambassador",
+      "text_en": "When I return, I will tell what I heard. Whether I write a good or bad report about you is in your hands.",
+      "left_text_en": "Tell the truth",
+      "right_text_en": "Make him satisfied",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "rakip_imza_gizemi",
@@ -8851,7 +10762,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Rival Vizier",
+      "text_en": "I noticed an order issued without your signature. Was it I who bypassed you, or was it someone else?",
+      "left_text_en": "Investigate quietly",
+      "right_text_en": "Confront openly",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "rakip_sultan_teklif",
@@ -8881,7 +10799,14 @@
       "min_year": 5,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Rival Vizier",
+      "text_en": "The Sultan offered me a task that falls within your domain. Should I accept?",
+      "left_text_en": "Do not accept",
+      "right_text_en": "There is no objection to your doing it",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "yeniceri_silah_sesi",
@@ -8911,7 +10836,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Janissary Commander",
+      "text_en": "Gunshots were heard in the Janissary barracks last night. There is a clash within — we are investigating.",
+      "left_text_en": "Resolve your internal matters yourself",
+      "right_text_en": "Separate the companies",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "yeniceri_ganimet",
@@ -8941,7 +10873,14 @@
       "min_year": 3,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Janissary Commander",
+      "text_en": "There is a dispute over the distribution of war spoils. The soldiers are restless — you decide.",
+      "left_text_en": "Let the commanders decide",
+      "right_text_en": "Issue an order for equal distribution",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "seyhulislam_rakip_fetva",
@@ -8971,7 +10910,14 @@
       "min_year": 4,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "A scholar has issued a fatwa contrary to my position. Whose fatwa should the people follow — I will make a public statement.",
+      "left_text_en": "Open public debate is healthy",
+      "right_text_en": "Exercise your authority",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     },
     {
       "id": "seyhulislam_reform",
@@ -9001,7 +10947,14 @@
       "min_year": 5,
       "max_year": 99,
       "speech_left": "",
-      "speech_right": ""
+      "speech_right": "",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "Some practices in the palace are contrary to Islamic law. I wish to publish a public declaration.",
+      "left_text_en": "Do not issue a reform declaration",
+      "right_text_en": "Give your support",
+      "investigate_text_en": "",
+      "speech_left_en": "",
+      "speech_right_en": ""
     }
   ]
 }
