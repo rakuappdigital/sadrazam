@@ -2375,7 +2375,9 @@ function tryPadisahZiyareti() {
 }
 
 function showPadisahZiyareti() {
-  const data = PADISAH_ZIYARET_TEXTS[Math.floor(Math.random() * PADISAH_ZIYARET_TEXTS.length)];
+  const _isENpv = window.LANG === 'en';
+  const _pvPool = (_isENpv && window.EN_PADISAH_ZIYARET_TEXTS) ? window.EN_PADISAH_ZIYARET_TEXTS : PADISAH_ZIYARET_TEXTS;
+  const data = _pvPool[Math.floor(Math.random() * _pvPool.length)];
 
   hideNegotiationPanel();
   Haptics.crisisCard();
@@ -2389,10 +2391,10 @@ function showPadisahZiyareti() {
   preload.onerror = () => { cardImage.style.visibility = "hidden"; };
   preload.src = "assets/characters/1-sultan.jpg";
 
-  charName.textContent = "Padişahım";
+  charName.textContent = _isENpv ? "My Sultan" : "Padişahım";
   cardText.textContent = data.text;
-  choiceLeft.textContent  = "Reddet";
-  choiceRight.textContent = "Biat Et";
+  choiceLeft.textContent  = _isENpv ? "Refuse" : "Reddet";
+  choiceRight.textContent = _isENpv ? "I Pledge Loyalty" : "Biat Et";
   choiceLeft.style.opacity  = "0";
   choiceRight.style.opacity = "0";
   overlayL.style.opacity = "0";
@@ -2437,22 +2439,25 @@ function showSultanEventCard(c) {
   const isPositive = avgStat >= 55 && minStat >= 35;
 
   // BEYAN metinleri (soru değil)
-  const positiveTexts = [
-    "Devlet işleri yolunda gidiyor, Sadrazam. Bu dengeyi koruyun.",
-    "Taht sizi layık buluyor. Osmanlı sizinle güçlü.",
-    "Hazinemiz dolu, ordumuz sağlam. Memnuniyetimizi bildirmek istedik.",
-    "Divan'ın bu sükûneti bizi memnun ediyor. Böyle devam edin."
-  ];
-  const negativeTexts = [
-    "Bu gidişat bizi rahatsız ediyor, Sadrazam. Durumu toparlamanızı bekliyoruz.",
-    "İmparatorluk zayıflıyor. Bu yük omuzlarınızda, bunu bilin.",
-    "Divan'dan gelen haberler iç açıcı değil. Tedbirinizi vakit geçirmeden alın.",
-    "Sabır taşı çatlamak üzere. Bunu son uyarı olarak kabul edin."
-  ];
+  const _isENsev = window.LANG === 'en';
+  const positiveTexts = _isENsev
+    ? (window.EN_SULTAN_EVENT_POSITIVE || ["State affairs are going well, Grand Vizier. Maintain this balance."])
+    : ["Devlet işleri yolunda gidiyor, Sadrazam. Bu dengeyi koruyun.",
+       "Taht sizi layık buluyor. Osmanlı sizinle güçlü.",
+       "Hazinemiz dolu, ordumuz sağlam. Memnuniyetimizi bildirmek istedik.",
+       "Divan'ın bu sükûneti bizi memnun ediyor. Böyle devam edin."];
+  const negativeTexts = _isENsev
+    ? (window.EN_SULTAN_EVENT_NEGATIVE || ["This course of events displeases us, Grand Vizier."])
+    : ["Bu gidişat bizi rahatsız ediyor, Sadrazam. Durumu toparlamanızı bekliyoruz.",
+       "İmparatorluk zayıflıyor. Bu yük omuzlarınızda, bunu bilin.",
+       "Divan'dan gelen haberler iç açıcı değil. Tedbirinizi vakit geçirmeden alın.",
+       "Sabır taşı çatlamak üzere. Bunu son uyarı olarak kabul edin."];
 
   const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
   const eventText = isPositive ? rand(positiveTexts) : rand(negativeTexts);
-  const effectLabel = isPositive ? "Tüm güçler +20" : "Tüm güçler −10";
+  const effectLabel = isPositive
+    ? (_isENsev ? "All powers +20" : "Tüm güçler +20")
+    : (_isENsev ? "All powers −10" : "Tüm güçler −10");
   const effectClass = isPositive ? "positive" : "negative";
 
   // Overlay — sadece onay butonu, swipe/ret yok
@@ -2460,13 +2465,13 @@ function showSultanEventCard(c) {
   overlay.id = "sultan-event-overlay";
   overlay.innerHTML = `
     <div id="sultan-event-box">
-      <div id="sultan-event-label">SULTAN'DAN HABER</div>
+      <div id="sultan-event-label">${_isENsev ? 'MESSAGE FROM THE SULTAN' : "SULTAN'DAN HABER"}</div>
       <img id="sultan-event-img" src="assets/characters/1-sultan.jpg" alt="Sultan">
       <div id="sultan-event-title">${c.character_name || "Sultan"}</div>
       <div id="sultan-event-divider"></div>
       <div id="sultan-event-text">${eventText}</div>
       <div id="sultan-event-effect" class="sultan-event-effect-box ${effectClass}">${effectLabel}</div>
-      <button id="sultan-event-devam">Başüstüne Hünkarım</button>
+      <button id="sultan-event-devam">${_isENsev ? 'As you command, my Sultan' : 'Başüstüne Hünkarım'}</button>
     </div>`;
 
   document.body.appendChild(overlay);
@@ -2828,27 +2833,40 @@ function showItemInfoPopup(itemId) {
   const itm = ITEMS[itemId];
   if (!itm) return;
 
-  const howToUse = ITEM_HOW_TO_USE[itemId] || itm.desc;
+  const _isENiip = window.LANG === 'en';
+  const _itmEN = (_isENiip && window.EN_ITEMS) ? window.EN_ITEMS[itemId] : null;
+  const _itmName = _itmEN ? _itmEN.name : itm.name;
+  const howToUse = (_isENiip && window.EN_ITEM_HOW_TO_USE && window.EN_ITEM_HOW_TO_USE[itemId])
+    ? window.EN_ITEM_HOW_TO_USE[itemId]
+    : (ITEM_HOW_TO_USE[itemId] || itm.desc);
   const cond = ITEM_GRANT_CONDITIONS[itemId];
+  const _condDesc = cond
+    ? (_isENiip && window.EN_ITEM_GRANT_CONDITIONS && window.EN_ITEM_GRANT_CONDITIONS[itemId]
+        ? window.EN_ITEM_GRANT_CONDITIONS[itemId]
+        : cond.desc)
+    : null;
+  const _howToDesc = _isENiip
+    ? "Tap the item slot at the bottom of the screen → Select 'Use' → It activates automatically when the next card arrives."
+    : "Ekranın altındaki eşya slotuna dokun → \"Kullan\" seç → Sonraki kart geldiğinde otomatik devreye girer.";
 
   const popup = document.createElement("div");
   popup.id = "item-info-popup";
   popup.innerHTML = `
     <div id="iip-box">
       <div id="iip-header">
-        <img id="iip-img" src="${itm.icon}" alt="${itm.name}">
+        <img id="iip-img" src="${itm.icon}" alt="${_itmName}">
         <div id="iip-titles">
-          <div id="iip-tag">YENİ EŞYA KAZANILDI</div>
-          <div id="iip-name">${itm.name}</div>
+          <div id="iip-tag">${_isENiip ? 'NEW ITEM ACQUIRED' : 'YENİ EŞYA KAZANILDI'}</div>
+          <div id="iip-name">${_itmName}</div>
         </div>
       </div>
       <div id="iip-divider"></div>
-      <div id="iip-section-title">NE İŞE YARAR?</div>
+      <div id="iip-section-title">${_isENiip ? 'WHAT DOES IT DO?' : 'NE İŞE YARAR?'}</div>
       <div id="iip-desc">${howToUse}</div>
-      <div id="iip-section-title">NASIL KULLANILIR?</div>
-      <div id="iip-how">Ekranın altındaki eşya slotuna dokun → "Kullan" seç → Sonraki kart geldiğinde otomatik devreye girer.</div>
-      ${cond ? `<div id="iip-condition">✦ Kazanım koşulu: <em>${cond.desc}</em></div>` : ""}
-      <button id="iip-ok">ANLADIM →</button>
+      <div id="iip-section-title">${_isENiip ? 'HOW TO USE?' : 'NASIL KULLANILIR?'}</div>
+      <div id="iip-how">${_howToDesc}</div>
+      ${_condDesc ? `<div id="iip-condition">${_isENiip ? '✦ Unlock condition:' : '✦ Kazanım koşulu:'} <em>${_condDesc}</em></div>` : ""}
+      <button id="iip-ok">${_isENiip ? 'GOT IT →' : 'ANLADIM →'}</button>
     </div>`;
   document.body.appendChild(popup);
 
@@ -2876,13 +2894,18 @@ function showItemConfirm(slotIndex, item) {
 
   const popup = document.createElement("div");
   popup.id = "item-confirm-popup";
+  const _isENicp = window.LANG === 'en';
+  const _icpId = Object.keys(ITEMS).find(k => ITEMS[k] === item) || '';
+  const _icpEN = (_isENicp && window.EN_ITEMS && _icpId) ? window.EN_ITEMS[_icpId] : null;
+  const _icpName = _icpEN ? _icpEN.name : item.name;
+  const _icpDesc = _icpEN ? _icpEN.desc : item.desc;
   popup.innerHTML = `
-    <div class="icp-icon"><img src="${item.icon}" alt="${item.name}"></div>
-    <div class="icp-name">${item.name}</div>
-    <div class="icp-desc">${item.desc}</div>
+    <div class="icp-icon"><img src="${item.icon}" alt="${_icpName}"></div>
+    <div class="icp-name">${_icpName}</div>
+    <div class="icp-desc">${_icpDesc}</div>
     <div class="icp-btns">
-      <button class="icp-use" id="icp-use-btn">Kullan ✓</button>
-      <button class="icp-cancel" id="icp-cancel-btn">Vazgeç</button>
+      <button class="icp-use" id="icp-use-btn">${_isENicp ? 'Use ✓' : 'Kullan ✓'}</button>
+      <button class="icp-cancel" id="icp-cancel-btn">${_isENicp ? 'Cancel' : 'Vazgeç'}</button>
     </div>`;
 
   document.getElementById("game")?.appendChild(popup);
@@ -3007,7 +3030,10 @@ function showItemExpiredToast(itemId) {
   if (!itm) return;
   const toast = document.createElement("div");
   toast.className = "item-expired-toast";
-  toast.innerHTML = `<img src="${itm.icon}" alt="${itm.name}"><span>Tükendi</span>`;
+  const _expEN = (window.LANG === 'en' && window.EN_ITEMS) ? window.EN_ITEMS[expiredId] : null;
+  const _expName = _expEN ? _expEN.name : itm.name;
+  const _expiredLabel = window.LANG === 'en' ? 'Expired' : 'Tükendi';
+  toast.innerHTML = `<img src="${itm.icon}" alt="${_expName}"><span>${_expiredLabel}</span>`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 2000);
 }
@@ -3945,7 +3971,11 @@ function showAchievementToast(a) {
   const color = tierColors[a.tier] || "#C9A227";
   const toast = document.createElement("div");
   toast.className = "achievement-toast";
-  toast.innerHTML = `<span style="font-size:18px">${a.icon}</span><span style="color:${color}">${a.name}</span><span style="font-size:10px;opacity:0.7">${a.tier === 'secret' ? 'Gizli Başarım' : a.tier.toUpperCase()}</span>`;
+  const _isENach = window.LANG === 'en';
+  const _aEN = (_isENach && window.EN_ACHIEVEMENTS && window.EN_ACHIEVEMENTS[a.id]) || {};
+  const _aName = _aEN.name || a.name;
+  const _secretLabel = _isENach ? 'Secret Achievement' : 'Gizli Başarım';
+  toast.innerHTML = `<span style="font-size:18px">${a.icon}</span><span style="color:${color}">${_aName}</span><span style="font-size:10px;opacity:0.7">${a.tier === 'secret' ? _secretLabel : a.tier.toUpperCase()}</span>`;
   toast.style.cssText += `border-color:${color};`;
   document.body.appendChild(toast);
   if (window.playAchievement) playAchievement();
@@ -3970,7 +4000,7 @@ function renderAchievementBadges() {
 
   const title = document.createElement("div");
   title.style.cssText = "font-family:'Cinzel',serif;font-size:10px;color:rgba(201,162,39,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;text-align:center;";
-  title.textContent = "KAZANILAN BAŞARIMLAR";
+  title.textContent = window.LANG === 'en' ? "ACHIEVEMENTS EARNED" : "KAZANILAN BAŞARIMLAR";
   section.appendChild(title);
 
   const badgesDiv = document.createElement("div");
@@ -3980,8 +4010,9 @@ function renderAchievementBadges() {
     if (a) {
       const badge = document.createElement("div");
       badge.className = "achievement-badge tier-" + a.tier;
-      badge.textContent = a.icon + " " + a.name;
-      badge.title = a.desc;
+      const _badgeEN = (window.LANG === 'en' && window.EN_ACHIEVEMENTS && window.EN_ACHIEVEMENTS[a.id]) || {};
+      badge.textContent = a.icon + " " + (_badgeEN.name || a.name);
+      badge.title = _badgeEN.desc || a.desc;
       badgesDiv.appendChild(badge);
     }
   });
@@ -3990,13 +4021,20 @@ function renderAchievementBadges() {
 
 // ── Ölüm Arşivi ───────────────────────────────────────────────────
 function saveDeathArchive(reason) {
+  const _isENdeath = window.LANG === 'en';
+  const _enS = (_isENdeath && window.EN_SULTANS && selectedSultan) ? window.EN_SULTANS[selectedSultan.id] : null;
+  const _sultanName = _enS ? _enS.name : (selectedSultan ? selectedSultan.name : "—");
+  const _advisorNames = selectedAdvisors.map(a => {
+    if (_isENdeath && window.EN_ADVISORS && window.EN_ADVISORS[a.id]) return window.EN_ADVISORS[a.id].name;
+    return a.name;
+  }).join(", ");
   const archive = JSON.parse(localStorage.getItem("sadrazam_deaths") || "[]");
   archive.unshift({
     year,
     reason: reason.slice(0, 80),
-    sultan: selectedSultan ? selectedSultan.name : "—",
-    advisors: selectedAdvisors.map(a => a.name).join(", "),
-    date: new Date().toLocaleDateString("tr")
+    sultan: _sultanName,
+    advisors: _advisorNames,
+    date: new Date().toLocaleDateString(_isENdeath ? "en-US" : "tr")
   });
   // Max 10
   if (archive.length > 10) archive.pop();
@@ -4017,12 +4055,14 @@ function renderDeathArchive() {
       panel.insertBefore(section, restartBtn);
     }
   }
-  section.innerHTML = `<div class="death-archive-title">GEÇMİŞ ÖLÜMLER</div>`;
+  const _isENarch = window.LANG === 'en';
+  section.innerHTML = `<div class="death-archive-title">${_isENarch ? 'PAST DEATHS' : 'GEÇMİŞ ÖLÜMLER'}</div>`;
 
   archive.forEach(d => {
     const entry = document.createElement("div");
     entry.className = "death-entry";
-    entry.innerHTML = `<strong>${d.sultan}</strong> · ${d.year} yıl · ${d.date}<br><span>${d.reason}</span>`;
+    const _yearStr = _isENarch ? `${d.year} years` : `${d.year} yıl`;
+    entry.innerHTML = `<strong>${d.sultan}</strong> · ${_yearStr} · ${d.date}<br><span>${d.reason}</span>`;
     section.appendChild(entry);
   });
 }
@@ -4038,7 +4078,12 @@ function saveHighScore() {
 document.getElementById("share-btn").addEventListener("click", showShareMenu);
 
 function getShareText() {
-  const sultanName = selectedSultan ? selectedSultan.name : "Sultan";
+  const _isENshare = window.LANG === 'en';
+  const _enS = (_isENshare && window.EN_SULTANS && selectedSultan) ? window.EN_SULTANS[selectedSultan.id] : null;
+  const sultanName = _enS ? _enS.name : (selectedSultan ? selectedSultan.name : "Sultan");
+  if (_isENshare) {
+    return `I survived ${year} years in Divan: Sadrazam during the reign of ${sultanName}! How long can YOU last? 🗡️\n\nDownload on the App Store!\nhttps://apps.apple.com/tr/app/divan-sadrazam/id6783881003`;
+  }
   return `Divan: Sadrazam'da ${sultanName} döneminde ${year} yıl ayakta kalabildim! Sen kaç yıl dayanabilirsin? 🗡️\n\nApp Store'dan İndir!\nhttps://apps.apple.com/tr/app/divan-sadrazam/id6783881003`;
 }
 
@@ -4046,13 +4091,14 @@ function showShareMenu() {
   document.getElementById("share-menu")?.remove();
   const menu = document.createElement("div");
   menu.id = "share-menu";
+  const _isENsm = window.LANG === 'en';
   menu.innerHTML = `
     <div id="share-menu-box">
-      <div id="share-menu-title">PAYLAŞ</div>
+      <div id="share-menu-title">${_isENsm ? 'SHARE' : 'PAYLAŞ'}</div>
       <button class="share-opt" id="share-wp">WhatsApp</button>
       <button class="share-opt" id="share-x">X (Twitter)</button>
-      <button class="share-opt" id="share-ferman">Ferman Olarak Paylaş</button>
-      <button class="share-opt ghost" id="share-cancel">İptal</button>
+      <button class="share-opt" id="share-ferman">${_isENsm ? 'Share as Decree' : 'Ferman Olarak Paylaş'}</button>
+      <button class="share-opt ghost" id="share-cancel">${_isENsm ? 'Cancel' : 'İptal'}</button>
     </div>`;
   document.body.appendChild(menu);
 
@@ -4149,8 +4195,9 @@ async function shareFerman() {
 
   // İçerik
   drawText("✦  S A D R A Z A M  ✦", 60, 22, "rgba(201,162,39,0.55)");
-  drawText("SADRAZAMLIK SONA ERDİ", 310, 28, "#C9A227");
-  drawText(sultanName + " Dönemi · " + year + " Yıl", 360, 18, "rgba(240,230,208,0.7)");
+  const _isENferman = window.LANG === 'en';
+  drawText(_isENferman ? "YOUR TENURE AS GRAND VIZIER HAS ENDED" : "SADRAZAMLIK SONA ERDİ", 310, _isENferman ? 20 : 28, "#C9A227");
+  drawText(_isENferman ? (sultanName + " Era · " + year + " Years") : (sultanName + " Dönemi · " + year + " Yıl"), 360, 18, "rgba(240,230,208,0.7)");
 
   c.font = "italic 15px Georgia, serif";
   c.fillStyle = "rgba(201,162,39,0.4)";

@@ -404,7 +404,36 @@ window.UI_STRINGS = {
     'char.donum':           'Dönüm Noktası',
     'char.miras':           'Miras Habercisi',
     // Danışman max uyarısı
-    'advisor.max_alert':    'En fazla 2 danışman seçebilirsiniz.'
+    'advisor.max_alert':    'En fazla 2 danışman seçebilirsiniz.',
+    // Başarım bildirimi (game over)
+    'ach.earned_title':     'KAZANILAN BAŞARIMLAR',
+    'ach.secret_toast':     'Gizli Başarım',
+    // Ölüm arşivi
+    'death_archive.title':  'GEÇMİŞ ÖLÜMLER',
+    'death_archive.years':  (y) => `${y} yıl`,
+    // Paylaş menüsü
+    'share.menu_title':     'PAYLAŞ',
+    'share.ferman_btn':     'Ferman Olarak Paylaş',
+    'share.cancel':         'İptal',
+    // Sultan etkinlik overlay
+    'sultan_event.label':          "SULTAN'DAN HABER",
+    'sultan_event.positive_effect': 'Tüm güçler +20',
+    'sultan_event.negative_effect': 'Tüm güçler −10',
+    'sultan_event.accept':          'Başüstüne Hünkarım',
+    // Padişah ziyareti
+    'padisah.name':    'Padişahım',
+    'padisah.decline': 'Reddet',
+    'padisah.accept':  'Biat Et',
+    // Eşya popup
+    'item.earned_title': 'YENİ EŞYA KAZANILDI',
+    'item.what_does':    'NE İŞE YARAR?',
+    'item.how_to':       'NASIL KULLANILIR?',
+    'item.how_to_desc':  "Ekranın altındaki eşya slotuna dokun → \"Kullan\" seç → Sonraki kart geldiğinde otomatik devreye girer.",
+    'item.condition':    '✦ Kazanım koşulu:',
+    'item.got_it':       'ANLADIM →',
+    'item.expired':      'Tükendi',
+    'item.use':          'Kullan ✓',
+    'item.cancel':       'Vazgeç',
   },
 
   en: {
@@ -494,8 +523,86 @@ window.UI_STRINGS = {
     'char.donum':           'Turning Point',
     'char.miras':           'Legacy Herald',
     // Advisor alert
-    'advisor.max_alert':    'You can select at most 2 advisors.'
+    'advisor.max_alert':    'You can select at most 2 advisors.',
+    // Achievement badge on gameover
+    'ach.earned_title':     'ACHIEVEMENTS EARNED',
+    'ach.secret_toast':     'Secret Achievement',
+    // Death archive
+    'death_archive.title':  'PAST DEATHS',
+    'death_archive.years':  (y) => `${y} years`,
+    // Share menu
+    'share.menu_title':     'SHARE',
+    'share.ferman_btn':     'Share as Decree',
+    'share.cancel':         'Cancel',
+    // Sultan event overlay
+    'sultan_event.label':          'MESSAGE FROM THE SULTAN',
+    'sultan_event.positive_effect': 'All powers +20',
+    'sultan_event.negative_effect': 'All powers −10',
+    'sultan_event.accept':          'As you command, my Sultan',
+    // Padisah visit
+    'padisah.name':    'My Sultan',
+    'padisah.decline': 'Refuse',
+    'padisah.accept':  'I Pledge Loyalty',
+    // Item popup
+    'item.earned_title': 'NEW ITEM ACQUIRED',
+    'item.what_does':    'WHAT DOES IT DO?',
+    'item.how_to':       'HOW TO USE?',
+    'item.how_to_desc':  "Tap the item slot at the bottom of the screen → Select 'Use' → It activates automatically when the next card arrives.",
+    'item.condition':    '✦ Unlock condition:',
+    'item.got_it':       'GOT IT →',
+    'item.expired':      'Expired',
+    'item.use':          'Use ✓',
+    'item.cancel':       'Cancel',
   }
+};
+
+// ── Padişah Ziyareti Metinleri ────────────────────────────────────
+window.EN_PADISAH_ZIYARET_TEXTS = [
+  { text: "Grand Vizier. I wished to speak with you face to face. Will your loyalty to the Ottoman state continue?",            evet: "My life and blood are devoted to the State, my Sultan." },
+  { text: "News has come from the Divan. I wished to ask you directly — are you loyal to me?",                                  evet: "Do not doubt my loyalty, my Sultan." },
+  { text: "Rumors circulate about the viziers. Are you beyond those rumors, Grand Vizier?",                                     evet: "Yes, my Lord — I am always at your service." },
+  { text: "I should have stayed in the palace tonight. I sat and thought of you. Are you pleased with your decisions?",         evet: "Every decision I make is for the good of the State, my Sultan." },
+  { text: "The walls of Topkapi hear much. And I know much. Do you understand me, Grand Vizier?",                               evet: "I always understand, my Lord. I am at your command." },
+];
+
+// ── Sultan Olay Kartı Metinleri ───────────────────────────────────
+window.EN_SULTAN_EVENT_POSITIVE = [
+  "State affairs are going well, Grand Vizier. Maintain this balance.",
+  "The throne finds you worthy. The Ottoman Empire is strong with you.",
+  "Our treasury is full, our army is sound. We wished to express our satisfaction.",
+  "This calm in the Divan pleases us. Continue in this manner."
+];
+window.EN_SULTAN_EVENT_NEGATIVE = [
+  "This course of events displeases us, Grand Vizier. We expect you to set things right.",
+  "The empire grows weak. This burden rests on your shoulders — know it.",
+  "The reports from the Divan are not encouraging. Take precautions without delay.",
+  "Patience is wearing thin. Take this as a final warning."
+];
+
+// ── Eşya (Item) Tanımları ─────────────────────────────────────────
+window.EN_ITEMS = {
+  altin_muhur:    { name: "Golden Seal",      desc: "Negate the next treasury penalty" },
+  sultan_ferman:  { name: "Sultan's Decree",  desc: "Negate the next palace penalty" },
+  yeniceri_nisan: { name: "Janissary Medal",  desc: "Negate the next army penalty" },
+  sifa_otu:       { name: "Healing Herb",     desc: "Lowest stat +20 (instant)" },
+  casus_maskesi:  { name: "Spy's Mask",       desc: "Skip this card, get the next one" },
+  dervis_muska:   { name: "Dervish Amulet",   desc: "Next card does not affect the Sultan's patience" },
+};
+window.EN_ITEM_HOW_TO_USE = {
+  altin_muhur:    "Use to protect your treasury. Activate before the next card if a treasury penalty is coming — the penalty is nullified. A lifesaver when your treasury is critically low.",
+  sultan_ferman:  "Use when your palace score is in danger. Activate before the next card if a palace penalty is coming — the penalty is blocked. Use when you are about to fall out of the Sultan's favor.",
+  yeniceri_nisan: "Use when about to lose the army. Activate before the next card if an army penalty is coming — no damage. Strong against Janissary revolt or war cards.",
+  sifa_otu:       "Immediate effect! Activating adds +20 to your lowest stat instantly. A quick lifesaver in critical moments or when running low.",
+  casus_maskesi:  "Use when you get an unwanted card. Activating skips the current card entirely and brings the next one. Ideal for escaping a dangerous character.",
+  dervis_muska:   "Use against cards that reduce the Sultan's patience. Activating means the next card will not affect the Sultan's patience at all. A lifesaver when the Sultan's patience is dwindling.",
+};
+window.EN_ITEM_GRANT_CONDITIONS = {
+  'sultan_tımar_ödülü':      "Palace ≥ 55 and at least year 3",
+  'yeniceri_tüfek_talebi':   "Army ≥ 50 and at least year 2",
+  'defterdar_borç_teklifi':  "Treasury ≥ 50 and at least year 3",
+  'hekimbasi_darüşşifa':     "Any stat ≤ 35 (in critical condition)",
+  'derviş_kıyamet':          "Clergy ≤ 40 or Sultan's patience ≤ 40",
+  'casuslar_gizli_kimlik':   "At least year 4 and Palace between 25–65",
 };
 
 // ── i18n Çekirdek Fonksiyonları ───────────────────────────────────
