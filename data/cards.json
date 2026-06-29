@@ -6235,7 +6235,7 @@
       },
       "right_effects": {
         "saray": 6,
-        "yeniçeri": -10,
+        "yeniçeri": -4,
         "ulema": -2,
         "hazine": -16
       },
@@ -6336,7 +6336,7 @@
       },
       "right_effects": {
         "saray": 6,
-        "yeniçeri": -22,
+        "yeniçeri": -8,
         "ulema": -4,
         "hazine": -18
       },
@@ -6374,7 +6374,7 @@
       },
       "right_effects": {
         "saray": 12,
-        "yeniçeri": 14,
+        "yeniçeri": 8,
         "ulema": 3,
         "hazine": -14
       },
@@ -6683,7 +6683,7 @@
       "left_effects": {
         "saray": -6,
         "yeniçeri": -3,
-        "ulema": -15,
+        "ulema": -8,
         "hazine": 0
       },
       "right_effects": {
