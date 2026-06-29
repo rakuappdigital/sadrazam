@@ -1209,48 +1209,75 @@ function showTutorial(onDone) {
   renderStep();
 }
 
-// ── MP3 MÜZİK SİSTEMİ ────────────────────────────────────────────
-const MUSIC_VOL  = 0.70;
-const FADE_MS    = 1200;
-let _menuAudio   = null;
-let _gameAudio   = null;
-let _activeMusicTarget = null; // 'menu' | 'game' | null
+// ── MP3 MÜZİK SİSTEMİ (Playlist + Shuffle + Fade) ───────────────
+const MUSIC_VOL = 0.60;   // Genel ses seviyesi — rahatsız etmeyecek düzeyde
+const FADE_MS   = 1500;   // Kategori geçiş süresi (ms)
+const FADE_END  = 3.0;    // Parça bitmeden kaç saniye önce fade-out başlar
+
+// ── Playlist tanımları ────────────────────────────────────────────
+const _MENU_TRACKS = [
+  'assets/music/menu.mp3',
+  'assets/music/menu1.mp3'
+];
+const _GAME_TRACKS = [
+  'assets/music/oyunici.mp3',
+  'assets/music/oyun1.mp3',
+  'assets/music/oyun2.mp3',
+  'assets/music/oyun3.mp3'
+];
+
+// Her kategori için durum nesnesi
+const _music = {
+  menu: { audio: null, tracks: _MENU_TRACKS, queue: [], qi: 0, fading: false },
+  game: { audio: null, tracks: _GAME_TRACKS, queue: [], qi: 0, fading: false }
+};
+let _activeMusicTarget = null;
+
+// Fisher-Yates karıştırma
+function _shuffleTracks(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Sıradaki parçayı al — liste bitince yeniden karıştır
+function _nextTrack(m) {
+  if (m.qi >= m.queue.length) {
+    m.queue = _shuffleTracks(m.tracks);
+    m.qi = 0;
+  }
+  return m.queue[m.qi++];
+}
+
+// Audio element'e parça-sonu handler ekle (fade out → fade in next)
+function _attachEndHandler(audio, m) {
+  audio.ontimeupdate = function() {
+    if (m.fading || !audio.duration) return;
+    if (audio.currentTime >= audio.duration - FADE_END) {
+      m.fading = true;
+      _fadeVol(audio, 0, 2000, () => {
+        audio.src = _nextTrack(m);
+        audio.load();
+        m.fading = false;
+        audio.play().catch(() => {});
+        _fadeVol(audio, MUSIC_VOL, 1800);
+      });
+    }
+  };
+}
 
 function _ensureAudio() {
-  if (!_menuAudio) {
-    _menuAudio = new Audio('assets/music/menu.mp3');
-    _menuAudio.volume = 0;
-    _menuAudio._loopFading = false;
-    _menuAudio.addEventListener('timeupdate', function() {
-      if (this._loopFading || !this.duration) return;
-      if (this.currentTime >= this.duration - 2.5) {
-        this._loopFading = true;
-        _fadeVol(this, 0, 2000, () => {
-          this.currentTime = 0;
-          this._loopFading = false;
-          this.play().catch(() => {});
-          _fadeVol(this, MUSIC_VOL, 1500);
-        });
-      }
-    });
-  }
-  if (!_gameAudio) {
-    _gameAudio = new Audio('assets/music/oyunici.mp3');
-    _gameAudio.volume = 0;
-    _gameAudio._loopFading = false;
-    _gameAudio.addEventListener('timeupdate', function() {
-      if (this._loopFading || !this.duration) return;
-      if (this.currentTime >= this.duration - 2.5) {
-        this._loopFading = true;
-        _fadeVol(this, 0, 2000, () => {
-          this.currentTime = 0;
-          this._loopFading = false;
-          this.play().catch(() => {});
-          _fadeVol(this, MUSIC_VOL, 1500);
-        });
-      }
-    });
-  }
+  ['menu', 'game'].forEach(cat => {
+    const m = _music[cat];
+    if (!m.audio && m.tracks.length > 0) {
+      m.audio = new Audio(_nextTrack(m));
+      m.audio.volume = 0;
+      _attachEndHandler(m.audio, m);
+    }
+  });
 }
 
 function _fadeVol(audio, target, duration, callback) {
@@ -1277,19 +1304,24 @@ function _switchMusic(target) {
   if (_activeMusicTarget === target) return;
   _activeMusicTarget = target;
 
-  const incoming = target === 'menu' ? _menuAudio : _gameAudio;
-  const outgoing  = target === 'menu' ? _gameAudio : _menuAudio;
+  const mIn  = _music[target];
+  const mOut = _music[target === 'menu' ? 'game' : 'menu'];
 
-  // Çıkan müziği fade out et
-  if (outgoing && !outgoing.paused) {
-    _fadeVol(outgoing, 0, FADE_MS, () => { outgoing.pause(); outgoing.currentTime = 0; outgoing._loopFading = false; });
+  // Çıkan müziği fade out — fading flag'i set et, sonraki parça tetiklenmesin
+  if (mOut.audio && !mOut.audio.paused) {
+    mOut.fading = true;
+    _fadeVol(mOut.audio, 0, FADE_MS, () => {
+      if (mOut.audio) { mOut.audio.pause(); mOut.audio.currentTime = 0; }
+      mOut.fading = false;
+    });
   }
 
-  // Gelen müziği yarı fade sonra başlat
-  const delay = (outgoing && !outgoing.paused) ? FADE_MS / 2 : 0;
+  // Gelen müziği yarı-geçiş sonrası fade in
+  const delay = (mOut.audio && !mOut.audio.paused) ? FADE_MS / 2 : 0;
   setTimeout(() => {
-    incoming.play().catch(() => {});
-    _fadeVol(incoming, MUSIC_VOL, FADE_MS);
+    if (!mIn.audio) return;
+    mIn.audio.play().catch(() => {});
+    _fadeVol(mIn.audio, MUSIC_VOL, FADE_MS);
   }, delay);
 }
 
@@ -1298,23 +1330,28 @@ function playGameMusic()  { _switchMusic('game'); }
 function stopAllMusic() {
   _activeMusicTarget = null;
   _ensureAudio();
-  _fadeVol(_menuAudio, 0, FADE_MS, () => { if (_menuAudio) { _menuAudio.pause(); _menuAudio.currentTime = 0; } });
-  _fadeVol(_gameAudio, 0, FADE_MS, () => { if (_gameAudio) { _gameAudio.pause(); _gameAudio.currentTime = 0; } });
+  ['menu', 'game'].forEach(cat => {
+    const m = _music[cat];
+    if (m.audio) {
+      m.fading = true;
+      _fadeVol(m.audio, 0, FADE_MS, () => {
+        if (m.audio) { m.audio.pause(); m.audio.currentTime = 0; }
+        m.fading = false;
+      });
+    }
+  });
 }
 
-// Uygulama background'a geçince müziği duraklat, geri gelince devam et
+// Uygulama background'a geçince duraklat, geri gelince devam et
 document.addEventListener('visibilitychange', () => {
-  if (!_menuAudio && !_gameAudio) return;
+  const ma = _music.menu.audio, ga = _music.game.audio;
+  if (!ma && !ga) return;
   if (document.hidden) {
-    if (_menuAudio && !_menuAudio.paused) { _menuAudio.pause(); _menuAudio._wasPlaying = true; }
-    if (_gameAudio && !_gameAudio.paused) { _gameAudio.pause(); _gameAudio._wasPlaying = true; }
+    if (ma && !ma.paused) { ma.pause(); ma._wasPlaying = true; }
+    if (ga && !ga.paused) { ga.pause(); ga._wasPlaying = true; }
   } else {
-    if (_activeMusicTarget === 'menu' && _menuAudio && _menuAudio._wasPlaying) {
-      _menuAudio.play().catch(() => {}); _menuAudio._wasPlaying = false;
-    }
-    if (_activeMusicTarget === 'game' && _gameAudio && _gameAudio._wasPlaying) {
-      _gameAudio.play().catch(() => {}); _gameAudio._wasPlaying = false;
-    }
+    if (_activeMusicTarget === 'menu' && ma && ma._wasPlaying) { ma.play().catch(() => {}); ma._wasPlaying = false; }
+    if (_activeMusicTarget === 'game' && ga && ga._wasPlaying) { ga.play().catch(() => {}); ga._wasPlaying = false; }
   }
 });
 
