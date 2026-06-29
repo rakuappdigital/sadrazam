@@ -490,11 +490,46 @@ const ZAMAN_TEXTS = [
   "Sosyal medya var, milyonlar birbirine bakıyor. Bir kedi videosu Divan fermanından daha fazla insan görüyor. Kedi ünlü, sizin adınızı bilmiyor.",
   "İnsanlar telefona bakarak yürüyor, direğe çarpıyor, nehre düşüyor. Kimse durmuyor çünkü herkes telefona bakıyor. Şehir böyle işliyor.",
   "Paşam, seçimler var — her vatandaş oy kullanıyor. Siz de Divan'da böyle yapmayı düşündünüz mü? Neyse, tavsiye etmiyorum.",
-  "Bir adam internette 'benim günlük rutinom' diye video çekiyor — sabah kahvesi, spor, öğle yemeği. Bunu milyonlar izliyor. Ben de izledim, itiraf ediyorum."
+  "Bir adam internette 'benim günlük rutinom' diye video çekiyor — sabah kahvesi, spor, öğle yemeği. Bunu milyonlar izliyor. Ben de izledim, itiraf ediyorum.",
+  "Otonom araçlar icat ettiler Paşam. Arabalar kendi kendine gidiyor. Sürücü içinde uyuyor. Atlı haberci diyeceksiniz, evet, o da uyuyordu aslında.",
+  "Bir adam Mars'a yerleşmek istiyor. Mars. İstanbul'da daire bulamadığı için değil, orada buluyor demek ki.",
+  "Paşam, 'podcast' denen şey var. Birisi konuşuyor, milyonlar kulaklıkla dinliyor. Ben de Seyahatname'yi okusaydım podcast yapardım.",
+  "Online alışveriş var — her şey eve geliyor. Çarşı neredeyse kapandı. Bakkal yıkıldı. Hazinedar mı olacaksınız, düşünün.",
+  "Bir uygulama var, yüzünüzü çekip 30 yıl sonrasını gösteriyor. Herkes baktı, herkes üzüldü. Paşam sizin de bakmanızı önermiyorum.",
+  "İnsanlar artık 'burnout' oluyorlar — çok çalışmaktan bitiyorlar. Divan'da bu kavram yoktur, burada ya çalışırsınız ya idam edilirsiniz.",
+  "Bir kutu oyunu var, 'Catan' diyorlar — kaynak topluyorsunuz, yol kuruyorsunuz. Osmanlı aynısını gerçekte yaptı, üstelik sürüm 1.0'dı.",
+  "Filistin'de hâlâ savaş var. Osmanlı zamanında da vardı. Bazı şeyler değişmiyor Paşam.",
+  "Yapay zeka resim çiziyor. Bir ressam 'beni kopyaladılar' diye mahkemeye verdi. Mahkeme anlamadı. Cellat'a sorsaydılar daha pratik çözerdi.",
+  "Paşam, 'influencer'lar artık siyaset yapıyor. Takipçileri var, programları var, saçları var. Bizim Divan'dan tek farkı saçları."
 ];
+
+// Shuffle yardımcısı — Fisher-Yates
+function _shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let _zamanShuffled = [];
 let _zamanIdx = 0;
+
+function _initZamanShuffle() {
+  _zamanShuffled = _shuffleArray(ZAMAN_TEXTS);
+  _zamanIdx = 0;
+}
+
 function getZamanCard() {
-  const text = ZAMAN_TEXTS[_zamanIdx % ZAMAN_TEXTS.length]; _zamanIdx++;
+  if (_zamanIdx >= _zamanShuffled.length) {
+    // Tüm cümleler bitti — yeniden karıştır (ilk eleman son kullanılandan farklı olsun)
+    const last = _zamanShuffled[_zamanShuffled.length - 1];
+    _zamanShuffled = _shuffleArray(ZAMAN_TEXTS);
+    if (_zamanShuffled[0] === last) _zamanShuffled.push(_zamanShuffled.shift());
+    _zamanIdx = 0;
+  }
+  const text = _zamanShuffled[_zamanIdx++];
   return { id:"zaman_"+_zamanIdx, type:"easter", easter_type:"zaman",
     character:"zaman-yolcusu", character_name:"Zaman Yolcusu",
     text, button:"NE DERSİN ZINNIK?", stat_effect: null };
@@ -972,6 +1007,7 @@ function startGame() {
   _donumNextCard     = 42;
   _donumShownThisGame = false;
   _evliyaTextIdx     = 0;
+  _initZamanShuffle();
   _kehanetIdx        = 0;
   _felaketIdx        = 0;
   _mucizeIdx         = 0;

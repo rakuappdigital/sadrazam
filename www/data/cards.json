@@ -6932,6 +6932,2076 @@
       "speech_left": "Anlıyorum, Paşam. Ama teklif açık.",
       "speech_right": "Akıllıca. Umarım hiç kullanmak gerekmez.",
       "grants_item_on_right": "casus_maskesi"
+    },
+    {
+      "id": "sehzade_avcisi_2",
+      "character": "27-sehzade-avcisi",
+      "character_name": "Şehzade Avcısı",
+      "faction": "saray",
+      "text": "Paşam, emredilen şehzade yakalandı — ancak teslimatta kaçmayı başardı. İzini yitirdim. Ne emredersiniz?",
+      "left_text": "Sükûnet, olayı gizleyin",
+      "right_text": "Onu her yolla bulun",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 3,
+        "ulema": -2,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "sehzade_avcisi_3",
+      "character": "27-sehzade-avcisi",
+      "character_name": "Şehzade Avcısı",
+      "faction": "saray",
+      "text": "Bu sefer liste farklı, Paşam. Siyasi tehlike değil — biri ticaret rakibini tasfiye ettirmek için kullanıyor bizi. Şüpheliyim.",
+      "left_text": "Emri sorgulayın",
+      "right_text": "Emir emirdir",
+      "left_effects": {
+        "saray": -6,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 8,
+        "yeniçeri": 0,
+        "ulema": -5,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "sehzade_avcisi_4",
+      "character": "27-sehzade-avcisi",
+      "character_name": "Şehzade Avcısı",
+      "faction": "saray",
+      "text": "Görevimi yaparken o şehzadenin masum olduğuna dair bir belge buldum. Yok etmemi mi, saklamami mi istersiniz?",
+      "left_text": "Belgeyi yakın",
+      "right_text": "Belgeyi saklayın",
+      "left_effects": {
+        "saray": 6,
+        "yeniçeri": 0,
+        "ulema": -6,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": 0,
+        "ulema": 6,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "osmanlı_kadisi_2",
+      "character": "28-kadi",
+      "character_name": "Osmanlı Kadısı",
+      "faction": "din",
+      "text": "Bir miras davası — şer'i hukuk açık ama büyük kardeş güçlü bir ağa. Baskı altındayım, yönlendirmenizi bekliyorum.",
+      "left_text": "Şeriata göre karar verin",
+      "right_text": "Ağayı gözeterek karar verin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 8,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": -7,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "osmanlı_kadisi_3",
+      "character": "28-kadi",
+      "character_name": "Osmanlı Kadısı",
+      "faction": "din",
+      "text": "Bir kadın eşinden boşanmak istiyor, meşru sebepleri var. Ama kocası etkili bir yeniçeri subayı.",
+      "left_text": "Davayı kabul edin",
+      "right_text": "Davayı reddedin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -5,
+        "ulema": 6,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 5,
+        "ulema": -5,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "osmanlı_kadisi_4",
+      "character": "28-kadi",
+      "character_name": "Osmanlı Kadısı",
+      "faction": "din",
+      "text": "Tüccar faizle para vermiş — şeriata aykırı, ama sözleşme Venedik hukukuyla yapılmış. Ne yapılacak?",
+      "left_text": "Şer'i hukuk geçerlidir",
+      "right_text": "Yabancı hukuku tanıyın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 7,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -6,
+        "hazine": 7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "kendi_ajan_2",
+      "character": "29-ajan",
+      "character_name": "Kendi Ajanın",
+      "faction": "saray",
+      "text": "Efendim, kimliğim deşifre edilmiş olabilir. Ya geri çekerek kurtarırsınız ya da risk alıp devam ederim.",
+      "left_text": "Geri çekin, güvende olsun",
+      "right_text": "Devam etsin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "kendi_ajan_3",
+      "character": "29-ajan",
+      "character_name": "Kendi Ajanın",
+      "faction": "saray",
+      "text": "Ajanlarımdan biri rakip vezirinize bilgi satıyor. İspatlayamam, ama inanıyorum buna.",
+      "left_text": "Kanıt gelene kadar bekleyin",
+      "right_text": "Ajanı derhal tasfiye edin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 3,
+        "ulema": -2,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "kendi_ajan_4",
+      "character": "29-ajan",
+      "character_name": "Kendi Ajanın",
+      "faction": "saray",
+      "text": "Divan'daki üst düzey birinin yolsuzluk dosyasını ele geçirdim. Açıklamak herkesi sarsacak — ne yapayım?",
+      "left_text": "Dosyayı gizleyin",
+      "right_text": "Dosyayı bana getirin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 4,
+        "ulema": 4,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "halk_onderi_2",
+      "character": "30-halk-onderi",
+      "character_name": "Halk Önderi",
+      "faction": "halk",
+      "text": "Mahalle imamlarının desteğiyle ekmek fiyatlarına itiraz kampanyası başlattım. Toplantı izni istiyorum.",
+      "left_text": "İzin yok, dağıtın",
+      "right_text": "İzin verin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": -3,
+        "ulema": -4,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 5,
+        "ulema": 4,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "halk_onderi_3",
+      "character": "30-halk-onderi",
+      "character_name": "Halk Önderi",
+      "faction": "halk",
+      "text": "Halk adına bir dilekçe hazırladım — vergi adaleti istiyoruz. Sultan'a ulaştırmanızı rica ediyorum.",
+      "left_text": "Böyle bir yol yoktur",
+      "right_text": "İletebilirsiniz",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": -4,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 6,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "halk_onderi_4",
+      "character": "30-halk-onderi",
+      "character_name": "Halk Önderi",
+      "faction": "halk",
+      "text": "Bir vakıf kurmak istiyorum, yoksulları beslemek için. Sadece resmî onay gerekiyor.",
+      "left_text": "Gerekmez, kendiniz yapın",
+      "right_text": "Onayı verin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 5,
+        "ulema": 5,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "dogu_alim_2",
+      "character": "31-dogu-alim",
+      "character_name": "Doğu'dan Alim",
+      "faction": "din",
+      "text": "Bağdat'ta gördüm — veba doğudan geliyor. Doğu kapıları karantinaya alınmalı, ama bu ticaret akışını keser.",
+      "left_text": "Tüccarlar aksatılmasın",
+      "right_text": "Karantinayı uygulayın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": -4,
+        "hazine": 5
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 3,
+        "ulema": 6,
+        "hazine": -7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "dogu_alim_3",
+      "character": "31-dogu-alim",
+      "character_name": "Doğu'dan Alim",
+      "faction": "din",
+      "text": "Eski bir kütüphanede haritalar buldum — Osmanlı'nın bilmediği ticaret yolları. Divan'a sunmama izin verin.",
+      "left_text": "Başka önceliklerimiz var",
+      "right_text": "Sunun, inceleyelim",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 2,
+        "ulema": 4,
+        "hazine": 5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "dogu_alim_4",
+      "character": "31-dogu-alim",
+      "character_name": "Doğu'dan Alim",
+      "faction": "din",
+      "text": "Matematik, astronomi ve tıp üzerine bir medrese kurmak istiyorum. Şeyhülislam beni istemiyor.",
+      "left_text": "Şeyhülislam'ın kararına saygı",
+      "right_text": "Arabuluculuk yapın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "cellat_subay",
+      "character": "9-cellat",
+      "character_name": "Cellat",
+      "faction": "saray",
+      "text": "İdam listesinde bir subay var. Sultan bizzat onayladı ama o subayın Sultan'a eski bir iyiliği olduğunu biliyorum. Devam mı?",
+      "left_text": "Fermanı uygulayın",
+      "right_text": "Sultan'a hatırlatın",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 5,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "cellat_aile",
+      "character": "9-cellat",
+      "character_name": "Cellat",
+      "faction": "saray",
+      "text": "İdam edilen kişinin ailesi eşyalarını istiyor. Devlet mülküne el koymam mı, iade mi?",
+      "left_text": "Devlet mülküne el koyun",
+      "right_text": "Aileye iade edin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 4
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "cellat_maaş",
+      "character": "9-cellat",
+      "character_name": "Cellat",
+      "faction": "saray",
+      "text": "Son ay kimse idam edilmedi. Maaşımı almaya devam mı edeceğim, Paşam?",
+      "left_text": "Maaş göreve göredir",
+      "right_text": "Görev, hazır beklemektir",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 4
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "saray_sairi_rakip",
+      "character": "12-saray_sairi",
+      "character_name": "Saray Şairi",
+      "faction": "saray",
+      "text": "Genç bir şair sizi öven şiirde fazla ileri gitti — neredeyse Sultan'a rakip çıkarıyor. Çevrenizden uyarılar geliyor.",
+      "left_text": "Şairi uzaklaştırın",
+      "right_text": "Şiiri doğal karşılayın",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "saray_sairi_yazma",
+      "character": "12-saray_sairi",
+      "character_name": "Saray Şairi",
+      "faction": "saray",
+      "text": "Saray kütüphanesi için Avrupa'dan el yazmaları getirtmek istiyorum. Dil öğrenmek gerekecek.",
+      "left_text": "Gereksiz masraf",
+      "right_text": "Onaylayın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 4
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 6,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "saray_sairi_tiyatro",
+      "character": "12-saray_sairi",
+      "character_name": "Saray Şairi",
+      "faction": "saray",
+      "text": "Tarihî bir zafer üzerine bir tiyatro oyunu yazdım, sarayda sergilenmesini istiyorum.",
+      "left_text": "Saray bu tür şeyler için değil",
+      "right_text": "Hazırlık yapın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 3,
+        "ulema": -2,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "koylu_medrese",
+      "character": "19-koylu",
+      "character_name": "Köylü",
+      "faction": "halk",
+      "text": "Köydeki imam çocuklarımı medreseye göndermemizi istiyor, ama tarladaki işçi elimizi kaldırıyor.",
+      "left_text": "Çocuklar tarlada gerekli",
+      "right_text": "Medreseyi destekleyin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": -5,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 3,
+        "ulema": 6,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "koylu_aga_suistimal",
+      "character": "19-koylu",
+      "character_name": "Köylü",
+      "faction": "halk",
+      "text": "Bölge ağası askerleri kendi toprağında kullanıyor. Köylüler şikâyet ediyor ama ses çıkaramıyorlar.",
+      "left_text": "Ordu devlet emrindedir",
+      "right_text": "Ağayı soruşturun",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": -5,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 5,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "koylu_iyi_hasat",
+      "character": "19-koylu",
+      "character_name": "Köylü",
+      "faction": "halk",
+      "text": "Bu yıl verimli hasat oldu. Vergimizi fazla ödeyebiliriz. Yoksa saklarsak refah devam eder.",
+      "left_text": "Adil vergiyi ödeyin",
+      "right_text": "Anlayış gösteririm",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 7
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "rum_genc_yesim",
+      "character": "20-rum_patrigi",
+      "character_name": "Rum Patriği",
+      "faction": "din",
+      "text": "Bir Rum genç Müslüman olup yeniçeri olmak istiyor. Ailesinin rızası yok. Cemaat bölündü.",
+      "left_text": "Bu tamamen kişisel karardır",
+      "right_text": "Ailenin onayını zorunlu kılın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 3,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 5,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "rum_venedik_heyet",
+      "character": "20-rum_patrigi",
+      "character_name": "Rum Patriği",
+      "faction": "din",
+      "text": "Venedik'ten bir heyet geliyor, Rum cemaatiyle görüşmek istiyor. Osmanlı'nın haberi olmalı mı?",
+      "left_text": "Bildirim zorunlu değil",
+      "right_text": "Ziyareti kayıt altına alın",
+      "left_effects": {
+        "saray": -5,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "rum_koy_kilise",
+      "character": "20-rum_patrigi",
+      "character_name": "Rum Patriği",
+      "faction": "din",
+      "text": "Rum tüccarlar İstanbul dışında küçük bir köyde kilise açmak istiyor. Aracı olmanızı istiyorum.",
+      "left_text": "Taşrada inisiyatif tehlikeli",
+      "right_text": "İzin belgesi düzenleyin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -5,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "ermeni_kooperatif",
+      "character": "21-ermeni_tuccar",
+      "character_name": "Ermeni Tüccar",
+      "faction": "halk",
+      "text": "İpek yolunda bir Ermeni tüccar kooperatifi kurmak istiyoruz. Devlet desteği değil, sadece güvence belgesi.",
+      "left_text": "Ticaret kendi riskiyledir",
+      "right_text": "Güvence belgesini verin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "ermeni_vali_vergi",
+      "character": "21-ermeni_tuccar",
+      "character_name": "Ermeni Tüccar",
+      "faction": "halk",
+      "text": "Doğu'daki bir vali, Ermeni tüccarlardan kanun dışı ek vergi alıyor. Şikâyetimizi iletmek istedim.",
+      "left_text": "Valinin yetkisine karışmayız",
+      "right_text": "Valiyi uyarın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 4
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "korsan_yazisma",
+      "character": "24-korsanbasi",
+      "character_name": "Korsanbaşı",
+      "faction": "ordu",
+      "text": "Venedik ticaret gemisini yakaladım — içinde gizli yazışma var. Size getirdim, Paşam.",
+      "left_text": "Yazışmalar diplomatik sorun çıkarır",
+      "right_text": "İnceleyin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "korsan_portekiz",
+      "character": "24-korsanbasi",
+      "character_name": "Korsanbaşı",
+      "faction": "ordu",
+      "text": "Kuzey Afrika'daki Portekiz üssünü çökertmek için donanma desteği istiyorum. Tek başıma yapamam.",
+      "left_text": "Bu operasyon için erken",
+      "right_text": "Destek verin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 8,
+        "ulema": -3,
+        "hazine": -10
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "genç_valide_uyari",
+      "character": "26-genc_pasa",
+      "character_name": "Genç Paşa",
+      "faction": "saray",
+      "text": "Valide Sultan'ın yanına gidip sizi çürütmek için bilgi topladığını duydum. Sizi uyarmalıydım.",
+      "left_text": "Bilmek yeterli",
+      "right_text": "Valide Sultan'a nazikçe mesaj gönderin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "genç_birlik",
+      "character": "26-genc_pasa",
+      "character_name": "Genç Paşa",
+      "faction": "saray",
+      "text": "Kendi adıma bir yeniçeri birliği kurmak istiyorum. Sultanın onayına ihtiyacım var — önce sizinki şart.",
+      "left_text": "Henüz vakti değil",
+      "right_text": "Onayınızı verin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": -4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 6,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "hekimbasi_salgın",
+      "character": "10-hekimbasi",
+      "character_name": "Hekimbaşı",
+      "faction": "saray",
+      "text": "Sarayda bir salgın başlangıcı var. Karantina lazım ama bu Divan toplantısını engeller.",
+      "left_text": "Divan önceliklidir",
+      "right_text": "Karantinayı uygulayın",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": -5,
+        "ulema": -4,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 4,
+        "ulema": 5,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "hekimbasi_ilaç",
+      "character": "10-hekimbasi",
+      "character_name": "Hekimbaşı",
+      "faction": "saray",
+      "text": "Hint kökenli yeni bir ilaç buldum. Şeyhülislam onaylamıyor ama hastalar şifa buldu.",
+      "left_text": "Şeyhülislam'ın kararına uyun",
+      "right_text": "Kullanımına izin verin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 6,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -6,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "sipahi_ret",
+      "character": "11-sipahi_agasi",
+      "character_name": "Sipahi Ağası",
+      "faction": "ordu",
+      "text": "Sipahi alaylarından biri verilen görevi reddetti. Disiplin için örnek ceza gerekiyor.",
+      "left_text": "Uyarı yeterlidir",
+      "right_text": "Alayı cezalandırın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "sipahi_yeni_anlaşmazlık",
+      "character": "11-sipahi_agasi",
+      "character_name": "Sipahi Ağası",
+      "faction": "ordu",
+      "text": "Sınır bölgesinde Sipahi ile Yeniçeri arasında toprak kavgası var, büyüyor.",
+      "left_text": "İkisini de uyarın",
+      "right_text": "Sipahilere öncelik verin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 5,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "tuccar_aracilar",
+      "character": "13-buyuk_tuccar",
+      "character_name": "Büyük Tüccar",
+      "faction": "halk",
+      "text": "Vergi toplayan aracı tüccarlar fahiş komisyon alıyor. Doğrudan sistemi öneriyorum.",
+      "left_text": "Mevcut sistem işliyor",
+      "right_text": "Sistemi inceleyin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 8
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "tuccar_rakip_teklif",
+      "character": "13-buyuk_tuccar",
+      "character_name": "Büyük Tüccar",
+      "faction": "halk",
+      "text": "Dubrovnik tüccarları ayrıcalık istiyor. Ben onları engelleyebilirim, ücret karşılığı.",
+      "left_text": "Devlet ayrıcalık vermez",
+      "right_text": "Ayrıcalığı verin",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 9
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "casuslar_cift_ajan",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "İçimizde çift ajan var — hem bize hem rakibe çalışıyor. Yakalarsak ağ çöker, bıraksak tehlikeli.",
+      "left_text": "Hemen tutun",
+      "right_text": "Kullanın, sonra tasfiye edin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 6,
+        "yeniçeri": 5,
+        "ulema": -3,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "casuslar_yeniden_kur",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "Doğu vilayetindeki casus ağım çöktü. Yeniden kurulum için kaynak lazım.",
+      "left_text": "Şimdi değil",
+      "right_text": "Kaynakları ayırın",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "halk_vakif",
+      "character": "15-halk_temsilcisi",
+      "character_name": "Halk Temsilcisi",
+      "faction": "halk",
+      "text": "Esnaflar arasında dayanışma vakfı kurmak istiyoruz. Devletten bağlantı değil, sadece onay.",
+      "left_text": "Gerek yok, kendiniz yapın",
+      "right_text": "Onay verin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 5,
+        "ulema": 4,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "halk_su",
+      "character": "15-halk_temsilcisi",
+      "character_name": "Halk Temsilcisi",
+      "faction": "halk",
+      "text": "Mahalledeki su sıkıntısı dayanılmaz hale geldi. Bir müdahale talep ediyoruz.",
+      "left_text": "Yerel sorun, yerel çözüm",
+      "right_text": "İnceleme ekibi gönderin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": -3,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 5,
+        "ulema": 3,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "saray_agasi_kaçış",
+      "character": "16-saray_agasi",
+      "character_name": "Saray Ağası",
+      "faction": "saray",
+      "text": "Harem'den bir cariye firar etmiş, henüz dışarı çıkamadı. Sessizce mi çözelim?",
+      "left_text": "Sessizce çözün",
+      "right_text": "Resmî kayıt tutun",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "saray_agasi_baskı",
+      "character": "16-saray_agasi",
+      "character_name": "Saray Ağası",
+      "faction": "saray",
+      "text": "Saraydaki bazı görevliler konuşmak istemiyor — korkudan. Baskı var, bilgime göre.",
+      "left_text": "Saraydaki meseleler dışarı çıkmaz",
+      "right_text": "Soruşturun",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 4,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "veba_saray_taşı",
+      "character": "17-veba_habercisi",
+      "character_name": "Veba Habercisi",
+      "faction": "halk",
+      "text": "Veba Edirne'ye ulaştı. Sarayı taşımalı mıyız yoksa yerinde mi kalmalıyız?",
+      "left_text": "Yerinde kalın, panik çıkmasın",
+      "right_text": "Sarayı güvenli konuma alın",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -5,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 4,
+        "ulema": 4,
+        "hazine": -7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "veba_toplu_defin",
+      "character": "17-veba_habercisi",
+      "character_name": "Veba Habercisi",
+      "faction": "halk",
+      "text": "Veba kayıpları çok büyük. Toplu defin izni lazım — Şeyhülislam onayını bekliyor.",
+      "left_text": "Acele kararlar hata yapar",
+      "right_text": "Anında izin verin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 5,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 5,
+        "ulema": 3,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "yeniceri_isyan_jest",
+      "character": "18-yeniceri_isyancisi",
+      "character_name": "Yeniçeri İsyancısı",
+      "faction": "ordu",
+      "text": "Kazan kaldırmanın eşiğindeyiz. Maaş değil onur meselesi. Küçük bir jest yeterli.",
+      "left_text": "İsyancıyla pazarlık yapılmaz",
+      "right_text": "Sembolik bir jest yapın",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -8,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": 7,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "yeniceri_isyan_klik",
+      "character": "18-yeniceri_isyancisi",
+      "character_name": "Yeniçeri İsyancısı",
+      "faction": "ordu",
+      "text": "Kışlada eski komutanların heykeli kırıldı, biz yapmadık — içimizde başka bir klik var.",
+      "left_text": "Kışla kendi içini temizlesin",
+      "right_text": "Soruşturma açın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": -4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 5,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "yahudi_kredi",
+      "character": "22-yahudi_bankaci",
+      "character_name": "Yahudi Bankacı",
+      "faction": "halk",
+      "text": "Hazinenin nakit akışı için kısa vadeli kredi sunabilirim — düşük faiz, belge ister.",
+      "left_text": "Devlet borçlanmaz",
+      "right_text": "Anlaşmayı yapın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -6,
+        "hazine": 13
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "yahudi_rakip_banka",
+      "character": "22-yahudi_bankaci",
+      "character_name": "Yahudi Bankacı",
+      "faction": "halk",
+      "text": "Bir Avrupa bankasından daha iyi koşullarla teklif geldi. Ben eşit şartlarla karşılık verebilirim.",
+      "left_text": "Avrupa teklifini değerlendirin",
+      "right_text": "Sadık ortağınızla devam edin",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 9
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "safevi_gizli_baris",
+      "character": "23-safevi_elcisi",
+      "character_name": "Safevi Elçisi",
+      "faction": "saray",
+      "text": "Gizlice bir ateşkes teklifi getirdim. Sultanınız bilmiyor olabilir. Sizi aracı seçtim.",
+      "left_text": "Sultan'ı atlayan teklifi reddederiz",
+      "right_text": "Teklife kulak verin",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "safevi_sinir_ihlali",
+      "character": "23-safevi_elcisi",
+      "character_name": "Safevi Elçisi",
+      "faction": "saray",
+      "text": "Doğu sınırında Osmanlı askerleri Safevi çobanlarının toprağına girmiş. Küçük mesele ama büyüyebilir.",
+      "left_text": "Sınır bizimdir",
+      "right_text": "Soruşturun",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 4,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": -2,
+        "ulema": 4,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "dervis_keramet",
+      "character": "25-deli_dervis",
+      "character_name": "Deli Derviş",
+      "faction": "din",
+      "text": "Dervişin kerameti tuttu — dediği oldu. Artık halk ona inanıyor, benim yerime fetva soruyorlar.",
+      "left_text": "Halkı uyarın",
+      "right_text": "Gerçek kerametse saygı gösterin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -4,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "dervis_valide",
+      "character": "25-deli_dervis",
+      "character_name": "Deli Derviş",
+      "faction": "din",
+      "text": "Derviş, Valide Sultan'ın hastalandığını söyledi dün. Bu gece haber geldi: hakikat. Neyle açıklarsınız?",
+      "left_text": "Tesadüftür",
+      "right_text": "Yakından takip edin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": -4,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "defterdar_denetim",
+      "character": "4-defterdar",
+      "character_name": "Defterdar",
+      "faction": "saray",
+      "text": "Hazine defterinde usulsüzlük gördüm — imzalar tutmuyor. Üst düzey biri karışmış olabilir.",
+      "left_text": "Mevcut sisteme güvenin",
+      "right_text": "Denetim başlatın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 8
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "defterdar_vergi",
+      "character": "4-defterdar",
+      "character_name": "Defterdar",
+      "faction": "saray",
+      "text": "Bu yıl savaş harcamaları beklenenin yüzde kırkı fazla. Olağanüstü vergi koyalım mı?",
+      "left_text": "Mevcut bütçeyle devam",
+      "right_text": "Geçici vergi uygulayın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": -9
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": -2,
+        "ulema": -4,
+        "hazine": 11
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 5,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "valide_cariye",
+      "character": "5-valide-sultan",
+      "character_name": "Valide Sultan",
+      "faction": "saray",
+      "text": "Harem'de yeni bir cariyeyi gözetime aldım — Sultan ilgi gösteriyor. Sizi desteklemeliyim mi?",
+      "left_text": "Valide Sultan'ın tercihi",
+      "right_text": "Müdahale etmeyin",
+      "left_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "valide_aracı",
+      "character": "5-valide-sultan",
+      "character_name": "Valide Sultan",
+      "faction": "saray",
+      "text": "Sultan'ın aldığı bir karar beni rahatsız ediyor. Sizi aracı olarak kullanmak istiyorum.",
+      "left_text": "Siyasete dahil etmeyin kendinizi",
+      "right_text": "Mesajı iletebilirsiniz",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "kaptan_onarim",
+      "character": "6-kaptan-i-derya",
+      "character_name": "Kaptan-ı Derya",
+      "faction": "ordu",
+      "text": "Donanmanın yarısı onarımda. Bu süreçte kıyı saldırısı gelirse ne yaparız, Paşam?",
+      "left_text": "Allah bize yardım eder",
+      "right_text": "Acil tersane bütçesi açın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": -5,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": -9
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "kaptan_venedik",
+      "character": "6-kaptan-i-derya",
+      "character_name": "Kaptan-ı Derya",
+      "faction": "ordu",
+      "text": "Osmanlı filosu, Venedik gemilerine saldıran korsanlara yardım etti. Diplomatik sorun çıktı.",
+      "left_text": "Gemiler görevini yaptı",
+      "right_text": "Kaptanı geri çağırıp özür bildirin",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": -5,
+        "ulema": 3,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "yabanci_hediye",
+      "character": "7-yabanci-elci",
+      "character_name": "Yabancı Elçi",
+      "faction": "saray",
+      "text": "Büyük hediyeler getirdim. Karşılıklı ticaret imtiyazı istiyorum. Hediyeyi alıp imtiyazı reddedin.",
+      "left_text": "Hediyeyi alın, imtiyazı vermeyin",
+      "right_text": "Her ikisini kabul edin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 9
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "yabanci_rapor",
+      "character": "7-yabanci-elci",
+      "character_name": "Yabancı Elçi",
+      "faction": "saray",
+      "text": "Döndüğümde duyduklarımı anlatacağım. Size iyi ya da kötü bir rapor yazmam sizin elinizde.",
+      "left_text": "Gerçeği anlatın",
+      "right_text": "Onu memnun edin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": -2,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "rakip_imza_gizemi",
+      "character": "8-rakip-vezir",
+      "character_name": "Rakip Vezir",
+      "faction": "saray",
+      "text": "Sizin imzanız olmadan verilen bir emri fark ettim. Benim mi sizi aştım, yoksa başkası mı?",
+      "left_text": "Sessizce soruşturun",
+      "right_text": "Açıkça yüzleşin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "rakip_sultan_teklif",
+      "character": "8-rakip-vezir",
+      "character_name": "Rakip Vezir",
+      "faction": "saray",
+      "text": "Sultan bana sizin alanınıza giren bir görev teklif etti. Kabul mi etmeliyim?",
+      "left_text": "Kabul etmeyin",
+      "right_text": "Yapmanızda sakınca yok",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 5,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "yeniceri_silah_sesi",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası",
+      "faction": "ordu",
+      "text": "Yeniçeri kışlasında gece silah sesi duyuldu. İçimizde çatışma var, araştırıyoruz.",
+      "left_text": "İç meselelerini kendiniz çözün",
+      "right_text": "Bölüğü ayırın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": -4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "yeniceri_ganimet",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası",
+      "faction": "ordu",
+      "text": "Savaş ganimetinin paylaşımında anlaşmazlık var. Askerler huzursuz, siz karar verin.",
+      "left_text": "Komutanlar karar versin",
+      "right_text": "Eşit paylaşım emri verin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 6,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "seyhulislam_rakip_fetva",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "faction": "din",
+      "text": "Bir âlim benim görüşüme aykırı fetva yayımladı. Kimin fetvasına uyulsun, halka beyan edeceğim.",
+      "left_text": "Halka açık tartışma sağlıklıdır",
+      "right_text": "Otoritenizi kullanın",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -5,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 7,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
+    },
+    {
+      "id": "seyhulislam_reform",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "faction": "din",
+      "text": "Saraydaki bazı uygulamalar şer'î hukuka aykırı. Kamuoyu bildirisi yayımlamak istiyorum.",
+      "left_text": "Reform bildirisi çıkarmayın",
+      "right_text": "Destek verin",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -7,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": -3,
+        "ulema": 8,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 5,
+      "max_year": 99,
+      "speech_left": "",
+      "speech_right": ""
     }
   ]
 }
