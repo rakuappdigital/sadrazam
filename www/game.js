@@ -1214,21 +1214,6 @@ async function purchaseFullVersion() {
   const status = document.getElementById('paywall-status');
   const isEN = window.LANG === 'en';
 
-  // DEMO SİMÜLASYONU: RevenueCat henüz bağlanmadıysa (API key placeholder),
-  // gerçek ödeme yerine akışı görsel olarak göstermek için sahte bir başarı simüle et.
-  // FREEMIUM_ENABLED true olduğu an bu blok devre dışı kalır, gerçek akışa geçilir.
-  if (!FREEMIUM_ENABLED) {
-    if (status) status.textContent = isEN ? 'Processing… (demo)' : 'İşleniyor… (demo)';
-    if (window.playButtonTap) playButtonTap();
-    setTimeout(() => {
-      if (status) status.textContent = isEN ? '✓ Purchase successful! (Demo — real payment not yet connected)' : '✓ Satın alma başarılı! (Demo — gerçek ödeme henüz bağlı değil)';
-      _setFullVersionUnlocked(true);
-      if (window.playSelectConfirm) playSelectConfirm();
-      setTimeout(unlockFullVersion, 900);
-    }, 700);
-    return;
-  }
-
   if (!_rcReady || !RC) {
     if (status) status.textContent = isEN ? 'Purchases are not available right now.' : 'Satın alma şu an kullanılamıyor.';
     return;
@@ -1278,13 +1263,7 @@ async function restoreFullVersion() {
 
 document.getElementById('paywall-buy-btn')?.addEventListener('click', purchaseFullVersion);
 document.getElementById('paywall-restore-btn')?.addEventListener('click', restoreFullVersion);
-document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
-  if (_paywallFromMenu) {
-    // Sadece göz atıyordu, aktif bir oyunu yok — save'e dokunma
-    hidePaywallScreen();
-    return;
-  }
-  hidePaywallScreen();
+function _quitAfterPaywall() {
   isPaywalled = false;
   clearSave();
   isGameOver = true;
@@ -1295,6 +1274,30 @@ document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
   selectedSultan = null;
   selectedAdvisors = [];
   introScreen.style.display = '';
+}
+
+function showFreeVersionEndTransition(callback) {
+  const isEN = window.LANG === 'en';
+  const overlay = document.createElement('div');
+  overlay.id = 'freeversion-end-overlay';
+  overlay.innerHTML = `<div id="freeversion-end-text">${isEN ? 'END OF FREE VERSION' : 'ÜCRETSİZ SÜRÜM SONU'}</div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('visible'));
+  setTimeout(() => {
+    overlay.remove();
+    callback();
+  }, 2000);
+}
+
+document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
+  if (_paywallFromMenu) {
+    // Sadece göz atıyordu, aktif bir oyunu yok — save'e dokunma
+    hidePaywallScreen();
+    return;
+  }
+  // Yıl sınırından tetiklendi ve satın almadan çıkıyor — 3 yıl hakkı bitti
+  hidePaywallScreen();
+  showFreeVersionEndTransition(_quitAfterPaywall);
 });
 
 let _fullVersionBtnFired = false;

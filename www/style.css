@@ -1122,6 +1122,28 @@ html, body {
 /* ════════════════════════════════════════
    PAYWALL (Ücretsiz Deneme Sona Erdi)
 ════════════════════════════════════════ */
+#freeversion-end-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#freeversion-end-overlay.visible { opacity: 1; }
+#freeversion-end-text {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 24px;
+}
+
 #paywall-screen {
   position: fixed;
   inset: 0;
