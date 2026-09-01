@@ -1136,26 +1136,26 @@ html, body {
 
 #paywall-panel {
   position: relative;
-  background: var(--card-bg);
+  background: linear-gradient(180deg, #14101F 0%, var(--card-bg) 100%);
   border: 1px solid var(--gold-dim);
-  border-radius: 14px;
-  padding: 36px 26px 28px;
-  max-width: 340px;
-  width: 90%;
+  border-radius: 20px;
+  padding: 40px 30px 32px;
+  max-width: 440px;
+  width: 94%;
   margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-align: center;
   box-shadow:
     0 0 0 1px var(--gold-dim),
-    0 0 60px rgba(201,162,39,0.14),
-    0 8px 48px rgba(0,0,0,0.9);
+    0 0 90px rgba(201,162,39,0.18),
+    0 20px 60px rgba(0,0,0,0.95);
 }
 #paywall-crest {
-  width: 46px; height: 46px;
-  margin-bottom: 4px;
+  width: 60px; height: 60px;
+  margin-bottom: 2px;
   color: var(--gold);
   animation: paywallPulse 2.6s ease-in-out infinite;
 }
@@ -1164,51 +1164,102 @@ html, body {
 #paywall-crest polygon { fill: currentColor; }
 @keyframes paywallPulse {
   0%, 100% { filter: drop-shadow(0 0 3px rgba(201,162,39,0.35)); transform: scale(1); }
-  50%      { filter: drop-shadow(0 0 12px rgba(201,162,39,0.65)); transform: scale(1.06); }
+  50%      { filter: drop-shadow(0 0 14px rgba(201,162,39,0.7)); transform: scale(1.07); }
 }
 #paywall-title {
   font-family: 'Cinzel Decorative', serif;
-  font-size: 16px;
+  font-size: 21px;
   color: var(--gold);
   letter-spacing: 1.5px;
-  line-height: 1.4;
+  line-height: 1.35;
 }
-#paywall-divider { width: 60px; height: 1px; background: var(--gold-dim); }
+#paywall-divider { width: 70px; height: 1px; background: var(--gold-dim); margin: 2px 0; }
 #paywall-text {
   font-family: 'IM Fell English', serif;
-  font-size: 13.5px;
+  font-size: 14.5px;
   color: var(--text);
   line-height: 1.6;
   margin: 0;
-  opacity: 0.9;
+  opacity: 0.92;
+  max-width: 340px;
 }
-#paywall-features {
+
+/* Karşılaştırma tablosu */
+#paywall-compare {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  align-items: center;
+  border: 1px solid rgba(201,162,39,0.18);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 10px 0 4px;
+}
+.pwc-cell {
+  padding: 10px 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 12.5px;
+  color: rgba(240,230,208,0.85);
+  border-top: 1px solid rgba(201,162,39,0.12);
+}
+.pwc-cell.pwc-label {
+  text-align: left;
+  padding-left: 14px;
+  font-family: 'IM Fell English', serif;
+  font-size: 13px;
+  color: rgba(240,230,208,0.6);
+}
+.pwc-cell.pwc-head {
+  border-top: none;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(240,230,208,0.45);
+  padding-bottom: 8px;
+  padding-top: 12px;
+}
+.pwc-cell.pwc-head-full { color: var(--gold); }
+.pwc-cell.pwc-full-col {
+  background: rgba(201,162,39,0.09);
+  color: var(--gold);
+  font-weight: 600;
+}
+.pwc-cell.pwc-dash { color: rgba(240,230,208,0.3); }
+#paywall-compare > :nth-child(3n) { border-left: 1px solid rgba(201,162,39,0.14); }
+
+#paywall-price-block {
+  margin: 8px 0 2px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px 10px;
-  margin: 4px 0 2px;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
-#paywall-features span {
+#paywall-price-label {
   font-family: 'Cinzel', serif;
   font-size: 10px;
-  letter-spacing: 0.3px;
-  color: rgba(240,230,208,0.75);
-  background: rgba(201,162,39,0.08);
-  border: 1px solid rgba(201,162,39,0.2);
-  border-radius: 20px;
-  padding: 5px 11px;
+  letter-spacing: 2px;
+  color: rgba(201,162,39,0.55);
 }
 #paywall-price {
-  font-family: 'Cinzel', serif;
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--gold);
-  text-shadow: 0 0 16px rgba(201,162,39,0.4);
-  min-height: 28px;
-  margin-top: 4px;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--gold-light);
+  text-shadow: 0 0 24px rgba(201,162,39,0.5);
+  min-height: 44px;
+  line-height: 1.1;
 }
 #paywall-panel .intro-btn { width: 100%; }
+#paywall-demo-reset {
+  margin-top: 4px;
+  background: none;
+  border: none;
+  font-family: 'IM Fell English', serif;
+  font-size: 11px;
+  color: rgba(240,230,208,0.35);
+  text-decoration: underline;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 #paywall-status {
   font-family: 'IM Fell English', serif;
   font-size: 12px;

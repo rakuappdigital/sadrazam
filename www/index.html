@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Sadrazam</title>
   <link rel="stylesheet" href="assets/fonts/fonts.css">
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="style.css?v=4" />
 </head>
 <body>
 
@@ -347,17 +347,36 @@
       </div>
       <div id="paywall-title" data-i18n="paywall.title">SADRAZAMLIK PARASIZ OLMAZ</div>
       <div id="paywall-divider"></div>
-      <p id="paywall-text" data-i18n="paywall.text">Tarihte de böyleydi zaten. Divan'ın geri kalanı Tam Sürüm'de seni bekliyor:</p>
-      <div id="paywall-features">
-        <span data-i18n="paywall.feat1">👑 3 Sultan</span>
-        <span data-i18n="paywall.feat2">🎓 5 Danışman</span>
-        <span data-i18n="paywall.feat3">📜 400+ Karar</span>
+      <p id="paywall-text" data-i18n="paywall.text">Tarihte de böyleydi zaten. Divan'ın geri kalanı Tam Sürüm'de seni bekliyor.</p>
+
+      <div id="paywall-compare">
+        <div class="pwc-cell pwc-head"></div>
+        <div class="pwc-cell pwc-head" data-i18n="paywall.col_free">ÜCRETSİZ</div>
+        <div class="pwc-cell pwc-head pwc-head-full" data-i18n="paywall.col_full">TAM SÜRÜM</div>
+
+        <div class="pwc-cell pwc-label" data-i18n="paywall.row_sultan">Sultan</div>
+        <div class="pwc-cell">1</div>
+        <div class="pwc-cell pwc-full-col">3</div>
+
+        <div class="pwc-cell pwc-label" data-i18n="paywall.row_advisor">Danışman</div>
+        <div class="pwc-cell pwc-dash">—</div>
+        <div class="pwc-cell pwc-full-col">5</div>
+
+        <div class="pwc-cell pwc-label" data-i18n="paywall.row_duration">Oyun Süresi</div>
+        <div class="pwc-cell" data-i18n="paywall.row_duration_free">3 Yıl</div>
+        <div class="pwc-cell pwc-full-col" data-i18n="paywall.row_duration_full">Sınırsız</div>
       </div>
-      <div id="paywall-price"></div>
+
+      <div id="paywall-price-block">
+        <div id="paywall-price-label" data-i18n="paywall.price_label">TEK SEFERLİK ÖDEME</div>
+        <div id="paywall-price"></div>
+      </div>
+
       <button id="paywall-buy-btn" class="intro-btn premium" data-i18n="paywall.buy">TAM SÜRÜMÜ AÇ</button>
       <button id="paywall-restore-btn" class="intro-btn ghost" data-i18n="paywall.restore">Satın Almaları Geri Yükle</button>
       <button id="paywall-quit-btn" class="intro-btn ghost" data-i18n="paywall.quit">Ana Menüye Dön</button>
       <div id="paywall-status"></div>
+      <button id="paywall-demo-reset" class="hidden">🔄 Demoyu Sıfırla</button>
     </div>
   </div>
 
@@ -382,9 +401,9 @@
   <script src="sounds.js"></script>
   <script src="haptics.js"></script>
   <script src="gamecenter.js"></script>
-  <script src="translations.js?v=3"></script>
+  <script src="translations.js?v=4"></script>
   <script src="revenuecat.bundle.js"></script>
-  <script src="game.js?v=5"></script>
+  <script src="game.js?v=6"></script>
 </body>
 </html>
 <!-- preload kritik görseller -->

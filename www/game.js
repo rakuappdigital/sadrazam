@@ -1182,10 +1182,24 @@ function showPaywallScreen(fromMenu = false) {
     const isEN = window.LANG === 'en';
     quitBtn.textContent = fromMenu ? (isEN ? 'Close' : 'Kapat') : (isEN ? 'Return to Main Menu' : 'Ana Menüye Dön');
   }
+  // Demo modunda (gerçek RevenueCat bağlanmadan önce) sıfırlama linki göster
+  const resetBtn = document.getElementById('paywall-demo-reset');
+  if (resetBtn) {
+    const showReset = !FREEMIUM_ENABLED && isFullVersionUnlocked();
+    resetBtn.classList.toggle('hidden', !showReset);
+  }
 }
 function hidePaywallScreen() {
   document.getElementById('paywall-screen')?.classList.remove('visible');
 }
+
+document.getElementById('paywall-demo-reset')?.addEventListener('click', () => {
+  _setFullVersionUnlocked(false);
+  const isEN = window.LANG === 'en';
+  showPaywallScreen(_paywallFromMenu);
+  const status = document.getElementById('paywall-status');
+  if (status) status.textContent = isEN ? 'Demo purchase reset.' : 'Demo satın alma sıfırlandı.';
+});
 
 async function unlockFullVersion() {
   hidePaywallScreen();
