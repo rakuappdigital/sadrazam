@@ -388,6 +388,12 @@ window.UI_STRINGS = {
     'howto.body2':          "Kartı <strong>sola kaydır</strong> ya da ← tuşuna bas → <em>Hayır</em><br/>Kartı <strong>sağa kaydır</strong> ya da → tuşuna bas → <em>Evet</em><br/>Her 10 kartta bir yıl geçer. Hazine her yıl azalır.",
     'btn.play_now':         'ANLADIM, BAŞLAYALIM',
     'btn.back':             '← GERİ',
+    // Paywall
+    'paywall.title':        'ÜCRETSİZ DENEME SONA ERDİ',
+    'paywall.text':         "3 yıl boyunca hükmettin. Sadrazamlığına devam etmek için Tam Sürümü aç — tüm sultanlar, danışmanlar ve yüzlerce karar seni bekliyor.",
+    'paywall.buy':          'TAM SÜRÜMÜ AÇ',
+    'paywall.restore':      'Satın Almaları Geri Yükle',
+    'paywall.quit':         'Ana Menüye Dön',
     // Başarımlar
     'ach.title':            'BAŞARIMLARIM',
     'ach.tab.all':          'Tümü',
@@ -533,6 +539,12 @@ window.UI_STRINGS = {
     'howto.body2':          "<strong>Swipe left</strong> or press ← → <em>No</em><br/><strong>Swipe right</strong> or press → → <em>Yes</em><br/>Every 10 cards is one year. The treasury decreases every year.",
     'btn.play_now':         "UNDERSTOOD, LET'S PLAY",
     'btn.back':             '← BACK',
+    // Paywall
+    'paywall.title':        'YOUR FREE TRIAL HAS ENDED',
+    'paywall.text':         "You have ruled for 3 years. Unlock the Full Version to continue your Grand Vizierate — every sultan, advisor, and hundreds of decisions await.",
+    'paywall.buy':          'UNLOCK FULL VERSION',
+    'paywall.restore':      'Restore Purchases',
+    'paywall.quit':         'Return to Main Menu',
     // Achievements
     'ach.title':            'ACHIEVEMENTS',
     'ach.tab.all':          'All',

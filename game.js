@@ -7,6 +7,9 @@ const CARDS_PER_YEAR = 24;       // 24 kart = 1 oyun yılı
 const SEASON_CARDS   = 8;        // 8 kartta 1 mevsim değişimi
 const PASSIVE_HAZINE_DRAIN = 2;  // yıl başına hazine drain (değişmedi)
 
+// ── Freemium: Ücretsiz Deneme Sınırı ──────────────────────────────
+const FREE_YEAR_LIMIT = 3; // ilk 3 yıl sınırsız tekrar oynanır ücretsiz
+
 // ── Mevsim Sistemi ────────────────────────────────────────────────
 const SEASONS_TR = ["Kış", "İlkbahar", "Yaz", "Sonbahar"];
 const SEASONS_EN = ["Winter", "Spring", "Summer", "Autumn"];
@@ -929,6 +932,7 @@ let characterMemory = {};
 let activeArcs = {};
 let triggeredArcs = {};
 let decisionLog = [];           // Vezirlik Günlüğü — kayda değer kararların kronolojik listesi
+let isPaywalled = false;        // ücretsiz deneme sınırına takılınca true olur, oyun durur
 let sultanSabir = 50;
 let selectedSultan = null;
 let selectedAdvisors = [];
@@ -1097,6 +1101,138 @@ function selectDifficulty(id) {
   document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.toggle('active', b.dataset.diff === id));
   if (window.playSelectConfirm) playSelectConfirm();
 }
+
+// ── Freemium: RevenueCat Entegrasyonu ──────────────────────────────
+// NOT: Aşağıdaki iki değeri App Store Connect + RevenueCat dashboard'da
+// ürünü/entitlement'ı oluşturduktan sonra doldurman gerekiyor.
+const REVENUECAT_API_KEY   = "REVENUECAT_IOS_API_KEY_BURAYA";   // RevenueCat > Project Settings > API Keys > Apple App Store
+const REVENUECAT_ENTITLEMENT_ID = "full_version";               // RevenueCat > Entitlements'ta verdiğin identifier
+
+let _rcReady = false;
+let _rcOfferingPackage = null; // satın alma sırasında kullanılacak Package objesi
+
+// Hızlı yerel önbellek: RevenueCat'e her seferinde sormadan önce buna bakılır.
+// Gerçek doğruluk kaynağı her zaman getCustomerInfo() / restorePurchases()'tir.
+function isFullVersionUnlocked() {
+  return localStorage.getItem('sadrazam_full_unlocked') === '1';
+}
+function _setFullVersionUnlocked(unlocked) {
+  localStorage.setItem('sadrazam_full_unlocked', unlocked ? '1' : '0');
+}
+function _applyCustomerInfo(customerInfo) {
+  const active = !!customerInfo?.entitlements?.active?.[REVENUECAT_ENTITLEMENT_ID];
+  _setFullVersionUnlocked(active);
+  return active;
+}
+
+async function initRevenueCat() {
+  const RC = window.RevenueCatPurchases;
+  if (!RC || !window.Capacitor?.isNativePlatform?.()) return; // web/tarayıcıda satın alma yok
+  try {
+    await RC.configure({ apiKey: REVENUECAT_API_KEY });
+    _rcReady = true;
+    const { customerInfo } = await RC.getCustomerInfo();
+    _applyCustomerInfo(customerInfo);
+    const offerings = await RC.getOfferings();
+    const pkgs = offerings?.current?.availablePackages || [];
+    _rcOfferingPackage = pkgs[0] || null;
+    updatePaywallPriceUI();
+  } catch (e) {
+    console.warn('RevenueCat init hatası:', e);
+  }
+}
+
+function updatePaywallPriceUI() {
+  const el = document.getElementById('paywall-price');
+  if (el) el.textContent = _rcOfferingPackage?.product?.priceString || '';
+}
+
+function showPaywallScreen() {
+  const scr = document.getElementById('paywall-screen');
+  if (scr) scr.classList.add('visible');
+  updatePaywallPriceUI();
+  const status = document.getElementById('paywall-status');
+  if (status) status.textContent = '';
+}
+function hidePaywallScreen() {
+  document.getElementById('paywall-screen')?.classList.remove('visible');
+}
+
+async function unlockFullVersion() {
+  hidePaywallScreen();
+  isPaywalled = false;
+  advanceYear();
+  if (!isGameOver && !isPaywalled) { saveGameState(); dealNext(); }
+}
+
+async function purchaseFullVersion() {
+  const RC = window.RevenueCatPurchases;
+  const status = document.getElementById('paywall-status');
+  const isEN = window.LANG === 'en';
+  if (!_rcReady || !RC) {
+    if (status) status.textContent = isEN ? 'Purchases are not available right now.' : 'Satın alma şu an kullanılamıyor.';
+    return;
+  }
+  if (!_rcOfferingPackage) {
+    if (status) status.textContent = isEN ? 'No product found. Try again shortly.' : 'Ürün bulunamadı, birazdan tekrar dene.';
+    return;
+  }
+  if (status) status.textContent = isEN ? 'Processing…' : 'İşleniyor…';
+  try {
+    const result = await RC.purchasePackage({ aPackage: _rcOfferingPackage });
+    const unlocked = _applyCustomerInfo(result.customerInfo);
+    if (unlocked) {
+      if (window.playSelectConfirm) playSelectConfirm();
+      unlockFullVersion();
+    } else if (status) {
+      status.textContent = isEN ? 'Purchase completed but entitlement not found.' : 'Satın alma tamamlandı ama yetki bulunamadı.';
+    }
+  } catch (e) {
+    if (e?.userCancelled) {
+      if (status) status.textContent = '';
+    } else if (status) {
+      status.textContent = isEN ? 'Purchase failed. Please try again.' : 'Satın alma başarısız oldu, tekrar dene.';
+    }
+  }
+}
+
+async function restoreFullVersion() {
+  const RC = window.RevenueCatPurchases;
+  const status = document.getElementById('paywall-status');
+  const isEN = window.LANG === 'en';
+  if (!_rcReady || !RC) return;
+  if (status) status.textContent = isEN ? 'Restoring…' : 'Geri yükleniyor…';
+  try {
+    const { customerInfo } = await RC.restorePurchases();
+    const unlocked = _applyCustomerInfo(customerInfo);
+    if (unlocked) {
+      if (window.playSelectConfirm) playSelectConfirm();
+      unlockFullVersion();
+    } else if (status) {
+      status.textContent = isEN ? 'No previous purchase found.' : 'Önceki bir satın alma bulunamadı.';
+    }
+  } catch (e) {
+    if (status) status.textContent = isEN ? 'Restore failed. Please try again.' : 'Geri yükleme başarısız oldu, tekrar dene.';
+  }
+}
+
+document.getElementById('paywall-buy-btn')?.addEventListener('click', purchaseFullVersion);
+document.getElementById('paywall-restore-btn')?.addEventListener('click', restoreFullVersion);
+document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
+  hidePaywallScreen();
+  isPaywalled = false;
+  clearSave();
+  isGameOver = true;
+  stopAmbientMusic();
+  gameScreen.classList.add('hidden');
+  gameScreen.classList.remove('night-mode');
+  currentCard = null;
+  selectedSultan = null;
+  selectedAdvisors = [];
+  introScreen.style.display = '';
+});
+
+initRevenueCat();
 
 // Müzik on/off kontrolü — tüm müzik çağrılarını sarar
 const _origPlayMenuMusic = () => _switchMusic('menu');
@@ -1327,6 +1463,7 @@ function startGame() {
   activeArcs = {};
   triggeredArcs = {};
   decisionLog = [];
+  isPaywalled = false;
   _eyaletNextCard = 40;
   _eyaletShownCount = 0;
   _ramazanShownThisGame = false;
@@ -1713,6 +1850,7 @@ function checkResumeAvailable() {
 }
 
 function loadGameState(s) {
+  isPaywalled = false; // kayıtlar her zaman paywall tetiklenmeden önce alınır, savunma amaçlı sıfırlama
   // Sultan ve danışmanları geri yükle
   selectedSultan = SULTANS.find(su => su.id === s.selectedSultanId) || SULTANS[0];
   selectedAdvisors = (s.selectedAdvisorIds || []).map(id => ADVISORS.find(a => a.id === id)).filter(Boolean);
@@ -2947,7 +3085,7 @@ function advanceEasterCard(c) {
   cardsPlayed++;
   advanceHicriMonth();
   if (cardsPlayed % CARDS_PER_YEAR === 0) advanceYear();
-  if (!isGameOver) { saveGameState(); setTimeout(dealNext, 200); }
+  if (!isGameOver && !isPaywalled) { saveGameState(); setTimeout(dealNext, 200); }
 }
 
 function triggerYanlisIdam() {
@@ -3131,7 +3269,7 @@ function applySultanEffect(positive, c, dir) {
   cardsPlayed++;
   advanceHicriMonth();
   if (cardsPlayed % CARDS_PER_YEAR === 0) advanceYear();
-  if (!isGameOver) { saveGameState(); setTimeout(dealNext, 200); }
+  if (!isGameOver && !isPaywalled) { saveGameState(); setTimeout(dealNext, 200); }
 }
 
 // ── Mektup Kartı ─────────────────────────────────────────────────
@@ -3209,11 +3347,11 @@ function handleLetterDevam() {
     }
     for (const f of (c.right_flags_set || [])) activeFlags[f] = true;
 
-    if (!isGameOver) {
+    if (!isGameOver && !isPaywalled) {
       cardsPlayed++;
       advanceHicriMonth();
       if (cardsPlayed % CARDS_PER_YEAR === 0) advanceYear();
-      if (!isGameOver) setTimeout(dealNext, 150);
+      if (!isGameOver && !isPaywalled) setTimeout(dealNext, 150);
     }
   }
   window._letterDevamCard = null;
@@ -3256,11 +3394,11 @@ function showNegotiationCard(c) {
       applyEffects(opt.effects || {});
       card.classList.remove("no-swipe");
       hideNegotiationPanel();
-      if (!isGameOver) {
+      if (!isGameOver && !isPaywalled) {
         cardsPlayed++;
         advanceHicriMonth();
         if (cardsPlayed % CARDS_PER_YEAR === 0) advanceYear();
-        if (!isGameOver) setTimeout(dealNext, 150);
+        if (!isGameOver && !isPaywalled) setTimeout(dealNext, 150);
       }
     };
     optList.appendChild(btn);
@@ -3314,11 +3452,11 @@ function showChanceCard(c) {
       const flags = win ? (c.chance_win_flags || []) : (c.chance_lose_flags || []);
       for (const f of flags) activeFlags[f] = true;
       applyEffects(effects);
-      if (!isGameOver) {
+      if (!isGameOver && !isPaywalled) {
         cardsPlayed++;
         advanceHicriMonth();
         if (cardsPlayed % CARDS_PER_YEAR === 0) advanceYear();
-        if (!isGameOver) setTimeout(dealNext, 200);
+        if (!isGameOver && !isPaywalled) setTimeout(dealNext, 200);
       }
     }, 1100);
   };
@@ -3909,7 +4047,7 @@ function decide(dir) {
       cardsPlayed++;
       advanceHicriMonth();
       if (cardsPlayed % CARDS_PER_YEAR === 0) advanceYear();
-      if (!isGameOver) { saveGameState(); setTimeout(dealNext, 200); }
+      if (!isGameOver && !isPaywalled) { saveGameState(); setTimeout(dealNext, 200); }
     } else {
       deathCharacterKey = "1-sultan";
       const rageOvl = document.createElement("div");
@@ -4041,7 +4179,7 @@ function decide(dir) {
   if (cardsPlayed % CARDS_PER_YEAR === 0) advanceYear();
 
   // Easter egg injection'ları (sayaç bazlı — seyrek)
-  if (!isGameOver) {
+  if (!isGameOver && !isPaywalled) {
     // ★ GOD MODE — her 3 kartta rastgele easter egg
     if (godMode && cardsPlayed > 0 && cardsPlayed % 3 === 0) { // ★ GOD MODE
       const godEggs = [ // ★ GOD MODE
@@ -4139,7 +4277,7 @@ function decide(dir) {
   trySehzadeMeydanOkuma();
   }
 
-  if (!isGameOver) {
+  if (!isGameOver && !isPaywalled) {
     saveGameState();
     setTimeout(dealNext, 200);
   }
@@ -4399,6 +4537,11 @@ window.addEventListener("touchend",  () => onEnd());
 
 // ── Yıl Geçişi ───────────────────────────────────────────────────
 function advanceYear() {
+  if (!isPaywalled && (year + 1) > FREE_YEAR_LIMIT && !isFullVersionUnlocked()) {
+    isPaywalled = true;
+    showPaywallScreen();
+    return;
+  }
   year++;
   Haptics.yearAdvance();
   if (window.playYearAdvance) playYearAdvance();
@@ -4622,6 +4765,7 @@ function showGameOver(reason) {
 
   saveHighScore();
   saveDeathArchive(reason);
+  GameCenter.submitScore(year);
 
   const newAchievements = checkAchievements(reason);
   if (newAchievements.length > 0) {
@@ -4729,6 +4873,7 @@ function checkAchievements(deathReason) {
     }
   });
   localStorage.setItem("sadrazam_achievements", JSON.stringify(saved));
+  newlyUnlocked.forEach(a => GameCenter.reportAchievement(a.id));
   return newlyUnlocked;
 }
 
