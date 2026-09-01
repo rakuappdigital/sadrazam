@@ -1187,6 +1187,22 @@ async function purchaseFullVersion() {
   const RC = window.RevenueCatPurchases;
   const status = document.getElementById('paywall-status');
   const isEN = window.LANG === 'en';
+
+  // DEMO SİMÜLASYONU: RevenueCat henüz bağlanmadıysa (API key placeholder),
+  // gerçek ödeme yerine akışı görsel olarak göstermek için sahte bir başarı simüle et.
+  // FREEMIUM_ENABLED true olduğu an bu blok devre dışı kalır, gerçek akışa geçilir.
+  if (!FREEMIUM_ENABLED) {
+    if (status) status.textContent = isEN ? 'Processing… (demo)' : 'İşleniyor… (demo)';
+    if (window.playButtonTap) playButtonTap();
+    setTimeout(() => {
+      if (status) status.textContent = isEN ? '✓ Purchase successful! (Demo — real payment not yet connected)' : '✓ Satın alma başarılı! (Demo — gerçek ödeme henüz bağlı değil)';
+      _setFullVersionUnlocked(true);
+      if (window.playSelectConfirm) playSelectConfirm();
+      setTimeout(unlockFullVersion, 900);
+    }, 700);
+    return;
+  }
+
   if (!_rcReady || !RC) {
     if (status) status.textContent = isEN ? 'Purchases are not available right now.' : 'Satın alma şu an kullanılamıyor.';
     return;
