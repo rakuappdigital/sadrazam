@@ -397,7 +397,7 @@ window.UI_STRINGS = {
     'paywall.buy':          'TAM SÜRÜMÜ AÇ',
     'paywall.restore':      'Satın Almaları Geri Yükle',
     'paywall.quit':         'Ana Menüye Dön',
-    'btn.full_version':     '👑 TAM SÜRÜMÜ AÇ',
+    'btn.full_version':     'TAM SÜRÜMÜ AÇ',
     // Başarımlar
     'ach.title':            'BAŞARIMLARIM',
     'ach.tab.all':          'Tümü',
@@ -552,7 +552,7 @@ window.UI_STRINGS = {
     'paywall.buy':          'UNLOCK FULL VERSION',
     'paywall.restore':      'Restore Purchases',
     'paywall.quit':         'Return to Main Menu',
-    'btn.full_version':     '👑 UNLOCK FULL VERSION',
+    'btn.full_version':     'UNLOCK FULL VERSION',
     // Achievements
     'ach.title':            'ACHIEVEMENTS',
     'ach.tab.all':          'All',
