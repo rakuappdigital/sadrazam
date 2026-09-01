@@ -1150,7 +1150,19 @@ async function initRevenueCat() {
 
 function updatePaywallPriceUI() {
   const el = document.getElementById('paywall-price');
-  if (el) el.textContent = _rcOfferingPackage?.product?.priceString || '';
+  if (!el) return;
+  const realPrice = _rcOfferingPackage?.product?.priceString;
+  if (realPrice) {
+    el.textContent = realPrice;
+  } else if (!FREEMIUM_ENABLED) {
+    // DEMO: RevenueCat henüz bağlanmadı — App Store Connect'te girilen
+    // gerçek fiyatı önizleme amaçlı gösteriyoruz. Gerçek entegrasyonda
+    // bu satır devreye girmez, gerçek priceString kullanılır.
+    const isEN = window.LANG === 'en';
+    el.textContent = isEN ? '$2.99' : '₺29,99';
+  } else {
+    el.textContent = '';
+  }
 }
 
 let _paywallFromMenu = false; // giriş ekranındaki "Tam Sürümü Aç" butonundan mı açıldı?
