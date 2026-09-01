@@ -1255,7 +1255,13 @@ document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
   introScreen.style.display = '';
 });
 
-document.getElementById('btn-full-version')?.addEventListener('click', () => {
+let _fullVersionBtnFired = false;
+function _onFullVersionBtnTap(e) {
+  if (e) e.preventDefault();
+  if (_fullVersionBtnFired) return; // click+touchend çifte tetiklenmesin
+  _fullVersionBtnFired = true;
+  setTimeout(() => { _fullVersionBtnFired = false; }, 400);
+
   if (window.playButtonTap) playButtonTap();
   if (isFullVersionUnlocked()) {
     const isEN = window.LANG === 'en';
@@ -1265,10 +1271,16 @@ document.getElementById('btn-full-version')?.addEventListener('click', () => {
     const buyBtn = document.getElementById('paywall-buy-btn');
     if (buyBtn) buyBtn.style.display = 'none';
   } else {
-    document.getElementById('paywall-buy-btn').style.display = '';
+    const buyBtn = document.getElementById('paywall-buy-btn');
+    if (buyBtn) buyBtn.style.display = '';
     showPaywallScreen(true);
   }
-});
+}
+const _fullVersionBtn = document.getElementById('btn-full-version');
+if (_fullVersionBtn) {
+  _fullVersionBtn.addEventListener('click', _onFullVersionBtnTap);
+  _fullVersionBtn.addEventListener('touchend', _onFullVersionBtnTap, { passive: false });
+}
 
 initRevenueCat();
 
