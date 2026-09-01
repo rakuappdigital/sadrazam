@@ -5,6 +5,7 @@
   let _ctx = null;
 
   function ctx() {
+    if (window.sfxEnabled === false) return null; // efektler kapalı
     if (!_ctx) {
       try { _ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { return null; }
     }

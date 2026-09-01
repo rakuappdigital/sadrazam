@@ -95,6 +95,40 @@ window.EN_DONUM_CHOICES = [
   { bar: "hazine",    barLabel: "Treasury ↑", label: "I grew the Treasury",                 desc: "I filled the state coffers and revived trade." }
 ];
 
+// ── Tutorial Adımları ──────────────────────────────────────────────
+window.EN_TUTORIAL_STEPS = [
+  {
+    stat: "saray",
+    icon: "assets/icons/icon-saray.png",
+    title: "Palace",
+    desc: "The Sultan's trust in you. If it hits zero, execution. If it maxes out, you become a threat."
+  },
+  {
+    stat: "yeniceri",
+    icon: "assets/icons/icon-ordu.png",
+    title: "Army",
+    desc: "The Janissaries' loyalty. If it weakens, the enemy comes. If it grows too strong, revolt."
+  },
+  {
+    stat: "ulema",
+    icon: "assets/icons/icon-ulema.png",
+    title: "Clergy",
+    desc: "Support from religious authority. Lose it and you're lynched; let it grow unchecked and it breaks free."
+  },
+  {
+    stat: "hazine",
+    icon: "assets/icons/icon-hazine.png",
+    title: "Treasury",
+    desc: "The state's coffers. Empty it and the state collapses; overfill it and you're accused of embezzlement."
+  },
+  {
+    stat: null,
+    icon: null,
+    title: "How to Play?",
+    desc: "Swipe left → No. Swipe right → Yes.\nOr use the ← → arrow keys.\nKeep all four powers balanced — how long can you last?"
+  }
+];
+
 // ── Ölüm Metinleri ────────────────────────────────────────────────
 window.EN_DEATH_TEXTS = {
   saray_0: [
@@ -220,7 +254,15 @@ window.EN_FELAKET_TEXTS = [
   "Palace fire, treasury losses, Janissary unrest. God is testing this state.",
   "An earthquake shook Constantinople. Everything changed in an instant.",
   "Enemy attack, epidemic, and flood came together. The Divan scattered.",
-  "The treasury was looted, the walls cracked, the clergy declared crisis. There is no escape."
+  "The treasury was looted, the walls cracked, the clergy declared crisis. There is no escape.",
+  // New 7
+  "The great Istanbul earthquake. Hundreds of buildings collapsed; the people poured into the streets. Everything changed in an instant.",
+  "The bazaar fire began in the darkness of night and could not be stopped until morning. Hundreds of merchants were ruined.",
+  "News of drought spreading from the Nile threatens to consume Egypt. The treasury flow is in danger.",
+  "A great wave of migration is coming from the eastern border. Cities overflow, the people are restless.",
+  "Half the Ottoman fleet was lost in a storm. Control of the Mediterranean has been shaken.",
+  "An assassination attempt in the palace was foiled — but the perpetrator is unknown. Everyone suspects everyone.",
+  "Plague and famine struck two provinces simultaneously. Nothing was left to flee to."
 ];
 
 window.EN_MUCIZE_TEXTS = [
@@ -319,18 +361,23 @@ window.EN_ACHIEVEMENTS = {
 window.UI_STRINGS = {
   tr: {
     // Intro
-    'intro.subtitle':       "Osmanlı İmparatorluğu'nda<br/>denge peşindeki bir vezirin hikâyesi",
+    'intro.subtitle':       "Osmanlı İmparatorluğu'nda<br/>denge peşindeki bir sadrazamın hikâyesi",
     // Stat isimleri (görsel)
     'stat.saray':           'Saray',
     'stat.ordu':            'Ordu',
     'stat.ulema':           'Ulema',
     'stat.hazine':          'Hazine',
     // Ana menü butonları
-    'btn.sadrazam_mode':    '⚜ SADRAZAM MODU',
-    'btn.pasa_mode':        '📜 PAŞALIK MODU',
-    'btn.achievements':     '🏆 BAŞARIMLARIM',
-    'btn.buy_coins':        '🪙 AKÇE AL',
+    'btn.sadrazam_mode':    'SADRAZAM MODU',
+    'btn.pasa_mode':        'PAŞALIK MODU',
+    'btn.achievements':     'BAŞARIMLARIM',
+    'btn.buy_coins':        'AKÇE AL',
+    'btn.settings':         'AYARLAR',
     'btn.howto':            'NASIL OYNANIR?',
+    'settings.title':       'AYARLAR',
+    'settings.music':       'Müzik',
+    'settings.sfx':         'Efektler',
+    'settings.language':    'Dil',
     // Nasıl Oynanır
     'howto.title':          'NASIL OYNANIR?',
     'howto.body1':          "Osmanlı İmparatorluğu'nun en güçlü makamı Sadrazamlık'ta oturuyorsun. Her gün saraydan, halktan, ordundan ve dinden temsilciler huzuruna çıkar. Kararların dört gücün dengesini belirler — ve dengeyi bozarsan başın gider.",
@@ -405,6 +452,27 @@ window.UI_STRINGS = {
     'char.miras':           'Miras Habercisi',
     // Danışman max uyarısı
     'advisor.max_alert':    'En fazla 2 danışman seçebilirsiniz.',
+    // Challenge modu
+    'btn.challenge':        '⚔ CHALLENGE',
+    'btn.howto':            '❔ NASIL OYNANIR',
+    // Ayarlar
+    'btn.settings':         '⚙ AYARLAR',
+    'sett.title':           'AYARLAR',
+    'sett.music':           'Müzik',
+    'sett.effects':         'Efektler',
+    'sett.preview':         'Deneyimli Mod',
+    'sett.on':              'Açık',
+    'sett.off':             'Kapalı',
+    'sett.language':        'Dil',
+    'sett.close':           'KAPAT',
+    // Harita
+    'harita.title':         'İMPARATORLUK HARİTASI',
+    'harita.status':        'İmparatorluk Durumu',
+    'harita.stable':        'KARARLI',
+    'harita.tense':         'GERGİN',
+    'harita.critical':      'KRİTİK',
+    'harita.avg':           'Ort. Sadakat',
+    'harita.close':         '× Kapat',
     // Başarım bildirimi (game over)
     'ach.earned_title':     'KAZANILAN BAŞARIMLAR',
     'ach.secret_toast':     'Gizli Başarım',
@@ -445,11 +513,16 @@ window.UI_STRINGS = {
     'stat.ulema':           'Clergy',
     'stat.hazine':          'Treasury',
     // Main menu buttons
-    'btn.sadrazam_mode':    '⚜ GRAND VIZIER MODE',
-    'btn.pasa_mode':        '📜 PASHA MODE',
-    'btn.achievements':     '🏆 ACHIEVEMENTS',
-    'btn.buy_coins':        '🪙 BUY COINS',
+    'btn.sadrazam_mode':    'GRAND VIZIER MODE',
+    'btn.pasa_mode':        'PASHA MODE',
+    'btn.achievements':     'ACHIEVEMENTS',
+    'btn.buy_coins':        'BUY COINS',
+    'btn.settings':         'SETTINGS',
     'btn.howto':            'HOW TO PLAY?',
+    'settings.title':       'SETTINGS',
+    'settings.music':       'Music',
+    'settings.sfx':         'Sound Effects',
+    'settings.language':    'Language',
     // How to play
     'howto.title':          'HOW TO PLAY?',
     'howto.body1':          "You sit in the most powerful office of the Ottoman Empire — the Grand Vizierate. Every day, envoys from the palace, the people, the army, and the clergy appear before you. Your decisions determine the balance of four powers — and if you upset the balance, you lose your head.",
@@ -524,6 +597,27 @@ window.UI_STRINGS = {
     'char.miras':           'Legacy Herald',
     // Advisor alert
     'advisor.max_alert':    'You can select at most 2 advisors.',
+    // Challenge mode
+    'btn.challenge':        '⚔ CHALLENGE',
+    'btn.howto':            '❔ HOW TO PLAY',
+    // Settings
+    'btn.settings':         '⚙ SETTINGS',
+    'sett.title':           'SETTINGS',
+    'sett.music':           'Music',
+    'sett.effects':         'Effects',
+    'sett.preview':         'Expert Mode',
+    'sett.on':              'On',
+    'sett.off':             'Off',
+    'sett.language':        'Language',
+    'sett.close':           'CLOSE',
+    // Map
+    'harita.title':         'IMPERIAL MAP',
+    'harita.status':        'Empire Status',
+    'harita.stable':        'STABLE',
+    'harita.tense':         'TENSE',
+    'harita.critical':      'CRITICAL',
+    'harita.avg':           'Avg. Loyalty',
+    'harita.close':         '× Close',
     // Achievement badge on gameover
     'ach.earned_title':     'ACHIEVEMENTS EARNED',
     'ach.secret_toast':     'Secret Achievement',
