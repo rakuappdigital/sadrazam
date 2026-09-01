@@ -1153,12 +1153,23 @@ function updatePaywallPriceUI() {
   if (el) el.textContent = _rcOfferingPackage?.product?.priceString || '';
 }
 
-function showPaywallScreen() {
+let _paywallFromMenu = false; // giriş ekranındaki "Tam Sürümü Aç" butonundan mı açıldı?
+
+function showPaywallScreen(fromMenu = false) {
+  _paywallFromMenu = fromMenu;
   const scr = document.getElementById('paywall-screen');
   if (scr) scr.classList.add('visible');
+  scr?.classList.toggle('from-menu', fromMenu);
   updatePaywallPriceUI();
   const status = document.getElementById('paywall-status');
   if (status) status.textContent = '';
+  const buyBtn = document.getElementById('paywall-buy-btn');
+  if (buyBtn) buyBtn.style.display = '';
+  const quitBtn = document.getElementById('paywall-quit-btn');
+  if (quitBtn) {
+    const isEN = window.LANG === 'en';
+    quitBtn.textContent = fromMenu ? (isEN ? 'Close' : 'Kapat') : (isEN ? 'Return to Main Menu' : 'Ana Menüye Dön');
+  }
 }
 function hidePaywallScreen() {
   document.getElementById('paywall-screen')?.classList.remove('visible');
@@ -1167,6 +1178,7 @@ function hidePaywallScreen() {
 async function unlockFullVersion() {
   hidePaywallScreen();
   isPaywalled = false;
+  if (_paywallFromMenu) return; // menüden açıldıysa devam edecek bir oyun yok
   advanceYear();
   if (!isGameOver && !isPaywalled) { saveGameState(); dealNext(); }
 }
@@ -1225,6 +1237,11 @@ async function restoreFullVersion() {
 document.getElementById('paywall-buy-btn')?.addEventListener('click', purchaseFullVersion);
 document.getElementById('paywall-restore-btn')?.addEventListener('click', restoreFullVersion);
 document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
+  if (_paywallFromMenu) {
+    // Sadece göz atıyordu, aktif bir oyunu yok — save'e dokunma
+    hidePaywallScreen();
+    return;
+  }
   hidePaywallScreen();
   isPaywalled = false;
   clearSave();
@@ -1236,6 +1253,21 @@ document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
   selectedSultan = null;
   selectedAdvisors = [];
   introScreen.style.display = '';
+});
+
+document.getElementById('btn-full-version')?.addEventListener('click', () => {
+  if (window.playButtonTap) playButtonTap();
+  if (isFullVersionUnlocked()) {
+    const isEN = window.LANG === 'en';
+    showPaywallScreen(true);
+    const status = document.getElementById('paywall-status');
+    if (status) status.textContent = isEN ? 'You already own the Full Version. Thank you!' : 'Zaten Tam Sürüme sahipsin. Teşekkürler!';
+    const buyBtn = document.getElementById('paywall-buy-btn');
+    if (buyBtn) buyBtn.style.display = 'none';
+  } else {
+    document.getElementById('paywall-buy-btn').style.display = '';
+    showPaywallScreen(true);
+  }
 });
 
 initRevenueCat();
