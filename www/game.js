@@ -1108,6 +1108,11 @@ function selectDifficulty(id) {
 const REVENUECAT_API_KEY   = "REVENUECAT_IOS_API_KEY_BURAYA";   // RevenueCat > Project Settings > API Keys > Apple App Store
 const REVENUECAT_ENTITLEMENT_ID = "full_version";               // RevenueCat > Entitlements'ta verdiğin identifier
 
+// GÜVENLİK KİLİDİ: Gerçek API key girilmeden paywall tetiklenmesin —
+// yoksa satın alma çalışmadan oyuncular 3. yılda kilitli kalır.
+// REVENUECAT_API_KEY güncellendiği an bu otomatik true olur.
+const FREEMIUM_ENABLED = REVENUECAT_API_KEY !== "REVENUECAT_IOS_API_KEY_BURAYA";
+
 let _rcReady = false;
 let _rcOfferingPackage = null; // satın alma sırasında kullanılacak Package objesi
 
@@ -1126,6 +1131,7 @@ function _applyCustomerInfo(customerInfo) {
 }
 
 async function initRevenueCat() {
+  if (!FREEMIUM_ENABLED) return; // API key henüz girilmedi
   const RC = window.RevenueCatPurchases;
   if (!RC || !window.Capacitor?.isNativePlatform?.()) return; // web/tarayıcıda satın alma yok
   try {
@@ -4537,7 +4543,7 @@ window.addEventListener("touchend",  () => onEnd());
 
 // ── Yıl Geçişi ───────────────────────────────────────────────────
 function advanceYear() {
-  if (!isPaywalled && (year + 1) > FREE_YEAR_LIMIT && !isFullVersionUnlocked()) {
+  if (FREEMIUM_ENABLED && !isPaywalled && (year + 1) > FREE_YEAR_LIMIT && !isFullVersionUnlocked()) {
     isPaywalled = true;
     showPaywallScreen();
     return;
