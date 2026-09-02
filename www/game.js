@@ -1103,9 +1103,7 @@ function selectDifficulty(id) {
 }
 
 // ── Freemium: RevenueCat Entegrasyonu ──────────────────────────────
-// NOT: Aşağıdaki iki değeri App Store Connect + RevenueCat dashboard'da
-// ürünü/entitlement'ı oluşturduktan sonra doldurman gerekiyor.
-const REVENUECAT_API_KEY   = "REVENUECAT_IOS_API_KEY_BURAYA";   // RevenueCat > Project Settings > API Keys > Apple App Store
+const REVENUECAT_API_KEY   = "appl_KlZySfvjUxObiFRjoLxjswysoic";   // RevenueCat > Project Settings > API Keys > Apple App Store
 const REVENUECAT_ENTITLEMENT_ID = "full_version";               // RevenueCat > Entitlements'ta verdiğin identifier
 
 // GÜVENLİK KİLİDİ: Gerçek API key girilmeden paywall tetiklenmesin —
