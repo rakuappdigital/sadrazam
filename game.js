@@ -9,6 +9,210 @@ const PASSIVE_HAZINE_DRAIN = 2;  // yıl başına hazine drain (değişmedi)
 
 // ── Freemium: Ücretsiz Deneme Sınırı ──────────────────────────────
 const FREE_YEAR_LIMIT = 3; // ilk 3 yıl sınırsız tekrar oynanır ücretsiz
+// Tam Sürüm paywall'ı İLK KEZ reddedilince devreye girer: artık paywall hiç çıkmaz,
+// bunun yerine her oyun 2. yılın sonunda "ölümle" biter — sınırsız 3-yıllık tekrar
+// oynama döngüsü kapanır. sadrazam_paywall_declined localStorage'da kalıcıdır.
+const DECLINED_YEAR_LIMIT = 2;
+
+// ── Akçe & İkinci Şans ─────────────────────────────────────────────
+const SECOND_CHANCE_DAILY_AD_LIMIT = 5;
+const SECOND_CHANCE_AKCE_COST = 1;
+const AKCE_PACKS = [
+  { amount: 10,  productId: "com.rakuappdigital.sadrazam.akce10" },
+  { amount: 20,  productId: "com.rakuappdigital.sadrazam.akce20" },
+  { amount: 50,  productId: "com.rakuappdigital.sadrazam.akce50" },
+  { amount: 100, productId: "com.rakuappdigital.sadrazam.akce100" },
+];
+const AKCE_FALLBACK_PRICES = { 10: "₺9,99", 20: "₺19,99", 50: "₺39,99", 100: "₺59,99" }; // FREEMIUM_ENABLED=false test modunda
+let _secondChanceUsedThisDeath = false; // her ölümde sadece 1 kez teklif edilir
+let _pendingSecondChanceReason = null; // akçe yetersizken satın alma ekranına yönlendirilince, dönüşte teklifi tekrar göstermek için
+
+function getAkceBalance() {
+  return parseInt(localStorage.getItem("sadrazam_akce") || "0", 10);
+}
+function addAkce(n) {
+  const bal = getAkceBalance() + n;
+  localStorage.setItem("sadrazam_akce", String(bal));
+  updateAkceUI();
+  return bal;
+}
+function spendAkce(n) {
+  const bal = getAkceBalance();
+  if (bal < n) return false;
+  localStorage.setItem("sadrazam_akce", String(bal - n));
+  updateAkceUI();
+  return true;
+}
+function updateAkceUI() {
+  document.querySelectorAll(".akce-balance-display").forEach(el => {
+    el.textContent = getAkceBalance();
+  });
+}
+
+function _todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+function getSecondChanceAdsUsedToday() {
+  const today = _todayKey();
+  if (localStorage.getItem("sadrazam_second_chance_date") !== today) {
+    localStorage.setItem("sadrazam_second_chance_date", today);
+    localStorage.setItem("sadrazam_second_chance_count", "0");
+    return 0;
+  }
+  return parseInt(localStorage.getItem("sadrazam_second_chance_count") || "0", 10);
+}
+function incrementSecondChanceAdsUsedToday() {
+  const used = getSecondChanceAdsUsedToday() + 1; // tarih sıfırlamasını da tetikler
+  localStorage.setItem("sadrazam_second_chance_count", String(used));
+}
+
+// ── İkinci Şans metin kademeleri (yıla göre, stat mekaniğinden hiç bahsetmez) ──
+const SECOND_CHANCE_TIERS_TR = [
+  { max: 3,   text: "Bir karar seni bu noktaya getirdi. Devam etmek ister misin?" },
+  { max: 7,   text: "{year} yıldır bu makamdasın. Bu kadar çabayı burada bırakma." },
+  { max: 12,  text: "{year} yıllık bir saltanat tehlikede. Bırakmayacak mısın?" },
+  { max: 19,  text: "Nadir görülen bir hükümdarlık yazıyorsun. Burada bitmesin." },
+  { max: Infinity, text: "Efsanevi bir saltanat sona ermek üzere. Tarihe geçecek bu hikâyeyi burada bırakma." }
+];
+const SECOND_CHANCE_TIERS_EN = [
+  { max: 3,   text: "One decision brought you here. Continue your reign?" },
+  { max: 7,   text: "{year} years in this seat. Don't let it end here." },
+  { max: 12,  text: "A {year}-year reign hangs in the balance. Will you let it fall?" },
+  { max: 19,  text: "You're writing a rare legacy. Don't let it end now." },
+  { max: Infinity, text: "A legendary reign is about to end. Don't let this story stop here." }
+];
+
+// Kişisel rekor kırılmaya yakınken (yıl >= rekor - 2) öncelikli gösterilir
+const SECOND_CHANCE_RECORD_TR = [
+  "Bugüne kadar en uzun yaşamış sadrazam olabilirsin. Bırakma.",
+  "Rekorunu kırmana çok az kaldı. Devam et.",
+  "Kayıtlara geçecek bir an bu — tarihe adını yazdır.",
+  "Bugüne kadarki en uzun saltanatının eşiğindesin."
+];
+const SECOND_CHANCE_RECORD_EN = [
+  "You could become the longest-reigning Grand Vizier yet. Don't stop now.",
+  "You're on the verge of breaking your own record. Keep going.",
+  "This moment could go down in history — make it yours.",
+  "You're at the threshold of your longest reign yet."
+];
+
+// Reklam/akçe sonrası kısa "kurtuluş anı" — stat mekaniğinden bahsetmez, anlatıya bağlar
+const SECOND_CHANCE_RESCUE_TR = [
+  "Sadık bir danışmanın son anda araya girmesiyle felaket ertelendi.",
+  "Divan'da kimse bilmeden, gizli bir el kaderini değiştirdi.",
+  "Bir mucize mi, bir komplo mu? Saltanatın bir nefes daha aldı.",
+  "Ölüm fermanı imzalanmadan geri çekildi.",
+  "Kader iplerini bir kez daha kendi ellerinle örüyorsun."
+];
+const SECOND_CHANCE_RESCUE_EN = [
+  "A loyal advisor intervened just in time, and disaster was postponed.",
+  "Unknown to the Divan, a hidden hand altered your fate.",
+  "A miracle, or a conspiracy? Your reign draws one more breath.",
+  "The execution order was withdrawn before it could be signed.",
+  "Once again, you weave the threads of fate with your own hands."
+];
+
+function _pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function _getSecondChanceOfferText() {
+  const isEN = window.LANG === 'en';
+  const bestYear = parseInt(localStorage.getItem("sadrazam_best_year") || "0", 10);
+  const isRecordThreat = bestYear > 0 && year >= bestYear - 2;
+
+  if (isRecordThreat) {
+    return _pickRandom(isEN ? SECOND_CHANCE_RECORD_EN : SECOND_CHANCE_RECORD_TR);
+  }
+  const tiers = isEN ? SECOND_CHANCE_TIERS_EN : SECOND_CHANCE_TIERS_TR;
+  const tier = tiers.find(t => year <= t.max) || tiers[tiers.length - 1];
+  return tier.text.replace("{year}", year);
+}
+
+function showSecondChanceOffer(reason) {
+  const isEN = window.LANG === 'en';
+  const adsLeft = SECOND_CHANCE_DAILY_AD_LIMIT - getSecondChanceAdsUsedToday();
+  const akce = getAkceBalance();
+  const offerText = _getSecondChanceOfferText();
+
+  const overlay = document.createElement("div");
+  overlay.id = "second-chance-overlay";
+  overlay.innerHTML = `
+    <div id="second-chance-box">
+      <div id="second-chance-icon">⏳</div>
+      <div id="second-chance-title">${isEN ? "SECOND CHANCE" : "İKİNCİ ŞANS"}</div>
+      <div id="second-chance-text">${offerText}</div>
+      <button id="second-chance-ad-btn" class="second-chance-btn"${adsLeft <= 0 ? " disabled" : ""}>
+        🎬 ${isEN ? "Watch Ad" : "Reklam İzle"} <span class="sc-sub">(${adsLeft}/${SECOND_CHANCE_DAILY_AD_LIMIT})</span>
+      </button>
+      ${AKCE_SYSTEM_ENABLED ? `<button id="second-chance-akce-btn" class="second-chance-btn">
+        🪙 ${isEN ? `Use ${SECOND_CHANCE_AKCE_COST} Akce` : `${SECOND_CHANCE_AKCE_COST} Akçe Kullan`} <span class="sc-sub">(${isEN ? "Balance" : "Bakiye"}: ${akce})</span>
+      </button>` : ""}
+      <button id="second-chance-decline-btn" class="second-chance-btn ghost">${isEN ? "No, end the game" : "Hayır, oyunu bitir"}</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add("visible"));
+
+  const closeOverlay = () => overlay.remove();
+
+  document.getElementById("second-chance-ad-btn").onclick = () => {
+    if (adsLeft <= 0) return;
+    closeOverlay();
+    RewardedAds.show(
+      () => { // reklam tamamlandı
+        incrementSecondChanceAdsUsedToday();
+        _secondChanceUsedThisDeath = true;
+        resolveSecondChance();
+      },
+      () => { showSecondChanceOffer(reason); } // izlemeden kapattı, teklif ekranına dön
+    );
+  };
+  if (AKCE_SYSTEM_ENABLED) {
+    document.getElementById("second-chance-akce-btn").onclick = () => {
+      if (akce < SECOND_CHANCE_AKCE_COST) {
+        // Bakiye yetersiz — satın alma ekranına yönlendir, kapanınca teklife geri dön
+        _pendingSecondChanceReason = reason;
+        closeOverlay();
+        showAkceScreen();
+        return;
+      }
+      spendAkce(SECOND_CHANCE_AKCE_COST);
+      closeOverlay();
+      _secondChanceUsedThisDeath = true;
+      resolveSecondChance();
+    };
+  }
+  document.getElementById("second-chance-decline-btn").onclick = () => {
+    closeOverlay();
+    _actuallyTriggerGameOver(reason);
+  };
+}
+
+function showSecondChanceRescueMoment(callback) {
+  const isEN = window.LANG === 'en';
+  const text = _pickRandom(isEN ? SECOND_CHANCE_RESCUE_EN : SECOND_CHANCE_RESCUE_TR);
+
+  const overlay = document.createElement("div");
+  overlay.id = "second-chance-rescue-overlay";
+  overlay.innerHTML = `<div id="second-chance-rescue-text">${text}</div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add("visible"));
+
+  setTimeout(() => {
+    overlay.classList.remove("visible");
+    setTimeout(() => { overlay.remove(); callback(); }, 400);
+  }, 2200);
+}
+
+function resolveSecondChance() {
+  _secondChanceUsedThisDeath = false; // sıradaki (farklı) ölüm için tazele
+  Object.keys(stats).forEach(k => {
+    if (stats[k] < 60) stats[k] = 60;
+    else if (stats[k] >= 100) stats[k] = 60; // taşma tipi ölümler (stat %100) için de kurtar
+  });
+  updateStatUI();
+  if (window.playSelectConfirm) playSelectConfirm();
+  saveGameState();
+  showSecondChanceRescueMoment(() => { dealNext(); });
+}
 
 // ── Mevsim Sistemi ────────────────────────────────────────────────
 const SEASONS_TR = ["Kış", "İlkbahar", "Yaz", "Sonbahar"];
@@ -330,6 +534,32 @@ const _eyaletRepeatGap = 120;
 // ── Ramazan içeriği — oyun-içi Hicri takvim Ramazan ayına girince bir kez ──
 let _ramazanShownThisGame = false;
 
+// ── Hanedan Hafızası — bir önceki oyunun ölüm hafızası, oyun başına 1 kez ──
+let _golgeShownThisGame = false;
+
+// ── Gizli Nitelikler — mevcut sessiz sayaçlara (factionFavors, traitorInvestigated)
+//    dayalı, ekranda hiç gösterilmeyen eşiklerle açılan özel kartlar ──
+let _halkSevgisiShownThisGame = false;
+let _casusAgiShownThisGame = false;
+
+// ── Sultan Mektupları — weight:1 olduğu için normal havuzdan hiç çıkmaz,
+//    oyun başına birer kez, kart sayısına göre zamanlanmış olarak gelir ──
+let _mektup1Shown = false, _mektup2Shown = false, _mektup3Shown = false, _mektup4Shown = false;
+
+// ── Eyalet Divanı Uzun Vadeli Hafıza — ihmal edilen eyalet çok sonra isyan eder ──
+let _eyaletIsyanSchedule = []; // { provinceId, afterCardsPlayed }
+
+// ── Savaş Sonucu — rastgele gecikme (2-10 kart), sonuç askeri güce bağlı ──
+let _savasSonucSchedule = null; // { afterCardsPlayed } | null
+
+function rollSavasSonucu() {
+  const ordu = stats["yeniçeri"] ?? 50;
+  let chance = (ordu - 25) / 60; // ordu 25 -> ~%0, ordu 85 -> ~%100
+  if (activeFlags["kaptan_ally_ready"]) chance += 0.15; // Kaptan-ı Derya'nın donanma desteği
+  chance = Math.max(0.05, Math.min(0.92, chance)); // her zaman biraz şans/risk payı bırak
+  return Math.random() < chance;
+}
+
 function getDonumCard() {
   const isEN = window.LANG === 'en';
   return {
@@ -377,6 +607,92 @@ function getMirasCard() {
       // Miras kullanıldı, bir daha çıkmasın
       localStorage.removeItem("sadrazam_miras_bar");
       localStorage.removeItem("sadrazam_miras_label");
+    }
+  };
+}
+
+// ── Hanedan Hafızası ────────────────────────────────────────────────
+function getGolgeCard() {
+  const archive = JSON.parse(localStorage.getItem("sadrazam_deaths") || "[]");
+  if (!archive.length) return null;
+  const lastYear = archive[0].year || 1;
+  const isEN = window.LANG === 'en';
+  let textTR, textEN;
+  if (lastYear <= 3) {
+    textTR = "Selefiniz bu makama oturalı çok olmamıştı. Divan'da hâlâ onun adı anılıyor — bir uyarı gibi.";
+    textEN = "Your predecessor had barely settled into this seat. The Divan still whispers his name — like a warning.";
+  } else if (lastYear <= 10) {
+    textTR = `Selefiniz ${lastYear} yıl bu makamda kaldı. Onun gölgesi hâlâ Divan'ın duvarlarında.`;
+    textEN = `Your predecessor held this seat for ${lastYear} years. His shadow still lingers on the Divan's walls.`;
+  } else {
+    textTR = `Selefiniz ${lastYear} yıl boyunca bu makamı taşıdı — nadir bir başarı. Onun mirasına layık olabilecek misiniz?`;
+    textEN = `Your predecessor carried this seat for ${lastYear} years — a rare feat. Can you live up to his legacy?`;
+  }
+  return {
+    id: "golge_selef_" + cardsPlayed,
+    type: "easter",
+    easter_type: "golge",
+    character: "golge-selef",
+    character_name: isEN ? "The Shadow of the Past" : "Geçmişin Gölgesi",
+    text: isEN ? textEN : textTR,
+    button: isEN ? "I UNDERSTAND" : "ANLADIM",
+    stat_effect: null
+  };
+}
+
+// ── Gizli Nitelikler ────────────────────────────────────────────────
+function getHalkSevgisiCard() {
+  const isEN = window.LANG === 'en';
+  return {
+    id: "gizli_halk_sevgisi_" + cardsPlayed,
+    type: "easter",
+    easter_type: "gizli_nitelik",
+    character: "halk-sevgisi",
+    character_name: isEN ? "Whispers of the Bazaar" : "Çarşının Fısıltısı",
+    text: isEN
+      ? "In the bazaar, they no longer speak your name in fear — they speak it with respect. Word of your fairness has spread beyond the palace walls."
+      : "Çarşıda artık adınızı korkuyla değil, saygıyla anıyorlar. Adaletli olduğunuz haberi saray duvarlarını çoktan aştı.",
+    button: isEN ? "THE PEOPLE REMEMBER" : "HALK UNUTMAZ",
+    stat_effect: null
+  };
+}
+function getCasusAgiCard() {
+  const isEN = window.LANG === 'en';
+  return {
+    id: "gizli_casus_agi_" + cardsPlayed,
+    type: "easter",
+    easter_type: "gizli_nitelik",
+    character: "casus-agi",
+    character_name: isEN ? "Eyes in the Shadows" : "Gölgedeki Gözler",
+    text: isEN
+      ? "Without you asking, a sealed report appears on your desk each week now. Somewhere along the way, you built a network that sees what you cannot."
+      : "Sen istemeden, masana her hafta mühürlü bir rapor bırakılıyor artık. Fark etmeden, senin göremediğini gören bir ağ kurmuşsun.",
+    button: isEN ? "TRUST NO ONE, BUT WATCH" : "KİMSEYE GÜVENME, AMA İZLE",
+    stat_effect: null
+  };
+}
+
+// ── Eyalet Divanı Uzun Vadeli Hafıza ─────────────────────────────────
+function getEyaletIsyanCard(provinceId) {
+  const prov = PROVINCES.find(p => p.id === provinceId);
+  if (!prov) return null;
+  const isEN = window.LANG === 'en';
+  const label = getProvinceLabel(prov);
+  return {
+    id: "eyalet_isyan_" + provinceId + "_" + cardsPlayed,
+    type: "easter",
+    easter_type: "eyalet_isyan",
+    character: "eyalet-isyan",
+    character_name: isEN ? "Distant Report" : "Uzak Haber",
+    text: isEN
+      ? `Years of neglect have taken their toll. ${label} has risen in revolt — a debt from the past, now due.`
+      : `Yıllarca süren ihmalin bedeli geldi. ${label} isyan bayrağını kaldırdı — geçmişten kalma bir borç, şimdi ödeniyor.`,
+    button: isEN ? "SEND THE ARMY" : "ORDUYU GÖNDER",
+    stat_effect: () => {
+      updateProvince(provinceId, -10);
+      stats["yeniçeri"] = Math.max(0, (stats["yeniçeri"] || 50) - 6);
+      showStatDelta("yeniçeri", -6);
+      updateStatUI();
     }
   };
 }
@@ -933,6 +1249,7 @@ let activeArcs = {};
 let triggeredArcs = {};
 let decisionLog = [];           // Vezirlik Günlüğü — kayda değer kararların kronolojik listesi
 let isPaywalled = false;        // ücretsiz deneme sınırına takılınca true olur, oyun durur
+let _paywallSoftOffer = false;  // her 3 yeniden başlatmada çıkan, reddedilebilen teklif paywall'ı
 let sultanSabir = 50;
 let selectedSultan = null;
 let selectedAdvisors = [];
@@ -1088,19 +1405,58 @@ window.sfxEnabled   = localStorage.getItem('sadrazam_sfx')   !== 'off';
 window.previewMode = localStorage.getItem('sadrazam_preview_mode') === 'on';
 
 // ── Zorluk Kademeleri — varsayılan "normal" mevcut dengeyi bire bir korur ──
-let difficultyId = 'normal';
+let difficultyId = localStorage.getItem('sadrazam_difficulty') || 'normal';
 const DIFFICULTY_MODS = {
-  kolay:  { drain: 0.7, healthDecay: 0.7 },
-  normal: { drain: 1,   healthDecay: 1   },
-  zor:    { drain: 1.4, healthDecay: 1.3 },
+  kolay:    { drain: 0.7, healthDecay: 0.7 },
+  normal:   { drain: 1,   healthDecay: 1   },
+  zor:      { drain: 1.4, healthDecay: 1.3 },
+  zor_asc1: { drain: 1.6, healthDecay: 1.45 }, // Ascension: "Kadim Vezir +1" — yıl 20+ hayatta kalınca açılır
 };
-function getDifficultyMod() { return DIFFICULTY_MODS[difficultyId] || DIFFICULTY_MODS.normal; }
+function isDifficultyPremiumLocked(id) {
+  // "normal" (Sadrazam) her zaman ücretsiz — sadece alternatif zorluklar Tam Sürüm gerektirir
+  return id !== 'normal' && FREEMIUM_ENABLED && !isFullVersionUnlocked();
+}
+function getDifficultyMod() {
+  // Savunma: localStorage'da eski/geçersiz bir zorluk kalmış olsa bile (Tam Sürüm kaybedilmiş vb.)
+  // gerçek oyun mekaniği asla kilitli bir zorlukla çalışmaz — tek doğruluk noktası burası.
+  if (isDifficultyPremiumLocked(difficultyId)) return DIFFICULTY_MODS.normal;
+  return DIFFICULTY_MODS[difficultyId] || DIFFICULTY_MODS.normal;
+}
 function selectDifficulty(id) {
   if (!DIFFICULTY_MODS[id]) return;
+  if (id === 'zor_asc1' && !isAscensionUnlocked()) return;
+  if (isDifficultyPremiumLocked(id)) {
+    showPaywallScreen(true);
+    return;
+  }
   difficultyId = id;
+  localStorage.setItem('sadrazam_difficulty', id);
   document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.toggle('active', b.dataset.diff === id));
   if (window.playSelectConfirm) playSelectConfirm();
 }
+function isAscensionUnlocked() {
+  return localStorage.getItem('sadrazam_ascension_unlocked') === '1';
+}
+function updateDifficultyLockUI() {
+  document.querySelectorAll('.difficulty-btn').forEach(b => {
+    const id = b.dataset.diff;
+    if (id === 'normal') return;
+    b.classList.toggle('locked', isDifficultyPremiumLocked(id));
+  });
+  // Kilitliyken oyun mekaniği zaten normal'e döner (getDifficultyMod savunması) —
+  // görünen seçim de tutarlı olsun diye kilitli bir zorluk aktif görünmesin.
+  if (isDifficultyPremiumLocked(difficultyId)) {
+    document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.toggle('active', b.dataset.diff === 'normal'));
+  }
+}
+function updateAscensionButtonVisibility() {
+  const btn = document.getElementById('difficulty-btn-ascension');
+  if (!btn) return;
+  btn.classList.toggle('hidden', !isAscensionUnlocked());
+  // Kilit kaldırıldıktan sonra hâlâ seçili olmayan bir zorlukta duruyorsak aktif görünümü düzelt
+  btn.classList.toggle('active', difficultyId === 'zor_asc1');
+}
+updateAscensionButtonVisibility();
 
 // ── Freemium: RevenueCat Entegrasyonu ──────────────────────────────
 const REVENUECAT_API_KEY   = "appl_KlZySfvjUxObiFRjoLxjswysoic";   // RevenueCat > Project Settings > API Keys > Apple App Store
@@ -1141,10 +1497,106 @@ async function initRevenueCat() {
     const pkgs = offerings?.current?.availablePackages || [];
     _rcOfferingPackage = pkgs[0] || null;
     updatePaywallPriceUI();
+    initAkceProduct();
   } catch (e) {
     console.warn('RevenueCat init hatası:', e);
   }
 }
+
+// ── Akçe Satın Alma ─────────────────────────────────────────────────
+// KİLL SWITCH: sorun çıkarsa false yap — "AKÇE AL" butonu eski "Yakında!"
+// mesajına döner, satın alma arayüzü tamamen devreden çıkar. Kod silinmez,
+// AKCE_SYSTEM_ENABLED tekrar true yapılınca aynen çalışmaya devam eder.
+const AKCE_SYSTEM_ENABLED = true;
+
+let _akceProducts = {}; // productId -> RevenueCat StoreProduct (consumable, entitlement'a bağlı değil)
+
+async function initAkceProduct() {
+  if (!AKCE_SYSTEM_ENABLED) return;
+  const RC = window.RevenueCatPurchases;
+  if (!RC || !_rcReady) return;
+  try {
+    const { products } = await RC.getProducts({ productIdentifiers: AKCE_PACKS.map(p => p.productId) });
+    _akceProducts = {};
+    (products || []).forEach(p => { _akceProducts[p.identifier] = p; });
+    updateAkcePriceUI();
+  } catch (e) {
+    console.warn('Akçe ürünleri alınamadı:', e);
+  }
+}
+
+function updateAkcePriceUI() {
+  document.querySelectorAll('.akce-pack-btn').forEach(btn => {
+    const amount = parseInt(btn.dataset.amount, 10);
+    const pack = AKCE_PACKS.find(p => p.amount === amount);
+    const priceEl = btn.querySelector('.price-in');
+    if (!priceEl || !pack) return;
+    const realPrice = _akceProducts[pack.productId]?.priceString;
+    if (realPrice) {
+      priceEl.textContent = realPrice;
+    } else if (!FREEMIUM_ENABLED) {
+      priceEl.textContent = AKCE_FALLBACK_PRICES[amount] || '';
+    } else {
+      priceEl.textContent = '…';
+    }
+  });
+}
+
+function showAkceScreen() {
+  document.getElementById('akce-screen')?.classList.add('visible');
+  updateAkceUI();
+  updateAkcePriceUI();
+  const status = document.getElementById('akce-status');
+  if (status) status.textContent = '';
+}
+function hideAkceScreen() {
+  document.getElementById('akce-screen')?.classList.remove('visible');
+  // İkinci Şans'tan yetersiz bakiye yüzünden buraya yönlendirildiyse, kapanınca teklife geri dön
+  if (_pendingSecondChanceReason) {
+    const reason = _pendingSecondChanceReason;
+    _pendingSecondChanceReason = null;
+    showSecondChanceOffer(reason);
+  }
+}
+
+async function purchaseAkcePack(amount) {
+  const RC = window.RevenueCatPurchases;
+  const status = document.getElementById('akce-status');
+  const isEN = window.LANG === 'en';
+  const pack = AKCE_PACKS.find(p => p.amount === amount);
+
+  if (!_rcReady || !RC || !pack) {
+    if (status) status.textContent = isEN ? 'Purchases are not available right now.' : 'Satın alma şu an kullanılamıyor.';
+    return;
+  }
+  const product = _akceProducts[pack.productId];
+  if (!product) {
+    if (status) status.textContent = isEN ? 'No product found. Try again shortly.' : 'Ürün bulunamadı, birazdan tekrar dene.';
+    return;
+  }
+  if (status) status.textContent = isEN ? 'Processing…' : 'İşleniyor…';
+  try {
+    await RC.purchaseStoreProduct({ product });
+    addAkce(amount);
+    if (window.playSelectConfirm) playSelectConfirm();
+    if (status) status.textContent = isEN ? `+${amount} akce added!` : `+${amount} akçe eklendi!`;
+    // İkinci Şans'tan geldiyse, kısa bir onay anından sonra otomatik olarak teklife geri dön
+    if (_pendingSecondChanceReason) {
+      setTimeout(() => hideAkceScreen(), 900);
+    }
+  } catch (e) {
+    if (e?.userCancelled) {
+      if (status) status.textContent = '';
+    } else if (status) {
+      status.textContent = isEN ? 'Purchase failed. Please try again.' : 'Satın alma başarısız oldu, tekrar dene.';
+    }
+  }
+}
+
+document.querySelectorAll('.akce-pack-btn').forEach(btn => {
+  btn.addEventListener('click', () => purchaseAkcePack(parseInt(btn.dataset.amount, 10)));
+});
+document.getElementById('akce-close-btn')?.addEventListener('click', hideAkceScreen);
 
 function updatePaywallPriceUI() {
   const el = document.getElementById('paywall-price');
@@ -1191,6 +1643,16 @@ function hidePaywallScreen() {
   document.getElementById('paywall-screen')?.classList.remove('visible');
 }
 
+function showSoftPaywallOffer() {
+  _paywallSoftOffer = true;
+  showPaywallScreen(false);
+  const quitBtn = document.getElementById('paywall-quit-btn');
+  if (quitBtn) {
+    const isEN = window.LANG === 'en';
+    quitBtn.textContent = isEN ? 'Continue Playing' : 'Oynamaya Devam Et';
+  }
+}
+
 document.getElementById('paywall-demo-reset')?.addEventListener('click', () => {
   _setFullVersionUnlocked(false);
   const isEN = window.LANG === 'en';
@@ -1202,6 +1664,11 @@ document.getElementById('paywall-demo-reset')?.addEventListener('click', () => {
 async function unlockFullVersion() {
   hidePaywallScreen();
   isPaywalled = false;
+  if (_paywallSoftOffer) {
+    _paywallSoftOffer = false;
+    if (!isGameOver) { saveGameState(); dealNext(); }
+    return;
+  }
   if (_paywallFromMenu) return; // menüden açıldıysa devam edecek bir oyun yok
   advanceYear();
   if (!isGameOver && !isPaywalled) { saveGameState(); dealNext(); }
@@ -1274,6 +1741,29 @@ function _quitAfterPaywall() {
   introScreen.style.display = '';
 }
 
+function showPaywallDeclinedNotice(onDone) {
+  const isEN = window.LANG === 'en';
+  const overlay = document.createElement('div');
+  overlay.id = 'paywall-declined-overlay';
+  overlay.innerHTML = `
+    <div id="paywall-declined-box">
+      <div id="paywall-declined-ornament">⚠</div>
+      <div id="paywall-declined-title">${isEN ? 'A SHORTER REIGN' : 'DAHA KISA BİR SALTANAT'}</div>
+      <div id="paywall-declined-divider"></div>
+      <div id="paywall-declined-text">${isEN
+        ? "Being Grand Vizier isn't free. Without the Full Version, your future reigns will now end after 2 years."
+        : "Tam sürümü satın almadığınızda yalnızca 2 yıl sadrazamlık görevini yapabilirsiniz. Bundan sonraki tüm saltanatların 2. yılın sonunda sona erecek."}</div>
+      <button id="paywall-declined-btn">${isEN ? 'I UNDERSTAND' : 'ANLADIM'}</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('visible'));
+  document.getElementById('paywall-declined-btn').onclick = () => {
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => { overlay.remove(); onDone(); }, 300);
+  };
+}
+
 function showFreeVersionEndTransition(callback) {
   const isEN = window.LANG === 'en';
   const overlay = document.createElement('div');
@@ -1288,6 +1778,13 @@ function showFreeVersionEndTransition(callback) {
 }
 
 document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
+  if (_paywallSoftOffer) {
+    // Teklif reddedildi, oyuna kaldığı yerden devam
+    _paywallSoftOffer = false;
+    hidePaywallScreen();
+    if (!isGameOver) { saveGameState(); dealNext(); }
+    return;
+  }
   if (_paywallFromMenu) {
     // Sadece göz atıyordu, aktif bir oyunu yok — save'e dokunma
     hidePaywallScreen();
@@ -1295,7 +1792,15 @@ document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
   }
   // Yıl sınırından tetiklendi ve satın almadan çıkıyor — 3 yıl hakkı bitti
   hidePaywallScreen();
-  showFreeVersionEndTransition(_quitAfterPaywall);
+  if (localStorage.getItem('sadrazam_paywall_declined') !== '1') {
+    // İLK reddediş — kalıcı flag'i işaretle, bilgilendirme göster, sonra menüye dön
+    localStorage.setItem('sadrazam_paywall_declined', '1');
+    showPaywallDeclinedNotice(() => {
+      showFreeVersionEndTransition(_quitAfterPaywall);
+    });
+  } else {
+    showFreeVersionEndTransition(_quitAfterPaywall);
+  }
 });
 
 let _fullVersionBtnFired = false;
@@ -1377,6 +1882,9 @@ document.getElementById("btn-settings").addEventListener("click",    showSetting
 document.getElementById("btn-settings").addEventListener("touchend", showSettingsOverlay, { passive: true });
 
 document.getElementById("btn-akcesystem").addEventListener("click", () => {
+  if (AKCE_SYSTEM_ENABLED) { showAkceScreen(); return; }
+
+  // Kill switch kapalıyken eski "Yakında!" davranışına düşer
   const overlay = document.createElement("div");
   overlay.id = "akcesystem-overlay";
   overlay.innerHTML = `
@@ -1449,10 +1957,10 @@ function showSultanScreen() {
       <div class="sc-name">${sName}</div>
       <div class="sc-desc">${sDesc}</div>
       <div class="sc-stats">
-        <span>👑 ${s.stats.saray}</span>
-        <span>⚔️ ${s.stats["yeniçeri"]}</span>
-        <span>🕌 ${s.stats.ulema}</span>
-        <span>💰 ${s.stats.hazine}</span>
+        <span><img class="sc-stat-icon" src="assets/icons/icon-saray.png" alt="Saray"> ${s.stats.saray}</span>
+        <span><img class="sc-stat-icon" src="assets/icons/icon-ordu.png" alt="Ordu"> ${s.stats["yeniçeri"]}</span>
+        <span><img class="sc-stat-icon" src="assets/icons/icon-ulema.png" alt="Ulema"> ${s.stats.ulema}</span>
+        <span><img class="sc-stat-icon" src="assets/icons/icon-hazine.png" alt="Hazine"> ${s.stats.hazine}</span>
       </div>
     `;
     btn.onclick = () => {
@@ -1501,6 +2009,9 @@ function showAdvisorScreen() {
     };
     grid.appendChild(btn);
   });
+  updateAscensionButtonVisibility();
+  document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.toggle('active', b.dataset.diff === difficultyId));
+  updateDifficultyLockUI();
 }
 
 // ── Oyunu Başlat ──────────────────────────────────────────────────
@@ -1557,9 +2068,20 @@ function startGame() {
   triggeredArcs = {};
   decisionLog = [];
   isPaywalled = false;
+  _secondChanceUsedThisDeath = false;
   _eyaletNextCard = 40;
   _eyaletShownCount = 0;
+  _eyaletIsyanSchedule = [];
+  provinceLoyalty = { rumeli: 50, anadolu: 50, misir: 50, dogu: 50, akdeniz: 50 };
+  _savasSonucSchedule = null;
   _ramazanShownThisGame = false;
+  _golgeShownThisGame = false;
+  _halkSevgisiShownThisGame = false;
+  _casusAgiShownThisGame = false;
+  _mektup1Shown = false;
+  _mektup2Shown = false;
+  _mektup3Shown = false;
+  _mektup4Shown = false;
   isNight = false;
   nightCardCount = 0;
   consecutiveSameDir = 0;
@@ -1620,10 +2142,18 @@ function startGame() {
 
   if (isChallengeMode) buildChallengePanel();
 
+  let _showSoftPaywallThisStart = false;
+  if (FREEMIUM_ENABLED && !isFullVersionUnlocked()) {
+    const restartCount = (parseInt(localStorage.getItem('sadrazam_restart_count') || '0', 10)) + 1;
+    localStorage.setItem('sadrazam_restart_count', String(restartCount));
+    if (restartCount % 3 === 0) _showSoftPaywallThisStart = true;
+  }
+
   if (!localStorage.getItem('sadrazam_tutorial_done')) {
     showTutorial(() => dealNext());
   } else {
     dealNext();
+    if (_showSoftPaywallThisStart) showSoftPaywallOffer();
   }
 
   startAmbientMusic();
@@ -1857,6 +2387,26 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
+// Arkaplanda kalırken bir kart animasyonu/sürüklemesi yarıda kesilmiş olabilir
+// (tarayıcı setTimeout'ları throttle/durdurabiliyor) — geri dönünce kart'ı
+// güvenli bir duruma sıfırla, yoksa oyun kalıcı olarak "takılı" görünür.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  if (typeof isAnimating !== 'undefined' && isAnimating) {
+    isAnimating = false;
+  }
+  if (typeof isDragging !== 'undefined' && isDragging) {
+    isDragging = false;
+  }
+  const cardEl = document.getElementById('card');
+  if (cardEl) {
+    cardEl.classList.remove('dragging');
+    cardEl.style.transition = 'none';
+    cardEl.style.transform = 'translateX(0) rotate(0deg)';
+    cardEl.style.opacity = '';
+  }
+});
+
 // ── AMBIENT MÜZİK (Web Audio — efekt sesleri için korundu) ───────
 // Ambient Web Audio kaldırıldı — sadece MP3 müzik kullanılıyor
 let ambientCtx = null;
@@ -1896,7 +2446,17 @@ function saveGameState() {
       characterMemory, factionFavors, factionPressureSent,
       playCounts, cursedEver, traitorInvestigated, hiddenTraitor,
       scheduledCards, forcedQueueIds: forcedQueue.map(c => c.id),
-      v: 2
+      provinceLoyalty, savasSonucSchedule: _savasSonucSchedule, eyaletIsyanSchedule: _eyaletIsyanSchedule,
+      golgeShownThisGame: _golgeShownThisGame,
+      halkSevgisiShownThisGame: _halkSevgisiShownThisGame,
+      casusAgiShownThisGame: _casusAgiShownThisGame,
+      mektup1Shown: _mektup1Shown, mektup2Shown: _mektup2Shown,
+      mektup3Shown: _mektup3Shown, mektup4Shown: _mektup4Shown,
+      ramazanShownThisGame: _ramazanShownThisGame,
+      easterPargaliDone: _easterPargaliDone,
+      hekimDinlenme20Shown: _hekimDinlenme20Shown,
+      receivedLetters,
+      v: 3
     };
     localStorage.setItem('sadrazam_save', JSON.stringify(state));
   } catch(e) {}
@@ -1972,6 +2532,20 @@ function loadGameState(s) {
   scheduledCards = s.scheduledCards || [];
   forcedQueue = (s.forcedQueueIds || []).map(id => allCards.find(c => c.id === id)).filter(Boolean);
   _sultanWarningShown = s.sultanWarningShown || false;
+  provinceLoyalty = s.provinceLoyalty || { rumeli:50, anadolu:50, misir:50, dogu:50, akdeniz:50 };
+  _savasSonucSchedule = s.savasSonucSchedule || null;
+  _eyaletIsyanSchedule = s.eyaletIsyanSchedule || [];
+  _golgeShownThisGame = s.golgeShownThisGame || false;
+  _halkSevgisiShownThisGame = s.halkSevgisiShownThisGame || false;
+  _casusAgiShownThisGame = s.casusAgiShownThisGame || false;
+  _mektup1Shown = s.mektup1Shown || false;
+  _mektup2Shown = s.mektup2Shown || false;
+  _mektup3Shown = s.mektup3Shown || false;
+  _mektup4Shown = s.mektup4Shown || false;
+  _ramazanShownThisGame = s.ramazanShownThisGame || false;
+  _easterPargaliDone = s.easterPargaliDone || false;
+  _hekimDinlenme20Shown = s.hekimDinlenme20Shown || false;
+  receivedLetters = s.receivedLetters || 0;
   isGameOver = false;
   activeArcs = {};
   triggeredArcs = {};
@@ -2203,7 +2777,12 @@ function weightedPick(cards) {
 }
 
 // ── Deneyimli Mod: kart üstünde etki yönü önizlemesi ──────────────
-const PREVIEW_STAT_ICON = { saray:'👑', "yeniçeri":'⚔️', ulema:'☪', hazine:'💰' };
+const PREVIEW_STAT_ICON = {
+  saray: 'assets/icons/icon-saray.png',
+  "yeniçeri": 'assets/icons/icon-ordu.png',
+  ulema: 'assets/icons/icon-ulema.png',
+  hazine: 'assets/icons/icon-hazine.png',
+};
 function getEffectPreviewHTML(effects) {
   const parts = [];
   for (const [k, v] of Object.entries(effects || {})) {
@@ -2211,7 +2790,7 @@ function getEffectPreviewHTML(effects) {
     const icon = PREVIEW_STAT_ICON[k] || '';
     const cls = v > 0 ? 'fx-up' : 'fx-down';
     const arrow = v > 0 ? '▲' : '▼';
-    parts.push(`<span class="fx-chip ${cls}">${icon}${arrow}</span>`);
+    parts.push(`<span class="fx-chip ${cls}">${icon ? `<img src="${icon}" alt="">` : ''}${arrow}</span>`);
   }
   return parts.length ? `<span class="fx-preview">${parts.join('')}</span>` : '';
 }
@@ -2309,19 +2888,13 @@ function dealNext() {
     return;
   }
 
-  // Sultan olay kartı — letter/normal ayrımından önce yakala
-  if (c.character === "1-sultan") {
-    showSultanEventCard(c);
-    return;
-  }
-
   // Müzakere kartı
   if (c.type === "negotiation") {
     showNegotiationCard(c);
     return;
   }
 
-  // Mektup kartı (sultan mektupları artık gösterilmiyor)
+  // Mektup kartı (sultan mektupları dahil — kendi tipine göre önce bu yakalar)
   if (c.type === "letter") {
     showLetterCard(c);
     return;
@@ -2348,6 +2921,13 @@ function dealNext() {
     if (invBtn) invBtn.classList.add("hidden");
     animateCardIn();
     showChanceCard(c);
+    return;
+  }
+
+  // Sultan olay kartı — özel tipi olmayan (letter/chance/negotiation dışındaki)
+  // 1-sultan kartları kendi gerçek metni/seçenekleriyle gösterilir
+  if (c.character === "1-sultan") {
+    showSultanEventCard(c);
     return;
   }
 
@@ -2774,17 +3354,17 @@ function showYearSummary(c) {
 
   // Stat barları
   const statDefs = [
-    { key: 'saray',     label: isEN ? 'Palace'   : 'Saray',   icon: '👑' },
-    { key: 'yeniçeri',  label: isEN ? 'Army'     : 'Ordu',    icon: '⚔️' },
-    { key: 'ulema',     label: isEN ? 'Clergy'   : 'Ulema',   icon: '🕌' },
-    { key: 'hazine',    label: isEN ? 'Treasury' : 'Hazine',  icon: '💰' },
+    { key: 'saray',     label: isEN ? 'Palace'   : 'Saray',   icon: 'assets/icons/icon-saray.png' },
+    { key: 'yeniçeri',  label: isEN ? 'Army'     : 'Ordu',    icon: 'assets/icons/icon-ordu.png' },
+    { key: 'ulema',     label: isEN ? 'Clergy'   : 'Ulema',   icon: 'assets/icons/icon-ulema.png' },
+    { key: 'hazine',    label: isEN ? 'Treasury' : 'Hazine',  icon: 'assets/icons/icon-hazine.png' },
   ];
 
   const barsHTML = statDefs.map(s => {
     const val = Math.round(snap[s.key] || 0);
     const cls = val <= 20 ? 'ys-bar-danger' : val >= 78 ? 'ys-bar-warn' : 'ys-bar-ok';
     return `<div class="ys-stat-row">
-      <span class="ys-stat-icon">${s.icon}</span>
+      <img class="ys-stat-icon" src="${s.icon}" alt="${s.label}">
       <span class="ys-stat-label">${s.label}</span>
       <div class="ys-bar-track"><div class="ys-bar-fill ${cls}" style="width:${val}%"></div></div>
       <span class="ys-stat-val">${val}</span>
@@ -2803,7 +3383,7 @@ function showYearSummary(c) {
     : '';
 
   const topCharLine = charLabel
-    ? `<div class="ys-meta">${isEN ? '👥 Most visited' : '👥 En çok gelen'}: <strong>${charLabel}</strong> (${topCount}×)</div>`
+    ? `<div class="ys-meta">${isEN ? '✦ Most visited' : '✦ En çok gelen'}: <strong>${charLabel}</strong> (${topCount}×)</div>`
     : '';
 
   const titleText = isEN ? `YEAR ${yr} COMPLETE` : `${yr}. YIL TAMAMLANDI`;
@@ -3163,6 +3743,15 @@ function showEyaletEkrani() {
     btn.onclick = () => {
       if (window.playSelectConfirm) playSelectConfirm();
       updateProvince(btn.dataset.id, 12);
+      // Uzun Vadeli Hafıza: seçilmeyen, zaten sadakati düşük eyaletler ~6 yıl sonra isyan riski taşır
+      PROVINCES.forEach(p => {
+        if (p.id !== btn.dataset.id && (provinceLoyalty[p.id] ?? 50) < 30) {
+          const alreadyScheduled = _eyaletIsyanSchedule.some(sc => sc.provinceId === p.id);
+          if (!alreadyScheduled) {
+            _eyaletIsyanSchedule.push({ provinceId: p.id, afterCardsPlayed: cardsPlayed + 150 });
+          }
+        }
+      });
       overlay.style.opacity = "0";
       overlay.style.transition = "opacity 0.3s ease";
       setTimeout(() => {
@@ -3270,51 +3859,33 @@ function showPadisahZiyareti() {
 }
 
 // ── Sultan Olay Kartı ─────────────────────────────────────────────
+// Kartın kendi gerçek metni/seçenekleri gösterilir; karar normal decide()
+// akışından geçer (etkiler, flag'ler, zincirler, eyalet etkisi vs. diğer
+// tüm kartlarla aynı mekanizmayı kullanır).
 function showSultanEventCard(c) {
   hideNegotiationPanel();
   Haptics.letterArrival();
   if (window.playLetterArrival) playLetterArrival();
 
-  // Stat değerlendirmesi
-  const statValues = Object.values(stats);
-  const avgStat = statValues.reduce((a, b) => a + b, 0) / statValues.length;
-  const minStat = Math.min(...statValues);
-  const isPositive = avgStat >= 55 && minStat >= 35;
+  const isEN = window.LANG === 'en';
+  const text      = (isEN && c.text_en)       ? c.text_en       : (c.text || "");
+  const leftText  = (isEN && c.left_text_en)  ? c.left_text_en  : (c.left_text || "");
+  const rightText = (isEN && c.right_text_en) ? c.right_text_en : (c.right_text || "");
+  const title     = (isEN && c.character_name_en) ? c.character_name_en : (c.character_name || "Sultan");
 
-  // BEYAN metinleri (soru değil)
-  const _isENsev = window.LANG === 'en';
-  const positiveTexts = _isENsev
-    ? (window.EN_SULTAN_EVENT_POSITIVE || ["State affairs are going well, Grand Vizier. Maintain this balance."])
-    : ["Devlet işleri yolunda gidiyor, Sadrazam. Bu dengeyi koruyun.",
-       "Taht sizi layık buluyor. Osmanlı sizinle güçlü.",
-       "Hazinemiz dolu, ordumuz sağlam. Memnuniyetimizi bildirmek istedik.",
-       "Divan'ın bu sükûneti bizi memnun ediyor. Böyle devam edin."];
-  const negativeTexts = _isENsev
-    ? (window.EN_SULTAN_EVENT_NEGATIVE || ["This course of events displeases us, Grand Vizier."])
-    : ["Bu gidişat bizi rahatsız ediyor, Sadrazam. Durumu toparlamanızı bekliyoruz.",
-       "İmparatorluk zayıflıyor. Bu yük omuzlarınızda, bunu bilin.",
-       "Divan'dan gelen haberler iç açıcı değil. Tedbirinizi vakit geçirmeden alın.",
-       "Sabır taşı çatlamak üzere. Bunu son uyarı olarak kabul edin."];
-
-  const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  const eventText = isPositive ? rand(positiveTexts) : rand(negativeTexts);
-  const effectLabel = isPositive
-    ? (_isENsev ? "All powers +20" : "Tüm güçler +20")
-    : (_isENsev ? "All powers −10" : "Tüm güçler −10");
-  const effectClass = isPositive ? "positive" : "negative";
-
-  // Overlay — sadece onay butonu, swipe/ret yok
   const overlay = document.createElement("div");
   overlay.id = "sultan-event-overlay";
   overlay.innerHTML = `
     <div id="sultan-event-box">
-      <div id="sultan-event-label">${_isENsev ? 'MESSAGE FROM THE SULTAN' : "SULTAN'DAN HABER"}</div>
+      <div id="sultan-event-label">${isEN ? 'MESSAGE FROM THE SULTAN' : "SULTAN'DAN HABER"}</div>
       <img id="sultan-event-img" src="assets/characters/1-sultan.jpg" alt="Sultan">
-      <div id="sultan-event-title">${c.character_name || "Sultan"}</div>
+      <div id="sultan-event-title">${title}</div>
       <div id="sultan-event-divider"></div>
-      <div id="sultan-event-text">${eventText}</div>
-      <div id="sultan-event-effect" class="sultan-event-effect-box ${effectClass}">${effectLabel}</div>
-      <button id="sultan-event-devam">${_isENsev ? 'As you command, my Sultan' : 'Başüstüne Hünkarım'}</button>
+      <div id="sultan-event-text">${text}</div>
+      <div id="sultan-event-choices">
+        <button id="sultan-event-left">${leftText}</button>
+        <button id="sultan-event-right">${rightText}</button>
+      </div>
     </div>`;
 
   document.body.appendChild(overlay);
@@ -3322,47 +3893,24 @@ function showSultanEventCard(c) {
   const box = document.getElementById("sultan-event-box");
   let fired = false;
 
-  const doAccept = () => {
+  const doChoice = (dir) => {
     if (fired) return; fired = true;
     box.style.transition = "transform 0.3s ease, opacity 0.3s ease";
-    box.style.transform = "translateX(120%) rotate(12deg)";
+    box.style.transform = dir === "right" ? "translateX(120%) rotate(12deg)" : "translateX(-120%) rotate(-12deg)";
     box.style.opacity = "0";
     setTimeout(() => {
       overlay.remove();
-      applySultanEffect(isPositive, c, "right");
+      applyProvinceEffect(c, dir); // eyalet etkisi (önceki davranışla aynı kapsam: sultan kararları)
+      decide(dir);
     }, 320);
   };
 
-  document.getElementById("sultan-event-devam").onclick = doAccept;
-}
+  document.getElementById("sultan-event-left").onclick  = () => doChoice("left");
+  document.getElementById("sultan-event-right").onclick = () => doChoice("right");
 
-function applySultanEffect(positive, c, dir) {
-  const change = positive ? 20 : -10;
-  for (const stat of Object.keys(stats)) {
-    const newVal = positive
-      ? Math.min(95, stats[stat] + change)
-      : Math.max(5, stats[stat] + change);
-    stats[stat] = newVal;
-    showStatDelta(stat, newVal - stats[stat] + change);
-  }
-  updateStatUI();
-
-  sultanSabir = Math.min(100, Math.max(0, sultanSabir + (positive ? 5 : -8)));
-  checkSultanSabir();
-  if (isGameOver) return;
-
-  const charKey = c.character || "";
-  if (!characterMemory[charKey]) characterMemory[charKey] = { left: 0, right: 0, last: null };
-  characterMemory[charKey][dir]++;
-  characterMemory[charKey].last = dir;
-  seenCharacters.add(charKey);
-  if (charKey) updateCrossGame({ seenCharactersEver: [charKey] });
-  applyProvinceEffect(c, dir); // Eyalet etkisi
-
-  cardsPlayed++;
-  advanceHicriMonth();
-  if (cardsPlayed % CARDS_PER_YEAR === 0) advanceYear();
-  if (!isGameOver && !isPaywalled) { saveGameState(); setTimeout(dealNext, 200); }
+  // Klavye ok tuşu desteği (keydown handler zaten bunları arıyor)
+  window._sultanAccept = () => doChoice("right");
+  window._sultanReject = () => doChoice("left");
 }
 
 // ── Mektup Kartı ─────────────────────────────────────────────────
@@ -3439,6 +3987,7 @@ function handleLetterDevam() {
       sultanSabir = Math.min(100, Math.max(0, sultanSabir + c.right_effects.sultanSabir));
     }
     for (const f of (c.right_flags_set || [])) activeFlags[f] = true;
+    receivedLetters++; // "Sultan'dan Haber" / "Tüm Mektuplar" başarımları için
 
     if (!isGameOver && !isPaywalled) {
       cardsPlayed++;
@@ -3940,6 +4489,10 @@ function applyEffects(effects) {
     if (hasAdvisor("sokollu")) raw = Math.round(raw * 0.85);
     if (hasAdvisor("sinan") && (stat === "saray" || stat === "ulema")) raw = Math.round(raw * 1.2);
     if (hasAdvisor("hurrem") && stat === "yeniçeri" && raw < 0) raw = Math.round(raw * 0.75);
+    // Hazine dengelemesi: kart bazlı negatif hazine etkileri %30 azaltılır (429 kartın tekini
+    // değiştirmek yerine tek noktadan, tüm kartlarda tutarlı şekilde) — pasif yıllık drain
+    // (PASSIVE_HAZINE_DRAIN) bu kapsamda değil, o zaten çok küçük ve zorluk çarpanına bağlı.
+    if (stat === "hazine" && raw < 0) raw = Math.round(raw * 0.7);
 
     // Item block kontrolü
     const blockedStat = blockMap[pendingItemEffect];
@@ -4174,15 +4727,23 @@ function decide(dir) {
   // Lanet kontrolü
   checkCurse(dir);
 
-  // Zincirleme kartlar
-  const triggerKey = "triggers_on_" + dir;
-  if (currentCard[triggerKey]) {
-    const delay = currentCard.trigger_delay ?? 3;
-    scheduledCards.push({
-      cardId: currentCard[triggerKey],
-      afterCardsPlayed: cardsPlayed + delay
-    });
+  // Savaş sonucu: sabit gecikme/her zaman zafer yerine — 2-10 kart arası rastgele
+  // gecikme, sonuç (zafer/yenilgi) o anki askeri güce (Ordu statı + donanma müttefikliği) bağlı.
+  if (currentCard.id === 'savaş_teklifi' && dir === 'right') {
+    const delay = 2 + Math.floor(Math.random() * 9); // 2-10 arası
+    _savasSonucSchedule = { afterCardsPlayed: cardsPlayed + delay };
     updateFateBar();
+  } else {
+    // Zincirleme kartlar (genel mekanizma)
+    const triggerKey = "triggers_on_" + dir;
+    if (currentCard[triggerKey]) {
+      const delay = currentCard.trigger_delay ?? 3;
+      scheduledCards.push({
+        cardId: currentCard[triggerKey],
+        afterCardsPlayed: cardsPlayed + delay
+      });
+      updateFateBar();
+    }
   }
 
   // Arc tetikleme
@@ -4344,6 +4905,59 @@ function decide(dir) {
         forcedQueue.push(mirasCard);
         localStorage.removeItem("sadrazam_miras_bar"); // kuyruktan sonra sil (duplicate önle)
       }
+    }
+    // Hanedan Hafızası: bir önceki oyunun ölüm hafızası, 5. karttan sonra oyun başına 1 kez
+    if (!_golgeShownThisGame && cardsPlayed >= 5) {
+      _golgeShownThisGame = true;
+      const golgeCard = getGolgeCard();
+      if (golgeCard) forcedQueue.push(golgeCard);
+    }
+    // Gizli Nitelikler: mevcut sessiz sayaçlar eşiğe ulaşınca, oyun başına 1 kez
+    if (!_halkSevgisiShownThisGame && (factionFavors.halk || 0) >= 10) {
+      _halkSevgisiShownThisGame = true;
+      forcedQueue.push(getHalkSevgisiCard());
+    }
+    if (!_casusAgiShownThisGame && traitorInvestigated >= 3) {
+      _casusAgiShownThisGame = true;
+      forcedQueue.push(getCasusAgiCard());
+    }
+    // Sultan Mektupları: weight:1 olduğu için normal havuzdan çıkmaz, oyun başına
+    // birer kez, farklı kart sayılarında (min_year'larıyla uyumlu) gelir
+    if (!_mektup1Shown && cardsPlayed >= 6) {
+      _mektup1Shown = true;
+      const m1 = allCards.find(x => x.id === 'sultan_mektup_1');
+      if (m1) forcedQueue.push(m1);
+    }
+    if (!_mektup3Shown && cardsPlayed >= 9) {
+      _mektup3Shown = true;
+      const m3 = allCards.find(x => x.id === 'sultan_mektup_3');
+      if (m3) forcedQueue.push(m3);
+    }
+    if (!_mektup2Shown && cardsPlayed >= 15) {
+      _mektup2Shown = true;
+      const m2 = allCards.find(x => x.id === 'sultan_mektup_2');
+      if (m2) forcedQueue.push(m2);
+    }
+    if (!_mektup4Shown && cardsPlayed >= 25) {
+      _mektup4Shown = true;
+      const m4 = allCards.find(x => x.id === 'sultan_mektup_4');
+      if (m4) forcedQueue.push(m4);
+    }
+    // Savaş Sonucu: gecikme dolunca askeri güce göre zafer ya da yenilgi kartı gelir
+    if (_savasSonucSchedule && cardsPlayed >= _savasSonucSchedule.afterCardsPlayed) {
+      _savasSonucSchedule = null;
+      const won = rollSavasSonucu();
+      const sonucCard = allCards.find(x => x.id === (won ? 'savaş_zafer' : 'savaş_yenilgi'));
+      if (sonucCard) forcedQueue.push(sonucCard);
+    }
+    // Eyalet Divanı Uzun Vadeli Hafıza: ihmal edilen eyalet çok sonra isyan eder
+    if (_eyaletIsyanSchedule.length) {
+      const due = _eyaletIsyanSchedule.filter(sc => cardsPlayed >= sc.afterCardsPlayed);
+      _eyaletIsyanSchedule = _eyaletIsyanSchedule.filter(sc => cardsPlayed < sc.afterCardsPlayed);
+      due.forEach(sc => {
+        const isyanCard = getEyaletIsyanCard(sc.provinceId);
+        if (isyanCard) forcedQueue.push(isyanCard);
+      });
     }
     // Pargalı İbrahim: en erken 35. kart, oyun başına 1 kez, %4
     if (!_easterPargaliDone && cardsPlayed >= 35 && Math.random() < 0.04) {
@@ -4561,10 +5175,10 @@ function showCardTrail(dir) {
 }
 
 function flyOff(dir) {
+  if (isAnimating) return;
   showCardTrail(dir);
   const bubble = document.getElementById("speech-bubble");
   if (bubble) bubble.style.opacity = "0";
-  if (isAnimating) return;
   isAnimating = true;
   if (dir === "right") { Haptics.swipeRight(); if (window.playSwipeRight) playSwipeRight(); }
   else                 { Haptics.swipeLeft();  if (window.playSwipeLeft)  playSwipeLeft();  }
@@ -4605,6 +5219,10 @@ window.addEventListener("mouseup",   () => onEnd());
 
 // Keyboard
 window.addEventListener("keydown", e => {
+  // İşletim sistemi tuş-tekrarı (basılı tutma / odak kaybından dönüşte "takılı tuş") —
+  // buna izin verirsek her tekrar keydown'ı ayrı bir kart kaydırmaya çalışır ve
+  // "kendi kendine peş peşe kart kayması" hissi yaratır. Sadece gerçek ilk basışı işle.
+  if (e.repeat) return;
   // Sultan overlay açıkken ok tuşları sultana yönlendir
   if (document.getElementById("sultan-event-overlay")) {
     if (e.key === "ArrowRight" && window._sultanAccept) { e.preventDefault(); window._sultanAccept(); }
@@ -4630,12 +5248,24 @@ window.addEventListener("touchend",  () => onEnd());
 
 // ── Yıl Geçişi ───────────────────────────────────────────────────
 function advanceYear() {
+  // Paywall daha önce reddedildiyse: bir daha hiç paywall çıkmaz — bunun yerine
+  // her oyun 2. yılın sonunda "ölümle" biter (Tam Sürüm alınana kadar kalıcı).
+  if (FREEMIUM_ENABLED && !isFullVersionUnlocked()
+      && localStorage.getItem('sadrazam_paywall_declined') === '1'
+      && (year + 1) > DECLINED_YEAR_LIMIT) {
+    const isEN = window.LANG === 'en';
+    triggerGameOver(isEN
+      ? "Being Grand Vizier isn't free — without the Full Version, no reign can outlast 2 years."
+      : "Sadrazamlık parasız olmaz — Tam Sürüm alınmadığı sürece bu saltanat 2 yılı geçemez.");
+    return;
+  }
   if (FREEMIUM_ENABLED && !isPaywalled && (year + 1) > FREE_YEAR_LIMIT && !isFullVersionUnlocked()) {
     isPaywalled = true;
     showPaywallScreen();
     return;
   }
   year++;
+  if (year === FREE_YEAR_LIMIT) localStorage.setItem('sadrazam_restart_count', '0');
   Haptics.yearAdvance();
   if (window.playYearAdvance) playYearAdvance();
 
@@ -4781,6 +5411,12 @@ const CHAR_FACTION_MAP = {
   "4-defterdar":      "hazine",
   "13-buyuk_tuccar":  "hazine",
   "22-yahudi_bankaci":"hazine",
+  "kizlaragasi":      "saray",
+  "haremkahyasi":     "saray",
+  "basmuhasip":       "hazine",
+  "venedikbalyosu":   "hazine",
+  "tersaneemini":     "yeniçeri",
+  "akincibeyi":       "yeniçeri",
 };
 
 const LOYALTY_THRESHOLD = 4;
@@ -4822,6 +5458,17 @@ function checkRelationshipEffects() {
 // ── Game Over ─────────────────────────────────────────────────────
 function triggerGameOver(reason) {
   if (isGameOver) return;
+  if (!_secondChanceUsedThisDeath) {
+    const adsLeft = SECOND_CHANCE_DAILY_AD_LIMIT - getSecondChanceAdsUsedToday();
+    if (adsLeft > 0 || getAkceBalance() >= SECOND_CHANCE_AKCE_COST) {
+      showSecondChanceOffer(reason);
+      return;
+    }
+  }
+  _actuallyTriggerGameOver(reason);
+}
+
+function _actuallyTriggerGameOver(reason) {
   isGameOver = true;
   clearSave();
   stopAmbientMusic();
@@ -5139,6 +5786,10 @@ function saveHighScore() {
   const best = parseInt(localStorage.getItem("sadrazam_best_year") || "0");
   if (year > best) {
     localStorage.setItem("sadrazam_best_year", String(year));
+  }
+  // Ascension: 20+ yıl hayatta kalınca "Kadim Vezir +1" kilidi açılır
+  if (year >= 20 && !isAscensionUnlocked()) {
+    localStorage.setItem('sadrazam_ascension_unlocked', '1');
   }
 }
 

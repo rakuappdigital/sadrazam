@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Sadrazam</title>
   <link rel="stylesheet" href="assets/fonts/fonts.css">
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css?v=6" />
 </head>
 <body>
 
@@ -146,28 +146,28 @@
 
       <div class="howto-stats">
         <div class="howto-stat">
-          <span class="hstat-icon">👑</span>
+          <img class="hstat-icon" src="assets/icons/icon-saray.png" alt="Saray">
           <div>
             <strong data-i18n="stat.saray">Saray</strong>
             <span data-i18n="howto.saray_desc">Sultanın sana güveni. Sıfıra düşerse idam, yüze çıkarsa tehdit.</span>
           </div>
         </div>
         <div class="howto-stat">
-          <span class="hstat-icon">⚔️</span>
+          <img class="hstat-icon" src="assets/icons/icon-ordu.png" alt="Ordu">
           <div>
             <strong data-i18n="stat.ordu">Ordu</strong>
             <span data-i18n="howto.ordu_desc">Yeniçerilerin sadakati. Zayıflarsa düşman gelir, güçlenirse isyan.</span>
           </div>
         </div>
         <div class="howto-stat">
-          <span class="hstat-icon">🕌</span>
+          <img class="hstat-icon" src="assets/icons/icon-ulema.png" alt="Ulema">
           <div>
             <strong data-i18n="stat.ulema">Ulema</strong>
             <span data-i18n="howto.ulema_desc">Dini otoritenin desteği. Kaybedersen halk seni linç eder.</span>
           </div>
         </div>
         <div class="howto-stat">
-          <span class="hstat-icon">💰</span>
+          <img class="hstat-icon" src="assets/icons/icon-hazine.png" alt="Hazine">
           <div>
             <strong data-i18n="stat.hazine">Hazine</strong>
             <span data-i18n="howto.hazine_desc">Devletin parası. Biter dağılır, taşarsa zimmetçilik suçlanırsın.</span>
@@ -236,9 +236,10 @@
       <div id="advisor-count" class="advisor-count" data-i18n="advisor.count_init">0/2 seçildi</div>
       <div id="advisor-grid" class="advisor-grid"></div>
       <div id="difficulty-row" class="difficulty-row">
-        <button class="difficulty-btn" data-diff="kolay" onclick="selectDifficulty('kolay')">Acemi</button>
+        <button class="difficulty-btn" data-diff="kolay" onclick="selectDifficulty('kolay')">Acemi<span class="lock-badge" data-i18n="difficulty.premium_badge">Tam Sürüm</span></button>
         <button class="difficulty-btn active" data-diff="normal" onclick="selectDifficulty('normal')">Sadrazam</button>
-        <button class="difficulty-btn" data-diff="zor" onclick="selectDifficulty('zor')">Kadim Vezir</button>
+        <button class="difficulty-btn" data-diff="zor" onclick="selectDifficulty('zor')">Kadim Vezir<span class="lock-badge" data-i18n="difficulty.premium_badge">Tam Sürüm</span></button>
+        <button id="difficulty-btn-ascension" class="difficulty-btn hidden" data-diff="zor_asc1" onclick="selectDifficulty('zor_asc1')"><span data-i18n="difficulty.ascension">Kadim Vezir +1</span><span class="lock-badge" data-i18n="difficulty.premium_badge">Tam Sürüm</span></button>
       </div>
     </div>
     <div class="sel-confirm-btn">
@@ -368,8 +369,8 @@
       </div>
 
       <div id="paywall-price-block">
-        <div id="paywall-price-label" data-i18n="paywall.price_label">TEK SEFERLİK ÖDEME</div>
-        <div id="paywall-price"></div>
+        <div class="pack-caption" data-i18n="paywall.price_label">TEK SEFERLİK ÖDEME</div>
+        <div class="ferman ferman-lg"><div class="famt" id="paywall-price"></div></div>
       </div>
 
       <button id="paywall-buy-btn" class="intro-btn premium" data-i18n="paywall.buy">TAM SÜRÜMÜ AÇ</button>
@@ -377,6 +378,42 @@
       <button id="paywall-quit-btn" class="intro-btn ghost" data-i18n="paywall.quit">Ana Menüye Dön</button>
       <div id="paywall-status"></div>
       <button id="paywall-demo-reset" class="hidden">🔄 Demoyu Sıfırla</button>
+    </div>
+  </div>
+
+  <div id="akce-screen">
+    <div id="akce-panel">
+      <div id="akce-crest">🪙</div>
+      <div id="akce-title" data-i18n="akce.title">AKÇE SATIN AL</div>
+      <div id="akce-divider"></div>
+      <p id="akce-text" data-i18n="akce.text">Bazen işler yolunda gitmez. Akçen, zor anlarda İkinci Şans için kullanılır.</p>
+
+      <div id="akce-balance-row">
+        <span data-i18n="akce.balance_label">Mevcut Bakiye</span>
+        <span class="akce-balance-display">0</span> 🪙
+      </div>
+
+      <div id="akce-pack-grid">
+        <button class="akce-pack-btn" data-amount="10">
+          <div class="pack-caption" data-i18n="akce.pack_label">Akçe Paketi</div>
+          <div class="ferman"><div class="famt">10 <span data-i18n="akce.unit">AKÇE</span></div><div class="price-in">…</div></div>
+        </button>
+        <button class="akce-pack-btn" data-amount="20">
+          <div class="pack-caption" data-i18n="akce.pack_label">Akçe Paketi</div>
+          <div class="ferman"><div class="famt">20 <span data-i18n="akce.unit">AKÇE</span></div><div class="price-in">…</div></div>
+        </button>
+        <button class="akce-pack-btn" data-amount="50">
+          <div class="pack-caption" data-i18n="akce.pack_label">Akçe Paketi</div>
+          <div class="ferman"><div class="famt">50 <span data-i18n="akce.unit">AKÇE</span></div><div class="price-in">…</div></div>
+        </button>
+        <button class="akce-pack-btn" data-amount="100">
+          <div class="pack-caption" data-i18n="akce.pack_label">Akçe Paketi</div>
+          <div class="ferman"><div class="famt">100 <span data-i18n="akce.unit">AKÇE</span></div><div class="price-in">…</div></div>
+        </button>
+      </div>
+
+      <button id="akce-close-btn" class="intro-btn ghost" data-i18n="akce.close">Kapat</button>
+      <div id="akce-status"></div>
     </div>
   </div>
 
@@ -401,9 +438,10 @@
   <script src="sounds.js"></script>
   <script src="haptics.js"></script>
   <script src="gamecenter.js"></script>
-  <script src="translations.js?v=5"></script>
+  <script src="rewardedads.js"></script>
+  <script src="translations.js?v=6"></script>
   <script src="revenuecat.bundle.js"></script>
-  <script src="game.js?v=7"></script>
+  <script src="game.js?v=8"></script>
 </body>
 </html>
 <!-- preload kritik görseller -->

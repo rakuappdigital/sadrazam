@@ -16863,6 +16863,1232 @@
       "right_text_en": "Leave the decision to the Sultan",
       "speech_left_en": "Today it is him or me, Pasha.",
       "speech_right_en": "I trust the Sultan's justice."
+    },
+    {
+      "id": "savaş_yenilgi",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası",
+      "faction": "ordu",
+      "text": "Paşam, kötü haberler var... Ordumuz batıda ağır bir yenilgi aldı. Askerlerimiz dağınık dönüyor, halk arasında dedikodu yayılıyor.",
+      "left_text": "Sorumluyu ara ve cezalandır",
+      "right_text": "Yeniden toparlanmayı emret",
+      "left_effects": {
+        "saray": -6,
+        "yeniçeri": -10,
+        "ulema": 2,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": -10,
+        "yeniçeri": -6,
+        "ulema": -4,
+        "hazine": -8
+      },
+      "left_flags_set": [
+        "savas_sonuc_resolved"
+      ],
+      "right_flags_set": [
+        "savaş_kaybedildi",
+        "savas_sonuc_resolved"
+      ],
+      "required_flags": [
+        "savaş_başladı"
+      ],
+      "excluded_flags": [
+        "savas_sonuc_resolved"
+      ],
+      "weight": 7,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Adalet bazen acımasız olmalı.",
+      "speech_right": "Bir yenilgi son değildir.",
+      "character_name_en": "Janissary Commander",
+      "text_en": "Pasha, grim news... Our army suffered a heavy defeat in the west. The soldiers return in disarray, and rumors spread among the people.",
+      "left_text_en": "Find and punish the one responsible",
+      "right_text_en": "Order the army to regroup",
+      "investigate_text_en": "",
+      "speech_left_en": "Justice must sometimes be merciless.",
+      "speech_right_en": "A defeat is not the end."
+    },
+    {
+      "id": "kizlaragasi_gorev_teklifi",
+      "character": "kizlaragasi",
+      "character_name": "Kızlarağası",
+      "faction": "saray",
+      "text": "Harem'in en kıdemli ağası huzurunuza çıktı: \"Sarayın içindeki her fısıltıyı size taşıyabilirim, Sadrazam Hazretleri. Yeter ki güveninizi kazanayım.\"",
+      "left_text": "Mesafeli durun",
+      "right_text": "Teklifini kabul edin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "kizlaragasi_guven"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "political",
+      "character_name_en": "Chief Harem Eunuch",
+      "text_en": "The harem's most senior eunuch has come before you: \"I can bring you every whisper inside the palace walls, Grand Vizier. I only need your trust.\"",
+      "left_text_en": "Keep your distance",
+      "right_text_en": "Accept his offer"
+    },
+    {
+      "id": "kizlaragasi_harem_kavga",
+      "character": "kizlaragasi",
+      "character_name": "Kızlarağası",
+      "faction": "saray",
+      "text": "İki cariye arasında padişahın gözdesi olma yüzünden kavga çıktı. Kızlarağası sizden bir karar bekliyor.",
+      "left_text": "İkisini de uzaklaştırın",
+      "right_text": "Kızlarağası'nın takdirine bırakın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 9,
+      "min_year": 2,
+      "category": "social",
+      "character_name_en": "Chief Harem Eunuch",
+      "text_en": "A quarrel has broken out between two concubines over who holds the Sultan's favor. The Kızlarağası awaits your decision.",
+      "left_text_en": "Send both of them away",
+      "right_text_en": "Leave it to the Kızlarağası's judgment"
+    },
+    {
+      "id": "kizlaragasi_valide_araci",
+      "character": "kizlaragasi",
+      "character_name": "Kızlarağası",
+      "faction": "saray",
+      "text": "Kızlarağası, sesini alçaltarak yaklaştı: \"Valide Sultan Hazretleri size güveniyor artık. Sizin için gizlice bir kapı aralamamı ister misiniz?\"",
+      "left_text": "Gerek yok, açıkça hareket edin",
+      "right_text": "Evet, o kapıyı aralayın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 10,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "valide_ally_ready"
+      ],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 3,
+      "category": "intrigue",
+      "character_name_en": "Chief Harem Eunuch",
+      "text_en": "The Kızlarağası approached, lowering his voice: \"Her Highness the Valide Sultan trusts you now. Shall I quietly open a door on your behalf?\"",
+      "left_text_en": "No need, act openly",
+      "right_text_en": "Yes, open that door"
+    },
+    {
+      "id": "kizlaragasi_sehzade_terbiye",
+      "character": "kizlaragasi",
+      "character_name": "Kızlarağası",
+      "faction": "saray",
+      "text": "Genç şehzadelerden biri hocalarına saygısızlık ediyor. Kızlarağası, terbiyesi için sizden yetki istiyor.",
+      "left_text": "Sultan'a bırakın",
+      "right_text": "Sert bir ders verilsin",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 2,
+        "ulema": 4,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 4,
+      "category": "royal",
+      "character_name_en": "Chief Harem Eunuch",
+      "text_en": "One of the young princes has been disrespecting his tutors. The Kızlarağası asks your authority to discipline him.",
+      "left_text_en": "Leave it to the Sultan",
+      "right_text_en": "Let a harsh lesson be given"
+    },
+    {
+      "id": "kizlaragasi_rusvet_reddi",
+      "character": "kizlaragasi",
+      "character_name": "Kızlarağası",
+      "faction": "saray",
+      "text": "Bir tüccar, Sultan'a daha kolay ulaşmak için Kızlarağası'na altın kese uzatmış. Ağa, keseyi size getirip önünüze koydu.",
+      "left_text": "Tüccarı cezalandırın",
+      "right_text": "Keseyi hazineye aktarıp unutun",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 7,
+      "min_year": 3,
+      "category": "intrigue",
+      "character_name_en": "Chief Harem Eunuch",
+      "text_en": "A merchant offered the Kızlarağası a purse of gold for easier access to the Sultan. The eunuch has brought the purse and laid it before you.",
+      "left_text_en": "Punish the merchant",
+      "right_text_en": "Send the purse to the treasury and forget it"
+    },
+    {
+      "id": "kizlaragasi_emeklilik",
+      "character": "kizlaragasi",
+      "character_name": "Kızlarağası",
+      "faction": "saray",
+      "text": "Yıllardır sadakatle hizmet eden Kızlarağası yaşlandığını söyleyip yerine bir halef önerdi: \"İzniniz olursa dinlenmek isterim, Sadrazam Hazretleri.\"",
+      "left_text": "Görevde kalmasını isteyin",
+      "right_text": "Emekliliğini onaylayın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 9,
+      "category": "political",
+      "character_name_en": "Chief Harem Eunuch",
+      "text_en": "The Kızlarağası, loyal for so many years, says age has caught up with him and proposes a successor: \"With your permission, I would like to rest, Grand Vizier.\"",
+      "left_text_en": "Ask him to remain in duty",
+      "right_text_en": "Approve his retirement"
+    },
+    {
+      "id": "tersane_intro",
+      "character": "tersaneemini",
+      "character_name": "Tersane Emini",
+      "faction": "ordu",
+      "text": "Haliç Tersanesi'nin yeni emini huzurunuzda: \"Gemilerimizin çoğu tamire muhtaç, Sadrazam Hazretleri. Küçük bir ödenekle başlayabiliriz.\"",
+      "left_text": "Şimdilik erteleyin",
+      "right_text": "Ödeneği onaylayın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Shipyard Superintendent",
+      "text_en": "The new superintendent of the Golden Horn shipyard stands before you: \"Most of our ships need repair, Grand Vizier. A small allowance would let us begin.\"",
+      "left_text_en": "Postpone it for now",
+      "right_text_en": "Approve the allowance"
+    },
+    {
+      "id": "tersane_kereste_tedarik",
+      "character": "tersaneemini",
+      "character_name": "Tersane Emini",
+      "faction": "ordu",
+      "text": "Tersane için gereken kereste, Karadeniz kıyısındaki köylerin ormanlarından kesiliyor. Köylüler şikayetçi.",
+      "left_text": "Kesimi durdurun",
+      "right_text": "Tersane'nin ihtiyacı önceliklidir",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 9,
+      "min_year": 2,
+      "category": "economic",
+      "character_name_en": "Shipyard Superintendent",
+      "text_en": "The timber the shipyard needs is being cut from forests near Black Sea coastal villages. The villagers are complaining.",
+      "left_text_en": "Halt the logging",
+      "right_text_en": "The shipyard's need comes first"
+    },
+    {
+      "id": "tersane_kaptan_destek",
+      "character": "tersaneemini",
+      "character_name": "Tersane Emini",
+      "faction": "ordu",
+      "text": "Tersane Emini heyecanla geldi: \"Kaptan-ı Derya Hazretleri bizzat destek verdi, Sadrazam Hazretleri! Onun onayıyla altı yeni kadırgayı yarı masrafla, hızla inşa edebiliriz.\"",
+      "left_text": "Yine de temkinli ilerleyin",
+      "right_text": "Fırsatı değerlendirin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 10,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "yeni_kadırgalar"
+      ],
+      "required_flags": [
+        "kaptan_ally_ready"
+      ],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 3,
+      "category": "military",
+      "character_name_en": "Shipyard Superintendent",
+      "text_en": "The shipyard superintendent arrived, excited: \"The Admiral of the Fleet himself has lent his support, Grand Vizier! With his backing, we can build six new galleys quickly, at half the cost.\"",
+      "left_text_en": "Proceed cautiously all the same",
+      "right_text_en": "Seize the opportunity"
+    },
+    {
+      "id": "tersane_savas_uretim",
+      "character": "tersaneemini",
+      "character_name": "Tersane Emini",
+      "faction": "ordu",
+      "text": "Savaş sürerken Tersane Emini geldi: \"Cepheye daha çok gemi göndermek için işçileri gece gündüz çalıştırabiliriz, Sadrazam Hazretleri. Ama halk yorgun düşer.\"",
+      "left_text": "Normal tempoda devam edin",
+      "right_text": "Seferberlik ilan edin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 8,
+        "ulema": 0,
+        "hazine": -8
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "savaş_başladı"
+      ],
+      "excluded_flags": [
+        "savas_sonuc_resolved"
+      ],
+      "weight": 9,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Shipyard Superintendent",
+      "text_en": "With the war underway, the shipyard superintendent came: \"We could work the men day and night to send more ships to the front, Grand Vizier. But the people will grow weary.\"",
+      "left_text_en": "Continue at normal pace",
+      "right_text_en": "Declare mobilization"
+    },
+    {
+      "id": "tersane_yangin",
+      "character": "tersaneemini",
+      "character_name": "Tersane Emini",
+      "faction": "ordu",
+      "text": "Tersanede çıkan yangın iki kadırgayı kül etti. Tersane Emini, ihmalin kimde olduğunu araştırmak için zaman istiyor.",
+      "left_text": "Derhal sorumluyu bulup cezalandırın",
+      "right_text": "Sakin araştırmasına izin verin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 4,
+      "category": "crisis",
+      "character_name_en": "Shipyard Superintendent",
+      "text_en": "A fire at the shipyard has reduced two galleys to ash. The superintendent asks for time to investigate whose negligence caused it.",
+      "left_text_en": "Find and punish the culprit at once",
+      "right_text_en": "Let him investigate calmly"
+    },
+    {
+      "id": "tersane_yeni_tasarim",
+      "character": "tersaneemini",
+      "character_name": "Tersane Emini",
+      "faction": "ordu",
+      "text": "Tersane Emini, Venedik gemilerinden esinlenen yeni bir kadırga tasarımı önerdi. Gelenekçi denizciler buna şüpheyle bakıyor.",
+      "left_text": "Geleneksel tasarımda kalın",
+      "right_text": "Yeni tasarıma onay verin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 2,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 6,
+        "ulema": -3,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 7,
+      "category": "military",
+      "character_name_en": "Shipyard Superintendent",
+      "text_en": "The shipyard superintendent has proposed a new galley design inspired by Venetian ships. The traditionalist sailors regard it with suspicion.",
+      "left_text_en": "Stick to the traditional design",
+      "right_text_en": "Approve the new design"
+    },
+    {
+      "id": "balyos_intro",
+      "character": "venedikbalyosu",
+      "character_name": "Venedik Balyosu",
+      "faction": "dış",
+      "text": "Venedik Cumhuriyeti'nin yeni balyosu güven mektubunu sundu: \"İki devlet arasındaki ticaretin daha sık görüşmelerle büyüyeceğine inanıyorum, Sadrazam Hazretleri.\"",
+      "left_text": "Resmi mesafeyi koruyun",
+      "right_text": "Sık görüşmeyi kabul edin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "diplomatic",
+      "character_name_en": "Venetian Bailo",
+      "text_en": "The new ambassador of the Republic of Venice presents his credentials: \"I believe trade between our two states will grow through more frequent talks, Grand Vizier.\"",
+      "left_text_en": "Maintain formal distance",
+      "right_text_en": "Agree to frequent meetings"
+    },
+    {
+      "id": "balyos_ticaret_yenileme",
+      "character": "venedikbalyosu",
+      "character_name": "Venedik Balyosu",
+      "faction": "dış",
+      "text": "Balyos, eski ticaret imtiyazlarının genişletilmesini istiyor: \"Venedikli tüccarlarınıza daha düşük gümrük, İmparatorluğunuza daha çok altın demektir.\"",
+      "left_text": "Reddedin, yerli tüccarı koruyun",
+      "right_text": "İmtiyazları genişletin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 9
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 9,
+      "min_year": 3,
+      "category": "economic",
+      "character_name_en": "Venetian Bailo",
+      "text_en": "The bailo requests an expansion of the old trade capitulations: \"Lower customs for your Venetian merchants means more gold for your Empire.\"",
+      "left_text_en": "Refuse, protect local merchants",
+      "right_text_en": "Expand the capitulations"
+    },
+    {
+      "id": "balyos_casus_suclama",
+      "character": "venedikbalyosu",
+      "character_name": "Venedik Balyosu",
+      "faction": "dış",
+      "text": "Balyos, sarayınızdaki bir kâtibin Venedik'e gizli bilgi sattığını iddia etti. Kanıt olarak şifreli bir mektup gösterdi.",
+      "left_text": "İddiayı görmezden gelin",
+      "right_text": "Kâtibi tutuklatıp sorgulatın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 7,
+      "min_year": 4,
+      "category": "intrigue",
+      "character_name_en": "Venetian Bailo",
+      "text_en": "The bailo claims a clerk in your palace has been selling secrets to Venice. He presents a coded letter as proof.",
+      "left_text_en": "Dismiss the accusation",
+      "right_text_en": "Have the clerk arrested and interrogated"
+    },
+    {
+      "id": "balyos_deniz_istihbarat",
+      "character": "venedikbalyosu",
+      "character_name": "Venedik Balyosu",
+      "faction": "dış",
+      "text": "Balyos, Akdeniz'de dolaşan korsan filolarının rotasını size bildirmeyi teklif etti — karşılığında küçük bir iyilik istiyor.",
+      "left_text": "İstihbaratı reddedin",
+      "right_text": "Bilgiyi alıp iyiliği yapın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 7,
+      "min_year": 3,
+      "category": "diplomatic",
+      "character_name_en": "Venetian Bailo",
+      "text_en": "The bailo offers to share the route of corsair fleets roaming the Mediterranean — in exchange for a small favor.",
+      "left_text_en": "Refuse the intelligence",
+      "right_text_en": "Take the information and grant the favor"
+    },
+    {
+      "id": "balyos_din_azinlik",
+      "character": "venedikbalyosu",
+      "character_name": "Venedik Balyosu",
+      "faction": "dış",
+      "text": "Balyos, Galata'daki Katolik cemaatinin kiliselerinin onarımına izin verilmesini rica etti.",
+      "left_text": "İzin vermeyin",
+      "right_text": "Onarıma izin verin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -4,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 5,
+      "category": "religious",
+      "character_name_en": "Venetian Bailo",
+      "text_en": "The bailo requests permission for the Catholic community in Galata to repair their churches.",
+      "left_text_en": "Deny permission",
+      "right_text_en": "Allow the repairs"
+    },
+    {
+      "id": "balyos_veda",
+      "character": "venedikbalyosu",
+      "character_name": "Venedik Balyosu",
+      "faction": "dış",
+      "text": "Yıllarca görev yapan balyos, Venedik Senatosu tarafından geri çağrıldığını bildirdi: \"Yerime gelecek olana da aynı saygıyı göstereceğinizi umuyorum, Sadrazam Hazretleri.\"",
+      "left_text": "Soğuk bir vedayla yolcu edin",
+      "right_text": "Onurlu bir törenle uğurlayın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 5,
+      "min_year": 10,
+      "category": "diplomatic",
+      "character_name_en": "Venetian Bailo",
+      "text_en": "After years of service, the bailo announces he has been recalled by the Venetian Senate: \"I hope you will show my successor the same respect, Grand Vizier.\"",
+      "left_text_en": "See him off with a cold farewell",
+      "right_text_en": "Send him off with an honorable ceremony"
+    },
+    {
+      "id": "muhasip_intro",
+      "character": "basmuhasip",
+      "character_name": "Baş Muhasip",
+      "faction": "saray",
+      "text": "Yeni Baş Muhasip, defterlerdeki tutarsızlıkları size bildirdi: \"Tersane ve saray masrafları arasında açıklanamayan bir fark var, Sadrazam Hazretleri.\"",
+      "left_text": "Şimdilik göz yumun",
+      "right_text": "Derhal soruşturma açın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Chief Accountant",
+      "text_en": "The new chief accountant reports discrepancies in the ledgers: \"There is an unexplained gap between the shipyard's and the palace's expenses, Grand Vizier.\"",
+      "left_text_en": "Overlook it for now",
+      "right_text_en": "Open an investigation at once"
+    },
+    {
+      "id": "muhasip_rusvet_teklifi",
+      "character": "basmuhasip",
+      "character_name": "Baş Muhasip",
+      "faction": "saray",
+      "text": "Bir vergi mültezimi, Baş Muhasip'e defterleri lehine düzenlemesi için altın teklif etti. Muhasip, teklifi size danışmaya geldi.",
+      "left_text": "Mültezimi cezalandırın",
+      "right_text": "Sessizce kabul etmesine izin verin",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "muhasip_rusvet_alindi"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 9,
+      "min_year": 2,
+      "category": "intrigue",
+      "character_name_en": "Chief Accountant",
+      "text_en": "A tax farmer has offered the chief accountant gold to falsify the ledgers in his favor. The accountant has come to consult you about the offer.",
+      "left_text_en": "Punish the tax farmer",
+      "right_text_en": "Let him quietly accept it",
+      "triggers_on_right": "muhasip_skandal",
+      "trigger_delay": 6
+    },
+    {
+      "id": "muhasip_skandal",
+      "character": "basmuhasip",
+      "character_name": "Baş Muhasip",
+      "faction": "saray",
+      "text": "Baş Muhasip'in rüşvet aldığı dedikodusu halkın arasına yayıldı. Divan huzurunuzda hesap soruyor.",
+      "left_text": "Muhasibi görevden alıp örnek yapın",
+      "right_text": "Meseleyi örtbas edin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": -6,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 4
+      },
+      "left_flags_set": [
+        "muhasip_skandal_resolved"
+      ],
+      "right_flags_set": [
+        "muhasip_skandal_resolved"
+      ],
+      "required_flags": [
+        "muhasip_rusvet_alindi"
+      ],
+      "excluded_flags": [
+        "muhasip_skandal_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "crisis",
+      "character_name_en": "Chief Accountant",
+      "text_en": "Rumors that the chief accountant took a bribe have spread among the people. The Divan demands answers before you.",
+      "left_text_en": "Dismiss the accountant as a warning to others",
+      "right_text_en": "Cover up the matter"
+    },
+    {
+      "id": "muhasip_defterdar_catisma",
+      "character": "basmuhasip",
+      "character_name": "Baş Muhasip",
+      "faction": "saray",
+      "text": "Baş Muhasip ile Defterdar, vergi toplama yetkisinin kimde olacağı konusunda çatışıyor. İkisi de sizden destek istiyor.",
+      "left_text": "Defterdar'ı destekleyin",
+      "right_text": "Baş Muhasip'i destekleyin",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "category": "political",
+      "character_name_en": "Chief Accountant",
+      "text_en": "The chief accountant and the Defterdar are clashing over who holds authority over tax collection. Both seek your backing.",
+      "left_text_en": "Back the Defterdar",
+      "right_text_en": "Back the chief accountant"
+    },
+    {
+      "id": "muhasip_saray_masraf_denetim",
+      "character": "basmuhasip",
+      "character_name": "Baş Muhasip",
+      "faction": "saray",
+      "text": "Baş Muhasip, sarayın kendi harcamalarını da denetlemek istiyor: \"Tasarruf herkesten başlamalı, Sadrazam Hazretleri. Sultan'ın maiyeti de dahil.\"",
+      "left_text": "Sarayı denetim dışı bırakın",
+      "right_text": "Denetime tam yetki verin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 7,
+      "min_year": 5,
+      "category": "economic",
+      "character_name_en": "Chief Accountant",
+      "text_en": "The chief accountant wants to audit the palace's own spending too: \"Austerity must begin with everyone, Grand Vizier — including the Sultan's own retinue.\"",
+      "left_text_en": "Keep the palace exempt from the audit",
+      "right_text_en": "Grant full authority for the audit"
+    },
+    {
+      "id": "muhasip_terfi_talebi",
+      "character": "basmuhasip",
+      "character_name": "Baş Muhasip",
+      "faction": "saray",
+      "text": "Yıllarca sadakatle hesap tutan Baş Muhasip, daha yüksek bir mevkiye terfi etmeyi talep ediyor.",
+      "left_text": "Mevcut görevinde bırakın",
+      "right_text": "Terfisini onaylayın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 5,
+      "min_year": 8,
+      "category": "political",
+      "character_name_en": "Chief Accountant",
+      "text_en": "The chief accountant, having kept the books faithfully for years, requests promotion to a higher post.",
+      "left_text_en": "Leave him in his current post",
+      "right_text_en": "Approve his promotion"
+    },
+    {
+      "id": "akinci_intro",
+      "character": "akincibeyi",
+      "character_name": "Akıncı Beyi",
+      "faction": "ordu",
+      "text": "Sınır boyundan gelen bir akıncı beyi huzurunuza çıktı: \"Düşman topraklarına akınlar düzenlemek için resmi onayınızı istiyorum, Sadrazam Hazretleri.\"",
+      "left_text": "Onay vermeyin, düzeni koruyun",
+      "right_text": "Akınlara onay verin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Frontier Raider Lord",
+      "text_en": "A frontier raider lord from the border has come before you: \"I ask your formal approval to raid enemy lands, Grand Vizier.\"",
+      "left_text_en": "Refuse, preserve order",
+      "right_text_en": "Approve the raids"
+    },
+    {
+      "id": "akinci_yagma_sikayeti",
+      "character": "akincibeyi",
+      "character_name": "Akıncı Beyi",
+      "faction": "ordu",
+      "text": "Sınır köylerinden şikayet geldi: Akıncı Beyi'nin adamları düşman değil, kendi topraklarınızdaki köylüleri de yağmalıyor.",
+      "left_text": "Beyi cezalandırın",
+      "right_text": "Savaş zamanı böyle şeyler olur deyin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 9,
+      "min_year": 2,
+      "category": "social",
+      "character_name_en": "Frontier Raider Lord",
+      "text_en": "Complaints have arrived from border villages: the raider lord's men are pillaging not just the enemy, but your own villagers too.",
+      "left_text_en": "Punish the raider lord",
+      "right_text_en": "Say such things happen in wartime"
+    },
+    {
+      "id": "akinci_safevi_baskin",
+      "character": "akincibeyi",
+      "character_name": "Akıncı Beyi",
+      "faction": "ordu",
+      "text": "Akıncı Beyi, Safevi sınırına küçük bir baskın düzenlemeyi öneriyor: \"Zafer büyük bir ganimet getirir, ama sınırı gerebilir.\"",
+      "left_text": "Riske girmeyin",
+      "right_text": "Baskına izin verin",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "sinir_gerginligi"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 3,
+      "category": "military",
+      "character_name_en": "Frontier Raider Lord",
+      "text_en": "The raider lord proposes a small raid on the Safavid border: \"Victory would bring great plunder, but it may strain the border.\"",
+      "left_text_en": "Do not take the risk",
+      "right_text_en": "Allow the raid"
+    },
+    {
+      "id": "akinci_ganimet_paylasim",
+      "character": "akincibeyi",
+      "character_name": "Akıncı Beyi",
+      "faction": "ordu",
+      "text": "Son akından elde edilen ganimetin hazineye mi yoksa akıncılara mı ayrılacağı konusunda anlaşmazlık çıktı.",
+      "left_text": "Hazineye aktarın",
+      "right_text": "Akıncılara bırakın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 6
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 7,
+      "min_year": 4,
+      "category": "economic",
+      "character_name_en": "Frontier Raider Lord",
+      "text_en": "A dispute has arisen over whether the plunder from the last raid should go to the treasury or the raiders themselves.",
+      "left_text_en": "Send it to the treasury",
+      "right_text_en": "Leave it to the raiders"
+    },
+    {
+      "id": "akinci_disiplin_sorunu",
+      "character": "akincibeyi",
+      "character_name": "Akıncı Beyi",
+      "faction": "ordu",
+      "text": "Akıncı Beyi'nin adamları arasında kavga çıktı, biri ağır yaralandı. Beyi, sorunu kendi yöntemleriyle çözmek istiyor.",
+      "left_text": "Divan'a getirilsin, resmi yargılansın",
+      "right_text": "Kendi yöntemine bırakın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -1,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 2,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 5,
+      "category": "crisis",
+      "character_name_en": "Frontier Raider Lord",
+      "text_en": "A brawl broke out among the raider lord's men, leaving one gravely wounded. The lord wants to handle it his own way.",
+      "left_text_en": "Bring it before the Divan for formal judgment",
+      "right_text_en": "Let him handle it his own way"
+    },
+    {
+      "id": "akinci_kadim_kabile",
+      "character": "akincibeyi",
+      "character_name": "Akıncı Beyi",
+      "faction": "ordu",
+      "text": "Akıncı Beyi, göçebe bir Türkmen boyuyla kadim bir ittifak kurmayı öneriyor: \"Onların atlıları imparatorluğa sınırsız sadakatle hizmet eder, Sadrazam Hazretleri.\"",
+      "left_text": "Reddedin, merkeziyeti koruyun",
+      "right_text": "İttifakı kurun",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 7,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 5,
+      "min_year": 8,
+      "category": "political",
+      "character_name_en": "Frontier Raider Lord",
+      "text_en": "The raider lord proposes an ancient alliance with a nomadic Turkmen tribe: \"Their horsemen would serve the Empire with boundless loyalty, Grand Vizier.\"",
+      "left_text_en": "Refuse, preserve central authority",
+      "right_text_en": "Forge the alliance"
+    },
+    {
+      "id": "haremkahyasi_intro",
+      "character": "haremkahyasi",
+      "character_name": "Harem Kâhyası",
+      "faction": "saray",
+      "text": "Harem'in yeni kâhyası huzurunuza çıktı: \"Cariyelerin ve hizmetkarların masrafları her geçen yıl artıyor, Sadrazam Hazretleri. Bir düzenleme şart.\"",
+      "left_text": "Mevcut düzeni koruyun",
+      "right_text": "Yeni bir bütçe düzenlemesi yapın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Harem Stewardess",
+      "text_en": "The harem's new stewardess has come before you: \"The expenses of the concubines and servants grow every year, Grand Vizier. Reform is needed.\"",
+      "left_text_en": "Preserve the current order",
+      "right_text_en": "Establish a new budget arrangement"
+    },
+    {
+      "id": "haremkahyasi_hediye_dagitimi",
+      "character": "haremkahyasi",
+      "character_name": "Harem Kâhyası",
+      "faction": "saray",
+      "text": "Bayram öncesi harem içindeki hediye dağıtımı konusunda kâhya sizden görüş istiyor: eşit mi, kıdeme göre mi?",
+      "left_text": "Eşit dağıtın",
+      "right_text": "Kıdeme göre dağıtın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 9,
+      "min_year": 2,
+      "category": "social",
+      "character_name_en": "Harem Stewardess",
+      "text_en": "Before the feast, the stewardess seeks your view on distributing gifts within the harem: equally, or by seniority?",
+      "left_text_en": "Distribute equally",
+      "right_text_en": "Distribute by seniority"
+    },
+    {
+      "id": "haremkahyasi_valide_destek",
+      "character": "haremkahyasi",
+      "character_name": "Harem Kâhyası",
+      "faction": "saray",
+      "text": "Kâhya, sesini alçaltarak: \"Valide Sultan Hazretleri artık size güveniyor. İsterseniz harem hazinesinden sessizce sizin işlerinize kaynak aktarabilirim.\"",
+      "left_text": "Hayır, usule uygun ilerleyin",
+      "right_text": "Kaynağı sessizce kabul edin",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 8
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "valide_ally_ready"
+      ],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 3,
+      "category": "intrigue",
+      "character_name_en": "Harem Stewardess",
+      "text_en": "The stewardess, lowering her voice: \"Her Highness the Valide Sultan trusts you now. If you wish, I can quietly divert funds from the harem treasury to your affairs.\"",
+      "left_text_en": "No, proceed by the proper channel",
+      "right_text_en": "Quietly accept the funds"
+    },
+    {
+      "id": "haremkahyasi_cariye_terfi",
+      "character": "haremkahyasi",
+      "character_name": "Harem Kâhyası",
+      "faction": "saray",
+      "text": "Kâhya, sadık hizmetiyle öne çıkan bir cariyenin usta hizmetkar konumuna terfi ettirilmesini öneriyor.",
+      "left_text": "Kıdemli birine verin",
+      "right_text": "Terfiyi onaylayın",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 7,
+      "min_year": 4,
+      "category": "royal",
+      "character_name_en": "Harem Stewardess",
+      "text_en": "The stewardess proposes promoting a concubine, distinguished by loyal service, to the rank of master attendant.",
+      "left_text_en": "Give the rank to a senior servant instead",
+      "right_text_en": "Approve the promotion"
+    },
+    {
+      "id": "haremkahyasi_hastalik",
+      "character": "haremkahyasi",
+      "character_name": "Harem Kâhyası",
+      "faction": "saray",
+      "text": "Harem dairelerinde bir hastalık yayılıyor. Kâhya, Hekimbaşı'nın acilen çağrılmasını istiyor.",
+      "left_text": "Doğal yoluna bırakın",
+      "right_text": "Hekimbaşı'nı derhal çağırın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 5,
+      "category": "crisis",
+      "character_name_en": "Harem Stewardess",
+      "text_en": "An illness is spreading through the harem quarters. The stewardess asks that the Chief Physician be summoned urgently.",
+      "left_text_en": "Let it run its natural course",
+      "right_text_en": "Summon the Chief Physician at once"
+    },
+    {
+      "id": "haremkahyasi_kizlaragasi_catisma",
+      "character": "haremkahyasi",
+      "character_name": "Harem Kâhyası",
+      "faction": "saray",
+      "text": "Harem Kâhyası ile Kızlarağası, haremin iç işleyişinde son sözün kimde olacağı konusunda açıkça çatışıyor.",
+      "left_text": "Kızlarağası'nı destekleyin",
+      "right_text": "Kâhyayı destekleyin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 6,
+      "min_year": 6,
+      "category": "intrigue",
+      "character_name_en": "Harem Stewardess",
+      "text_en": "The harem stewardess and the Kızlarağası are openly clashing over who has the final word in the harem's internal affairs.",
+      "left_text_en": "Back the Kızlarağası",
+      "right_text_en": "Back the stewardess"
     }
   ]
 }

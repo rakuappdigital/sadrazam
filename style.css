@@ -421,6 +421,111 @@ html, body {
 }
 #akcesystem-close:active { background: rgba(201,162,39,0.22); }
 
+/* İkinci Şans Popup (reklam / akçe) */
+#second-chance-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.78);
+  z-index: 250; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.25s ease;
+}
+#second-chance-overlay.visible { opacity: 1; }
+#second-chance-box {
+  background: #0E0B1A; border: 1px solid var(--gold-dim); border-radius: 14px;
+  padding: 32px 24px; max-width: 320px; width: 88%;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  text-align: center; animation: iipSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+#second-chance-icon { font-size: 36px; }
+#second-chance-title {
+  font-family: 'Cinzel Decorative', serif; font-size: 18px;
+  color: var(--gold); letter-spacing: 3px;
+}
+#second-chance-text {
+  font-family: 'IM Fell English', serif; font-size: 14px;
+  color: var(--text); line-height: 1.7; opacity: 0.85; font-style: italic;
+  margin-bottom: 6px;
+}
+.second-chance-btn {
+  width: 100%; padding: 13px; font-family: 'Cinzel', serif; font-size: 12px;
+  letter-spacing: 1.5px; color: var(--gold); background: rgba(201,162,39,0.1);
+  border: 1px solid var(--gold-dim); border-radius: 6px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; transition: background 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.second-chance-btn:active { background: rgba(201,162,39,0.22); }
+
+/* Tam Sürüm paywall'ı ilk kez reddedilince çıkan bilgilendirme */
+#paywall-declined-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 260; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s ease;
+}
+#paywall-declined-overlay.visible { opacity: 1; }
+#paywall-declined-box {
+  background: linear-gradient(160deg, rgba(20,12,4,0.98), rgba(10,6,2,0.99));
+  border: 1px solid rgba(201,162,39,0.35); border-radius: 16px;
+  padding: 32px 24px; max-width: 340px; width: 88%;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  text-align: center; animation: iipSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
+  box-shadow: 0 0 60px rgba(201,162,39,0.12);
+}
+#paywall-declined-ornament { font-size: 30px; color: rgba(192,120,40,0.85); }
+#paywall-declined-title {
+  font-family: 'Cinzel Decorative', serif; font-size: 17px;
+  color: var(--gold); letter-spacing: 2.5px;
+}
+#paywall-declined-divider { width: 60px; height: 1px; background: var(--gold-dim); }
+#paywall-declined-text {
+  font-family: 'IM Fell English', serif; font-size: 14px;
+  color: var(--text); line-height: 1.7; opacity: 0.88; font-style: italic;
+  margin-bottom: 6px;
+}
+#paywall-declined-btn {
+  width: 100%; padding: 13px; font-family: 'Cinzel', serif; font-size: 12px;
+  letter-spacing: 1.5px; color: var(--gold); background: rgba(201,162,39,0.1);
+  border: 1px solid var(--gold-dim); border-radius: 6px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; transition: background 0.2s;
+}
+#paywall-declined-btn:active { background: rgba(201,162,39,0.22); }
+.second-chance-btn:disabled { opacity: 0.35; pointer-events: none; }
+.second-chance-btn.ghost {
+  color: rgba(255,255,255,0.5); background: transparent; border-color: rgba(255,255,255,0.15);
+  margin-top: 4px;
+}
+.second-chance-btn .sc-sub { font-size: 10px; opacity: 0.7; }
+
+/* Simüle Reklam (AdMob bağlanana kadar test modu) */
+#simulated-ad-overlay {
+  position: fixed; inset: 0; background: #000;
+  z-index: 300; display: flex; align-items: center; justify-content: center;
+}
+#simulated-ad-box { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+#simulated-ad-label {
+  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px;
+  color: rgba(255,255,255,0.4); text-transform: uppercase;
+}
+#simulated-ad-spinner {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 3px solid rgba(201,162,39,0.25); border-top-color: var(--gold);
+  animation: sc-spin 0.9s linear infinite;
+}
+#simulated-ad-countdown {
+  font-family: 'Cinzel Decorative', serif; font-size: 28px; color: var(--gold);
+}
+@keyframes sc-spin { to { transform: rotate(360deg); } }
+
+/* İkinci Şans — kurtuluş anı (reklam/akçe sonrası kısa anlatı geçişi) */
+#second-chance-rescue-overlay {
+  position: fixed; inset: 0; background: #000;
+  z-index: 260; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.4s ease;
+}
+#second-chance-rescue-overlay.visible { opacity: 1; }
+#second-chance-rescue-text {
+  font-family: 'IM Fell English', serif; font-style: italic; font-size: 17px;
+  color: var(--gold); text-align: center; line-height: 1.7;
+  padding: 0 32px; max-width: 380px;
+}
+
 #intro-footer {
   position: absolute;
   bottom: 18px;
@@ -501,7 +606,7 @@ html, body {
   border-radius: 6px;
   padding: 12px 14px;
 }
-.hstat-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.hstat-icon { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; margin-top: 1px; }
 .howto-stat strong {
   display: block;
   font-family: 'Cinzel', serif;
@@ -648,7 +753,11 @@ html, body {
   background: rgba(0,0,0,0.3);
   padding: 3px 8px;
   border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
+.sc-stat-icon { width: 13px; height: 13px; object-fit: contain; vertical-align: middle; }
 
 /* Danışman Grid */
 .advisor-grid {
@@ -1261,15 +1370,7 @@ html, body {
   letter-spacing: 2px;
   color: rgba(201,162,39,0.55);
 }
-#paywall-price {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 38px;
-  font-weight: 700;
-  color: var(--gold-light);
-  text-shadow: 0 0 24px rgba(201,162,39,0.5);
-  min-height: 44px;
-  line-height: 1.1;
-}
+#paywall-price { min-height: 20px; }
 #paywall-panel .intro-btn { width: 100%; }
 #paywall-demo-reset {
   margin-top: 4px;
@@ -1283,6 +1384,161 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 #paywall-status {
+  font-family: 'IM Fell English', serif;
+  font-size: 12px;
+  color: rgba(240,230,208,0.5);
+  min-height: 16px;
+}
+
+/* ════════════════════════════════════════
+   AKÇE SATIN ALMA
+════════════════════════════════════════ */
+#akce-screen {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(60,40,10,0.55), rgba(0,0,0,0.94) 70%);
+  z-index: 150;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+#akce-screen.visible { display: flex; animation: fadeIn 0.3s ease; }
+
+#akce-panel {
+  position: relative;
+  background: linear-gradient(180deg, #14101F 0%, var(--card-bg) 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: 20px;
+  padding: 40px 30px 32px;
+  max-width: 400px;
+  width: 90%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  box-shadow:
+    0 0 0 1px var(--gold-dim),
+    0 0 90px rgba(201,162,39,0.18),
+    0 20px 60px rgba(0,0,0,0.95);
+}
+#akce-crest {
+  font-size: 40px;
+  margin-bottom: 2px;
+  animation: paywallPulse 2.6s ease-in-out infinite;
+}
+#akce-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 20px;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+}
+#akce-divider { width: 70px; height: 1px; background: var(--gold-dim); margin: 2px 0; }
+#akce-text {
+  font-family: 'IM Fell English', serif;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.9;
+  max-width: 320px;
+}
+#akce-balance-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(240,230,208,0.6);
+  padding: 8px 4px;
+  border-top: 1px solid rgba(201,162,39,0.15);
+  border-bottom: 1px solid rgba(201,162,39,0.15);
+}
+#akce-balance-row .akce-balance-display {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold);
+  font-size: 15px;
+}
+/* ── Ferman Mührü — fiyat/miktar gösterimi (Akçe + Tam Sürüm ortak) ── */
+.pack-caption {
+  font-family: 'Cinzel', serif;
+  font-size: 9.5px;
+  letter-spacing: 2.5px;
+  color: rgba(240,230,208,0.45);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.ferman {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #c4342b, #7a1712 72%);
+  border: 2.5px double var(--gold-light);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 0 26px rgba(179,39,31,0.45), 0 8px 18px rgba(0,0,0,0.6);
+  position: relative;
+  margin: 0 auto;
+}
+.ferman::before {
+  content: '';
+  position: absolute; inset: 6px;
+  border: 1px solid rgba(232,200,74,0.5);
+  border-radius: 50%;
+}
+.ferman .famt {
+  font-family: 'Cinzel Decorative', serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--gold-light);
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+  transform: rotate(-6deg);
+  display: inline-block;
+  white-space: nowrap;
+}
+.ferman .price-in {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: rgba(232,200,74,0.92);
+  margin-top: 7px;
+  letter-spacing: 0.3px;
+}
+.ferman.ferman-lg {
+  width: 148px; height: 148px;
+}
+.ferman.ferman-lg .famt {
+  font-size: 26px;
+  min-height: 22px;
+}
+
+#akce-pack-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 4px 0 6px;
+}
+.akce-pack-btn {
+  background: none;
+  border: none;
+  padding: 4px 2px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 12px;
+  transition: background 0.15s;
+}
+.akce-pack-btn:active { background: rgba(201,162,39,0.08); }
+.akce-pack-btn .ferman { transition: transform 0.15s; }
+.akce-pack-btn:active .ferman { transform: scale(0.96); }
+#akce-panel .intro-btn { width: 100%; }
+#akce-status {
   font-family: 'IM Fell English', serif;
   font-size: 12px;
   color: rgba(240,230,208,0.5);
@@ -1659,6 +1915,98 @@ html, body {
 }
 .sm-btn:active { background: rgba(201,162,39,0.15); border-color: rgba(201,162,39,0.5); }
 .sm-hint { font-size: 9px; color: rgba(201,162,39,0.45); letter-spacing: 0.5px; font-family: 'Cinzel', serif; }
+
+/* ── Hekimbaşı Dinlenme Kartı (daha önce CSS'i hiç yazılmamış, tam ekran biçimsiz görünüyordu) ── */
+#hekim-dinlenme-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(5,3,16,0.95);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+#hd-box {
+  width: min(90%, 360px);
+  background: linear-gradient(160deg, rgba(20,16,31,0.98), rgba(10,8,20,0.99));
+  border: 1px solid rgba(201,162,39,0.35);
+  border-radius: 16px;
+  padding: 28px 22px 22px;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(201,162,39,0.12);
+}
+.hd-ornament { font-size: 26px; color: var(--gold-dim); }
+.hd-title {
+  font-family: 'Cinzel Decorative', serif; font-size: 16px;
+  color: var(--gold); letter-spacing: 3px;
+}
+.hd-divider { width: 60px; height: 1px; background: var(--gold-dim); }
+.hd-text {
+  font-family: 'IM Fell English', serif; font-size: 13.5px;
+  color: var(--text); line-height: 1.65; opacity: 0.88; font-style: italic;
+}
+.hd-btns { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.hd-btn {
+  width: 100%; padding: 12px 14px;
+  background: rgba(201,162,39,0.06);
+  border: 1px solid rgba(201,162,39,0.25);
+  border-radius: 10px;
+  font-family: 'Cinzel', serif; font-size: 12px;
+  color: rgba(240,230,208,0.9);
+  cursor: pointer; text-align: center;
+  transition: background 0.2s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.hd-btn:active { background: rgba(201,162,39,0.15); border-color: rgba(201,162,39,0.5); }
+.hd-btn.hd-yes { border-color: rgba(111,207,151,0.35); color: rgba(190,230,205,0.95); }
+.hd-btn.hd-no  { border-color: rgba(192,57,43,0.35); color: rgba(230,190,185,0.9); }
+
+/* ── Divan Sahnesi — yıl 5/10/15/20 (daha önce CSS'i hiç yazılmamış, tam ekran biçimsiz görünüyordu) ── */
+#divan-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(5,3,16,0.95);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+#divan-box {
+  width: min(92%, 380px);
+  background: linear-gradient(160deg, rgba(20,16,31,0.98), rgba(10,8,20,0.99));
+  border: 1px solid rgba(201,162,39,0.35);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(201,162,39,0.12);
+}
+.divan-bg {
+  width: 100%; height: 130px; object-fit: cover; display: block;
+  opacity: 0.55; filter: saturate(0.8);
+}
+.divan-content {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 20px 22px 24px; text-align: center; margin-top: -36px; position: relative;
+}
+.divan-ornament { font-size: 14px; color: var(--gold-dim); letter-spacing: 4px; }
+.divan-title {
+  font-family: 'Cinzel Decorative', serif; font-size: 16px;
+  color: var(--gold); letter-spacing: 2px;
+}
+.divan-divider { width: 60px; height: 1px; background: var(--gold-dim); }
+.divan-conflict {
+  font-family: 'IM Fell English', serif; font-size: 13.5px;
+  color: var(--text); line-height: 1.65; opacity: 0.88; font-style: italic;
+}
+.divan-opts { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.divan-btn {
+  width: 100%; padding: 11px 14px;
+  background: rgba(201,162,39,0.06);
+  border: 1px solid rgba(201,162,39,0.25);
+  border-radius: 10px;
+  font-family: 'Cinzel', serif; font-size: 11.5px;
+  color: rgba(240,230,208,0.88);
+  cursor: pointer; text-align: center;
+  transition: background 0.2s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.divan-btn:active { background: rgba(201,162,39,0.15); border-color: rgba(201,162,39,0.5); }
 
 /* ════════════════════════════════════════
    SADRAZAM SAĞLIK BARI
@@ -2708,6 +3056,31 @@ html, body {
   background: rgba(201,162,39,0.22);
   transform: scale(0.97);
 }
+#sultan-event-choices {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: 4px;
+}
+#sultan-event-choices button {
+  flex: 1;
+  padding: 13px 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 11.5px;
+  letter-spacing: 1px;
+  line-height: 1.4;
+  color: var(--gold);
+  background: rgba(201,162,39,0.1);
+  border: 1px solid var(--gold-dim);
+  border-radius: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s;
+}
+#sultan-event-choices button:active {
+  background: rgba(201,162,39,0.22);
+  transform: scale(0.97);
+}
 .sultan-event-effect-box {
   font-family: 'Cinzel', serif;
   font-size: 12px;
@@ -3364,7 +3737,7 @@ html, body {
   display: flex; align-items: center; gap: 8px;
   margin-bottom: 8px;
 }
-.ys-stat-icon { font-size: 13px; width: 18px; text-align: center; }
+.ys-stat-icon { width: 15px; height: 15px; object-fit: contain; }
 .ys-stat-label {
   font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
   color: rgba(201,162,39,0.65); width: 58px; flex-shrink: 0;
@@ -3847,6 +4220,26 @@ html, body {
 .difficulty-btn.active {
   background: rgba(201,162,39,0.15); border-color: var(--gold); color: var(--gold);
 }
+.lock-badge {
+  display: none;
+  margin-top: 2px;
+  font-family: 'Cinzel', serif;
+  font-size: 7.5px;
+  letter-spacing: 0.8px;
+  color: rgba(240,230,208,0.5);
+  text-transform: uppercase;
+}
+.difficulty-btn.locked {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  border-style: dashed;
+  border-color: rgba(201,162,39,0.35);
+  color: rgba(201,162,39,0.4);
+  background: rgba(255,255,255,0.02);
+}
+.difficulty-btn.locked .lock-badge { display: block; }
+.difficulty-btn.locked.active {
+  background: rgba(255,255,255,0.02); border-color: rgba(201,162,39,0.35); color: rgba(201,162,39,0.4);
+}
 
 /* ════════════════════════════════════════
    DENEYİMLİ MOD — kart üstü etki önizlemesi
@@ -3857,6 +4250,8 @@ html, body {
 .fx-chip {
   font-size: 9px; padding: 1px 3px; border-radius: 3px;
   background: rgba(255,255,255,0.06);
+  display: inline-flex; align-items: center; gap: 2px;
 }
+.fx-chip img { width: 9px; height: 9px; object-fit: contain; vertical-align: middle; }
 .fx-chip.fx-up   { color: #6fcf97; }
 .fx-chip.fx-down { color: #e05555; }

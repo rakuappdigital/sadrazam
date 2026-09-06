@@ -406,6 +406,16 @@ window.UI_STRINGS = {
     'paywall.restore':      'Satın Almaları Geri Yükle',
     'paywall.quit':         'Ana Menüye Dön',
     'btn.full_version':     'TAM SÜRÜMÜ AÇ',
+    // Akçe Satın Alma
+    'akce.title':           'AKÇE SATIN AL',
+    'akce.text':            "Bazen işler yolunda gitmez. Akçen, zor anlarda İkinci Şans için kullanılır.",
+    'akce.balance_label':   'Mevcut Bakiye',
+    'akce.pack_label':      'Akçe Paketi',
+    'akce.unit':            'AKÇE',
+    'akce.buy':             'SATIN AL',
+    'akce.close':           'Kapat',
+    'difficulty.ascension': 'Kadim Vezir +1',
+    'difficulty.premium_badge': 'Tam Sürüm',
     // Başarımlar
     'ach.title':            'BAŞARIMLARIM',
     'ach.tab.all':          'Tümü',
@@ -569,6 +579,16 @@ window.UI_STRINGS = {
     'paywall.restore':      'Restore Purchases',
     'paywall.quit':         'Return to Main Menu',
     'btn.full_version':     'UNLOCK FULL VERSION',
+    // Akce Purchase
+    'akce.title':           'BUY AKCE',
+    'akce.text':            "Sometimes things don't go as planned. Akce lets you take a Second Chance in tough moments.",
+    'akce.balance_label':   'Current Balance',
+    'akce.pack_label':      'Akce Pack',
+    'akce.unit':            'AKCE',
+    'akce.buy':             'PURCHASE',
+    'akce.close':           'Close',
+    'difficulty.ascension': 'Grand Vizier +1',
+    'difficulty.premium_badge': 'Full Version',
     // Achievements
     'ach.title':            'ACHIEVEMENTS',
     'ach.tab.all':          'All',
