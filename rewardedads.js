@@ -1,29 +1,39 @@
 // rewardedads.js — Google AdMob ödüllü reklam entegrasyonu (native, iOS)
-// AdMob native plugin henüz kurulu değilse simülasyon moduna düşer (test amaçlı).
+// Paket: @capacitor-community/admob@8.1.0 (Capacitor 8 ile uyumlu)
+//
+// GÜVENLİK KİLİDİ: gerçek App ID / Ad Unit ID girilmeden native AdMob SDK'sı
+// hiç başlatılmaz — yoksa geçersiz App ID ile GADMobileAds.start() çağrısı
+// gerçek cihazda çökmeye yol açabilir. ID'ler doldurulunca bu otomatik true olur.
+// (Bkz. ios/App/App/Info.plist — GADApplicationIdentifier de doldurulmalı.)
 
 const RewardedAds = (() => {
+  const REWARDED_AD_UNIT_ID = "ca-app-pub-7882143822556333/2394900440"; // AdMob > Ad units > Rewarded
+  const ADMOB_ENABLED = REWARDED_AD_UNIT_ID !== "REWARDED_AD_UNIT_ID_BURAYA";
+
   let _cap = null;
-  if (window.Capacitor?.isNativePlatform?.()) {
+  if (ADMOB_ENABLED && window.Capacitor?.isNativePlatform?.()) {
     try { _cap = window.Capacitor.Plugins.AdMob; } catch (e) {}
   }
 
   let _ready = false;
-  const REWARDED_AD_UNIT_ID = "REWARDED_AD_UNIT_ID_BURAYA"; // TODO: AdMob hesabı kurulunca doldurulacak
 
   const init = () => {
-    if (!_cap) return;
-    _cap.initialize().then(() => { _ready = true; prepare(); }).catch(() => {});
+    if (!_cap) return; // ID'ler girilmeden veya web/tarayıcıda hiç başlatılmaz
+    _cap.initialize()
+      .then(() => _cap.requestTrackingAuthorization().catch(() => {})) // iOS 14+ ATT izni
+      .then(() => { _ready = true; prepare(); })
+      .catch((e) => console.warn('AdMob init hatası:', e));
   };
 
   const prepare = () => {
     if (!_cap) return;
-    _cap.prepareRewardVideoAd({ adId: REWARDED_AD_UNIT_ID }).catch(() => {});
+    _cap.prepareRewardVideoAd({ adId: REWARDED_AD_UNIT_ID }).catch((e) => console.warn('Reklam hazırlanamadı:', e));
   };
 
   // onReward: reklam sonuna kadar izlendi, ödülü ver
   // onCancel: reklam izlenmeden kapatıldı / kullanılamıyor
   const show = (onReward, onCancel) => {
-    if (!_cap) {
+    if (!_cap || !_ready) {
       _showSimulatedAd(onReward, onCancel);
       return;
     }
@@ -40,7 +50,7 @@ const RewardedAds = (() => {
     });
   };
 
-  // ── Simülasyon modu (AdMob kurulana kadar geliştirme/test için) ──
+  // ── Simülasyon modu (ID'ler girilene / gerçek cihazda test edilene kadar) ──
   const _showSimulatedAd = (onReward, onCancel) => {
     const isEN = window.LANG === 'en';
     const overlay = document.createElement("div");
