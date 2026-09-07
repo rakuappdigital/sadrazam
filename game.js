@@ -5250,11 +5250,13 @@ window.addEventListener("touchend",  () => onEnd());
 function advanceYear() {
   // Paywall daha önce reddedildiyse: bir daha hiç paywall çıkmaz — bunun yerine
   // her oyun 2. yılın sonunda "ölümle" biter (Tam Sürüm alınana kadar kalıcı).
+  // Bu ölüm kesin olmalı: normal triggerGameOver() İkinci Şans (reklam/akçe) teklifi
+  // sunar ve bu, satın almadan sınırı atlatmaya yarar — burada bilerek atlanıyor.
   if (FREEMIUM_ENABLED && !isFullVersionUnlocked()
       && localStorage.getItem('sadrazam_paywall_declined') === '1'
       && (year + 1) > DECLINED_YEAR_LIMIT) {
     const isEN = window.LANG === 'en';
-    triggerGameOver(isEN
+    _actuallyTriggerGameOver(isEN
       ? "Being Grand Vizier isn't free — without the Full Version, no reign can outlast 2 years."
       : "Sadrazamlık parasız olmaz — Tam Sürüm alınmadığı sürece bu saltanat 2 yılı geçemez.");
     return;

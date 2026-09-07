@@ -1,5 +1,17 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── Açılış logosu (RAKU) ── */
+#brand-splash {
+  position: fixed; inset: 0; z-index: 99999;
+  background: #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 450ms ease;
+  pointer-events: none;
+}
+#brand-splash.visible { opacity: 1; pointer-events: auto; }
+#brand-splash img { width: 46%; max-width: 320px; }
+
 /* Oyun içi görsellere uzun basınca kaydet/kopyala menüsü çıkmasın */
 img {
   -webkit-touch-callout: none;

@@ -6,8 +6,26 @@
   <title>Sadrazam</title>
   <link rel="stylesheet" href="assets/fonts/fonts.css">
   <link rel="stylesheet" href="style.css?v=6" />
+  <link rel="preload" as="image" href="assets/raku-logo.png">
 </head>
 <body>
+
+  <!-- ── AÇILIŞ LOGOSU (RAKU) ── -->
+  <div id="brand-splash">
+    <img src="assets/raku-logo.png" alt="RAKU">
+  </div>
+  <script>
+    (function () {
+      var el = document.getElementById('brand-splash');
+      requestAnimationFrame(function () {
+        el.classList.add('visible');
+        setTimeout(function () {
+          el.classList.remove('visible');
+          setTimeout(function () { el.remove(); }, 500); // fade-out süresi bitince DOM'dan kaldır
+        }, 450 + 1200); // fade-in (450ms) + bekleme (1.2sn)
+      });
+    })();
+  </script>
 
   <!-- ── GİRİŞ EKRANI ── -->
   <div id="intro-screen">
