@@ -1,5 +1,28 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── Genel ziyaretçi kapısı — bkz. index.html'deki açıklama ── */
+#gate-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #080612;
+  color: #F0E6D0;
+  font-family: Georgia, serif;
+  padding: 24px;
+  text-align: center;
+}
+#gate-box { max-width: 420px; }
+#gate-title {
+  font-family: 'Cinzel Decorative', Georgia, serif;
+  color: #C9A227;
+  font-size: 22px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+#gate-box p { line-height: 1.7; opacity: 0.85; margin-top: 10px; }
+#gate-box a { color: #C9A227; }
+
 /* ── Açılış logosu (RAKU) ── */
 #brand-splash {
   position: fixed; inset: 0; z-index: 99999;
@@ -1227,9 +1250,15 @@ html, body {
   color: var(--gold);
 }
 
-/* Letter card */
+/* Letter card — mektup metinleri (özellikle Sultan mektupları) çok satırlı ve
+   uzun olabiliyor; görsel küçültülüp metin alanına kaydırma eklenmezse metin
+   kartın altına, DEVAM butonunun üstüne taşabiliyor (buton sabit konumda). */
+.letter-card #card-image {
+  max-height: 22vh;
+}
 .letter-card #card-bottom {
   background: linear-gradient(180deg, #1a1408, #100d04);
+  padding-bottom: 64px; /* DEVAM butonu için sabit boşluk */
 }
 .letter-card #card-text {
   font-style: italic;
@@ -1238,6 +1267,8 @@ html, body {
   text-align: left;
   font-size: 12px;
   line-height: 1.7;
+  max-height: 32vh;
+  overflow-y: auto;
 }
 
 /* ════════════════════════════════════════
@@ -3976,6 +4007,29 @@ html, body {
 .sett-close:active {
   background: rgba(201,162,39,0.1);
   color: var(--gold);
+}
+.sett-promo-btn {
+  width: 100%;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--gold-dim);
+  background: rgba(201,162,39,0.08);
+  color: var(--gold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.sett-promo-btn:active {
+  background: rgba(201,162,39,0.18);
+}
+#sett-promo-status {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(240,230,208,0.6);
+  min-height: 14px;
+  margin-top: 6px;
 }
 
 /* ════════════════════════════════════════

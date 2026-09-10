@@ -7,8 +7,24 @@
   <link rel="stylesheet" href="assets/fonts/fonts.css">
   <link rel="stylesheet" href="style.css?v=6" />
   <link rel="preload" as="image" href="assets/raku-logo.png">
+  <!-- Bu site kamuya açık bir web sitesi (destek/gizlilik sayfaları burada) —
+       oyunun kendisi App Store'da satılıyor, bu yüzden genel ziyaretçilere
+       ücretsiz/sınırsız oynanabilir bir kopya gibi görünmemesi için varsayılan
+       olarak gizleniyor. Sadece ?access=... ile bir kez açılan gizli linkle
+       (localStorage'a kaydedilir) görünür olur. Bkz. #gate-screen script'i. -->
+  <style>#real-app{display:none}</style>
 </head>
 <body>
+
+  <div id="gate-screen">
+    <div id="gate-box">
+      <div id="gate-title">Divan: Sadrazam</div>
+      <p>This game is available on the App Store.</p>
+      <p><a href="privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="support.html">Support</a></p>
+    </div>
+  </div>
+
+  <div id="real-app">
 
   <!-- ── AÇILIŞ LOGOSU (RAKU) ── -->
   <div id="brand-splash">
@@ -143,6 +159,9 @@
         <button class="sett-lang-btn" id="sett-lang-tr">Türkçe</button>
         <button class="sett-lang-btn" id="sett-lang-en">English</button>
       </div>
+      <div class="sett-divider"></div>
+      <button class="sett-promo-btn" id="sett-promo-btn" data-i18n="sett.promo_btn">PROMOSYON KODU</button>
+      <div id="sett-promo-status"></div>
       <button class="sett-close" id="sett-close" data-i18n="sett.close">KAPAT</button>
     </div>
   </div>
@@ -460,6 +479,26 @@
   <script src="translations.js?v=6"></script>
   <script src="revenuecat.bundle.js"></script>
   <script src="game.js?v=8"></script>
+
+  </div><!-- /#real-app -->
+
+  <script>
+    (function () {
+      var SECRET = 'SadrazamGizli37';
+      var qs;
+      try { qs = new URLSearchParams(location.search); } catch (e) { qs = null; }
+      var access = qs ? qs.get('access') : null;
+      var ok = access === SECRET;
+      try {
+        if (ok) localStorage.setItem('sadrazam_web_access', '1');
+        if (!ok) ok = localStorage.getItem('sadrazam_web_access') === '1';
+      } catch (e) {}
+      if (ok) {
+        document.getElementById('real-app').style.display = 'block';
+        document.getElementById('gate-screen').style.display = 'none';
+      }
+    })();
+  </script>
 </body>
 </html>
 <!-- preload kritik görseller -->

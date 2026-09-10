@@ -492,6 +492,8 @@ window.UI_STRINGS = {
     'sett.on':              'Açık',
     'sett.off':             'Kapalı',
     'sett.language':        'Dil',
+    'sett.promo_btn':       'PROMOSYON KODU',
+    'sett.promo_unavailable': 'Şu an kullanılamıyor.',
     'sett.close':           'KAPAT',
     // Harita
     'harita.title':         'İMPARATORLUK HARİTASI',
@@ -665,6 +667,8 @@ window.UI_STRINGS = {
     'sett.on':              'On',
     'sett.off':             'Off',
     'sett.language':        'Language',
+    'sett.promo_btn':       'PROMO CODE',
+    'sett.promo_unavailable': 'Not available right now.',
     'sett.close':           'CLOSE',
     // Map
     'harita.title':         'IMPERIAL MAP',

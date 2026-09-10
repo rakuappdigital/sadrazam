@@ -49,6 +49,36 @@ function updateAkceUI() {
   });
 }
 
+// ── Akçe işlemlerini TEK bir yerden, kaynağı ne olursa olsun işle ────
+// (normal buton satın alması, App Store promosyon/hediye kodu, restore,
+// başka bir cihazdan yapılan satın alma...) — RevenueCat'in customerInfo
+// listener'ı bunların HEPSİNİ tetikler, ama sadece buton-satın-alma akışına
+// bakan eski kod promosyon kodlarını hiç görmüyordu. Aynı transactionIdentifier
+// iki kez işlenmesin diye kalıcı olarak (localStorage) kaydediliyor.
+function _getProcessedAkceTxIds() {
+  try { return new Set(JSON.parse(localStorage.getItem("sadrazam_akce_tx_processed") || "[]")); }
+  catch (e) { return new Set(); }
+}
+function _markAkceTxProcessed(id) {
+  const set = _getProcessedAkceTxIds();
+  set.add(id);
+  // Sınırsız büyümesin — sadece son 200 işlemi tut
+  const arr = [...set];
+  localStorage.setItem("sadrazam_akce_tx_processed", JSON.stringify(arr.slice(-200)));
+}
+function processAkceTransactions(customerInfo) {
+  const txs = customerInfo?.nonSubscriptionTransactions;
+  if (!Array.isArray(txs) || !txs.length) return;
+  const processed = _getProcessedAkceTxIds();
+  for (const tx of txs) {
+    if (!tx || !tx.transactionIdentifier || processed.has(tx.transactionIdentifier)) continue;
+    const pack = AKCE_PACKS.find(p => p.productId === tx.productIdentifier);
+    if (!pack) continue;
+    addAkce(pack.amount);
+    _markAkceTxProcessed(tx.transactionIdentifier);
+  }
+}
+
 function _todayKey() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -536,6 +566,7 @@ let _ramazanShownThisGame = false;
 
 // ── Hanedan Hafızası — bir önceki oyunun ölüm hafızası, oyun başına 1 kez ──
 let _golgeShownThisGame = false;
+let _golgeThreshold = 5; // startGame()'de rastgele belirlenir, kartlar hep aynı sırada gelmesin
 
 // ── Gizli Nitelikler — mevcut sessiz sayaçlara (factionFavors, traitorInvestigated)
 //    dayalı, ekranda hiç gösterilmeyen eşiklerle açılan özel kartlar ──
@@ -543,8 +574,12 @@ let _halkSevgisiShownThisGame = false;
 let _casusAgiShownThisGame = false;
 
 // ── Sultan Mektupları — weight:1 olduğu için normal havuzdan hiç çıkmaz,
-//    oyun başına birer kez, kart sayısına göre zamanlanmış olarak gelir ──
+//    oyun başına birer kez, kart sayısına göre zamanlanmış olarak gelir.
+//    Eşikler startGame()'de rastgele belirlenir (bkz. _mektupNThreshold) —
+//    sabit sayı kullanılırsa kartlar her oyunda tam olarak aynı sırada gelir.
 let _mektup1Shown = false, _mektup2Shown = false, _mektup3Shown = false, _mektup4Shown = false;
+let _mektup1Threshold = 6, _mektup2Threshold = 15, _mektup3Threshold = 9, _mektup4Threshold = 25;
+let _mirasThreshold = 15;
 
 // ── Eyalet Divanı Uzun Vadeli Hafıza — ihmal edilen eyalet çok sonra isyan eder ──
 let _eyaletIsyanSchedule = []; // { provinceId, afterCardsPlayed }
@@ -632,7 +667,7 @@ function getGolgeCard() {
     id: "golge_selef_" + cardsPlayed,
     type: "easter",
     easter_type: "golge",
-    character: "golge-selef",
+    character: "gecmisin-golgesi",
     character_name: isEN ? "The Shadow of the Past" : "Geçmişin Gölgesi",
     text: isEN ? textEN : textTR,
     button: isEN ? "I UNDERSTAND" : "ANLADIM",
@@ -647,7 +682,7 @@ function getHalkSevgisiCard() {
     id: "gizli_halk_sevgisi_" + cardsPlayed,
     type: "easter",
     easter_type: "gizli_nitelik",
-    character: "halk-sevgisi",
+    character: "carsinin-fisiltisi",
     character_name: isEN ? "Whispers of the Bazaar" : "Çarşının Fısıltısı",
     text: isEN
       ? "In the bazaar, they no longer speak your name in fear — they speak it with respect. Word of your fairness has spread beyond the palace walls."
@@ -662,7 +697,7 @@ function getCasusAgiCard() {
     id: "gizli_casus_agi_" + cardsPlayed,
     type: "easter",
     easter_type: "gizli_nitelik",
-    character: "casus-agi",
+    character: "golgedeki-gozler",
     character_name: isEN ? "Eyes in the Shadows" : "Gölgedeki Gözler",
     text: isEN
       ? "Without you asking, a sealed report appears on your desk each week now. Somewhere along the way, you built a network that sees what you cannot."
@@ -682,7 +717,7 @@ function getEyaletIsyanCard(provinceId) {
     id: "eyalet_isyan_" + provinceId + "_" + cardsPlayed,
     type: "easter",
     easter_type: "eyalet_isyan",
-    character: "eyalet-isyan",
+    character: "uzak-haber",
     character_name: isEN ? "Distant Report" : "Uzak Haber",
     text: isEN
       ? `Years of neglect have taken their toll. ${label} has risen in revolt — a debt from the past, now due.`
@@ -1249,7 +1284,11 @@ let activeArcs = {};
 let triggeredArcs = {};
 let decisionLog = [];           // Vezirlik Günlüğü — kayda değer kararların kronolojik listesi
 let isPaywalled = false;        // ücretsiz deneme sınırına takılınca true olur, oyun durur
-let _paywallSoftOffer = false;  // her 3 yeniden başlatmada çıkan, reddedilebilen teklif paywall'ı
+let _paywallSoftOffer = false;  // ARTIK KULLANILMIYOR (geriye dönük uyumluluk için tutuluyor) — eskiden
+                                 // her 3 yeniden başlatmada çıkan, "Oynamaya Devam Et" ile reddedilebilen
+                                 // teklif paywall'ıydı; bu tam bir satın alma zorunluluğu bypass'ıydı.
+let _paywallAtGameStart = false; // 3 yeniden başlatmada bir çıkan, KESİN/reddedilemez paywall — reddedilirse
+                                 // year-limit ile aynı kalıcı "sadrazam_paywall_declined" flag'i set edilir.
 let sultanSabir = 50;
 let selectedSultan = null;
 let selectedAdvisors = [];
@@ -1493,11 +1532,20 @@ async function initRevenueCat() {
     _rcReady = true;
     const { customerInfo } = await RC.getCustomerInfo();
     _applyCustomerInfo(customerInfo);
+    processAkceTransactions(customerInfo); // uygulama kapalıyken redeem edilmiş promosyon kodu varsa hemen işle
     const offerings = await RC.getOfferings();
     const pkgs = offerings?.current?.availablePackages || [];
     _rcOfferingPackage = pkgs[0] || null;
     updatePaywallPriceUI();
     initAkceProduct();
+    // Kaynağı ne olursa olsun (buton satın alması, promosyon/hediye kodu,
+    // restore, başka cihaz) HER customerInfo güncellemesinde akçe işlemlerini
+    // tara — promosyon kodları uygulamanın kendi satın alma akışını hiç
+    // tetiklemediği için bu, akçenin işlenmesini sağlayan TEK güvenilir yol.
+    RC.addCustomerInfoUpdateListener((info) => {
+      _applyCustomerInfo(info);
+      processAkceTransactions(info);
+    });
   } catch (e) {
     console.warn('RevenueCat init hatası:', e);
   }
@@ -1576,8 +1624,11 @@ async function purchaseAkcePack(amount) {
   }
   if (status) status.textContent = isEN ? 'Processing…' : 'İşleniyor…';
   try {
-    await RC.purchaseStoreProduct({ product });
-    addAkce(amount);
+    const result = await RC.purchaseStoreProduct({ product });
+    // addAkce() doğrudan çağrılmıyor — processAkceTransactions() transactionIdentifier
+    // bazlı tekilleştirme yapıyor, böylece customerInfo listener'ı aynı işlemi tekrar
+    // görürse (her zaman görür) akçe iki kez eklenmez.
+    processAkceTransactions(result?.customerInfo);
     if (window.playSelectConfirm) playSelectConfirm();
     if (status) status.textContent = isEN ? `+${amount} akce added!` : `+${amount} akçe eklendi!`;
     // İkinci Şans'tan geldiyse, kısa bir onay anından sonra otomatik olarak teklife geri dön
@@ -1664,8 +1715,9 @@ document.getElementById('paywall-demo-reset')?.addEventListener('click', () => {
 async function unlockFullVersion() {
   hidePaywallScreen();
   isPaywalled = false;
-  if (_paywallSoftOffer) {
-    _paywallSoftOffer = false;
+  if (_paywallAtGameStart) {
+    // Oyun hiç başlamamıştı (3. yeniden başlatma paywall'ı) — direkt ilk kartı dağıt
+    _paywallAtGameStart = false;
     if (!isGameOver) { saveGameState(); dealNext(); }
     return;
   }
@@ -1715,6 +1767,7 @@ async function restoreFullVersion() {
   try {
     const { customerInfo } = await RC.restorePurchases();
     const unlocked = _applyCustomerInfo(customerInfo);
+    processAkceTransactions(customerInfo); // restore, daha önce hiç işlenmemiş bir akçe satın alması ortaya çıkarabilir
     if (unlocked) {
       if (window.playSelectConfirm) playSelectConfirm();
       unlockFullVersion();
@@ -2082,6 +2135,18 @@ function startGame() {
   _mektup2Shown = false;
   _mektup3Shown = false;
   _mektup4Shown = false;
+  // Rastgele eşikler: her oyunda özel kartlar farklı bir kart sayısında gelsin
+  const _rndBetween = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  _golgeThreshold    = _rndBetween(4, 8);
+  // Sultan mektupları: CARDS_PER_YEAR=24 olduğu için eski sabit değerler
+  // (6/9/15/25) hepsi 1. yılın içine sıkışıyordu — mektuplar arka arkaya
+  // gelip önemsizleşiyordu. Artık yıla göre orantılı, ~2-3 yılda bir gelecek
+  // şekilde yayılıyor (yıl ~1, ~3, ~6, ~9), her oyunda hafif rastgele.
+  _mektup1Threshold  = _rndBetween(Math.round(CARDS_PER_YEAR * 0.4), Math.round(CARDS_PER_YEAR * 0.75));
+  _mektup3Threshold  = _rndBetween(CARDS_PER_YEAR * 3 - 6,  CARDS_PER_YEAR * 3 + 6);
+  _mektup2Threshold  = _rndBetween(CARDS_PER_YEAR * 6 - 8,  CARDS_PER_YEAR * 6 + 8);
+  _mektup4Threshold  = _rndBetween(CARDS_PER_YEAR * 9 - 8,  CARDS_PER_YEAR * 9 + 8);
+  _mirasThreshold    = _rndBetween(12, 18);
   isNight = false;
   nightCardCount = 0;
   consecutiveSameDir = 0;
@@ -2142,18 +2207,28 @@ function startGame() {
 
   if (isChallengeMode) buildChallengePanel();
 
-  let _showSoftPaywallThisStart = false;
-  if (FREEMIUM_ENABLED && !isFullVersionUnlocked()) {
+  // 3 yeniden başlatmada bir: Tam Sürüm alınmadıysa ve daha önce kalıcı olarak
+  // reddedilmediyse (o durumda zaten year-limit kesin ölümü devrede), oyun hiç
+  // başlamadan KESİN paywall gösterilir. Reddedilirse year-limit ile birebir
+  // aynı kalıcı flag set edilir — artık "kapat, oynamaya devam et" diye bir
+  // seçenek yok, bu tam bir satın alma zorunluluğu bypass'ıydı.
+  _paywallAtGameStart = false;
+  if (FREEMIUM_ENABLED && !isFullVersionUnlocked() && localStorage.getItem('sadrazam_paywall_declined') !== '1') {
     const restartCount = (parseInt(localStorage.getItem('sadrazam_restart_count') || '0', 10)) + 1;
     localStorage.setItem('sadrazam_restart_count', String(restartCount));
-    if (restartCount % 3 === 0) _showSoftPaywallThisStart = true;
+    if (restartCount % 3 === 0) _paywallAtGameStart = true;
   }
 
   if (!localStorage.getItem('sadrazam_tutorial_done')) {
-    showTutorial(() => dealNext());
+    showTutorial(() => {
+      if (_paywallAtGameStart) { isPaywalled = true; showPaywallScreen(false); }
+      else dealNext();
+    });
+  } else if (_paywallAtGameStart) {
+    isPaywalled = true;
+    showPaywallScreen(false);
   } else {
     dealNext();
-    if (_showSoftPaywallThisStart) showSoftPaywallOffer();
   }
 
   startAmbientMusic();
@@ -2452,6 +2527,9 @@ function saveGameState() {
       casusAgiShownThisGame: _casusAgiShownThisGame,
       mektup1Shown: _mektup1Shown, mektup2Shown: _mektup2Shown,
       mektup3Shown: _mektup3Shown, mektup4Shown: _mektup4Shown,
+      golgeThreshold: _golgeThreshold, mirasThreshold: _mirasThreshold,
+      mektup1Threshold: _mektup1Threshold, mektup2Threshold: _mektup2Threshold,
+      mektup3Threshold: _mektup3Threshold, mektup4Threshold: _mektup4Threshold,
       ramazanShownThisGame: _ramazanShownThisGame,
       easterPargaliDone: _easterPargaliDone,
       hekimDinlenme20Shown: _hekimDinlenme20Shown,
@@ -2542,6 +2620,12 @@ function loadGameState(s) {
   _mektup2Shown = s.mektup2Shown || false;
   _mektup3Shown = s.mektup3Shown || false;
   _mektup4Shown = s.mektup4Shown || false;
+  _golgeThreshold = s.golgeThreshold || _golgeThreshold;
+  _mirasThreshold = s.mirasThreshold || _mirasThreshold;
+  _mektup1Threshold = s.mektup1Threshold || _mektup1Threshold;
+  _mektup2Threshold = s.mektup2Threshold || _mektup2Threshold;
+  _mektup3Threshold = s.mektup3Threshold || _mektup3Threshold;
+  _mektup4Threshold = s.mektup4Threshold || _mektup4Threshold;
   _ramazanShownThisGame = s.ramazanShownThisGame || false;
   _easterPargaliDone = s.easterPargaliDone || false;
   _hekimDinlenme20Shown = s.hekimDinlenme20Shown || false;
@@ -3942,8 +4026,14 @@ function showLetterCard(c) {
   animateCardIn();
 
   // DEVAM butonu göster
+  // NOT: bu fonksiyon az önce hideNegotiationPanel() çağırdı, o da bu butona
+  // inline style="display:none" uyguluyor — sadece "hidden" class'ını kaldırmak
+  // yetmez, inline stili de temizlemek gerekiyor yoksa buton hiç görünmez.
   const devamBtn = document.getElementById("letter-devam-btn");
-  if (devamBtn) devamBtn.classList.remove("hidden");
+  if (devamBtn) {
+    devamBtn.classList.remove("hidden");
+    devamBtn.style.display = "";
+  }
 
   window._letterDevamCard = c;
 
@@ -4898,16 +4988,17 @@ function decide(dir) {
     if (_eyaletShownCount < _eyaletMaxShows && cardsPlayed >= _eyaletNextCard) {
       forcedQueue.push({ id: "eyalet_tetik_" + cardsPlayed, type: "easter", easter_type: "eyalet_trigger" });
     }
-    // Miras Kartı: bir önceki oyunda miras bırakıldıysa 15. karttan sonra 1 kez
-    if (cardsPlayed >= 15 && localStorage.getItem("sadrazam_miras_bar")) {
+    // Miras Kartı: bir önceki oyunda miras bırakıldıysa ~15. karttan sonra 1 kez
+    // (rastgele eşik: her oyunda tam olarak aynı kartta gelmesin)
+    if (cardsPlayed >= _mirasThreshold && localStorage.getItem("sadrazam_miras_bar")) {
       const mirasCard = getMirasCard();
       if (mirasCard) {
         forcedQueue.push(mirasCard);
         localStorage.removeItem("sadrazam_miras_bar"); // kuyruktan sonra sil (duplicate önle)
       }
     }
-    // Hanedan Hafızası: bir önceki oyunun ölüm hafızası, 5. karttan sonra oyun başına 1 kez
-    if (!_golgeShownThisGame && cardsPlayed >= 5) {
+    // Hanedan Hafızası: bir önceki oyunun ölüm hafızası, oyun başına 1 kez
+    if (!_golgeShownThisGame && cardsPlayed >= _golgeThreshold) {
       _golgeShownThisGame = true;
       const golgeCard = getGolgeCard();
       if (golgeCard) forcedQueue.push(golgeCard);
@@ -4922,23 +5013,24 @@ function decide(dir) {
       forcedQueue.push(getCasusAgiCard());
     }
     // Sultan Mektupları: weight:1 olduğu için normal havuzdan çıkmaz, oyun başına
-    // birer kez, farklı kart sayılarında (min_year'larıyla uyumlu) gelir
-    if (!_mektup1Shown && cardsPlayed >= 6) {
+    // birer kez, farklı (rastgele belirlenmiş, min_year'larıyla kabaca uyumlu) kart
+    // sayılarında gelir — sabit sayı olursa kartlar her oyunda aynı sırada gelir
+    if (!_mektup1Shown && cardsPlayed >= _mektup1Threshold) {
       _mektup1Shown = true;
       const m1 = allCards.find(x => x.id === 'sultan_mektup_1');
       if (m1) forcedQueue.push(m1);
     }
-    if (!_mektup3Shown && cardsPlayed >= 9) {
+    if (!_mektup3Shown && cardsPlayed >= _mektup3Threshold) {
       _mektup3Shown = true;
       const m3 = allCards.find(x => x.id === 'sultan_mektup_3');
       if (m3) forcedQueue.push(m3);
     }
-    if (!_mektup2Shown && cardsPlayed >= 15) {
+    if (!_mektup2Shown && cardsPlayed >= _mektup2Threshold) {
       _mektup2Shown = true;
       const m2 = allCards.find(x => x.id === 'sultan_mektup_2');
       if (m2) forcedQueue.push(m2);
     }
-    if (!_mektup4Shown && cardsPlayed >= 25) {
+    if (!_mektup4Shown && cardsPlayed >= _mektup4Threshold) {
       _mektup4Shown = true;
       const m4 = allCards.find(x => x.id === 'sultan_mektup_4');
       if (m4) forcedQueue.push(m4);
@@ -6065,6 +6157,25 @@ document.getElementById('sett-lang-tr').addEventListener('click', () => { setLan
 document.getElementById('sett-lang-en').addEventListener('click', () => { setLang('en'); _settUpdateUI(); window.applyI18nHTML && window.applyI18nHTML(); });
 document.getElementById('sett-preview-on').addEventListener('click',  () => { window.previewMode = true;  localStorage.setItem('sadrazam_preview_mode','on');  _settUpdateUI(); });
 document.getElementById('sett-preview-off').addEventListener('click', () => { window.previewMode = false; localStorage.setItem('sadrazam_preview_mode','off'); _settUpdateUI(); });
+document.getElementById('sett-promo-btn')?.addEventListener('click', async () => {
+  const isEN = window.LANG === 'en';
+  const status = document.getElementById('sett-promo-status');
+  const RC = window.RevenueCatPurchases;
+  // presentCodeRedemptionSheet Apple'ın kendi native kod giriş ekranını açar
+  // (iOS 14+, App Store hesabına bağlı) — kod doğrulaması/uygulanması tamamen
+  // Apple tarafında yapılır, redeem sonrası customerInfo listener (initRevenueCat
+  // içinde) hem Tam Sürüm hem akçe kredilerini otomatik işler.
+  if (!_rcReady || !RC || !window.Capacitor?.isNativePlatform?.() || typeof RC.presentCodeRedemptionSheet !== 'function') {
+    if (status) status.textContent = isEN ? 'Not available right now.' : 'Şu an kullanılamıyor.';
+    return;
+  }
+  try {
+    if (status) status.textContent = '';
+    await RC.presentCodeRedemptionSheet();
+  } catch (e) {
+    console.warn('Promosyon kodu ekranı açılamadı:', e);
+  }
+});
 document.getElementById('sett-close').addEventListener('click',   hideSettingsOverlay);
 _settOv.addEventListener('click', e => { if (e.target === _settOv) hideSettingsOverlay(); });
 
