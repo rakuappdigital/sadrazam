@@ -2324,16 +2324,21 @@ function startGame() {
 
   if (isChallengeMode) buildChallengePanel();
 
-  // 3 yeniden başlatmada bir: Tam Sürüm alınmadıysa ve daha önce kalıcı olarak
-  // reddedilmediyse (o durumda zaten year-limit kesin ölümü devrede), oyun hiç
-  // başlamadan KESİN paywall gösterilir. Reddedilirse year-limit ile birebir
-  // aynı kalıcı flag set edilir — artık "kapat, oynamaya devam et" diye bir
-  // seçenek yok, bu tam bir satın alma zorunluluğu bypass'ıydı.
+  // Paywall zaten bir kez kalıcı olarak reddedilmişse artık ücretsiz oynanış
+  // hakkı kalmadı — HER yeni oyun denemesi doğrudan satın alma ekranına gider.
+  // Henüz reddedilmediyse: 3 yeniden başlatmada bir (yani 3 yılı bitirmeden
+  // art arda 2 kez game over olunca, 3. denemeyi oynayamadan) KESİN paywall
+  // gösterilir — "kapat, oynamaya devam et" diye bir seçenek yok, bu tam bir
+  // satın alma zorunluluğu bypass'ıydı.
   _paywallAtGameStart = false;
-  if (FREEMIUM_ENABLED && !isFullVersionUnlocked() && localStorage.getItem('sadrazam_paywall_declined') !== '1') {
-    const restartCount = (parseInt(localStorage.getItem('sadrazam_restart_count') || '0', 10)) + 1;
-    localStorage.setItem('sadrazam_restart_count', String(restartCount));
-    if (restartCount % 3 === 0) _paywallAtGameStart = true;
+  if (FREEMIUM_ENABLED && !isFullVersionUnlocked()) {
+    if (localStorage.getItem('sadrazam_paywall_declined') === '1') {
+      _paywallAtGameStart = true;
+    } else {
+      const restartCount = (parseInt(localStorage.getItem('sadrazam_restart_count') || '0', 10)) + 1;
+      localStorage.setItem('sadrazam_restart_count', String(restartCount));
+      if (restartCount % 3 === 0) _paywallAtGameStart = true;
+    }
   }
 
   if (!localStorage.getItem('sadrazam_tutorial_done')) {
