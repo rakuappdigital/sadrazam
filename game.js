@@ -24,8 +24,20 @@ const AKCE_PACKS = [
   { amount: 100, productId: "com.rakuappdigital.sadrazam.akce100" },
 ];
 const AKCE_FALLBACK_PRICES = { 10: "₺9,99", 20: "₺19,99", 50: "₺39,99", 100: "₺59,99" }; // FREEMIUM_ENABLED=false test modunda
+// Akçe simgesi — emoji yerine tema rengini (currentColor) alan tek SVG, her yerde tutarlı görünsün
+const AKCE_COIN_SVG = '<svg class="akce-coin-svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12" r="5.5" stroke="currentColor" stroke-width="1"/><path d="M12 8.3v7.4M9.8 10l2.2-1.7 2.2 1.7M9.8 14l2.2 1.7 2.2-1.7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/></svg>';
 let _secondChanceUsedThisDeath = false; // her ölümde sadece 1 kez teklif edilir
-let _pendingSecondChanceReason = null; // akçe yetersizken satın alma ekranına yönlendirilince, dönüşte teklifi tekrar göstermek için
+let _secondChanceOfferedThisGame = false; // İkinci Şans bir oyun boyunca sadece 1 kez teklif edilir
+
+// ── Tek merkezi "akçe yetersiz → satın alma ekranına yönlendir" mekanizması ──
+// Oyunda akçe harcayan HER yer (İkinci Şans, Eşya Dükkanı, ileride eklenecek
+// her ne olursa) bakiye yetersizse bunu çağırır. Akçe ekranı kapanınca (satın
+// alınsın ya da alınmasın) callback tetiklenir — kullanıcı kaldığı yere döner.
+let _akceReturnCallback = null;
+function redirectToAkcePurchase(returnCallback) {
+  _akceReturnCallback = returnCallback || null;
+  showAkceScreen();
+}
 
 function getAkceBalance() {
   return parseInt(localStorage.getItem("sadrazam_akce") || "0", 10);
@@ -181,36 +193,66 @@ function showSecondChanceOffer(reason) {
   document.body.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add("visible"));
 
+  // Butonlar bir kez tıklanınca hepsi kilitlenir — çift tıklama / native reklam
+  // çağrısı takılırsa arayüzün tepkisiz kalmış gibi görünmesini engeller.
+  let _handled = false;
   const closeOverlay = () => overlay.remove();
+  const lockButtons = () => {
+    overlay.querySelectorAll("button").forEach(b => b.disabled = true);
+  };
 
   document.getElementById("second-chance-ad-btn").onclick = () => {
-    if (adsLeft <= 0) return;
-    closeOverlay();
+    if (adsLeft <= 0 || _handled) return;
+    _handled = true;
+    lockButtons();
+    // Native reklam çağrısı native tarafta hiç yanıt vermezse (özellikle simülatörde)
+    // arayüz sonsuza dek kilitli kalmasın diye güvenlik zaman aşımı
+    let settled = false;
+    const safety = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      closeOverlay();
+      showSecondChanceOffer(reason);
+    }, 8000);
     RewardedAds.show(
       () => { // reklam tamamlandı
+        if (settled) return;
+        settled = true; clearTimeout(safety);
         incrementSecondChanceAdsUsedToday();
         _secondChanceUsedThisDeath = true;
+        closeOverlay();
         resolveSecondChance();
       },
-      () => { showSecondChanceOffer(reason); } // izlemeden kapattı, teklif ekranına dön
+      () => { // izlemeden kapattı / kullanılamadı, teklif ekranına dön
+        if (settled) return;
+        settled = true; clearTimeout(safety);
+        closeOverlay();
+        showSecondChanceOffer(reason);
+      }
     );
   };
   if (AKCE_SYSTEM_ENABLED) {
     document.getElementById("second-chance-akce-btn").onclick = () => {
-      if (akce < SECOND_CHANCE_AKCE_COST) {
+      if (_handled) return;
+      _handled = true;
+      lockButtons();
+      // spendAkce() bakiye yetersizse false döner — dönüş değeri kontrol edilmeden
+      // devam edilirse akçe düşmeden ödül verilmiş olur, bunu asla yapmıyoruz.
+      if (!spendAkce(SECOND_CHANCE_AKCE_COST)) {
         // Bakiye yetersiz — satın alma ekranına yönlendir, kapanınca teklife geri dön
-        _pendingSecondChanceReason = reason;
         closeOverlay();
-        showAkceScreen();
+        redirectToAkcePurchase(() => showSecondChanceOffer(reason));
         return;
       }
-      spendAkce(SECOND_CHANCE_AKCE_COST);
       closeOverlay();
       _secondChanceUsedThisDeath = true;
       resolveSecondChance();
     };
   }
   document.getElementById("second-chance-decline-btn").onclick = () => {
+    if (_handled) return;
+    _handled = true;
+    lockButtons();
     closeOverlay();
     _actuallyTriggerGameOver(reason);
   };
@@ -234,11 +276,25 @@ function showSecondChanceRescueMoment(callback) {
 
 function resolveSecondChance() {
   _secondChanceUsedThisDeath = false; // sıradaki (farklı) ölüm için tazele
+
+  // Ölüme hangi gösterge sebep olmuş olursa olsun (4 güç, sağlık ya da sultan
+  // sabrı) onu güvenli bir seviyeye çekiyoruz — yoksa "kurtulduk" sanılan oyun
+  // bir sonraki kartta aynı sebepten anında tekrar biter.
   Object.keys(stats).forEach(k => {
     if (stats[k] < 60) stats[k] = 60;
     else if (stats[k] >= 100) stats[k] = 60; // taşma tipi ölümler (stat %100) için de kurtar
   });
   updateStatUI();
+
+  // Sağlık: ödül olarak +30 sağlık (0'dan ölündüyse 0 → 30 olur, tekrar hemen ölmez)
+  if (sadrazamHealth <= 0) sadrazamHealth = Math.min(100, sadrazamHealth + 30);
+  else if (sadrazamHealth < 30) sadrazamHealth = 30;
+  updateHealthUI();
+
+  // Sultan sabrı: 0'a inip azledilme ya da 100'e taşıp idam sebebiyse güvenli orta değere çek
+  if (sultanSabir <= 0) sultanSabir = 40;
+  else if (sultanSabir >= 100) sultanSabir = 60;
+
   if (window.playSelectConfirm) playSelectConfirm();
   saveGameState();
   showSecondChanceRescueMoment(() => { dealNext(); });
@@ -1599,11 +1655,13 @@ function showAkceScreen() {
 }
 function hideAkceScreen() {
   document.getElementById('akce-screen')?.classList.remove('visible');
-  // İkinci Şans'tan yetersiz bakiye yüzünden buraya yönlendirildiyse, kapanınca teklife geri dön
-  if (_pendingSecondChanceReason) {
-    const reason = _pendingSecondChanceReason;
-    _pendingSecondChanceReason = null;
-    showSecondChanceOffer(reason);
+  // Yetersiz bakiye yüzünden buraya yönlendirilmişsek (İkinci Şans, Eşya
+  // Dükkanı, vs.) kapanınca kaldığımız yere geri dönüyoruz — satın alınmış
+  // olsun ya da olmasın, "Kapat"a basınca da aynı şekilde geri dönülür.
+  if (_akceReturnCallback) {
+    const cb = _akceReturnCallback;
+    _akceReturnCallback = null;
+    cb();
   }
 }
 
@@ -1631,8 +1689,9 @@ async function purchaseAkcePack(amount) {
     processAkceTransactions(result?.customerInfo);
     if (window.playSelectConfirm) playSelectConfirm();
     if (status) status.textContent = isEN ? `+${amount} akce added!` : `+${amount} akçe eklendi!`;
-    // İkinci Şans'tan geldiyse, kısa bir onay anından sonra otomatik olarak teklife geri dön
-    if (_pendingSecondChanceReason) {
+    // Başka bir ekrandan (İkinci Şans, Eşya Dükkanı, vs.) yönlendirildiysek,
+    // kısa bir onay anından sonra otomatik olarak oraya geri dön
+    if (_akceReturnCallback) {
       setTimeout(() => hideAkceScreen(), 900);
     }
   } catch (e) {
@@ -2122,6 +2181,7 @@ function startGame() {
   decisionLog = [];
   isPaywalled = false;
   _secondChanceUsedThisDeath = false;
+  _secondChanceOfferedThisGame = false;
   _eyaletNextCard = 40;
   _eyaletShownCount = 0;
   _eyaletIsyanSchedule = [];
@@ -2533,6 +2593,7 @@ function saveGameState() {
       ramazanShownThisGame: _ramazanShownThisGame,
       easterPargaliDone: _easterPargaliDone,
       hekimDinlenme20Shown: _hekimDinlenme20Shown,
+      secondChanceOfferedThisGame: _secondChanceOfferedThisGame,
       receivedLetters,
       v: 3
     };
@@ -2629,6 +2690,7 @@ function loadGameState(s) {
   _ramazanShownThisGame = s.ramazanShownThisGame || false;
   _easterPargaliDone = s.easterPargaliDone || false;
   _hekimDinlenme20Shown = s.hekimDinlenme20Shown || false;
+  _secondChanceOfferedThisGame = s.secondChanceOfferedThisGame || false;
   receivedLetters = s.receivedLetters || 0;
   isGameOver = false;
   activeArcs = {};
@@ -4391,6 +4453,130 @@ function showItemInfoPopup(itemId) {
   okBtn.addEventListener("touchend", close, { passive: true });
 }
 
+// ── Eşya Dükkanı — nadir kartlarla kazanılan eşyaları akçeyle doğrudan satın al ──
+const ITEM_AKCE_COST = 1; // İkinci Şans ile aynı fiyat: 1 akçe = 1 anlamlı kurtarma
+// Bilinçli olarak dükkanda satılmayan eşyalar — bu ikisi sadece nadir kartlarla
+// kazanılabilir kalsın diye (altın_muhur = hazine cezası bloğu, sultan_ferman =
+// saray cezası bloğu), akçeyle garantiye bağlanamaz.
+const ESYA_DUKKANI_EXCLUDED = ["altin_muhur", "sultan_ferman"];
+
+function showEsyaDukkani() {
+  if (isGameOver) return;
+  const isENes = window.LANG === 'en';
+  const overlay = document.createElement("div");
+  overlay.id = "esya-dukkani-overlay";
+
+  const rowsHtml = Object.keys(ITEMS).filter(id => !ESYA_DUKKANI_EXCLUDED.includes(id)).map(id => {
+    const itm = ITEMS[id];
+    const en = (isENes && window.EN_ITEMS) ? window.EN_ITEMS[id] : null;
+    const name = en ? en.name : itm.name;
+    const desc = en ? en.desc : itm.desc;
+    return `
+      <div class="esya-row">
+        <img class="esya-icon" src="${itm.icon}" alt="${name}">
+        <div class="esya-info">
+          <div class="esya-name">${name}</div>
+          <div class="esya-desc">${desc}</div>
+        </div>
+        <button class="esya-buy-btn" data-id="${id}">${ITEM_AKCE_COST} ${AKCE_COIN_SVG}</button>
+      </div>`;
+  }).join("");
+
+  overlay.innerHTML = `
+    <div id="esya-box">
+      <svg id="esya-ornament" viewBox="0 0 24 24" fill="none">
+        <path d="M4.5 10.5h15v7.2a1.3 1.3 0 0 1-1.3 1.3H5.8a1.3 1.3 0 0 1-1.3-1.3v-7.2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+        <path d="M4.5 10.5l1.3-4.2A1.8 1.8 0 0 1 7.5 5h9a1.8 1.8 0 0 1 1.7 1.3l1.3 4.2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+        <path d="M9 10.5V9a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.1"/>
+        <circle cx="12" cy="14.2" r="1.3" stroke="currentColor" stroke-width="1"/>
+      </svg>
+      <div id="esya-title">${isENes ? "ITEM SHOP" : "EŞYA DÜKKANI"}</div>
+      <div id="esya-divider"></div>
+      <div id="esya-balance">${isENes ? "Balance" : "Bakiye"}: <span class="akce-balance-display">${getAkceBalance()}</span> ${AKCE_COIN_SVG}</div>
+      <div id="esya-list">${rowsHtml}</div>
+      <button id="esya-close-btn" class="intro-btn ghost">${isENes ? "Close" : "Kapat"}</button>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  // NOT: satın alma butonları bakiye yetersizken KİLİTLENMİYOR/gizlenmiyor —
+  // bilerek. Tıklanabilir kalmalılar ki aşağıdaki akış (bakiye yetersizse
+  // akçe satın alma ekranına yönlendir) her zaman çalışabilsin. Buton devre
+  // dışı bırakılırsa tıklama hiç gerçekleşmez ve yönlendirme de olmaz.
+
+  overlay.querySelectorAll(".esya-buy-btn").forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.id;
+      const finalizePurchase = () => {
+        // spendAkce() bakiye yetersizse false döner ve hiçbir şey düşürmez —
+        // dönüş değeri kontrol edilmeden gainItem() çağrılırsa akçe düşmeden
+        // eşya verilmiş olur. Burada asla o duruma düşülmediğinden emin oluyoruz.
+        if (!spendAkce(ITEM_AKCE_COST)) {
+          closeEsyaDukkani();
+          redirectToAkcePurchase(() => showEsyaDukkani());
+          return;
+        }
+        gainItem(id);
+        if (window.playSelectConfirm) playSelectConfirm();
+        closeEsyaDukkani();
+      };
+      if (getAkceBalance() < ITEM_AKCE_COST) {
+        closeEsyaDukkani();
+        redirectToAkcePurchase(() => showEsyaDukkani());
+        return;
+      }
+      const inventoryFull = playerItems.every(slot => slot !== null);
+      if (inventoryFull) {
+        showEsyaReplaceConfirm(finalizePurchase);
+      } else {
+        finalizePurchase();
+      }
+    };
+  });
+  document.getElementById("esya-close-btn").onclick = closeEsyaDukkani;
+
+  function closeEsyaDukkani() { overlay.remove(); }
+}
+
+// Envanter doluyken (3/3) satın alma — en eski eşyanın (slot 0) yerini alacağını
+// söyleyip onay ister; onaylanmadan gainItem() hiç çağrılmaz.
+function showEsyaReplaceConfirm(onConfirm) {
+  document.getElementById("esya-replace-overlay")?.remove(); // önceki açık kalmışsa temizle
+  const isENrc = window.LANG === 'en';
+  const oldItemId = playerItems[0];
+  const oldItem = ITEMS[oldItemId];
+  const oldEn = (isENrc && window.EN_ITEMS && oldItemId) ? window.EN_ITEMS[oldItemId] : null;
+  const oldName = oldEn ? oldEn.name : (oldItem ? oldItem.name : (isENrc ? "your item" : "eşyan"));
+
+  const popup = document.createElement("div");
+  popup.id = "esya-replace-overlay";
+  popup.innerHTML = `
+    <div id="esya-replace-box">
+      ${oldItem ? `<img id="esya-replace-icon" src="${oldItem.icon}" alt="${oldName}">` : ""}
+      <div id="esya-replace-text">${isENrc
+        ? `Your inventory is full (3/3). This will replace your oldest item — <strong>${oldName}</strong>. Continue?`
+        : `Envanterin dolu (3/3). En eski eşyanla — <strong>${oldName}</strong> — değişecek. Onaylıyor musun?`}</div>
+      <div id="esya-replace-btns">
+        <button class="esya-replace-btn confirm" id="esya-replace-yes">${isENrc ? "Confirm" : "Onayla"}</button>
+        <button class="esya-replace-btn cancel" id="esya-replace-no">${isENrc ? "Cancel" : "Vazgeç"}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(popup);
+
+  let _resolved = false;
+  const cleanup = () => popup.remove();
+  document.getElementById("esya-replace-yes").onclick = () => {
+    if (_resolved) return;
+    _resolved = true;
+    cleanup();
+    onConfirm();
+  };
+  document.getElementById("esya-replace-no").onclick = () => {
+    if (_resolved) return;
+    _resolved = true;
+    cleanup();
+  };
+}
+
 function activateItem(slotIndex) {
   if (isGameOver) return;
   const itemId = playerItems[slotIndex];
@@ -5552,9 +5738,10 @@ function checkRelationshipEffects() {
 // ── Game Over ─────────────────────────────────────────────────────
 function triggerGameOver(reason) {
   if (isGameOver) return;
-  if (!_secondChanceUsedThisDeath) {
+  if (!_secondChanceOfferedThisGame) {
     const adsLeft = SECOND_CHANCE_DAILY_AD_LIMIT - getSecondChanceAdsUsedToday();
     if (adsLeft > 0 || getAkceBalance() >= SECOND_CHANCE_AKCE_COST) {
+      _secondChanceOfferedThisGame = true; // bu oyun boyunca bir daha teklif edilmeyecek
       showSecondChanceOffer(reason);
       return;
     }
@@ -6330,6 +6517,7 @@ function showGameMenu() {
       <button class="game-menu-option secondary" id="gm-journal">${isENMenu ? "VIZIER'S JOURNAL" : "VEZİRLİK GÜNLÜĞÜ"}</button>
       <button class="game-menu-option secondary" id="gm-harita">${isENMenu ? "IMPERIAL MAP" : "İMPARATORLUK HARİTASI"}</button>
       <button class="game-menu-option secondary" id="gm-kodeks">${isENMenu ? "IMPERIAL CODEX" : "OSMANLI KODEKSİ"}</button>
+      ${AKCE_SYSTEM_ENABLED ? `<button class="game-menu-option secondary" id="gm-esya">${isENMenu ? "ITEM SHOP" : "EŞYA DÜKKANI"}</button>` : ""}
       <button class="game-menu-option danger" id="gm-quit">${isENMenu ? "END GAME" : "OYUNU BİTİR"}</button>
       <button class="game-menu-option secondary" id="gm-resume">${isENMenu ? "CONTINUE" : "DEVAM ET"}</button>
     </div>`;
@@ -6338,6 +6526,9 @@ function showGameMenu() {
   document.getElementById("gm-journal").addEventListener("click", () => { overlay.remove(); showVezirlikGunlugu(); });
   document.getElementById("gm-harita").addEventListener("click",  () => { overlay.remove(); showHaritaOverlay(); });
   document.getElementById("gm-kodeks").addEventListener("click",  () => { overlay.remove(); showKartKodeksi(); });
+  if (AKCE_SYSTEM_ENABLED) {
+    document.getElementById("gm-esya").addEventListener("click", () => { overlay.remove(); showEsyaDukkani(); });
+  }
 
   let menuFired = false;
   const doQuit = () => {

@@ -4079,6 +4079,90 @@ html, body {
 }
 
 /* ════════════════════════════════════════
+   EŞYA DÜKKANI
+════════════════════════════════════════ */
+#esya-dukkani-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 200; display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.3s ease; padding: 20px;
+}
+#esya-box {
+  background: #0A0817; border: 1px solid var(--gold-dim); border-radius: 16px;
+  padding: 28px 20px; max-width: 360px; width: 100%; max-height: 85vh; overflow-y: auto;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  text-align: center; animation: iipSlideUp 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+  box-shadow: 0 0 60px rgba(201,162,39,0.12);
+}
+#esya-ornament { width: 30px; height: 30px; color: var(--gold); }
+.akce-coin-svg { width: 12px; height: 12px; color: currentColor; vertical-align: -1.5px; }
+#esya-title {
+  font-family: 'Cinzel Decorative', serif; font-size: 15px;
+  color: var(--gold); letter-spacing: 3px;
+}
+#esya-divider { width: 60px; height: 1px; background: var(--gold-dim); }
+#esya-balance {
+  font-family: 'Cinzel', serif; font-size: 12px; color: rgba(240,230,208,0.8);
+}
+#esya-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.esya-row {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  background: rgba(201,162,39,0.06); border: 1px solid rgba(201,162,39,0.2);
+  border-radius: 10px; padding: 8px 10px;
+}
+.esya-icon { width: 34px; height: 34px; object-fit: contain; flex-shrink: 0; }
+.esya-info { flex: 1; text-align: left; min-width: 0; }
+.esya-name {
+  font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold); letter-spacing: 0.3px;
+}
+.esya-desc {
+  font-family: 'IM Fell English', serif; font-size: 11px; color: rgba(240,230,208,0.75);
+  line-height: 1.35; margin-top: 2px;
+}
+.esya-buy-btn {
+  flex-shrink: 0; font-family: 'Cinzel', serif; font-size: 11px;
+  color: var(--gold); background: rgba(201,162,39,0.1);
+  border: 1px solid rgba(201,162,39,0.4); border-radius: 8px;
+  padding: 8px 10px; cursor: pointer; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  transition: background 0.2s, border-color 0.2s;
+}
+.esya-buy-btn:active { background: rgba(201,162,39,0.2); border-color: var(--gold); }
+.esya-buy-btn:disabled { opacity: 0.35; pointer-events: none; }
+
+#esya-replace-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+  z-index: 500; display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.25s ease; padding: 20px;
+}
+#esya-replace-box {
+  background: #0A0817; border: 1px solid rgba(201,162,39,0.45); border-radius: 16px;
+  padding: 26px 20px; max-width: 320px; width: 100%;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  text-align: center; box-shadow: 0 0 60px rgba(201,162,39,0.15);
+}
+#esya-replace-icon { width: 40px; height: 40px; object-fit: contain; }
+#esya-replace-text {
+  font-family: 'IM Fell English', serif; font-size: 13.5px;
+  color: var(--text); line-height: 1.6;
+}
+#esya-replace-text strong { color: var(--gold); font-weight: normal; }
+#esya-replace-btns { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.esya-replace-btn {
+  width: 100%; padding: 11px 14px; border-radius: 8px; cursor: pointer;
+  font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.5px;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  transition: background 0.2s, border-color 0.2s;
+}
+.esya-replace-btn.confirm {
+  background: rgba(201,162,39,0.12); border: 1px solid rgba(201,162,39,0.5); color: var(--gold);
+}
+.esya-replace-btn.confirm:active { background: rgba(201,162,39,0.22); }
+.esya-replace-btn.cancel {
+  background: transparent; border: 1px solid rgba(240,230,208,0.25); color: rgba(240,230,208,0.75);
+}
+.esya-replace-btn.cancel:active { background: rgba(240,230,208,0.08); }
+
+/* ════════════════════════════════════════
    İMPARATORLUK HARİTASI
 ════════════════════════════════════════ */
 #harita-overlay {
