@@ -154,6 +154,63 @@ const SECOND_CHANCE_RESCUE_EN = [
   "Once again, you weave the threads of fate with your own hands."
 ];
 
+// ── Şaka Onay Easter Egg ────────────────────────────────────────────
+// Önemli, tek butonla geçilen kartlarda (mektup, padişah ziyareti vb.) 40'ta
+// 1 ihtimalle tamamen anlamsız/eğlenceli, hiçbir mekanik sonucu olmayan bir
+// "emin misin?" sorusu çıkar. Tek amacı gülümsetmek — reddedilemez, tek buton
+// var ve o da zaten devam ettirir.
+const FUNNY_CONFIRM_EASTER_ODDS = 1 / 40;
+const FUNNY_CONFIRM_EASTER_TR = [
+  "Bu kararı gerçekten anladın mı, yoksa sadece \"DEVAM\" yazdığı için mi tıkladın?",
+  "Sadrazam Hazretleri, bir dahaki sefere biraz daha düşünseniz olmaz mı?",
+  "Kâtip bu satırı iki kez okumanızı rica ediyor. Okudunuz mu gerçekten?",
+  "Emin misiniz? Yani... GERÇEKTEN emin misiniz?",
+  "Divan-ı Hümayun'da biri fısıldıyor: \"Acele etme...\" Ama siz zaten tıkladınız.",
+  "Bu kadar hızlı karar veren bir sadrazam görmemiştim doğrusu.",
+  "Tarihçiler bu anı not aldı: \"Ve düşünmeden ilerledi.\"",
+  "Bir kahve molası vermek ister misiniz? Hayır mı? Peki, devam.",
+  "Vezir-i Âzam, parmağınız mı kaydı yoksa gerçekten mi karar verdiniz?",
+  "Saray mimarı bu ekranı sizi biraz bekletmek için özel tasarladı. İşe yaradı mı?"
+];
+const FUNNY_CONFIRM_EASTER_EN = [
+  "Are you sure you understood that, or did you just click because it said CONTINUE?",
+  "Your Excellency, perhaps a moment more of thought wouldn't hurt?",
+  "The scribe kindly asks you to read that line twice. Did you, really?",
+  "Are you sure? I mean... are you REALLY sure?",
+  "Someone in the Imperial Council whispers \"Don't rush...\" But you already clicked.",
+  "I've never seen a Grand Vizier decide quite this fast.",
+  "The historians noted this moment: \"And he proceeded without a second thought.\"",
+  "Would you like a coffee break first? No? Very well, proceed.",
+  "Grand Vizier, did your finger slip, or was that truly a decision?",
+  "The palace architect designed this very screen just to make you wait a little. Did it work?"
+];
+
+// Belirli bir olasılıkla şaka popup'ı gösterir; gösterildiyse true döner (çağıran
+// fonksiyon asıl işlemi ERTELEMELİ, popup'ın tek butonu onProceed()'i çağırır).
+// Gösterilmediyse false döner, çağıran fonksiyon normal akışına hemen devam eder.
+function maybeShowFunnyConfirmEasterEgg(onProceed) {
+  if (Math.random() >= FUNNY_CONFIRM_EASTER_ODDS) return false;
+  const isEN = window.LANG === 'en';
+  const text = _pickRandom(isEN ? FUNNY_CONFIRM_EASTER_EN : FUNNY_CONFIRM_EASTER_TR);
+  const overlay = document.createElement("div");
+  overlay.id = "funny-confirm-overlay";
+  overlay.innerHTML = `
+    <div id="funny-confirm-box">
+      <div id="funny-confirm-text">${text}</div>
+      <button id="funny-confirm-btn">${isEN ? "Yes, I'm Sure →" : "Evet, Eminim →"}</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add("visible"));
+  let _fired = false;
+  document.getElementById("funny-confirm-btn").onclick = () => {
+    if (_fired) return;
+    _fired = true;
+    overlay.classList.remove("visible");
+    setTimeout(() => { overlay.remove(); onProceed(); }, 250);
+  };
+  return true;
+}
+
 function _pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function _getSecondChanceOfferText() {
@@ -3977,7 +4034,11 @@ function showPadisahZiyareti() {
   choiceRight.style.opacity = "0";
   overlayL.style.opacity = "0";
   overlayR.style.opacity = "0";
-  card.classList.remove("letter-card", "no-swipe", "pargali-ghost");
+  card.classList.remove("letter-card", "pargali-ghost");
+  // Bu kartın tek geçerli girdisi aşağıdaki "easter-action-btn" — sağa/sola
+  // kaydırarak da tamamlanabiliyordu (character "1-sultan" değil, onStart'taki
+  // swipe engeli buna uygulanmıyor), bu yüzden kazara swipe'ı bilerek engelliyoruz.
+  card.classList.add("no-swipe");
 
   // Kart tipini özel olarak işaretle — decide() bu tipi yakalar
   currentCard = { type: "padisah_ziyaret", character: "padisah-ziyaret", _data: data };
@@ -3994,6 +4055,10 @@ function showPadisahZiyareti() {
   easterBtn.className = "easter-btn padisah-ziyaret";
   easterBtn.classList.remove("hidden");
   easterBtn.onclick = () => {
+    if (maybeShowFunnyConfirmEasterEgg(() => {
+      easterBtn.classList.add("hidden");
+      flyOff("right");
+    })) return;
     easterBtn.classList.add("hidden");
     flyOff("right");
   };
@@ -4119,8 +4184,9 @@ function clearLetterTapHandler() {
   }
 }
 
-function handleLetterDevam() {
+function handleLetterDevam(_skipEasterEgg) {
   clearLetterTapHandler();
+  if (!_skipEasterEgg && maybeShowFunnyConfirmEasterEgg(() => handleLetterDevam(true))) return;
   const devamBtn = document.getElementById("letter-devam-btn");
   if (devamBtn) devamBtn.classList.add("hidden");
 
