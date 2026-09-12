@@ -25,6 +25,41 @@
   </div>
 
   <div id="real-app">
+  <script>
+    (function () {
+      // Bu kapı SADECE genel web ziyaretçileri için — native uygulama (App
+      // Store'dan indirilen gerçek oyun) kendi izole WebView'ında çalışır,
+      // Safari'deki localStorage'ı hiç görmez ve ?access= parametresiyle de
+      // hiç açılmaz. Native platform kontrolü olmadan bu kapı native
+      // uygulamayı da kilitliyordu — App Store'dan güncelleyen HİÇ KİMSE
+      // oyunu açamıyordu. Native ise kapı hiç değerlendirilmeden atlanır.
+      // BİLİNÇLİ OLARAK EN ÜSTTE (div açılır açılmaz): bu script game.js
+      // gibi ağır dosyalar yüklenmeden ÖNCE çalışmalı, yoksa gate-screen
+      // kısa süre (hatta saniyeler) yanıp söner — gerçek kullanıcı bunu
+      // görmemeli. document.getElementById('real-app') burada zaten
+      // bulunabilir — tarayıcı açılış etiketini görür görmez elemanı
+      // oluşturur, içeriğinin parse edilmesini beklemez.
+      var isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+      if (isNative) {
+        document.getElementById('real-app').style.display = 'block';
+        document.getElementById('gate-screen').style.display = 'none';
+      } else {
+        var SECRET = 'SadrazamGizli37';
+        var qs;
+        try { qs = new URLSearchParams(location.search); } catch (e) { qs = null; }
+        var access = qs ? qs.get('access') : null;
+        var ok = access === SECRET;
+        try {
+          if (ok) localStorage.setItem('sadrazam_web_access', '1');
+          if (!ok) ok = localStorage.getItem('sadrazam_web_access') === '1';
+        } catch (e) {}
+        if (ok) {
+          document.getElementById('real-app').style.display = 'block';
+          document.getElementById('gate-screen').style.display = 'none';
+        }
+      }
+    })();
+  </script>
 
   <!-- ── AÇILIŞ LOGOSU (RAKU) ── -->
   <div id="brand-splash">
@@ -483,33 +518,20 @@
   </div><!-- /#real-app -->
 
   <script>
-    (function () {
-      // Bu kapı SADECE genel web ziyaretçileri için — native uygulama (App
-      // Store'dan indirilen gerçek oyun) kendi izole WebView'ında çalışır,
-      // Safari'deki localStorage'ı hiç görmez ve ?access= parametresiyle de
-      // hiç açılmaz. Native platform kontrolü olmadan bu kapı native
-      // uygulamayı da kilitliyordu — App Store'dan güncelleyen HİÇ KİMSE
-      // oyunu açamıyordu. Native ise kapı hiç değerlendirilmeden atlanır.
-      var isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-      if (isNative) {
-        document.getElementById('real-app').style.display = 'block';
-        document.getElementById('gate-screen').style.display = 'none';
-        return;
-      }
-      var SECRET = 'SadrazamGizli37';
-      var qs;
-      try { qs = new URLSearchParams(location.search); } catch (e) { qs = null; }
-      var access = qs ? qs.get('access') : null;
-      var ok = access === SECRET;
-      try {
-        if (ok) localStorage.setItem('sadrazam_web_access', '1');
-        if (!ok) ok = localStorage.getItem('sadrazam_web_access') === '1';
-      } catch (e) {}
-      if (ok) {
-        document.getElementById('real-app').style.display = 'block';
-        document.getElementById('gate-screen').style.display = 'none';
-      }
-    })();
+    // Giriş ekranındaki elemanlar CSS animasyonuyla (opacity:0 -> 1) beliriyor.
+    // Bazı WebView/render ortamlarında (ör. belirli simülatör sürümleri) bu
+    // animasyon hiç tetiklenmeyip elemanlar kalıcı olarak görünmez kalabiliyor
+    // — oyun aslında çalışıyor ama ekranda hiçbir buton görünmüyor. Güvenlik
+    // amaçlı: animasyon normalde ~2.2sn'de bitiyor, 3sn sonra hâlâ opacity 0
+    // olan giriş ekranı elemanlarını JS ile zorla görünür yapıyoruz. Animasyon
+    // normal çalıştıysa bu no-op'tur (zaten opacity 1'dir).
+    setTimeout(function () {
+      var ids = ['intro-tugra','intro-era','intro-title','intro-title-line','intro-subtitle','intro-stats-preview','intro-buttons'];
+      ids.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el && getComputedStyle(el).opacity === '0') el.style.opacity = '1';
+      });
+    }, 3000);
   </script>
 </body>
 </html>
