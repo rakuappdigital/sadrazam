@@ -484,6 +484,18 @@
 
   <script>
     (function () {
+      // Bu kapı SADECE genel web ziyaretçileri için — native uygulama (App
+      // Store'dan indirilen gerçek oyun) kendi izole WebView'ında çalışır,
+      // Safari'deki localStorage'ı hiç görmez ve ?access= parametresiyle de
+      // hiç açılmaz. Native platform kontrolü olmadan bu kapı native
+      // uygulamayı da kilitliyordu — App Store'dan güncelleyen HİÇ KİMSE
+      // oyunu açamıyordu. Native ise kapı hiç değerlendirilmeden atlanır.
+      var isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+      if (isNative) {
+        document.getElementById('real-app').style.display = 'block';
+        document.getElementById('gate-screen').style.display = 'none';
+        return;
+      }
       var SECRET = 'SadrazamGizli37';
       var qs;
       try { qs = new URLSearchParams(location.search); } catch (e) { qs = null; }
