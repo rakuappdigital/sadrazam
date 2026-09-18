@@ -3961,6 +3961,10 @@ html, body {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+.sett-opt:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
 .sett-opt.active {
   border-color: var(--gold);
   background: rgba(201,162,39,0.12);
@@ -4020,6 +4024,13 @@ html, body {
   color: var(--gold);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+.sett-promo-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  color: rgba(240,230,208,0.4);
+  border-color: rgba(201,162,39,0.2);
+  background: rgba(201,162,39,0.03);
 }
 .sett-promo-btn:active {
   background: rgba(201,162,39,0.18);
@@ -4431,3 +4442,7 @@ html, body {
 .fx-chip img { width: 9px; height: 9px; object-fit: contain; vertical-align: middle; }
 .fx-chip.fx-up   { color: #6fcf97; }
 .fx-chip.fx-down { color: #e05555; }
+
+/* Stok emoji yerine geçen ince altın çizgi ikonlar — currentColor ile boyanır,
+   1em ile eskiden emoji'nin oturduğu font-size bağlamına aynen uyar. */
+.gi { width: 1em; height: 1em; vertical-align: -0.15em; flex-shrink: 0; }

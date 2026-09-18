@@ -26,6 +26,60 @@ const AKCE_PACKS = [
 const AKCE_FALLBACK_PRICES = { 10: "₺9,99", 20: "₺19,99", 50: "₺39,99", 100: "₺59,99" }; // FREEMIUM_ENABLED=false test modunda
 // Akçe simgesi — emoji yerine tema rengini (currentColor) alan tek SVG, her yerde tutarlı görünsün
 const AKCE_COIN_SVG = '<svg class="akce-coin-svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12" r="5.5" stroke="currentColor" stroke-width="1"/><path d="M12 8.3v7.4M9.8 10l2.2-1.7 2.2 1.7M9.8 14l2.2 1.7 2.2-1.7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/></svg>';
+// Stok emoji yerine geçen ince altın çizgi ikonlar — AKCE_COIN_SVG ile aynı dil
+// (currentColor stroke, viewBox 24x24). ICON_PROMPTS.md'deki konu listesine göre.
+const _gi = (inner) => `<svg class="gi" viewBox="0 0 24 24" fill="none">${inner}</svg>`;
+const GAME_ICONS = {
+  // ── Başarımlar ──
+  first_step:      _gi('<path d="M4 8.5a2 2 0 1 0 0 4M20 9.5a2 2 0 1 1 0 4" stroke="currentColor" stroke-width="1.05"/><path d="M4 8.5c4-1 12-1 16 1M4 12.5c4 1 12 1 16-1" stroke="currentColor" stroke-width="1.05" stroke-linecap="round"/><path d="M10 9.6v4.3l2-1.3 2 1.3V9.6" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>'),
+  three_years:     _gi('<g stroke="currentColor" stroke-width="1" stroke-linecap="round"><path d="M12 20L12 4"/><path d="M9.6 6.2h4.8"/><path d="M12 20L6 6"/><path d="M4.3 8.6l3.4-1"/><path d="M12 20L18 6"/><path d="M16.3 7.6l3.4 1"/></g>'),
+  five_chars:      _gi('<g stroke="currentColor" stroke-width="1" stroke-linejoin="round"><path d="M6 17c0-2.2 1.3-3.6 3-3.6s3 1.4 3 3.6v1H6v-1Z"/><circle cx="9" cy="10.5" r="2.4"/><path d="M13 17c0-2.2 1.3-3.6 3-3.6s3 1.4 3 3.6v1h-6v-1Z"/><circle cx="16" cy="10.5" r="2.4"/></g>'),
+  first_letter:    _gi('<path d="M4 7h16v11H4z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><circle cx="12" cy="14.2" r="2.1" stroke="currentColor" stroke-width="0.9"/><path d="M12 12.7v3M10.8 14.2h2.4" stroke="currentColor" stroke-width="0.7"/>'),
+  first_chance:    _gi('<ellipse cx="12" cy="11" rx="4.2" ry="8" stroke="currentColor" stroke-width="1.1"/><path d="M12 5.2v11.6M9.3 8l2.7-2 2.7 2M9.3 14l2.7 2 2.7-2" stroke="currentColor" stroke-width="0.85" stroke-linecap="round"/><ellipse cx="12" cy="20.2" rx="5.5" ry="1.1" stroke="currentColor" stroke-width="0.8" opacity="0.55"/>'),
+  first_death:     _gi('<path d="M12 3v11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M9.5 4.5h5L12 3l-2.5 1.5Z" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"/><path d="M9.8 14h4.4l-1.1 4-1.1 1-1.1-1-1.1-4Z" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"/><path d="M17 8c-1.8 0-3 1.6-3 3.4 0-1.8-1.2-3.4-3-3.4 1 2.4 2.6 3.6 3 5.6.4-2 2-3.2 3-5.6Z" stroke="currentColor" stroke-width="0.85" stroke-linejoin="round"/>'),
+  item_user:       _gi('<path d="M4 11h16v7H4z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><path d="M4 11c0-3 2-5 4-5M20 11c0-3-2-5-4-5M8 6h8" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M12 10l0.8 1.8 1.8.2-1.4 1.3.4 1.9-1.6-1-1.6 1 .4-1.9L9.4 12l1.8-.2z" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>'),
+  five_years:      _gi('<path d="M14.5 4.2a8 8 0 1 0 0 15.6 9.4 9.4 0 0 1 0-15.6Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M17.3 10.2l0.7 1.6 1.7 0.5-1.4 1.1 0.3 1.8-1.3-1-1.4 1 0.4-1.8-1.4-1.1 1.7-0.4z" stroke="currentColor" stroke-width="0.85" stroke-linejoin="round"/>'),
+  balanced:        _gi('<path d="M12 3v16M8 19h8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M4 6h16" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M4 6l-2.3 5.2a2.6 2.6 0 0 0 5.1 0L4 6ZM20 6l-2.3 5.2a2.6 2.6 0 0 0 5.1 0L20 6Z" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"/><circle cx="12" cy="4.4" r="1.2" stroke="currentColor" stroke-width="0.9"/>'),
+  hazine_guard:    _gi('<path d="M4 10h16v8H4z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><path d="M4 10c0-2.8 2-4.4 4-4.4M20 10c0-2.8-2-4.4-4-4.4M8 5.6h8" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><rect x="10.6" y="10" width="2.8" height="2.4" stroke="currentColor" stroke-width="0.85"/><circle cx="3" cy="19.5" r="1" stroke="currentColor" stroke-width="0.7"/><circle cx="6" cy="20.3" r="1" stroke="currentColor" stroke-width="0.7"/><circle cx="20.5" cy="19.7" r="1" stroke="currentColor" stroke-width="0.7"/>'),
+  saray_high:      _gi('<path d="M4 17l1.6-8 3 4 3.4-6 3.4 6 3-4L20 17H4Z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><path d="M4 17h16v2H4z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M12 3v3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>'),
+  chain_complete:  _gi('<circle cx="5.5" cy="12" r="3.6" stroke="currentColor" stroke-width="1.05"/><circle cx="12" cy="12" r="3.6" stroke="currentColor" stroke-width="1.05"/><circle cx="18.5" cy="12" r="3.6" stroke="currentColor" stroke-width="1.05"/>'),
+  traitor_found:   _gi('<circle cx="10" cy="10" r="5" stroke="currentColor" stroke-width="1.05"/><path d="M13.8 13.8L19 19" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M7.5 10c0-1.8 1.1-3 2.5-3s2.5 1.2 2.5 3-1 3.4-2.5 4.6C8.5 13.4 7.5 11.8 7.5 10Z" stroke="currentColor" stroke-width="0.75" stroke-linejoin="round"/>'),
+  war_victory:     _gi('<path d="M6 3c4 3 4 15 0 18" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M6 3v18" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1.5 1.5"/><path d="M4 12h15M17 12l-2.5-2M17 12l-2.5 2" stroke="currentColor" stroke-width="0.95" stroke-linecap="round"/>'),
+  all_letters:     _gi('<g stroke="currentColor" stroke-width="0.95" stroke-linejoin="round"><rect x="3.5" y="9" width="6" height="8" transform="rotate(-18 6.5 13)"/><rect x="9" y="8" width="6" height="9" transform="rotate(-6 12 12.5)"/><rect x="14" y="8" width="6" height="9" transform="rotate(6 17 12.5)"/></g>'),
+  ten_years:       _gi('<path d="M12 3l3 3H9l3-3Z" stroke="currentColor" stroke-width="0.95" stroke-linejoin="round"/><path d="M7 6h10v2H7z" stroke="currentColor" stroke-width="0.95"/><path d="M6 19V9M18 19V9M9 19v-6M15 19v-6M6 19h12" stroke="currentColor" stroke-width="0.95" stroke-linecap="round"/>'),
+  kanuni_ten:      _gi('<path d="M12 2l1.6 6.2L20 10l-6.4 1.8L12 18l-1.6-6.2L4 10l6.4-1.8L12 2Z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M12 2l1.6 6.2L20 10l-6.4 1.8L12 18l-1.6-6.2L4 10l6.4-1.8L12 2Z" stroke="currentColor" stroke-width="1" stroke-linejoin="round" transform="rotate(45 12 10)"/><circle cx="12" cy="10" r="0.9" fill="currentColor" stroke="none"/>'),
+  yavuz_eight:     _gi('<path d="M13 2L6 13h5l-2 9 9-13h-5l2-7Z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>'),
+  murad_treasure:  _gi('<path d="M8 8h8l3 4-7 8-7-8 3-4Z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><path d="M5 12h14M9 12l3 8 3-8" stroke="currentColor" stroke-width="0.75" stroke-linejoin="round"/>'),
+  all_deaths:      _gi('<circle cx="12" cy="10" r="5.2" stroke="currentColor" stroke-width="1.05"/><path d="M9 15v2.2M15 15v2.2M9.5 20h5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><circle cx="9.8" cy="9.5" r="1.1" stroke="currentColor" stroke-width="0.8"/><circle cx="14.2" cy="9.5" r="1.1" stroke="currentColor" stroke-width="0.8"/><path d="M11 12.2l1-1.6 1 1.6" stroke="currentColor" stroke-width="0.7"/>'),
+  curse_master:    _gi('<path d="M12 3c2 3-1 4-1 7a3 3 0 1 0 6 0c0-1.5-1-2.4-1.8-3.2 1 2 .2 3.4-1 3.4-1.6 0-1-2-.4-3.4C14.6 5 13 4 12 3Z" stroke="currentColor" stroke-width="0.95" stroke-linejoin="round"/><path d="M8 12a4 4 0 1 0 8 0c0 2.2-1.8 4-4 4s-4-1.8-4-4Z" stroke="currentColor" stroke-width="0.95" stroke-linejoin="round"/>'),
+  chance_streak:   _gi('<g stroke="currentColor" stroke-width="0.95"><circle cx="6" cy="6" r="2.6"/><circle cx="12" cy="12" r="2.6"/><circle cx="18" cy="18" r="2.6"/></g>'),
+  no_curse:        _gi('<path d="M3 13c3-3 6-2 8 0 1-3 4-5 8-4-3 1-4 3-4 5 2 0 4 1 6 3-3 0-6 0-8-1-2 3-6 4-10 3 2-1 3-2 3-3-1-1-2-2-3-3Z" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"/>'),
+  sabir_imtihani:  _gi('<path d="M7 3h10M7 21h10M7 3c0 5 4 6 5 8-1 2-5 3-5 8M17 3c0 5-4 6-5 8 1 2 5 3 5 8" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><path d="M12 11v2" stroke="currentColor" stroke-width="0.7" stroke-linecap="round"/>'),
+  legend:          _gi('<path d="M12 3c0 3.8 1.2 6.4 3 8.2 1.8 1.8 4.4 3 8.2 3-3.8 0-6.4 1.2-8.2 3-1.8 1.8-3 4.4-3 8.2 0-3.8-1.2-6.4-3-8.2-1.8-1.8-4.4-3-8.2-3 3.8 0 6.4-1.2 8.2-3 1.8-1.8 3-4.4 3-8.2Z" stroke="currentColor" stroke-width="1"/><path d="M5 5l0.8 0.8M19 5l-0.8 0.8M5 19l0.8-0.8" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/>'),
+  all_chars:       _gi('<path d="M4 6l5-1.5 6 1.5 5-1.5v13l-5 1.5-6-1.5-5 1.5Z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M9 4.5v13M15 6v13" stroke="currentColor" stroke-width="0.75"/><path d="M12 9l1 2-1 2-1-2Z" stroke="currentColor" stroke-width="0.7" stroke-linejoin="round"/>'),
+  no_low_stat:     _gi('<path d="M12 3v15" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M12 3c-1.6 0-2.6 1.6-2 3.4M12 3c1.6 0 2.6 1.6 2 3.4" stroke="currentColor" stroke-width="0.95" stroke-linecap="round"/><path d="M8 21h8M9.5 21v-3M14.5 21v-3" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/><path d="M9 8.5a3 3 0 1 0 6 0" stroke="currentColor" stroke-width="0.85"/>'),
+  pasa_mode:       _gi('<path d="M4 15a1.8 1.8 0 1 0 0 3.6h6.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M4 15h9v3.6H10.5" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M13 15V9M13 9l-2 3-2-3M13 9l2 3 2-3" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"/>'),
+  item_collector:  _gi('<path d="M4 8c0-1.5 1.5-2.5 4-2.5S12 6.5 12 8v3c0 2.2-1.8 4-4 4S4 13.2 4 11V8Z" stroke="currentColor" stroke-width="0.95" stroke-linejoin="round"/><circle cx="6.3" cy="8.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="9.3" cy="8.5" r="0.6" fill="currentColor" stroke="none"/><path d="M6 11.2Q8 13 10 11.2" stroke="currentColor" stroke-width="0.7" stroke-linecap="round"/><path d="M12 11c0-1.5 1.5-2.5 4-2.5s4 1 4 2.5v3c0 2.2-1.8 4-4 4s-4-1.8-4-4v-3Z" stroke="currentColor" stroke-width="0.95" stroke-linejoin="round"/><circle cx="14.3" cy="11.5" r="0.6" fill="currentColor" stroke="none"/><circle cx="17.3" cy="11.5" r="0.6" fill="currentColor" stroke="none"/><path d="M14 15.8Q16 14.3 18 15.8" stroke="currentColor" stroke-width="0.7" stroke-linecap="round"/>'),
+  gizli_ustat:     _gi('<path d="M12 4l1.2 3.8H17l-3.1 2.3 1.2 3.8L12 11.6l-3.1 2.3 1.2-3.8L7 7.8h3.8L12 4Z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M5 12c1 3 2 5 3 6M19 12c-1 3-2 5-3 6" stroke="currentColor" stroke-width="0.85" stroke-linecap="round"/><path d="M6 15c1 0 1.5.5 1.5 1M17.5 16c-1 0-1.5.5-1.5 1" stroke="currentColor" stroke-width="0.7" stroke-linecap="round"/>'),
+  rival_five:      _gi('<path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M12 10.5l1.5 1.5-1.5 1.5-1.5-1.5z" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/><path d="M5 5l2.2.5M19 5l-2.2.5M5 19l2.2-.5M19 19l-2.2-.5" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>'),
+  zimmet:          _gi('<path d="M8.5 9c0-2.2 1.6-4 3.5-4s3.5 1.8 3.5 4" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/><path d="M6 9h12l1 3c.6 4-2.2 8-7 8s-7.6-4-7-8Z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><path d="M10 13l1.2 1.4M14.5 12.5l-1 1.8" stroke="currentColor" stroke-width="0.7" stroke-linecap="round"/><circle cx="6" cy="20" r="1" stroke="currentColor" stroke-width="0.7"/><circle cx="4" cy="21.3" r="1" stroke="currentColor" stroke-width="0.7"/>'),
+  valide_loyal:    _gi('<path d="M12 21v-7" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M12 14c-3 0-4.5-2.4-4.5-5.4 2 .6 3 1.8 3.4 3C11.2 9.4 11 7 12 5c1 2 .8 4.4 1.1 6.6.4-1.2 1.4-2.4 3.4-3 0 3-1.5 5.4-4.5 5.4Z" stroke="currentColor" stroke-width="0.95" stroke-linejoin="round"/><path d="M17 5l.5 1.3L19 6.8l-1.3.5L17 8.5l-.5-1.2L15 6.8l1.5-.5z" stroke="currentColor" stroke-width="0.7" stroke-linejoin="round"/>'),
+  diplomat:        _gi('<path d="M4 15c3-1 5-4 8-4s5 3 8 4" stroke="currentColor" stroke-width="1.05" stroke-linecap="round"/><path d="M9 13l2 3M15 13l-2 3" stroke="currentColor" stroke-width="0.85" stroke-linecap="round"/><rect x="9.5" y="7" width="5" height="3.4" rx="0.5" stroke="currentColor" stroke-width="0.75"/>'),
+  deli_dervis_right: _gi('<circle cx="12" cy="10" r="5" stroke="currentColor" stroke-width="1.05"/><path d="M12 5.2c-1.2 1.4-1.2 8.2 0 9.6M8.4 7.6c1.6 2 5.6 2 7.2 0M8.4 12.4c1.6-2 5.6-2 7.2 0" stroke="currentColor" stroke-width="0.55"/><path d="M9 15l-3 6M15 15l3 6M12 15v6" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/>'),
+  // ── Arayüz ikonları ──
+  province_rumeli:   _gi('<path d="M12 21V5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M9.5 6.5L12 3l2.5 3.5" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/><path d="M12 8l5 2-5 1.4z" stroke="currentColor" stroke-width="0.85" stroke-linejoin="round"/>'),
+  province_anadolu:  _gi('<path d="M12 3v13M9 6l3-1 3 1M8 9l4-1 4 1M7 12l5-1 5 1" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/><path d="M9.5 16h5l-1 5h-3z" stroke="currentColor" stroke-width="0.85" stroke-linejoin="round"/>'),
+  province_misir:    _gi('<path d="M4 20l4-7 4 7Z" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"/><ellipse cx="16" cy="13" rx="4" ry="1.4" stroke="currentColor" stroke-width="0.85"/><ellipse cx="16" cy="16" rx="4" ry="1.4" stroke="currentColor" stroke-width="0.85"/><ellipse cx="16" cy="19" rx="4" ry="1.4" stroke="currentColor" stroke-width="0.85"/>'),
+  province_dogu:     _gi('<circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="1.05"/><path d="M14 7.5a5.4 5.4 0 1 0 0 9 6.4 6.4 0 0 1 0-9Z" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>'),
+  province_akdeniz:  _gi('<circle cx="12" cy="6" r="1.6" stroke="currentColor" stroke-width="0.95"/><path d="M12 7.6v11M8 12H6a6 6 0 0 0 6 7 6 6 0 0 0 6-7h-2" stroke="currentColor" stroke-width="1.05" stroke-linecap="round"/><path d="M9 9.5h6" stroke="currentColor" stroke-width="0.95" stroke-linecap="round"/>'),
+  loyalty_low:       _gi('<path d="M12 3c1.8 2.6-1 3.6-1 6.2a2.6 2.6 0 1 0 5.2 0c0-1.3-.8-2-1.4-2.7.8 1.7.1 2.9-.9 2.9-1.3 0-.8-1.7-.3-2.9C14 5.3 12.8 4.1 12 3Z" stroke="currentColor" stroke-width="0.85" stroke-linejoin="round"/><path d="M9 12a3.4 3.4 0 1 0 6.8 0c0 1.9-1.5 3.4-3.4 3.4S9 13.9 9 12Z" stroke="currentColor" stroke-width="0.85" stroke-linejoin="round"/>'),
+  loyalty_high:      _gi('<path d="M12 20c0-6 2-9 6-12" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M14 11c1-1 1-2.4 0-3.2-.4 1.2-1.2 1.6-2 1.6M16 8.4c1-.6 1.4-1.8 1-2.8-.8.6-1.6.6-2.2.2M11.5 14c1-.6 1.3-1.8.8-2.8-.7.6-1.5.6-2 .2" stroke="currentColor" stroke-width="0.75" stroke-linecap="round"/>'),
+  action_negotiate:  _gi('<path d="M4 15c3-1 5-4 8-4s5 3 8 4" stroke="currentColor" stroke-width="1.05" stroke-linecap="round"/><path d="M9 13l2 3M15 13l-2 3" stroke="currentColor" stroke-width="0.85" stroke-linecap="round"/>'),
+  action_force:      _gi('<path d="M12 20V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M9.5 9.5h5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M12 9c1.5-2 1-4.5-1-6 2.5 0 4.5 2.2 4 5-1 .6-2 .8-3 1Z" stroke="currentColor" stroke-width="0.85" stroke-linejoin="round"/>'),
+  action_gamble:     _gi('<rect x="5" y="10" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="0.95"/><circle cx="6.8" cy="11.8" r="0.5" fill="currentColor" stroke="none"/><circle cx="9.2" cy="14.2" r="0.5" fill="currentColor" stroke="none"/><rect x="12" y="8" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="0.95"/><circle cx="13.8" cy="9.8" r="0.5" fill="currentColor" stroke="none"/><circle cx="15" cy="11" r="0.5" fill="currentColor" stroke="none"/><circle cx="16.2" cy="12.2" r="0.5" fill="currentColor" stroke="none"/><path d="M3 18h18" stroke="currentColor" stroke-width="0.85" stroke-linecap="round"/>'),
+  trophy:            _gi('<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/><path d="M12 13v3M9 20h6M10 17h4l.5 3h-5z" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"/>'),
+  locked:            _gi('<rect x="5.5" y="11" width="13" height="9" rx="1.6" stroke="currentColor" stroke-width="1.05"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.05"/><circle cx="12" cy="15" r="1.3" stroke="currentColor" stroke-width="0.85"/><path d="M12 16.3v1.8" stroke="currentColor" stroke-width="0.85" stroke-linecap="round"/>'),
+};
 let _secondChanceUsedThisDeath = false; // her ölümde sadece 1 kez teklif edilir
 let _secondChanceOfferedThisGame = false; // İkinci Şans bir oyun boyunca sadece 1 kez teklif edilir
 
@@ -580,49 +634,49 @@ const ARCS = {
 // tier: bronze | silver | gold | platinum | secret
 const ACHIEVEMENTS = [
   // ── BRONZ ──
-  { id: "first_step",     tier:"bronze", icon:"📜", name:"İlk Adım",             desc:"İlk oyununu tamamla.",                        check: s => s.year >= 1 },
-  { id: "three_years",    tier:"bronze", icon:"⚔️", name:"Üç Yıl Direniş",       desc:"3 yıl hayatta kal.",                          check: s => s.year >= 3 },
-  { id: "five_chars",     tier:"bronze", icon:"👥", name:"Saray Tanıdıkları",     desc:"Tek oyunda 5 farklı karakter gör.",            check: s => (s.seenCharacters||new Set()).size >= 5 },
-  { id: "first_letter",   tier:"bronze", icon:"🔏", name:"Sultan'dan Haber",      desc:"Sultan'dan mektup al.",                       check: s => s.receivedLetters > 0 },
-  { id: "first_chance",   tier:"bronze", icon:"🪙", name:"Kader Sınavı",          desc:"Bir şans kartını tamamla.",                   check: s => s.chanceCardsPlayed > 0 },
-  { id: "first_death",    tier:"bronze", icon:"☠️", name:"İlk Son",               desc:"Oyunu bir kez bitir.",                        check: s => true },
-  { id: "item_user",      tier:"bronze", icon:"🪙", name:"Hazır Hazineci",        desc:"İlk item'ını kullan.",                        check: s => s.itemsUsed > 0 },
+  { id: "first_step",     tier:"bronze", icon:GAME_ICONS.first_step, name:"İlk Adım",             desc:"İlk oyununu tamamla.",                        check: s => s.year >= 1 },
+  { id: "three_years",    tier:"bronze", icon:GAME_ICONS.three_years, name:"Üç Yıl Direniş",       desc:"3 yıl hayatta kal.",                          check: s => s.year >= 3 },
+  { id: "five_chars",     tier:"bronze", icon:GAME_ICONS.five_chars, name:"Saray Tanıdıkları",     desc:"Tek oyunda 5 farklı karakter gör.",            check: s => (s.seenCharacters||new Set()).size >= 5 },
+  { id: "first_letter",   tier:"bronze", icon:GAME_ICONS.first_letter, name:"Sultan'dan Haber",      desc:"Sultan'dan mektup al.",                       check: s => s.receivedLetters > 0 },
+  { id: "first_chance",   tier:"bronze", icon:GAME_ICONS.first_chance, name:"Kader Sınavı",          desc:"Bir şans kartını tamamla.",                   check: s => s.chanceCardsPlayed > 0 },
+  { id: "first_death",    tier:"bronze", icon:GAME_ICONS.first_death, name:"İlk Son",               desc:"Oyunu bir kez bitir.",                        check: s => true },
+  { id: "item_user",      tier:"bronze", icon:GAME_ICONS.item_user, name:"Hazır Hazineci",        desc:"İlk item'ını kullan.",                        check: s => s.itemsUsed > 0 },
 
   // ── GÜMÜŞ ──
-  { id: "five_years",     tier:"silver", icon:"🌙", name:"Beş Yıl Sadrazam",     desc:"5 yıl hayatta kal.",                          check: s => s.year >= 5 },
-  { id: "balanced",       tier:"silver", icon:"⚖️", name:"Denge Ustası",          desc:"Oyun bitiminde tüm statlar 40-65 arası.",     check: s => Object.values(s.stats).every(v=>v>=40&&v<=65) },
-  { id: "hazine_guard",   tier:"silver", icon:"💰", name:"Hazine Bekçisi",        desc:"5 yıl hazine hiç 30'un altına düşmesin.",     check: s => s.year >= 5 && s.minHazine >= 30 },
-  { id: "saray_high",     tier:"silver", icon:"👑", name:"Sultan'ın Gözdesi",     desc:"Saray 80+'a çıksın.",                        check: s => s.maxSaray >= 80 },
-  { id: "chain_complete", tier:"silver", icon:"⛓️", name:"İplik Takipçisi",       desc:"Bir zincirleme karar dizisi tamamla.",        check: s => s.chainsCompleted > 0 },
-  { id: "traitor_found",  tier:"silver", icon:"🕵️", name:"Haini Buldun",         desc:"Gizli haini tespit et (2+ soruştur).",       check: s => s.traitorInvestigated >= 2 },
-  { id: "war_victory",    tier:"silver", icon:"🏹", name:"Zafer Habercisi",       desc:"Savaşı kabul et ve zaferi gör.",              check: s => s.warVictory },
-  { id: "all_letters",    tier:"silver", icon:"📨", name:"Tüm Mektuplar",         desc:"Tek oyunda 4 sultan mektubunu al.",           check: s => s.receivedLetters >= 4 },
+  { id: "five_years",     tier:"silver", icon:GAME_ICONS.five_years, name:"Beş Yıl Sadrazam",     desc:"5 yıl hayatta kal.",                          check: s => s.year >= 5 },
+  { id: "balanced",       tier:"silver", icon:GAME_ICONS.balanced, name:"Denge Ustası",          desc:"Oyun bitiminde tüm statlar 40-65 arası.",     check: s => Object.values(s.stats).every(v=>v>=40&&v<=65) },
+  { id: "hazine_guard",   tier:"silver", icon:GAME_ICONS.hazine_guard, name:"Hazine Bekçisi",        desc:"5 yıl hazine hiç 30'un altına düşmesin.",     check: s => s.year >= 5 && s.minHazine >= 30 },
+  { id: "saray_high",     tier:"silver", icon:GAME_ICONS.saray_high, name:"Sultan'ın Gözdesi",     desc:"Saray 80+'a çıksın.",                        check: s => s.maxSaray >= 80 },
+  { id: "chain_complete", tier:"silver", icon:GAME_ICONS.chain_complete, name:"İplik Takipçisi",       desc:"Bir zincirleme karar dizisi tamamla.",        check: s => s.chainsCompleted > 0 },
+  { id: "traitor_found",  tier:"silver", icon:GAME_ICONS.traitor_found, name:"Haini Buldun",         desc:"Gizli haini tespit et (2+ soruştur).",       check: s => s.traitorInvestigated >= 2 },
+  { id: "war_victory",    tier:"silver", icon:GAME_ICONS.war_victory, name:"Zafer Habercisi",       desc:"Savaşı kabul et ve zaferi gör.",              check: s => s.warVictory },
+  { id: "all_letters",    tier:"silver", icon:GAME_ICONS.all_letters, name:"Tüm Mektuplar",         desc:"Tek oyunda 4 sultan mektubunu al.",           check: s => s.receivedLetters >= 4 },
 
   // ── ALTIN ──
-  { id: "ten_years",      tier:"gold",   icon:"🏛️", name:"On Yıl Sadrazam",     desc:"10 yıl hayatta kal.",                         check: s => s.year >= 10 },
-  { id: "kanuni_ten",     tier:"gold",   icon:"🌟", name:"Kanunî'nin Mirası",    desc:"Kanuni ile 10 yıl hayatta kal.",              check: s => s.sultanId==="kanuni" && s.year>=10 },
-  { id: "yavuz_eight",    tier:"gold",   icon:"⚡", name:"Yavuz'a Layık",        desc:"Yavuz ile 8 yıl hayatta kal.",               check: s => s.sultanId==="yavuz" && s.year>=8 },
-  { id: "murad_treasure", tier:"gold",   icon:"💎", name:"Murad'ın Serveti",     desc:"III. Murad ile hazineyi 80+'a çıkar.",       check: s => s.sultanId==="murad3" && s.maxHazine>=80 },
-  { id: "all_deaths",     tier:"gold",   icon:"💀", name:"Her Şeyi Gördüm",      desc:"8 farklı ölüm sebebini yaşa.",               check: s => (s.deathsSeen||[]).length >= 6 },
-  { id: "curse_master",   tier:"gold",   icon:"🔥", name:"Lanet Ustası",          desc:"Toplamda 3 kez lanet tetikle.",               check: s => s.totalCurses >= 3 },
-  { id: "chance_streak",  tier:"gold",   icon:"🎰", name:"Şans Tanrısı",          desc:"Arka arkaya 3 şans kartı kazan.",             check: s => s.chanceStreak >= 3 },
-  { id: "no_curse",       tier:"silver", icon:"🕊️", name:"Lanet Yok",            desc:"Bir oyunu lanet tetiklemeden bitir.",         check: s => !s.cursedEver },
-  { id: "sabir_imtihani",tier:"platinum",icon:"⏳", name:"Sabır İmtihanı",       desc:"15 yıl boyunca lanet tetiklemeden hayatta kal.", check: s => !s.cursedEver && s.year>=15 },
+  { id: "ten_years",      tier:"gold",   icon:GAME_ICONS.ten_years, name:"On Yıl Sadrazam",     desc:"10 yıl hayatta kal.",                         check: s => s.year >= 10 },
+  { id: "kanuni_ten",     tier:"gold",   icon:GAME_ICONS.kanuni_ten, name:"Kanunî'nin Mirası",    desc:"Kanuni ile 10 yıl hayatta kal.",              check: s => s.sultanId==="kanuni" && s.year>=10 },
+  { id: "yavuz_eight",    tier:"gold",   icon:GAME_ICONS.yavuz_eight, name:"Yavuz'a Layık",        desc:"Yavuz ile 8 yıl hayatta kal.",               check: s => s.sultanId==="yavuz" && s.year>=8 },
+  { id: "murad_treasure", tier:"gold",   icon:GAME_ICONS.murad_treasure, name:"Murad'ın Serveti",     desc:"III. Murad ile hazineyi 80+'a çıkar.",       check: s => s.sultanId==="murad3" && s.maxHazine>=80 },
+  { id: "all_deaths",     tier:"gold",   icon:GAME_ICONS.all_deaths, name:"Her Şeyi Gördüm",      desc:"8 farklı ölüm sebebini yaşa.",               check: s => (s.deathsSeen||[]).length >= 6 },
+  { id: "curse_master",   tier:"gold",   icon:GAME_ICONS.curse_master, name:"Lanet Ustası",          desc:"Toplamda 3 kez lanet tetikle.",               check: s => s.totalCurses >= 3 },
+  { id: "chance_streak",  tier:"gold",   icon:GAME_ICONS.chance_streak, name:"Şans Tanrısı",          desc:"Arka arkaya 3 şans kartı kazan.",             check: s => s.chanceStreak >= 3 },
+  { id: "no_curse",       tier:"silver", icon:GAME_ICONS.no_curse, name:"Lanet Yok",            desc:"Bir oyunu lanet tetiklemeden bitir.",         check: s => !s.cursedEver },
+  { id: "sabir_imtihani",tier:"platinum",icon:GAME_ICONS.sabir_imtihani, name:"Sabır İmtihanı",       desc:"15 yıl boyunca lanet tetiklemeden hayatta kal.", check: s => !s.cursedEver && s.year>=15 },
 
   // ── PLATİN ──
-  { id: "legend",         tier:"platinum", icon:"✨", name:"Efsane Sadrazam",     desc:"20 yıl hayatta kal.",                         check: s => s.year >= 20 },
-  { id: "all_chars",      tier:"platinum", icon:"🗺️", name:"Osmanlı Ansiklopedisi",desc:"Tek oyunda tüm 26 karakteri gör.",           check: s => (s.seenCharacters||new Set()).size >= 26 },
-  { id: "no_low_stat",    tier:"platinum", icon:"🔱", name:"Sıfır Kriz",          desc:"Hiçbir stat 15'in altına inmeden 10 yıl.",   check: s => s.year>=10 && s.minAnyStat>=15 },
-  { id: "pasa_mode",      tier:"platinum", icon:"📜", name:"Paşadan Sultana",     desc:"Paşalık modunda Sadrazam ol ve 5 yıl devam et.", check: s => s.isPasaMode && s.pasaPromoted && s.year>=8 },
-  { id: "item_collector", tier:"platinum", icon:"🎭", name:"Koleksiyoncu",        desc:"Tek oyunda 5 farklı item topla.",             check: s => s.uniqueItemsCollected >= 5 },
-  { id: "gizli_ustat",   tier:"platinum", icon:"🌟", name:"Gizli Üstat",          desc:"Tek oyunda 3 gizli görevi tamamla.",          check: s => s.allMissionsCompleted },
+  { id: "legend",         tier:"platinum", icon:GAME_ICONS.legend, name:"Efsane Sadrazam",     desc:"20 yıl hayatta kal.",                         check: s => s.year >= 20 },
+  { id: "all_chars",      tier:"platinum", icon:GAME_ICONS.all_chars, name:"Osmanlı Ansiklopedisi",desc:"Tek oyunda tüm 26 karakteri gör.",           check: s => (s.seenCharacters||new Set()).size >= 26 },
+  { id: "no_low_stat",    tier:"platinum", icon:GAME_ICONS.no_low_stat, name:"Sıfır Kriz",          desc:"Hiçbir stat 15'in altına inmeden 10 yıl.",   check: s => s.year>=10 && s.minAnyStat>=15 },
+  { id: "pasa_mode",      tier:"platinum", icon:GAME_ICONS.pasa_mode, name:"Paşadan Sultana",     desc:"Paşalık modunda Sadrazam ol ve 5 yıl devam et.", check: s => s.isPasaMode && s.pasaPromoted && s.year>=8 },
+  { id: "item_collector", tier:"platinum", icon:GAME_ICONS.item_collector, name:"Koleksiyoncu",        desc:"Tek oyunda 5 farklı item topla.",             check: s => s.uniqueItemsCollected >= 5 },
+  { id: "gizli_ustat",   tier:"platinum", icon:GAME_ICONS.gizli_ustat, name:"Gizli Üstat",          desc:"Tek oyunda 3 gizli görevi tamamla.",          check: s => s.allMissionsCompleted },
 
   // ── GİZLİ ──
-  { id: "rival_five",     tier:"secret",   icon:"🗡️", name:"Rakibin Rakibi",     desc:"Rakip Vezir ile 5 kez yüzleş.",              check: s => (s.characterMemory?.["8-rakip-vezir"]?.left||0)+(s.characterMemory?.["8-rakip-vezir"]?.right||0) >= 5 },
-  { id: "zimmet",         tier:"secret",   icon:"💸", name:"Zimmet Şüphelisi",    desc:"Zimmet suçuyla öl.",                          check: s => s.deathReason?.includes("zimmet") },
-  { id: "valide_loyal",   tier:"secret",   icon:"💫", name:"Valide'nin Gözdesi",  desc:"Tek oyunda Valide Sultan'ın tüm isteklerini kabul et.", check: s => (s.characterMemory?.["5-valide-sultan"]?.left||0)===0 && (s.characterMemory?.["5-valide-sultan"]?.right||0)>=3 },
-  { id: "diplomat",       tier:"secret",   icon:"🤝", name:"Zekice Elçi",         desc:"Yabancı Elçi ile 4+ kez müzakere yap.",      check: s => (s.characterMemory?.["7-yabanci-elci"]?.left||0)+(s.characterMemory?.["7-yabanci-elci"]?.right||0) >= 4 },
-  { id: "deli_dervis_right", tier:"secret", icon:"🔮", name:"Kehanet Tuttu",      desc:"Deli Derviş'i 2 kez ziyaret et.",            check: s => (s.characterMemory?.["25-deli_dervis"]?.left||0)+(s.characterMemory?.["25-deli_dervis"]?.right||0) >= 2 },
+  { id: "rival_five",     tier:"secret",   icon:GAME_ICONS.rival_five, name:"Rakibin Rakibi",     desc:"Rakip Vezir ile 5 kez yüzleş.",              check: s => (s.characterMemory?.["8-rakip-vezir"]?.left||0)+(s.characterMemory?.["8-rakip-vezir"]?.right||0) >= 5 },
+  { id: "zimmet",         tier:"secret",   icon:GAME_ICONS.zimmet, name:"Zimmet Şüphelisi",    desc:"Zimmet suçuyla öl.",                          check: s => s.deathReason?.includes("zimmet") },
+  { id: "valide_loyal",   tier:"secret",   icon:GAME_ICONS.valide_loyal, name:"Valide'nin Gözdesi",  desc:"Tek oyunda Valide Sultan'ın tüm isteklerini kabul et.", check: s => (s.characterMemory?.["5-valide-sultan"]?.left||0)===0 && (s.characterMemory?.["5-valide-sultan"]?.right||0)>=3 },
+  { id: "diplomat",       tier:"secret",   icon:GAME_ICONS.diplomat, name:"Zekice Elçi",         desc:"Yabancı Elçi ile 4+ kez müzakere yap.",      check: s => (s.characterMemory?.["7-yabanci-elci"]?.left||0)+(s.characterMemory?.["7-yabanci-elci"]?.right||0) >= 4 },
+  { id: "deli_dervis_right", tier:"secret", icon:GAME_ICONS.deli_dervis_right, name:"Kehanet Tuttu",      desc:"Deli Derviş'i 2 kez ziyaret et.",            check: s => (s.characterMemory?.["25-deli_dervis"]?.left||0)+(s.characterMemory?.["25-deli_dervis"]?.right||0) >= 2 },
 ];
 
 // ── Rakip Vezir Dinamik Diyalog ──────────────────────────────────
@@ -1378,7 +1432,7 @@ function buildChallengePanel() {
   const panel = document.createElement('div');
   panel.id = 'challenge-panel';
   panel.innerHTML = `
-    <div class="cp-title">${isEN ? '⚔ CHALLENGE' : '⚔ CHALLENGE'}</div>
+    <div class="cp-title">${GAME_ICONS.action_force} CHALLENGE</div>
     ${challengeGoals.map((g, i) => `
       <div class="cp-item" id="cg-item-${i}">
         <span class="cp-tick" id="cg-tick-${i}">○</span>
@@ -1916,7 +1970,7 @@ function showPaywallDeclinedNotice(onDone) {
   overlay.id = 'paywall-declined-overlay';
   overlay.innerHTML = `
     <div id="paywall-declined-box">
-      <div id="paywall-declined-ornament">⚠</div>
+      <div id="paywall-declined-ornament">${GAME_ICONS.loyalty_low}</div>
       <div id="paywall-declined-title">${isEN ? 'A SHORTER REIGN' : 'DAHA KISA BİR SALTANAT'}</div>
       <div id="paywall-declined-divider"></div>
       <div id="paywall-declined-text">${isEN
@@ -3731,19 +3785,19 @@ function showSehzadeMeydan(c) {
       <div class="sm-char-wrap">
         <img src="assets/characters/sehzade-kart.jpg" class="sm-img" onerror="this.style.display='none'">
       </div>
-      <div class="sm-title">${isEN ? '⚔ CHALLENGE' : '⚔ MEYDAN OKUMA'}</div>
+      <div class="sm-title">${GAME_ICONS.action_force} ${isEN ? 'CHALLENGE' : 'MEYDAN OKUMA'}</div>
       <div class="sm-text">${c.text}</div>
       <div class="sm-choices">
         <button class="sm-btn sm-a" id="sm-btn-a">
-          ${isEN ? '🤝 Negotiate — share power' : '🤝 Uzlaş — gücü paylaş'}
+          ${GAME_ICONS.action_negotiate} ${isEN ? 'Negotiate — share power' : 'Uzlaş — gücü paylaş'}
           <span class="sm-hint">${isEN ? 'Saray −20, Prince power −40' : 'Saray −20, Güç −40'}</span>
         </button>
         <button class="sm-btn sm-b" id="sm-btn-b">
-          ${isEN ? '⚔ Show force — silence him' : '⚔ Güç göster — sustur'}
+          ${GAME_ICONS.action_force} ${isEN ? 'Show force — silence him' : 'Güç göster — sustur'}
           <span class="sm-hint">${isEN ? 'Army −20, Treasury −15, Prince power −60' : 'Ordu −20, Hazine −15, Güç −60'}</span>
         </button>
         <button class="sm-btn sm-c" id="sm-btn-c">
-          ${isEN ? '🎲 Gamble — all or nothing' : '🎲 Risk al — ya hep ya hiç'}
+          ${GAME_ICONS.action_gamble} ${isEN ? 'Gamble — all or nothing' : 'Risk al — ya hep ya hiç'}
           <span class="sm-hint">${isEN ? '50%: Prince defeated / 50%: You die' : '%50: Şehzade yenilir / %50: Ölürsün'}</span>
         </button>
       </div>
@@ -3916,7 +3970,7 @@ function showDonumEkrani() {
 }
 
 // ── Eyalet Divanı — dönemsel eyalet tahsis kararı ─────────────────
-const EYALET_ICONS = { rumeli:'⚔', anadolu:'🌾', misir:'💰', dogu:'🛡', akdeniz:'⚓' };
+const EYALET_ICONS = { rumeli:GAME_ICONS.province_rumeli, anadolu:GAME_ICONS.province_anadolu, misir:GAME_ICONS.province_misir, dogu:GAME_ICONS.province_dogu, akdeniz:GAME_ICONS.province_akdeniz };
 
 function showEyaletEkrani() {
   _eyaletShownCount++;
@@ -4356,6 +4410,18 @@ function updateHealthUI() {
   hfill.className = cls;
   if (hicon) hicon.style.color = iconColor;
   if (hval) hval.textContent = h;
+}
+
+function governanceHealthDelta() {
+  const keys = ["saray", "yeniçeri", "ulema", "hazine"];
+  let maxExtreme = 0;
+  for (const k of keys) {
+    const extreme = Math.abs((stats[k] ?? 50) - 50);
+    if (extreme > maxExtreme) maxExtreme = extreme;
+  }
+  if (maxExtreme <= 15) return +1;
+  if (maxExtreme <= 25) return 0;
+  return -1;
 }
 
 function changeHealth(delta) {
@@ -5147,8 +5213,8 @@ function decide(dir) {
   applyEffects(currentCard[dir + "_effects"] || {});
   if (isGameOver) return;
 
-  // Her kart seçimi sağlığı -1 düşürür
-  changeHealth(-1);
+  // Kart başına sağlık değişimi: 4 ana güç dengedeyse iyileşme, uçlara yakınsa düşüş
+  changeHealth(governanceHealthDelta());
   if (isGameOver) return;
 
   // ── Achievement tracking ──────────────────────────────────────
@@ -5891,7 +5957,7 @@ function showGameOver(reason) {
     if (divider) divider.parentNode.insertBefore(recBanner, divider.nextSibling);
   }
   if (isNewRecord) {
-    recBanner.textContent = isEN ? "🏆 NEW RECORD!" : "🏆 YENİ REKOR!";
+    recBanner.innerHTML = isEN ? `${GAME_ICONS.trophy} NEW RECORD!` : `${GAME_ICONS.trophy} YENİ REKOR!`;
     recBanner.style.display = "block";
   } else {
     recBanner.style.display = "none";
@@ -6015,7 +6081,7 @@ function renderAchievementBadges() {
       const badge = document.createElement("div");
       badge.className = "achievement-badge tier-" + a.tier;
       const _badgeEN = (window.LANG === 'en' && window.EN_ACHIEVEMENTS && window.EN_ACHIEVEMENTS[a.id]) || {};
-      badge.textContent = a.icon + " " + (_badgeEN.name || a.name);
+      badge.innerHTML = a.icon + " " + (_badgeEN.name || a.name);
       badge.title = _badgeEN.desc || a.desc;
       badgesDiv.appendChild(badge);
     }
@@ -6441,11 +6507,11 @@ function showHaritaOverlay() {
   document.getElementById('harita-overlay')?.remove();
   const isEN = window.LANG === 'en';
 
-  const PROV_ICONS = { rumeli:'⚔', anadolu:'🌾', misir:'💰', dogu:'🛡', akdeniz:'⚓' };
+  const PROV_ICONS = { rumeli:GAME_ICONS.province_rumeli, anadolu:GAME_ICONS.province_anadolu, misir:GAME_ICONS.province_misir, dogu:GAME_ICONS.province_dogu, akdeniz:GAME_ICONS.province_akdeniz };
   const rows = PROVINCES.map(p => {
     const loy = Math.round(provinceLoyalty[p.id] || 50);
     const cls = loy <= 25 ? 'prov-danger' : loy >= 70 ? 'prov-ok' : 'prov-warn';
-    const badge = loy <= 25 ? '⚠' : loy >= 70 ? '✦' : '';
+    const badge = loy <= 25 ? GAME_ICONS.loyalty_low : loy >= 70 ? GAME_ICONS.loyalty_high : '';
     return `<div class="prov-row ${cls}">
       <span class="prov-icon">${PROV_ICONS[p.id] || '✦'}</span>
       <div class="prov-info">
@@ -6684,7 +6750,7 @@ function renderAchievementsScreen(filterTier) {
     const card = document.createElement("div");
     card.className = `ach-card ${a.tier} ${isUnlocked ? "unlocked" : "locked"} ${isSecret ? "secret" : ""}`;
 
-    const icon = isUnlocked ? a.icon : (isSecret ? "🔒" : "🔒");
+    const icon = isUnlocked ? a.icon : GAME_ICONS.locked;
     const enA = (window.LANG === 'en' && window.EN_ACHIEVEMENTS && window.EN_ACHIEVEMENTS[a.id]) || {};
     const name = (isSecret && !isUnlocked) ? "???" : (enA.name || a.name);
     const desc = (isSecret && !isUnlocked)

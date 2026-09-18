@@ -484,7 +484,6 @@ window.UI_STRINGS = {
     'btn.challenge':        '⚔ CHALLENGE',
     'btn.howto':            '❔ NASIL OYNANIR',
     // Ayarlar
-    'btn.settings':         '⚙ AYARLAR',
     'sett.title':           'AYARLAR',
     'sett.music':           'Müzik',
     'sett.effects':         'Efektler',
@@ -659,7 +658,6 @@ window.UI_STRINGS = {
     'btn.challenge':        '⚔ CHALLENGE',
     'btn.howto':            '❔ HOW TO PLAY',
     // Settings
-    'btn.settings':         '⚙ SETTINGS',
     'sett.title':           'SETTINGS',
     'sett.music':           'Music',
     'sett.effects':         'Effects',

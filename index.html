@@ -148,7 +148,8 @@
           <span data-i18n="btn.buy_coins">AKÇE AL</span>
         </button>
         <button id="btn-settings" class="intro-btn ghost">
-          <span data-i18n="btn.settings">⚙ AYARLAR</span>
+          <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M12 3.5v2.2M12 18.3v2.2M18.5 12h2.2M3.3 12h2.2M16.9 7.1l1.5-1.5M5.6 18.4l1.5-1.5M16.9 16.9l1.5 1.5M5.6 5.6l1.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span data-i18n="btn.settings">AYARLAR</span>
         </button>
       </div>
 
@@ -159,7 +160,7 @@
 
     </div>
 
-    <div id="intro-footer">v1.1.3 · rakuappdigital · 2025</div>
+    <div id="intro-footer">v1.3.7 · rakuappdigital · 2026</div>
   </div>
 
   <!-- ── AYARLAR OVERLAY ── -->
@@ -184,8 +185,8 @@
       <div class="sett-row">
         <span class="sett-label" data-i18n="sett.preview">Deneyimli Mod</span>
         <div class="sett-toggle">
-          <button class="sett-opt" id="sett-preview-on">Açık</button>
-          <button class="sett-opt" id="sett-preview-off">Kapalı</button>
+          <button class="sett-opt" id="sett-preview-on" disabled>Açık</button>
+          <button class="sett-opt" id="sett-preview-off" disabled>Kapalı</button>
         </div>
       </div>
       <div class="sett-divider"></div>
@@ -195,7 +196,7 @@
         <button class="sett-lang-btn" id="sett-lang-en">English</button>
       </div>
       <div class="sett-divider"></div>
-      <button class="sett-promo-btn" id="sett-promo-btn" data-i18n="sett.promo_btn">PROMOSYON KODU</button>
+      <button class="sett-promo-btn" id="sett-promo-btn" data-i18n="sett.promo_btn" disabled>PROMOSYON KODU</button>
       <div id="sett-promo-status"></div>
       <button class="sett-close" id="sett-close" data-i18n="sett.close">KAPAT</button>
     </div>
@@ -263,7 +264,7 @@
   <!-- ── BAŞARIMLAR EKRANI ── -->
   <div id="achievements-screen" class="hidden selection-screen">
     <div class="selection-content" style="padding-bottom:60px">
-      <div class="sel-ornament">🏆</div>
+      <div class="sel-ornament"><svg class="gi" viewBox="0 0 24 24" fill="none"><path d="M8 4h8v5a4 4 0 0 1-8 0V4Z" stroke="currentColor" stroke-width="1.05" stroke-linejoin="round"/><path d="M8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/><path d="M12 13v3M9 20h6M10 17h4l.5 3h-5z" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"/></svg></div>
       <h2 class="sel-title" data-i18n="ach.title">BAŞARIMLARIM</h2>
       <div id="ach-progress-bar-wrap">
         <div id="ach-progress-text"></div>

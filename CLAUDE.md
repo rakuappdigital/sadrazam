@@ -5,7 +5,31 @@ hızlıca doğru yere gidebilmek için var. **Her oturumda önce bunu oku.** Bur
 yazan bir şey artık doğru değilse (kod değişmiş), gerçek dosyayı kontrol edip
 BU DOSYAYI GÜNCELLE — bayatlamasın.
 
-## 1. En kritik kural: 3 kopya senkron sorunu
+## 0. TEK PROJE — burası (kritik, en önemli kural)
+
+- **`/Users/mac/Projects/sadrazam-web` (→ GitHub `rakuappdigital/sadrazam`) tüm
+  iOS Sadrazam işleri için TEK ve YEGANE proje.** Bütün güncelleme, ekleme ve
+  düzeltmeler burada yapılır. Karışıklık istenmiyor.
+- **`/Users/mac/Projects/sadrazamtest` (→ GitHub `rakuappdigital/sadrazamtest`)
+  2 Eylül 2026'dan beri buradan KOPMUŞ, bayatlamış, terk edilmiş bir çatal.**
+  Onu bir daha senkron hedefi, referans veya "diğer kopya" olarak KULLANMA —
+  aşağıdaki eski §1'deki "3. kopya" talimatı (sadrazamtest'e de kopyala) artık
+  YANLIŞ ve GEÇERSİZ, o satırı asla uygulama. Bir oturum bu iki projeyi
+  karıştırıp yanlışlıkla sadrazamtest'te çalışıp commit/deploy ettiği için (bu
+  konu 18 Eylül 2026'da fark edildi ve buraya taşındı) bu kural en üste
+  yazıldı. Hangi klasörde olduğundan HER ZAMAN emin ol (`pwd`), `git remote -v`
+  ile `rakuappdigital/sadrazam.git` olduğunu doğrula.
+- Başka bir dosya/sürüm/repo ile karıştırıp yanlış yere commit ya da deploy
+  etmek — bunu bir daha yapma. Şüphede kalırsan işleme başlamadan önce
+  `pwd` + `git remote -v` ile doğrula, sonra devam et.
+- Sorun bildirildiğinde önce ilgili kodu/çağrı zincirini tam izleyip kanıtla,
+  sonra cevap ver — tahmin/varsayımla ilk cevabı verme.
+- Her düzeltme/ekleme sonrası **mutlaka commit ve deploy** yapılır (aşağıdaki
+  §8'deki eski "commit sadece açıkça istenince" talimatı artık GEÇERSİZ —
+  commit her zaman yapılır, deploy/App Store gönderimi gibi geri dönüşü zor
+  adımlar için hâlâ kısa onay istenir).
+
+## 1. En kritik kural: 2 kopya senkron sorunu (ARTIK 2, 3 DEĞİL)
 
 Web dosyaları (`game.js`, `index.html`, `style.css`, `translations.js`,
 `rewardedads.js`, `gamecenter.js`, `sounds.js`, `haptics.js`,
@@ -20,7 +44,6 @@ Web dosyaları (`game.js`, `index.html`, `style.css`, `translations.js`,
 cd /Users/mac/Projects/sadrazam-web
 cp <değişen dosya(lar)> www/<aynı yol>
 cp <değişen dosya(lar)> ios/App/App/public/<aynı yol>
-cp <değişen dosya(lar)> /Users/mac/Projects/sadrazamtest/<aynı yol> 2>/dev/null   # ayrı, eski test kopyası — varsa senkronla
 ./node_modules/.bin/cap sync ios
 diff <dosya> www/<dosya> && diff <dosya> ios/App/App/public/<dosya> && echo OK
 ```
@@ -152,10 +175,25 @@ screenshot`) kontrol et. Archive ile üretilen `.app` **simülatörde çalışma
   % 3 === 0`), Tam Sürüm yoksa VE daha önce hiç reddedilmediyse, oyun
   başlamadan **kesin/reddedilemez** paywall gösterilir (`_paywallAtGameStart`).
   Eskiden "Oynamaya Devam Et" ile bedavaya geçilebilen bir tuzaktı, düzeltildi.
-- Sıhhat: sadece Hekimbaşı'nın dinlenme teklifi (sağlık ≤40, kritikte ≤20)
-  artırabilir (+20, karşılığında 2 tur boyunca 4 stat da -5). Başka HİÇBİR
-  şey (item/danışman/kart) sıhhatı artırmaz. Azalma: her karar -1, yıl sonu
-  pasif -3 (zorluk çarpanlı).
+- Sıhhat (18 Eylül 2026'dan beri): artık tek yönlü değil, `governanceHealthDelta()`
+  ile kart başına 4 ana gücün (saray/yeniçeri/ulema/hazine) merkeze (50) olan
+  uzaklığına bağlı — hepsi 35-65 arası (±15) ise kart başına **+1**, 25-75
+  arası (±25) ise **0**, biri bile daha uçtaysa eski **-1** düşüş. Yıl sonu
+  hâlâ pasif -3 (zorluk çarpanlı). Hekimbaşı'nın dinlenme teklifi (sağlık ≤40,
+  kritikte ≤20) hâlâ +20 verir (karşılığında 2 tur 4 stat -5). Eskiden sağlık
+  yapısal olarak geri dönüşsüz tükeniyordu (her oyun er ya da geç sağlıktan
+  bitiyordu) — artık dört barı sıkı dengede tutan usta bir oyuncu sınırsız
+  hayatta kalabilir (200 yıllık simülasyonla doğrulandı).
+
+## 4b. İkon sistemi (18 Eylül 2026'dan beri)
+
+Stok emoji ikonlar yerine `game.js`'de `GAME_ICONS` sabiti (ince altın çizgi
+SVG'ler, `AKCE_COIN_SVG` ile aynı dil — `viewBox 24x24`, `stroke=currentColor`)
+kullanılıyor: 34 başarım rozeti + 5 eyalet ikonu + 2 sadakat rozeti + 3 meydan
+okuma aksiyonu + kupa + kilit. CSS'te `.gi { width:1em; height:1em; ... }`
+kuralıyla eskiden emoji'nin oturduğu font-size bağlamına otomatik uyuyor. Yeni
+bir emoji/stok ikon eklemen gerekirse aynı `_gi('<path .../>')` kalıbını kullan,
+dışarıda bir görsel üretici gerekmiyor.
 
 ## 5. Monetizasyon
 
@@ -181,7 +219,17 @@ screenshot`) kontrol et. Archive ile üretilen `.app` **simülatörde çalışma
   pub-7882143822556333, DIRECT, f08c47fec0942fa0`).
 - **Promosyon kodu UI'ı:** Ayarlar'da "PROMOSYON KODU" butonu →
   `RC.presentCodeRedemptionSheet()` (Apple'ın NATİF kod giriş ekranı — kendi
-  metin kutusu YAPMA, iOS'ta bu şekilde çalışmıyor).
+  metin kutusu YAPMA, iOS'ta bu şekilde çalışmıyor; Apple'ın ASC'de ürettiğin
+  IAP promo kodları — non-consumable dahil — SADECE bu native ekrandan
+  redeem edilebilir, üçüncü parti bir kutucuktan asla doğrulanamaz).
+  **18 Eylül 2026'dan beri buton `disabled` — Simülatör'de ve "Designed for
+  iPad" Mac modunda bu native çağrı hatasız ama sessizce hiçbir şey açmıyor
+  (Web Inspector ile doğrulandı: `presentCodeRedemptionSheet` `undefined` ile
+  "başarılı" dönüyor ama ekran açılmıyor). Gerçek iPhone'da davranışı
+  doğrulanana kadar görsel olarak soluk/tıklanamaz bırakıldı.**
+- **Deneyimli Mod** (kart üstünde etki önizlemesi, `window.previewMode`)
+  toggle butonları da aynı tarihte `disabled` yapıldı (kullanıcı isteğiyle,
+  fonksiyonel bir sorun yok — sadece geçici olarak kapatıldı).
 
 ## 6. Web sitesi (sadrazam-web.vercel.app)
 
@@ -228,9 +276,9 @@ screenshot`) kontrol et. Archive ile üretilen `.app` **simülatörde çalışma
 ## 8. Genel kural
 
 Değişiklik sonrası HER ZAMAN: `node --check game.js` (syntax) → ilgili
-Puppeteer testi (gerçek senaryo, gerçek tıklama/timing) → 3 kopyaya senkron
+Puppeteer testi (gerçek senaryo, gerçek tıklama/timing) → 2 kopyaya senkron
 (§1) → (native etkiliyorsa) `cap sync ios` + gerekirse simülatör smoke-test
-(§2). Commit sadece açıkça istenince yapılır. Deploy/build-gönderim gibi
-görünürlüğü olan işlemler öncesi kısa bir onay iste (zaten sık talep
-ediliyorsa tekrar sorma, ama versiyon numarası gibi somut kararları kullanıcı
-belirtmediyse sorup netleştir).
+(§2) → **commit + deploy** (§0 — artık her zaman, "sadece istenince" değil).
+App Store'a gönderim (archive/upload) gibi geri dönüşü zor adımlar öncesi
+kısa bir onay iste (zaten sık talep ediliyorsa tekrar sorma, ama versiyon
+numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
