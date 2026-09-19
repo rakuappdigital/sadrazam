@@ -2028,6 +2028,85 @@ html, body {
   color: rgba(240,230,208,0.55); display: flex; justify-content: space-between; width: 100%;
 }
 
+/* ── Eyalet İsyanı — ordu/donanma sahnesi ── */
+#eyalet-isyan-overlay, #sultan-odulu-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(5,3,16,0.95);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.3s ease;
+  padding: 16px;
+}
+#ei-box, #so-box {
+  width: min(92%, 380px);
+  background: linear-gradient(160deg, rgba(20,16,31,0.98), rgba(10,8,20,0.99));
+  border: 1px solid rgba(201,162,39,0.35);
+  border-radius: 16px;
+  padding: 22px 20px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(201,162,39,0.12);
+  max-height: 92vh; overflow-y: auto;
+}
+.ei-ornament, .so-ornament { font-size: 24px; color: var(--gold-dim); }
+.ei-title, .so-title {
+  font-family: 'Cinzel Decorative', serif; font-size: 14.5px;
+  color: var(--gold); letter-spacing: 2.5px;
+}
+.ei-divider, .so-divider { width: 56px; height: 1px; background: var(--gold-dim); }
+.ei-text, .so-text {
+  font-family: 'IM Fell English', serif; font-size: 13px;
+  color: var(--text); line-height: 1.6; opacity: 0.88; font-style: italic;
+}
+#ei-stage-wrap { width: 100%; }
+#ei-stage {
+  width: 100%; aspect-ratio: 3/4; position: relative; border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(201,162,39,0.35);
+  box-shadow: 0 0 0 1px rgba(201,162,39,0.35), 0 8px 40px rgba(0,0,0,0.7);
+  background: #0c0a14;
+}
+#ei-stage .ei-mapbg {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%;
+  filter: saturate(0.9) brightness(0.85);
+}
+#ei-stage .ei-overlay-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ei-unit-group { opacity: 0; }
+.ei-bob { animation: ei-bob 0.45s ease-in-out infinite alternate; }
+@keyframes ei-bob { from { transform: translateY(0); } to { transform: translateY(-1.6px); } }
+.ei-flag-wave { transform-origin: left center; animation: ei-flagwave 0.55s ease-in-out infinite alternate; }
+@keyframes ei-flagwave { from { transform: skewY(0deg); } to { transform: skewY(-8deg); } }
+.ei-bob-boat { animation: ei-bobboat 1.3s ease-in-out infinite alternate; transform-origin: center; }
+@keyframes ei-bobboat { from { transform: translateY(0) rotate(-1deg); } to { transform: translateY(-2.5px) rotate(1deg); } }
+.ei-burst { opacity: 0; transform: scale(0.3); transform-origin: center; }
+.ei-burst.go { animation: ei-burstpulse 0.9s ease-out forwards; }
+@keyframes ei-burstpulse {
+  0%   { opacity: 0; transform: scale(0.2); }
+  35%  { opacity: 0.95; transform: scale(1.15); }
+  100% { opacity: 0; transform: scale(2); }
+}
+#ei-result, #so-result {
+  min-height: 20px; text-align: center; font-family: 'IM Fell English', serif; font-size: 13px;
+  color: rgba(240,230,208,0.6); line-height: 1.5; opacity: 0; transition: opacity 0.4s; width: 100%;
+}
+#ei-result.show, #so-result.show { opacity: 1; }
+#ei-result b, #so-result b { color: var(--gold-light); font-family: 'Cinzel', serif; font-weight: 600; font-style: normal; }
+#ei-btns, #so-btns { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 2px; }
+.ei-btn {
+  width: 100%; padding: 12px 14px; border-radius: 10px;
+  font-family: 'Cinzel', serif; font-size: 12px;
+  cursor: pointer; text-align: center;
+  transition: background 0.2s, border-color 0.2s, opacity 0.2s;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.ei-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ei-btn.ei-primary {
+  background: rgba(201,162,39,0.12); border: 1px solid rgba(201,162,39,0.45); color: var(--gold-light);
+}
+.ei-btn.ei-primary:active:not(:disabled) { background: rgba(201,162,39,0.2); }
+.ei-btn.ei-ghost {
+  background: rgba(201,162,39,0.06); border: 1px solid rgba(201,162,39,0.25); color: rgba(240,230,208,0.9);
+}
+.ei-btn.ei-ghost:active:not(:disabled) { background: rgba(201,162,39,0.12); }
+
 /* ── Divan Sahnesi — yıl 5/10/15/20 (daha önce CSS'i hiç yazılmamış, tam ekran biçimsiz görünüyordu) ── */
 #divan-overlay {
   position: fixed; inset: 0; z-index: 300;

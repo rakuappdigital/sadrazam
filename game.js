@@ -759,6 +759,10 @@ let _mirasThreshold = 15;
 // ── Eyalet Divanı Uzun Vadeli Hafıza — ihmal edilen eyalet çok sonra isyan eder ──
 let _eyaletIsyanSchedule = []; // { provinceId, afterCardsPlayed }
 
+// ── Eyalet İsyanı sonrası Padişah Ödülü/Öfkesi ──────────────────────
+let _sultanFavorSchedule = []; // { afterCardsPlayed, provinceLabel } — nezaketle reddedilince, memnun kalırsa gecikmeli ödül
+let _sultanFavorTurns = 0;     // >0 iken 4 ana güçte HİÇBİR negatif etki uygulanmaz (Padişah Ödülü'nde kazanılan tılsım)
+
 // ── Savaş Sonucu — rastgele gecikme (2-10 kart), sonuç askeri güce bağlı ──
 let _savasSonucSchedule = null; // { afterCardsPlayed } | null
 
@@ -892,16 +896,305 @@ function getEyaletIsyanCard(provinceId) {
     id: "eyalet_isyan_" + provinceId + "_" + cardsPlayed,
     type: "easter",
     easter_type: "eyalet_isyan",
+    provinceId,
     character: "uzak-haber",
     character_name: isEN ? "Distant Report" : "Uzak Haber",
     text: isEN
       ? `Years of neglect have taken their toll. ${label} has risen in revolt — a debt from the past, now due.`
       : `Yıllarca süren ihmalin bedeli geldi. ${label} isyan bayrağını kaldırdı — geçmişten kalma bir borç, şimdi ödeniyor.`,
-    button: isEN ? "SEND THE ARMY" : "ORDUYU GÖNDER",
+  };
+}
+
+// ── Eyalet İsyanı görsel sahnesi: İstanbul'dan hedefe göre ordu/donanma ──
+// Harita üzerindeki (viewBox 300x400) konumlar — kara eyaletlerinde ara nokta
+// hep karada, deniz eyaletlerinde hep denizde kalacak şekilde elle seçildi.
+const EYALET_ISYAN_ISTANBUL = { x: 162, y: 188 };
+const EYALET_ISYAN_ROUTES = {
+  rumeli:  { wx: 105, wy: 160, x: 60,  y: 172 },
+  anadolu: { wx: 171, wy: 204, x: 186, y: 228 },
+  dogu:    { wx: 204, wy: 212, x: 246, y: 224 },
+  misir:   { wx: 132, wy: 240, x: 120, y: 292 },
+  akdeniz: { wx: 132, wy: 212, x: 99,  y: 240 },
+};
+const EYALET_ISYAN_JANISSARY_SYMBOLS =
+  '<symbol id="ei-janissary" viewBox="0 0 20 34">' +
+    '<ellipse cx="10" cy="9.5" rx="3.6" ry="2.6" fill="#e8dcc0"/>' +
+    '<path d="M6.6 9 Q6 15 9 17.5 Q7.5 18.5 8.5 20 L11.5 20 Q12.5 18.5 11 17.5 Q14 15 13.4 9 Z" fill="#f2ead6"/>' +
+    '<rect x="9.3" y="8.6" width="1.4" height="10.5" fill="#C9A227" opacity="0.85"/>' +
+    '<circle cx="10" cy="22.5" r="2.1" fill="#caa373"/>' +
+    '<path d="M6.5 24.5 Q10 22.5 13.5 24.5 L14.5 33 L5.5 33 Z" fill="#274b6b"/>' +
+    '<path d="M8 25 L12 25 L11.6 33 L8.4 33 Z" fill="#1b344a" opacity="0.6"/>' +
+    '<rect x="8.9" y="26" width="2.2" height="7" fill="#8a1f1f" opacity="0.85"/>' +
+    '<line x1="4" y1="20" x2="16.5" y2="28.5" stroke="#3a2a18" stroke-width="1.3" stroke-linecap="round"/>' +
+    '<rect x="3" y="18.7" width="3" height="1.6" rx="0.5" fill="#5c4a2e"/>' +
+  '</symbol>' +
+  '<symbol id="ei-flagbearer" viewBox="0 0 22 36">' +
+    '<ellipse cx="11" cy="9.5" rx="3.6" ry="2.6" fill="#e8dcc0"/>' +
+    '<path d="M7.6 9 Q7 15 10 17.5 Q8.5 18.5 9.5 20 L12.5 20 Q13.5 18.5 12 17.5 Q15 15 14.4 9 Z" fill="#f2ead6"/>' +
+    '<rect x="10.3" y="8.6" width="1.4" height="10.5" fill="#C9A227" opacity="0.85"/>' +
+    '<circle cx="11" cy="22.5" r="2.1" fill="#caa373"/>' +
+    '<path d="M7.5 24.5 Q11 22.5 14.5 24.5 L15.5 33 L6.5 33 Z" fill="#8a1f1f"/>' +
+    '<rect x="9.9" y="26" width="2.2" height="7" fill="#5c1414" opacity="0.85"/>' +
+    '<line x1="12" y1="4" x2="12" y2="26" stroke="#5c4a2e" stroke-width="1.3"/>' +
+    '<g class="ei-flag-wave" style="transform-origin:12px 4px">' +
+      '<path d="M12 4 L21 6.5 L12 10.5 Z" fill="#8a1f1f" stroke="#C9A227" stroke-width="0.5"/>' +
+      '<circle cx="16" cy="7.2" r="1" fill="#f2ead6"/>' +
+    '</g>' +
+  '</symbol>';
+const EYALET_ISYAN_GALLEON_SYMBOL =
+  '<symbol id="ei-galleon" viewBox="0 0 130 100">' +
+    '<path d="M8 66 Q65 82 122 66 L112 80 Q65 92 18 80 Z" fill="#4a3420"/>' +
+    '<path d="M14 66 Q65 78 116 66 L116 58 Q65 68 14 58 Z" fill="#6b4e2e"/>' +
+    '<rect x="30" y="50" width="70" height="9" fill="#5c4326"/>' +
+    '<rect x="34" y="60" width="6" height="4" fill="#2a1d10"/><rect x="46" y="61" width="6" height="4" fill="#2a1d10"/>' +
+    '<rect x="58" y="62" width="6" height="4" fill="#2a1d10"/><rect x="70" y="61" width="6" height="4" fill="#2a1d10"/>' +
+    '<rect x="82" y="60" width="6" height="4" fill="#2a1d10"/>' +
+    '<path d="M96 52 Q112 50 122 66 Q110 60 96 58 Z" fill="#6b4e2e"/>' +
+    '<path d="M8 66 Q4 68 10 72 L18 70 Z" fill="#3a2818"/>' +
+    '<line x1="10" y1="66" x2="-6" y2="58" stroke="#5c4326" stroke-width="2.4"/>' +
+    '<path d="M-6 58 L8 52 L8 62 Z" fill="#e8dcc0" opacity="0.9"/>' +
+    '<line x1="40" y1="50" x2="40" y2="8" stroke="#5c4326" stroke-width="2.2"/>' +
+    '<line x1="24" y1="20" x2="56" y2="20" stroke="#4a3420" stroke-width="1.6"/>' +
+    '<path d="M25 20.5 L55 20.5 L50 34 L30 34 Z" fill="#efe6c8"/>' +
+    '<line x1="29" y1="8" x2="51" y2="8" stroke="#4a3420" stroke-width="1.3"/>' +
+    '<path d="M31 8.5 L49 8.5 L46 16 L34 16 Z" fill="#f4ecd6"/>' +
+    '<line x1="70" y1="50" x2="70" y2="2" stroke="#5c4326" stroke-width="2.6"/>' +
+    '<line x1="50" y1="16" x2="90" y2="16" stroke="#4a3420" stroke-width="1.8"/>' +
+    '<path d="M51 16.5 L89 16.5 L83 33 L57 33 Z" fill="#efe6c8"/>' +
+    '<line x1="56" y1="2" x2="84" y2="2" stroke="#4a3420" stroke-width="1.4"/>' +
+    '<path d="M58 2.5 L82 2.5 L78 11 L62 11 Z" fill="#f4ecd6"/>' +
+    '<g class="ei-flag-wave" style="transform-origin:70px 2px">' +
+      '<path d="M70 2 L84 5 L70 9 Z" fill="#8a1f1f"/>' +
+      '<circle cx="76" cy="5.2" r="1.2" fill="#f2ead6"/>' +
+    '</g>' +
+    '<line x1="96" y1="50" x2="96" y2="22" stroke="#5c4326" stroke-width="1.8"/>' +
+    '<path d="M96 22 L110 28 L96 34 Z" fill="#efe6c8"/>' +
+  '</symbol>';
+
+function showEyaletIsyani(c) {
+  const isEN = window.LANG === 'en';
+  const prov = PROVINCES.find(p => p.id === c.provinceId);
+  const isLand = (prov?.route || 'land') === 'land';
+  const label = prov ? getProvinceLabel(prov) : '';
+  const route = EYALET_ISYAN_ROUTES[c.provinceId] || { wx: 162, wy: 188, x: 162, y: 100 };
+
+  const overlay = document.createElement('div');
+  overlay.id = 'eyalet-isyan-overlay';
+  overlay.innerHTML = `
+    <div id="ei-box">
+      <div class="ei-ornament">⚔</div>
+      <div class="ei-title">${label.toUpperCase()} ${isEN ? 'REVOLT' : 'İSYANI'}</div>
+      <div class="ei-divider"></div>
+      <div class="ei-text">${c.text}</div>
+      <div id="ei-stage-wrap">
+        <div id="ei-stage">
+          <img class="ei-mapbg" src="assets/characters/harita-overlay.jpg" alt="">
+          <svg class="ei-overlay-svg" viewBox="0 0 300 400" preserveAspectRatio="none" id="ei-overlay-svg"></svg>
+        </div>
+      </div>
+      <div id="ei-result"></div>
+      <div id="ei-btns">
+        <button id="ei-send-btn" class="ei-btn ei-primary">${isLand ? (isEN?'SEND THE ARMY':'ORDUYU GÖNDER') : (isEN?'SEND THE FLEET':'DONANMAYI GÖNDER')}</button>
+        <button id="ei-ignore-btn" class="ei-btn ei-ghost">${isEN ? 'Ignore' : 'Görmezden Gel'}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  card.classList.add('no-swipe');
+
+  const overlaySvg = document.getElementById('ei-overlay-svg');
+  const sendBtn = document.getElementById('ei-send-btn');
+  const ignoreBtn = document.getElementById('ei-ignore-btn');
+  const resultEl = document.getElementById('ei-result');
+
+  overlaySvg.innerHTML =
+    '<defs>' + EYALET_ISYAN_JANISSARY_SYMBOLS + EYALET_ISYAN_GALLEON_SYMBOL +
+      '<radialGradient id="ei-halo" cx="50%" cy="50%" r="50%">' +
+        '<stop offset="0%" stop-color="#E8C84A" stop-opacity="0.55"/><stop offset="100%" stop-color="#E8C84A" stop-opacity="0"/>' +
+      '</radialGradient>' +
+    '</defs>' +
+    '<circle cx="' + EYALET_ISYAN_ISTANBUL.x + '" cy="' + EYALET_ISYAN_ISTANBUL.y + '" r="5" fill="none" stroke="#E8C84A" stroke-width="1" opacity="0.55"/>' +
+    '<circle cx="' + route.x + '" cy="' + route.y + '" r="7" fill="none" stroke="#E8C84A" stroke-width="1.6"/>' +
+    '<g class="ei-unit-group ' + (isLand ? 'ei-land' : 'ei-sea') + '" id="ei-unit-group">' +
+      '<circle r="' + (isLand ? 17 : 24) + '" fill="url(#ei-halo)"/>' +
+      (isLand
+        ? '<g transform="scale(0.16) translate(-10,-34)"><use href="#ei-janissary" x="-46" y="8" opacity="0.85" transform="scale(0.82)"/><use href="#ei-janissary" x="-14" y="10" opacity="0.9" transform="scale(0.88)"/><use href="#ei-janissary" x="20" y="9" opacity="0.85" transform="scale(0.82)"/>' +
+          '<g class="ei-bob"><use href="#ei-flagbearer" x="-2" y="-6"/></g>' +
+          '<use href="#ei-janissary" x="-30" y="-2" transform="scale(0.95)"/><use href="#ei-janissary" x="6" y="-3" transform="scale(0.95)"/>' +
+          '<use href="#ei-janissary" x="-46" y="-10" opacity="0.85" transform="scale(0.8)"/><use href="#ei-janissary" x="20" y="-11" opacity="0.85" transform="scale(0.8)"/></g>'
+        : '<g transform="scale(0.155) translate(-65,-50)"><g class="ei-bob-boat"><use href="#ei-galleon"/></g></g>') +
+    '</g>' +
+    '<circle class="ei-burst" cx="' + route.x + '" cy="' + route.y + '" r="20" fill="none" stroke="#E8C84A" stroke-width="3"/>';
+
+  const styleEl = document.getElementById('ei-dyn-style') || (function () {
+    const s = document.createElement('style'); s.id = 'ei-dyn-style'; document.head.appendChild(s); return s;
+  })();
+  styleEl.textContent =
+    '@keyframes ei-travel-land { 0%{ transform: translate(' + EYALET_ISYAN_ISTANBUL.x + 'px,' + EYALET_ISYAN_ISTANBUL.y + 'px) scale(0.9);} ' +
+    '55%{ transform: translate(' + route.wx + 'px,' + route.wy + 'px) scale(1);} ' +
+    '100%{ transform: translate(' + route.x + 'px,' + route.y + 'px) scale(1.05);} }' +
+    '@keyframes ei-travel-sea { 0%{ transform: translate(' + EYALET_ISYAN_ISTANBUL.x + 'px,' + EYALET_ISYAN_ISTANBUL.y + 'px) rotate(-2deg);} ' +
+    '55%{ transform: translate(' + route.wx + 'px,' + route.wy + 'px) rotate(2deg);} ' +
+    '100%{ transform: translate(' + route.x + 'px,' + route.y + 'px) rotate(0deg);} }';
+
+  let resolved = false;
+
+  function closeAndAdvance() {
+    overlay.remove();
+    card.classList.remove('no-swipe');
+    advanceEasterCard(c);
+  }
+
+  ignoreBtn.onclick = () => {
+    if (resolved) return;
+    resolved = true;
+    sendBtn.disabled = true; ignoreBtn.disabled = true;
+    stats["yeniçeri"] = Math.max(0, (stats["yeniçeri"] || 50) - 5);
+    showStatDelta("yeniçeri", -5);
+    if (Math.random() < 0.5) {
+      stats["hazine"] = Math.max(0, (stats["hazine"] || 50) - 6);
+      showStatDelta("hazine", -6);
+    }
+    updateProvince(c.provinceId, -15); // sadakat düşük kalır, isyan bastırılmadı
+    updateStatUI();
+    resultEl.classList.add('show');
+    resultEl.innerHTML = `<b>${isEN ? 'You looked away.' : 'Görmezden geldiniz.'}</b><br>${isEN ? 'The revolt continues — the army resents your inaction.' : 'İsyan sürüyor — ordu bu hareketsizlikten rahatsız.'}`;
+    setTimeout(closeAndAdvance, 1400);
+  };
+
+  sendBtn.onclick = () => {
+    if (resolved) return;
+    resolved = true;
+    sendBtn.disabled = true; ignoreBtn.disabled = true;
+    const unitEl = document.getElementById('ei-unit-group');
+    const burstEl = overlaySvg.querySelector('.ei-burst');
+    unitEl.style.animation = (isLand ? 'ei-travel-land 2.6s cubic-bezier(0.45,0,0.55,1) forwards' : 'ei-travel-sea 3s cubic-bezier(0.4,0,0.6,1) forwards');
+    unitEl.style.opacity = '1';
+    const duration = isLand ? 2600 : 3000;
+    setTimeout(() => { burstEl.classList.add('go'); }, duration - 300);
+    setTimeout(() => {
+      const won = rollSavasSonucu();
+      if (won) {
+        updateProvince(c.provinceId, 45);
+        stats["yeniçeri"] = Math.max(0, (stats["yeniçeri"] || 50) - 6);
+        showStatDelta("yeniçeri", -6);
+        stats["hazine"] = Math.min(100, (stats["hazine"] || 50) + 8);
+        showStatDelta("hazine", 8);
+        updateStatUI();
+        resultEl.classList.add('show');
+        resultEl.innerHTML = `<b>${isEN ? 'The revolt was crushed!' : 'İsyan bastırıldı!'}</b><br>${isEN ? 'Loyalty restored, spoils fill the treasury.' : 'Sadakat geri kazanıldı, ganimet hazineye aktı.'}`;
+        setTimeout(() => {
+          overlay.remove();
+          card.classList.remove('no-swipe');
+          showSultanOdulu(c, label);
+        }, 1500);
+      } else {
+        updateProvince(c.provinceId, -20);
+        stats["yeniçeri"] = Math.max(0, (stats["yeniçeri"] || 50) - 10);
+        showStatDelta("yeniçeri", -10);
+        stats["hazine"] = Math.max(0, (stats["hazine"] || 50) - 12);
+        showStatDelta("hazine", -12);
+        sultanSabir = Math.max(0, sultanSabir - 3);
+        updateStatUI();
+        resultEl.classList.add('show');
+        resultEl.innerHTML = `<b>${isEN ? 'The revolt could not be crushed.' : 'İsyan bastırılamadı.'}</b><br>${isEN ? 'Troops and treasury were lost in vain.' : 'Asker ve hazine boşuna harcandı.'}`;
+        setTimeout(closeAndAdvance, 1600);
+      }
+    }, duration + 400);
+  };
+}
+
+// ── Padişah Ödülü — isyan bastırılınca çıkan kabul/ret kararı ──────
+function showSultanOdulu(c, provinceLabel) {
+  const isEN = window.LANG === 'en';
+  const overlay = document.createElement('div');
+  overlay.id = 'sultan-odulu-overlay';
+  overlay.innerHTML = `
+    <div id="so-box">
+      <div class="so-ornament">☾</div>
+      <div class="so-title">${isEN ? 'THE SULTAN\'S GRATITUDE' : 'PADİŞAHIN LÜTFU'}</div>
+      <div class="so-divider"></div>
+      <div class="so-text">${isEN
+        ? `The Sultan has heard of your victory in ${provinceLabel} and wishes to reward you.`
+        : `Padişah, ${provinceLabel}'deki zaferinizi duydu ve sizi ödüllendirmek istiyor.`}</div>
+      <div id="so-result"></div>
+      <div id="so-btns">
+        <button id="so-accept-btn" class="ei-btn ei-primary">${isEN ? 'ACCEPT' : 'KABUL ET'}</button>
+        <button id="so-decline-btn" class="ei-btn ei-ghost">${isEN ? 'Politely decline' : 'Nezaketle Reddet'}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  card.classList.add('no-swipe');
+
+  const resultEl = document.getElementById('so-result');
+  const acceptBtn = document.getElementById('so-accept-btn');
+  const declineBtn = document.getElementById('so-decline-btn');
+  let resolved = false;
+
+  function finish(html, delay) {
+    resultEl.classList.add('show');
+    resultEl.innerHTML = html;
+    setTimeout(() => {
+      overlay.remove();
+      card.classList.remove('no-swipe');
+      advanceEasterCard(c);
+    }, delay);
+  }
+
+  acceptBtn.onclick = () => {
+    if (resolved) return;
+    resolved = true;
+    acceptBtn.disabled = true; declineBtn.disabled = true;
+    if (Math.random() < 0.5) {
+      const notHeld = Object.keys(ITEMS).filter(id => !playerItems.includes(id));
+      const pick = notHeld.length ? notHeld[Math.floor(Math.random() * notHeld.length)] : Object.keys(ITEMS)[Math.floor(Math.random()*Object.keys(ITEMS).length)];
+      gainItem(pick);
+      finish(`<b>${isEN ? 'A gift arrives.' : 'Bir hediye geldi.'}</b><br>${isEN ? 'The Sultan grants you a rare item.' : 'Padişah size nadir bir eşya bahşetti.'}`, 1600);
+    } else {
+      _sultanFavorTurns = 3;
+      finish(`<b>${isEN ? 'Imperial protection granted.' : 'Padişahın koruması üzerinizde.'}</b><br>${isEN ? 'For the next 3 decisions, none of your powers can fall.' : 'Önümüzdeki 3 karar boyunca hiçbir gücünüz düşmeyecek.'}`, 1800);
+    }
+  };
+
+  declineBtn.onclick = () => {
+    if (resolved) return;
+    resolved = true;
+    acceptBtn.disabled = true; declineBtn.disabled = true;
+    if (Math.random() < 0.55) {
+      _sultanFavorSchedule.push({ afterCardsPlayed: cardsPlayed + 10, provinceLabel });
+      finish(`<b>${isEN ? 'A quiet nod.' : 'Sessiz bir baş işareti.'}</b><br>${isEN ? 'The Sultan seems to respect your humility. Perhaps this will be remembered.' : 'Padişah alçakgönüllülüğünüze saygı duymuş gibi. Belki bu unutulmaz.'}`, 1700);
+    } else {
+      const keys = ["saray", "yeniçeri", "ulema", "hazine"];
+      const stat = keys[Math.floor(Math.random() * keys.length)];
+      const before = stats[stat] ?? 50;
+      stats[stat] = Math.max(5, Math.round(before * 0.8));
+      showStatDelta(stat, stats[stat] - before);
+      updateStatUI();
+      const statLabelMap = { saray: isEN?'Palace':'Saray', "yeniçeri": isEN?'Army':'Yeniçeri', ulema: isEN?'Ulema':'Ulema', hazine: isEN?'Treasury':'Hazine' };
+      finish(`<b>${isEN ? 'The Sultan is displeased.' : 'Padişah gücenmiş görünüyor.'}</b><br>${isEN
+        ? `He saw your refusal as an insult — since ${provinceLabel}, ${statLabelMap[stat]} strength has suffered.`
+        : `Reddinizi bir hakaret olarak gördü — ${provinceLabel} meselesinden beri ${statLabelMap[stat]} gücünüz bu yüzden zayıfladı.`}`, 1900);
+    }
+  };
+}
+
+// ── Padişah'ın gecikmeli ödülü — nezaketle reddedilip memnun kalınınca ──
+function getSultanFavorCard(provinceLabel) {
+  const isEN = window.LANG === 'en';
+  return {
+    id: "sultan_favor_" + cardsPlayed,
+    type: "easter",
+    easter_type: "sultan_favor",
+    character: "uzak-haber",
+    character_name: isEN ? "Distant Report" : "Uzak Haber",
+    text: isEN
+      ? `The Sultan has not forgotten the humility you showed after ${provinceLabel}. A gesture of favor arrives.`
+      : `Padişah, ${provinceLabel} meselesinden sonra gösterdiğiniz alçakgönüllülüğü unutmamış. Bir lütuf ulaştı.`,
+    button: isEN ? "Very well" : "Pekâlâ",
     stat_effect: () => {
-      updateProvince(provinceId, -10);
-      stats["yeniçeri"] = Math.max(0, (stats["yeniçeri"] || 50) - 6);
-      showStatDelta("yeniçeri", -6);
+      ["saray", "yeniçeri", "ulema", "hazine"].forEach(k => {
+        stats[k] = Math.min(100, (stats[k] || 50) + 12);
+        showStatDelta(k, 12);
+      });
       updateStatUI();
     }
   };
@@ -1304,11 +1597,11 @@ function checkChainTriggers(flagsSet) {
 
 // ── Eyalet (Province) Sistemi ─────────────────────────────────────
 const PROVINCES = [
-  { id: 'rumeli',   label_tr: 'Rumeli',       label_en: 'Rumelia',       categories: ['military','political'],  stat: 'yeniçeri' },
-  { id: 'anadolu',  label_tr: 'Anadolu',       label_en: 'Anatolia',      categories: ['social','economic'],     stat: 'ulema'    },
-  { id: 'misir',    label_tr: 'Mısır',         label_en: 'Egypt',         categories: ['economic','treasury'],   stat: 'hazine'   },
-  { id: 'dogu',     label_tr: 'Doğu Sınırı',   label_en: 'Eastern Border',categories: ['military','diplomatic'], stat: 'yeniçeri' },
-  { id: 'akdeniz',  label_tr: 'Akdeniz',       label_en: 'Mediterranean', categories: ['diplomatic','intrigue'], stat: 'saray'    },
+  { id: 'rumeli',   label_tr: 'Rumeli',       label_en: 'Rumelia',       categories: ['military','political'],  stat: 'yeniçeri', route: 'land' },
+  { id: 'anadolu',  label_tr: 'Anadolu',       label_en: 'Anatolia',      categories: ['social','economic'],     stat: 'ulema',    route: 'land' },
+  { id: 'misir',    label_tr: 'Mısır',         label_en: 'Egypt',         categories: ['economic','treasury'],   stat: 'hazine',   route: 'sea'  },
+  { id: 'dogu',     label_tr: 'Doğu Sınırı',   label_en: 'Eastern Border',categories: ['military','diplomatic'], stat: 'yeniçeri', route: 'land' },
+  { id: 'akdeniz',  label_tr: 'Akdeniz',       label_en: 'Mediterranean', categories: ['diplomatic','intrigue'], stat: 'saray',    route: 'sea'  },
 ];
 let provinceLoyalty = { rumeli:50, anadolu:50, misir:50, dogu:50, akdeniz:50 };
 
@@ -2304,6 +2597,8 @@ function startGame() {
   _eyaletNextCard = 40;
   _eyaletShownCount = 0;
   _eyaletIsyanSchedule = [];
+  _sultanFavorSchedule = [];
+  _sultanFavorTurns = 0;
   provinceLoyalty = { rumeli: 50, anadolu: 50, misir: 50, dogu: 50, akdeniz: 50 };
   _savasSonucSchedule = null;
   _ramazanShownThisGame = false;
@@ -2706,6 +3001,7 @@ function saveGameState() {
       playCounts, cursedEver, traitorInvestigated, hiddenTraitor,
       scheduledCards, forcedQueueIds: forcedQueue.map(c => c.id),
       provinceLoyalty, savasSonucSchedule: _savasSonucSchedule, eyaletIsyanSchedule: _eyaletIsyanSchedule,
+      sultanFavorSchedule: _sultanFavorSchedule, sultanFavorTurns: _sultanFavorTurns,
       golgeShownThisGame: _golgeShownThisGame,
       halkSevgisiShownThisGame: _halkSevgisiShownThisGame,
       casusAgiShownThisGame: _casusAgiShownThisGame,
@@ -2798,6 +3094,8 @@ function loadGameState(s) {
   provinceLoyalty = s.provinceLoyalty || { rumeli:50, anadolu:50, misir:50, dogu:50, akdeniz:50 };
   _savasSonucSchedule = s.savasSonucSchedule || null;
   _eyaletIsyanSchedule = s.eyaletIsyanSchedule || [];
+  _sultanFavorSchedule = s.sultanFavorSchedule || [];
+  _sultanFavorTurns = s.sultanFavorTurns || 0;
   _golgeShownThisGame = s.golgeShownThisGame || false;
   _halkSevgisiShownThisGame = s.halkSevgisiShownThisGame || false;
   _casusAgiShownThisGame = s.casusAgiShownThisGame || false;
@@ -3497,6 +3795,12 @@ function showEasterCard(c) {
   // Hekimbaşı Dinlenme
   if (c.easter_type === 'hekim_dinlenme') {
     showHekimDinlenme(c);
+    return;
+  }
+
+  // Eyalet İsyanı — ordu/donanma sahnesi + kabul/ret dallanması
+  if (c.easter_type === 'eyalet_isyan') {
+    showEyaletIsyani(c);
     return;
   }
 
@@ -5022,6 +5326,7 @@ function applyEffects(effects) {
     }
 
     if (godMode && raw < 0) raw = 0; // ★ GOD MODE — negatif stat değişimini engelle
+    if (_sultanFavorTurns > 0 && raw < 0) raw = 0; // Padişah Ödülü tılsımı — 3 tur boyunca negatif etki yok
     if (hasAdvisor("sokollu")) raw = Math.round(raw * 0.85);
     if (hasAdvisor("sinan") && (stat === "saray" || stat === "ulema")) raw = Math.round(raw * 1.2);
     if (hasAdvisor("hurrem") && stat === "yeniçeri" && raw < 0) raw = Math.round(raw * 0.75);
@@ -5502,6 +5807,15 @@ function decide(dir) {
         if (isyanCard) forcedQueue.push(isyanCard);
       });
     }
+    // Padişah Ödülü: nezaketle reddedilmiş bir teklif memnuniyetle sonuçlandıysa
+    // gecikmeli ek avantaj gelir (bkz. showSultanOdulu)
+    if (_sultanFavorSchedule.length) {
+      const dueFavor = _sultanFavorSchedule.filter(sc => cardsPlayed >= sc.afterCardsPlayed);
+      _sultanFavorSchedule = _sultanFavorSchedule.filter(sc => cardsPlayed < sc.afterCardsPlayed);
+      dueFavor.forEach(sc => forcedQueue.push(getSultanFavorCard(sc.provinceLabel)));
+    }
+    // Padişah Ödülü tılsımı: 3 tur boyunca 4 ana güçte hiçbir negatif etki uygulanmaz
+    if (_sultanFavorTurns > 0) _sultanFavorTurns--;
     // Pargalı İbrahim: en erken 35. kart, oyun başına 1 kez, %4
     if (!_easterPargaliDone && cardsPlayed >= 35 && Math.random() < 0.04) {
       _easterPargaliDone = true;
