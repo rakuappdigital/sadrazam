@@ -3903,8 +3903,8 @@ function showHekimDinlenme(c) {
           <div id="hd-card-hint-right">${isEN ? 'YES' : 'EVET'}</div>
         </div>
         <div class="hd-swipe-caption">
-          <span>◀ ${isEN ? 'No (−15 ❤)' : 'Hayır (−15 ❤)'}</span>
-          <span>${isEN ? 'Rest (+20 ❤) ▶' : 'Dinlen (+20 ❤) ▶'}</span>
+          <span>◀ ${isEN ? 'No change' : 'Hayır (etkisiz)'}</span>
+          <span>${isEN ? 'Rest (+15 ❤) ▶' : 'Dinlen (+15 ❤) ▶'}</span>
         </div>
       </div>
     </div>`;
@@ -3982,7 +3982,7 @@ function showHekimDinlenme(c) {
       overlay.remove();
       card.classList.remove('no-swipe');
       if (dir === 'right') {
-        changeHealth(+20);
+        changeHealth(+15);
         // 2 tur dinlenme — her biri stat -5 uygular
         const restCard = (turNo) => ({
           id: 'hekim_dinlenme_bos_' + turNo,
@@ -4002,7 +4002,7 @@ function showHekimDinlenme(c) {
         _hekimDinlenmeShown = false;
         setTimeout(() => { tryHekimDinlenme._cooldown = cardsPlayed + 30; }, 0);
       } else {
-        changeHealth(-15);
+        // Reddedince sağlık düşmez — sadece +15 kazanma fırsatı kaçırılmış olur
         advanceEasterCard(c);
         _hekimDinlenmeShown = false;
       }
