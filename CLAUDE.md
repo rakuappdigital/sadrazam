@@ -9,16 +9,23 @@ BU DOSYAYI GÜNCELLE — bayatlamasın.
 
 - **`/Users/mac/Projects/sadrazam-web` (→ GitHub `rakuappdigital/sadrazam`) tüm
   iOS Sadrazam işleri için TEK ve YEGANE proje.** Bütün güncelleme, ekleme ve
-  düzeltmeler burada yapılır. Karışıklık istenmiyor.
+  düzeltmeler burada yapılır. Karışıklık istenmiyor. Kullanıcı hangi pencerede/
+  terminalde olursa olsun "sadrazam" dediğinde DOĞRUDAN burayı aç — başka
+  hiçbir path'i varsayma, sorma, kontrol etme: burası.
 - **`/Users/mac/Projects/sadrazamtest` (→ GitHub `rakuappdigital/sadrazamtest`)
   2 Eylül 2026'dan beri buradan KOPMUŞ, bayatlamış, terk edilmiş bir çatal.**
-  Onu bir daha senkron hedefi, referans veya "diğer kopya" olarak KULLANMA —
-  aşağıdaki eski §1'deki "3. kopya" talimatı (sadrazamtest'e de kopyala) artık
-  YANLIŞ ve GEÇERSİZ, o satırı asla uygulama. Bir oturum bu iki projeyi
-  karıştırıp yanlışlıkla sadrazamtest'te çalışıp commit/deploy ettiği için (bu
-  konu 18 Eylül 2026'da fark edildi ve buraya taşındı) bu kural en üste
-  yazıldı. Hangi klasörde olduğundan HER ZAMAN emin ol (`pwd`), `git remote -v`
-  ile `rakuappdigital/sadrazam.git` olduğunu doğrula.
+  Yerel klasörü silindi ama GitHub deposu hâlâ duruyor (silinmesi riskli
+  bulunduğu için bilerek silinmedi — bkz. 2026-09-19 kararı). **BUNDAN
+  BİR DAHA ASLA build/archive alınmayacak, ASLA klonlanmayacak, ASLA senkron
+  hedefi ya da "diğer kopya" olarak kullanılmayacak.** 2026-09-19'da anlaşıldı
+  ki App Store'a yüklenen bir build (1.3.7/build 20) yanlışlıkla oradan
+  alınmıştı — bu üzerinden bir daha ASLA tekrarlanmayacak bir hata. Referans
+  almak (özellik karşılaştırması için okumak) istisnai olarak gerekebilir ama
+  bunun için bile yerel klonlama YERİNE `git show <repo-url>:<dosya>` gibi
+  salt-okunur yöntemler tercih edilsin, ve kullanıcıya açıkça söylenmeden asla
+  yapılmasın. Hangi klasörde olduğundan HER ZAMAN emin ol (`pwd`), `git
+  remote -v` ile `rakuappdigital/sadrazam.git` (sadrazamtest DEĞİL) olduğunu
+  doğrula.
 - Başka bir dosya/sürüm/repo ile karıştırıp yanlış yere commit ya da deploy
   etmek — bunu bir daha yapma. Şüphede kalırsan işleme başlamadan önce
   `pwd` + `git remote -v` ile doğrula, sonra devam et.
