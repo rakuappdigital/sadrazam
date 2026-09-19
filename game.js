@@ -3893,41 +3893,153 @@ function showHekimDinlenme(c) {
       <div class="hd-title">${isEN ? 'REST OR REFUSE?' : 'DİNLENİN Mİ?'}</div>
       <div class="hd-divider"></div>
       <div class="hd-text">${c.text}</div>
-      <div class="hd-btns">
-        <button class="hd-btn hd-yes" id="hd-yes">${isEN ? 'Rest (+20 ❤, all stats −5)' : 'Dinleneyim (+20 ❤, tüm güçler −5)'}</button>
-        <button class="hd-btn hd-no"  id="hd-no">${isEN ? 'No rest (−12 ❤)' : 'Reddediyorum (−12 ❤)'}</button>
+      <div id="hd-card-wrap">
+        <div id="hd-card">
+          <img id="hd-card-img-base" src="assets/characters/hekim-evet.jpg" alt="">
+          <img id="hd-card-img-alt"  src="assets/characters/hekim-hayir.jpg" alt="">
+          <div id="hd-card-overlay-left"></div>
+          <div id="hd-card-overlay-right"></div>
+          <div id="hd-card-hint-left">${isEN ? 'NO' : 'HAYIR'}</div>
+          <div id="hd-card-hint-right">${isEN ? 'YES' : 'EVET'}</div>
+        </div>
+        <div class="hd-swipe-caption">
+          <span>◀ ${isEN ? 'No (−15 ❤)' : 'Hayır (−15 ❤)'}</span>
+          <span>${isEN ? 'Rest (+20 ❤) ▶' : 'Dinlen (+20 ❤) ▶'}</span>
+        </div>
       </div>
     </div>`;
   document.body.appendChild(overlay);
 
-  document.getElementById('hd-yes').onclick = () => {
-    overlay.remove();
-    changeHealth(+20);
-    // 2 tur dinlenme — her biri stat -5 uygular
-    const restCard = (turNo) => ({
-      id: 'hekim_dinlenme_bos_' + turNo,
-      type: 'easter',
-      easter_type: 'hekim_dinlenme_bos',
-      character: '10-hekimbasi',
-      character_name: isEN ? 'Chief Physician' : 'Hekimbaşı',
-      text: isEN
-        ? 'Rest well, Grand Vizier. The empire can wait.'
-        : 'Dinlenin Sadrazamım... İmparatorluk bekleyebilir.',
-      button: isEN ? 'Very well' : 'Pekâlâ',
-      _restStatDrain: true,
-    });
-    // unshift ile ilk önce tur-1 gelecek şekilde sırala
-    forcedQueue.unshift(restCard(1), restCard(2));
-    advanceEasterCard(c);
-    _hekimDinlenmeShown = false;
-    setTimeout(() => { tryHekimDinlenme._cooldown = cardsPlayed + 30; }, 0);
-  };
-  document.getElementById('hd-no').onclick = () => {
-    overlay.remove();
-    changeHealth(-15);
-    advanceEasterCard(c);
-    _hekimDinlenmeShown = false;
-  };
+  // Bu popup açıkken ana karttaki klavye ok tuşu swipe'ı devreye girmesin —
+  // overlay fareyle/dokunuşla zaten ana kartı örtüyor ama klavye olayı ayrı,
+  // ana #card no-swipe olmadan bu popup açıkken de tetiklenebilirdi.
+  card.classList.add('no-swipe');
+
+  const hdCard    = document.getElementById('hd-card');
+  const imgAlt    = document.getElementById('hd-card-img-alt');
+  const ovlLeft   = document.getElementById('hd-card-overlay-left');
+  const ovlRight  = document.getElementById('hd-card-overlay-right');
+  const hintLeft  = document.getElementById('hd-card-hint-left');
+  const hintRight = document.getElementById('hd-card-hint-right');
+
+  // Ana oyun kartının global sürükleme durumundan (isDragging/isAnimating/curX vb.)
+  // tamamen bağımsız, kendi kapalı state'i — ana kartla asla çakışmaz.
+  const THRESHOLD_HD = 90;
+  let startX = 0, curX = 0, dragging = false, resolved = false;
+
+  function applyDragVisuals(dx) {
+    const rot = Math.max(-14, Math.min(14, dx * 14 / THRESHOLD_HD));
+    hdCard.style.transform = `translateX(${dx}px) rotate(${rot}deg)`;
+    const progress = Math.min(1, Math.abs(dx) / THRESHOLD_HD);
+    if (dx < -10) {
+      imgAlt.style.opacity = String(progress);
+      ovlLeft.style.opacity = String(progress * 0.55);
+      ovlRight.style.opacity = '0';
+      hintLeft.style.opacity = String(progress);
+      hintRight.style.opacity = '0';
+    } else if (dx > 10) {
+      imgAlt.style.opacity = '0';
+      ovlRight.style.opacity = String(progress * 0.5);
+      ovlLeft.style.opacity = '0';
+      hintRight.style.opacity = String(progress);
+      hintLeft.style.opacity = '0';
+    } else {
+      imgAlt.style.opacity = '0';
+      ovlLeft.style.opacity = ovlRight.style.opacity = '0';
+      hintLeft.style.opacity = hintRight.style.opacity = '0';
+    }
+  }
+
+  function snapBackHd() {
+    hdCard.style.transition = 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1)';
+    hdCard.style.transform = 'translateX(0) rotate(0deg)';
+    imgAlt.style.opacity = '0';
+    ovlLeft.style.opacity = ovlRight.style.opacity = '0';
+    hintLeft.style.opacity = hintRight.style.opacity = '0';
+    setTimeout(() => { hdCard.style.transition = ''; }, 360);
+  }
+
+  function cleanup() {
+    hdCard.removeEventListener('mousedown', onDown);
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onUp);
+    hdCard.removeEventListener('touchstart', onDown);
+    window.removeEventListener('touchmove', onMove);
+    window.removeEventListener('touchend', onUp);
+  }
+
+  function resolveHd(dir) {
+    if (resolved) return;
+    resolved = true;
+    cleanup();
+    const tx = dir === 'left' ? -520 : 520;
+    hdCard.style.transition = 'transform 0.26s ease-in, opacity 0.22s ease-in';
+    hdCard.style.transform = `translateX(${tx}px) rotate(${dir === 'left' ? -18 : 18}deg)`;
+    hdCard.style.opacity = '0';
+    if (window.playSwipeRight && dir === 'right') playSwipeRight();
+    if (window.playSwipeLeft  && dir === 'left')  playSwipeLeft();
+    setTimeout(() => {
+      overlay.remove();
+      card.classList.remove('no-swipe');
+      if (dir === 'right') {
+        changeHealth(+20);
+        // 2 tur dinlenme — her biri stat -5 uygular
+        const restCard = (turNo) => ({
+          id: 'hekim_dinlenme_bos_' + turNo,
+          type: 'easter',
+          easter_type: 'hekim_dinlenme_bos',
+          character: '10-hekimbasi',
+          character_name: isEN ? 'Chief Physician' : 'Hekimbaşı',
+          text: isEN
+            ? 'Rest well, Grand Vizier. The empire can wait.'
+            : 'Dinlenin Sadrazamım... İmparatorluk bekleyebilir.',
+          button: isEN ? 'Very well' : 'Pekâlâ',
+          _restStatDrain: true,
+        });
+        // unshift ile ilk önce tur-1 gelecek şekilde sırala
+        forcedQueue.unshift(restCard(1), restCard(2));
+        advanceEasterCard(c);
+        _hekimDinlenmeShown = false;
+        setTimeout(() => { tryHekimDinlenme._cooldown = cardsPlayed + 30; }, 0);
+      } else {
+        changeHealth(-15);
+        advanceEasterCard(c);
+        _hekimDinlenmeShown = false;
+      }
+    }, 260);
+  }
+
+  function onDown(e) {
+    if (resolved) return;
+    dragging = true;
+    const p = e.touches ? e.touches[0] : e;
+    startX = p.clientX; curX = startX;
+    hdCard.classList.add('dragging');
+    hdCard.style.transition = 'none';
+  }
+  function onMove(e) {
+    if (!dragging) return;
+    const p = e.touches ? e.touches[0] : e;
+    curX = p.clientX;
+    if (e.touches) e.preventDefault();
+    applyDragVisuals(curX - startX);
+  }
+  function onUp() {
+    if (!dragging) return;
+    dragging = false;
+    hdCard.classList.remove('dragging');
+    const dx = curX - startX;
+    if (dx <= -THRESHOLD_HD) resolveHd('left');
+    else if (dx >= THRESHOLD_HD) resolveHd('right');
+    else snapBackHd();
+  }
+
+  hdCard.addEventListener('mousedown', onDown);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+  hdCard.addEventListener('touchstart', onDown, { passive: true });
+  window.addEventListener('touchmove', onMove, { passive: false });
+  window.addEventListener('touchend', onUp);
 }
 
 function showDonumEkrani() {
@@ -4409,7 +4521,7 @@ function updateHealthUI() {
   const hval  = document.getElementById("health-val");
   const hicon = document.getElementById("health-icon-svg");
   if (!hfill) return;
-  const h = Math.max(0, Math.min(100, sadrazamHealth));
+  const h = Math.round(Math.max(0, Math.min(100, sadrazamHealth)));
   hfill.style.width = h + "%";
   let cls = "";
   let iconColor = "rgba(39,174,96,0.7)";
@@ -4420,16 +4532,19 @@ function updateHealthUI() {
   if (hval) hval.textContent = h;
 }
 
-function governanceHealthDelta() {
+// Yıl sonunda o yılki yönetim kalitesine göre TEK bir sağlık düşüşü uygulanır
+// (eskiden her kartta ayrı ayrı ±1 uygulanıyordu — bu, tek kötü bir seri
+// yüzünden sağlığın "aniden" çökmüş gibi hissettiriyordu). 4 ana gücün 50
+// merkeze olan ORTALAMA uzaklığı o yılın dengesini ölçer; 90 başlangıç
+// sağlığıyla normal zorlukta: iyi yönetim ~56 yıl, ortalama ~13 yıl, kötü
+// yönetim ~5-6 yıl yaşam sağlar (kasıtlı olarak sınırlı — mükemmel denge
+// bile sonsuza kadar hayatta kalmayı sağlamaz).
+function governanceHealthYearDelta() {
   const keys = ["saray", "yeniçeri", "ulema", "hazine"];
-  let maxExtreme = 0;
-  for (const k of keys) {
-    const extreme = Math.abs((stats[k] ?? 50) - 50);
-    if (extreme > maxExtreme) maxExtreme = extreme;
-  }
-  if (maxExtreme <= 15) return +1;
-  if (maxExtreme <= 25) return 0;
-  return -1;
+  const avgExtreme = keys.reduce((sum, k) => sum + Math.abs((stats[k] ?? 50) - 50), 0) / keys.length;
+  if (avgExtreme <= 12) return -1.6; // iyi yönetim
+  if (avgExtreme <= 25) return -7;   // ortalama yönetim
+  return -16;                        // kötü yönetim
 }
 
 function changeHealth(delta) {
@@ -5230,10 +5345,6 @@ function decide(dir) {
   applyEffects(currentCard[dir + "_effects"] || {});
   if (isGameOver) return;
 
-  // Kart başına sağlık değişimi: 4 ana güç dengedeyse iyileşme, uçlara yakınsa düşüş
-  changeHealth(governanceHealthDelta());
-  if (isGameOver) return;
-
   // ── Achievement tracking ──────────────────────────────────────
   if (charKey) { seenCharacters.add(charKey); updateCrossGame({ seenCharactersEver: [charKey] }); }
   if (currentCard.type === 'chance') chanceCardsPlayed++;
@@ -5714,8 +5825,8 @@ function advanceYear() {
 
   const _diffMod = getDifficultyMod();
   stats.hazine = Math.max(0, stats.hazine - Math.round(PASSIVE_HAZINE_DRAIN * _diffMod.drain));
-  // Yıl sonu doğal sağlık düşüşü
-  changeHealth(-Math.round(3 * _diffMod.healthDecay));
+  // Yıl sonu sağlık düşüşü — o yılki yönetim kalitesine göre kademeli
+  changeHealth(governanceHealthYearDelta() * _diffMod.healthDecay);
   updateStatUI();
   if (checkGameOver()) return;
 
