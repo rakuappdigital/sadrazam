@@ -146,7 +146,14 @@ function processAkceTransactions(customerInfo) {
 }
 
 function _todayKey() {
-  return new Date().toISOString().slice(0, 10);
+  // toISOString() UTC kullanır — Türkiye (UTC+3) yerel gece yarısından sonra (00:00-03:00
+  // arası) UTC günü hâlâ dünmüş gibi davranır, 03:00'ı geçince ise UTC günü döner ve
+  // "günlük" reklam sayacı aynı yerel günün İÇİNDE bir kez daha sıfırlanır — limit atlanır.
+  // Cihazın kendi yerel tarihini kullanmak bu kaymayı ortadan kaldırır.
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mm}-${dd}`;
 }
 function getSecondChanceAdsUsedToday() {
   const today = _todayKey();
@@ -387,6 +394,7 @@ function showSecondChanceRescueMoment(callback) {
 
 function resolveSecondChance() {
   _secondChanceUsedThisDeath = false; // sıradaki (farklı) ölüm için tazele
+  isGameOver = false; // triggerGameOver bunu true yapmıştı — oyun devam ediyor, geri aç
 
   // Ölüme hangi gösterge sebep olmuş olursa olsun (4 güç, sağlık ya da sultan
   // sabrı) onu güvenli bir seviyeye çekiyoruz — yoksa "kurtulduk" sanılan oyun
@@ -4965,9 +4973,17 @@ function showGucUyarisi() {
   }, 200);
 }
 
+let _sultanGucCinematicActive = false; // ★ triggerSultanGucOlumu sinematiği sürerken duraklatma menüsünü de kilitler
+
 function triggerSultanGucOlumu() {
   if (isGameOver) return;
-  isGameOver = true;
+  // isGameOver'ı burada DEĞİL, sinematik bittiğinde çağrılan triggerGameOver() içinde true
+  // yapıyoruz — aksi halde triggerGameOver zaten isGameOver=true görüp hiçbir şey yapmadan
+  // çıkar (İkinci Şans teklifi hiç sunulmaz VE showGameOver hiç çağrılmaz, oyun sinematikten
+  // sonra tamamen asılı kalır). Sinematik sırasında kartla etkileşimi no-swipe ile, duraklatma
+  // menüsünü de _sultanGucCinematicActive ile engelliyoruz.
+  card.classList.add('no-swipe');
+  _sultanGucCinematicActive = true;
   stopAllMusic();
   if (window.playCinematicDeath) playCinematicDeath();
   Haptics.gameOver();
@@ -4990,6 +5006,7 @@ function triggerSultanGucOlumu() {
         setTimeout(() => {
           eyeEl.remove();
           showHangingAnimation(() => {
+            _sultanGucCinematicActive = false;
             triggerGameOver("Sarayın en güçlü sadrazamıydın. Bu yüzden urganı iki cellat getirdi.");
           });
         }, 500);
@@ -5591,6 +5608,11 @@ function showCardTrail(dir) {
 
 function flyOff(dir) {
   if (isAnimating) return;
+  // Parmak, kart HENÜZ swipe edilebilirken (no-swipe eklenmeden) basılmış olabilir; onEnd()
+  // tetiklendiğinde araya giren dealNext() kartı butonlu (no-swipe) bir karta çevirmiş olabilir.
+  // Bu durumda swipe'ı tamamlamak butonlu kartın atlanmasına yol açar — burada tekrar kontrol
+  // edip öyleyse swipe'ı iptal edip kartı geri sek (snapBack).
+  if (isGameOver || card.classList.contains('no-swipe')) { snapBack(); return; }
   showCardTrail(dir);
   const bubble = document.getElementById("speech-bubble");
   if (bubble) bubble.style.opacity = "0";
@@ -5875,6 +5897,12 @@ function checkRelationshipEffects() {
 // ── Game Over ─────────────────────────────────────────────────────
 function triggerGameOver(reason) {
   if (isGameOver) return;
+  // İkinci Şans ekranı gösterilirken de oyunu HEMEN "bitmiş" say — decide()/dealNext()/
+  // checkGameOver() hepsi isGameOver'a bakıp durur. Bu satır olmadan teklif ekranı açıkken
+  // arka planda kart dağıtılmaya devam ediyor (bkz. resolveSecondChance) ve bazen ölüm
+  // ikinci kez tetiklenip teklif ekranının ALTINDA gerçek game-over'ı işleyip isGameOver'ı
+  // true'da kilitliyordu — reklam/akçe ödülü verildikten sonra oyun sessizce devam etmiyordu.
+  isGameOver = true;
   if (!_secondChanceOfferedThisGame) {
     const adsLeft = SECOND_CHANCE_DAILY_AD_LIMIT - getSecondChanceAdsUsedToday();
     if (adsLeft > 0 || getAkceBalance() >= SECOND_CHANCE_AKCE_COST) {
@@ -6643,7 +6671,7 @@ function showKartKodeksi() {
 }
 
 function showGameMenu() {
-  if (isGameOver) return;
+  if (isGameOver || _sultanGucCinematicActive) return;
   const overlay = document.createElement("div");
   overlay.id = "game-menu-overlay";
   const isENMenu = window.LANG === 'en';
