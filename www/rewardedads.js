@@ -32,17 +32,25 @@ const RewardedAds = (() => {
 
   // onReward: reklam sonuna kadar izlendi, ödülü ver
   // onCancel: reklam izlenmeden kapatıldı / kullanılamıyor
+  //
+  // KRİTİK: ödülü SADECE "onRewardedVideoAdReward" olayına bağlamıyoruz.
+  // Bu olay bazı cihaz/ağ koşullarında hiç gelmiyor (@capacitor-community/admob
+  // ve altındaki GoogleMobileAds SDK'sında bilinen, gerçek kullanıcılarda
+  // görülmüş bir tutarsızlık) — gerçek kullanıcı reklamı baştan sona izlemesine
+  // rağmen bu event gelmeyince ödül reddediliyordu. AdMob'un "rewarded" reklam
+  // formatı, native SDK seviyesinde ödül eşiğine ulaşılmadan reklamın
+  // kapatılmasına zaten izin vermiyor — yani "dismissed" olayının gelmesi TEK
+  // BAŞINA ödülün hak edildiğini gösterir, ayrı bir onay beklemeye gerek yok.
   const show = (onReward, onCancel) => {
     if (!_cap || !_ready) {
       _showSimulatedAd(onReward, onCancel);
       return;
     }
-    let rewarded = false;
-    const rewardListener = _cap.addListener("onRewardedVideoAdReward", () => { rewarded = true; });
+    const rewardListener = _cap.addListener("onRewardedVideoAdReward", () => {});
     const dismissListener = _cap.addListener("onRewardedVideoAdDismissed", () => {
       rewardListener.remove(); dismissListener.remove();
       prepare(); // sıradaki gösterim için yeniden hazırla
-      if (rewarded) onReward(); else onCancel();
+      onReward();
     });
     _cap.showRewardVideoAd().catch(() => {
       rewardListener.remove(); dismissListener.remove();
