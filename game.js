@@ -3890,7 +3890,7 @@ function showHekimDinlenme(c) {
   overlay.innerHTML = `
     <div id="hd-box">
       <div class="hd-ornament">⚕</div>
-      <div class="hd-title">${isEN ? 'REST OR REFUSE?' : 'DİNLENİN Mİ?'}</div>
+      <div class="hd-title">${isEN ? 'REST OR REFUSE?' : 'DİNLENMEK İSTER MİSİNİZ?'}</div>
       <div class="hd-divider"></div>
       <div class="hd-text">${c.text}</div>
       <div id="hd-card-wrap">
