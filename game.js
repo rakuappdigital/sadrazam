@@ -1782,6 +1782,14 @@ let maxHazine = 0;
 let minAnyStat = 100;
 
 // Easter egg sayaçları (oyun başında sıfırlanır)
+// "Sırf eğlence" easter egg'lerin (kedi/yanlış adam/kehanet/evliya/tarihsel figürler/
+// zaman yolcusu/fısıltı/pargalı) HİÇBİRİ, bir öncekinden 40 karttan daha yakın gelemez —
+// her tip kendi aralığına uysa bile aynı anda üst üste binebiliyorlardı, oyuncuya "çok
+// sık" hissettiriyordu. Bu paylaşılan bacak tüm 8 tipi tek noktadan sınırlıyor.
+let _lastEasterEggAt = -999;
+// Padişah'ın kendi karar havuzundaki ("1-sultan") kartları da aynı sebeple art arda
+// gelebiliyordu (koşulu sadece yıl+denge dengesizliğiydi, araya minimum kart konmuyordu).
+let _lastSultanCardAt = -999;
 let _easterKediNext    = 65;
 let _easterYanlisNext  = 55;
 let _easterYanlisCount = 0;
@@ -2566,6 +2574,8 @@ function startGame() {
   characterMemory = {};
 
   // Easter egg sayaçları sıfırla
+  _lastEasterEggAt = -999;
+  _lastSultanCardAt = -999;
   _easterKediNext    = 65;
   _easterYanlisNext  = 55;
   _easterYanlisCount = 0;
@@ -3002,6 +3012,7 @@ function saveGameState() {
       scheduledCards, forcedQueueIds: forcedQueue.map(c => c.id),
       provinceLoyalty, savasSonucSchedule: _savasSonucSchedule, eyaletIsyanSchedule: _eyaletIsyanSchedule,
       sultanFavorSchedule: _sultanFavorSchedule, sultanFavorTurns: _sultanFavorTurns,
+      lastEasterEggAt: _lastEasterEggAt, lastSultanCardAt: _lastSultanCardAt,
       golgeShownThisGame: _golgeShownThisGame,
       halkSevgisiShownThisGame: _halkSevgisiShownThisGame,
       casusAgiShownThisGame: _casusAgiShownThisGame,
@@ -3096,6 +3107,8 @@ function loadGameState(s) {
   _eyaletIsyanSchedule = s.eyaletIsyanSchedule || [];
   _sultanFavorSchedule = s.sultanFavorSchedule || [];
   _sultanFavorTurns = s.sultanFavorTurns || 0;
+  _lastEasterEggAt = s.lastEasterEggAt ?? -999;
+  _lastSultanCardAt = s.lastSultanCardAt ?? -999;
   _golgeShownThisGame = s.golgeShownThisGame || false;
   _halkSevgisiShownThisGame = s.halkSevgisiShownThisGame || false;
   _casusAgiShownThisGame = s.casusAgiShownThisGame || false;
@@ -3289,9 +3302,11 @@ function getEligible() {
     if (c.required_faction_pressure && !activeFlags["faction_pressure_" + c.required_faction_pressure]) return false;
     // weight:1 özel kartlar arc dışında çıkmasın
     if (c.weight === 1 && !c.arc_id) return false;
-    // Sultan kartları: ilk 3 yıl çıkmasın, kriz/rahat anda gelsin
+    // Sultan kartları: ilk 3 yıl çıkmasın, kriz/rahat anda gelsin, ve bir öncekinden
+    // en az 20 kart sonra gelsin (yoksa denge uzun süre bozuk kalınca art arda gelebiliyordu)
     if (c.character === "1-sultan") {
       if (year < 3) return false;
+      if (cardsPlayed - _lastSultanCardAt < 20) return false;
       const avg = Object.values(stats).reduce((a,b)=>a+b,0)/4;
       if (avg > 38 && avg < 62) return false; // Dengeli — sultan rahatsız etmez
     }
@@ -3449,6 +3464,7 @@ function dealNext() {
   if (!c) return;
   currentCard = c;
   isInvestigating = false;
+  if (c.character === "1-sultan") _lastSultanCardAt = cardsPlayed;
 
   // Easter egg kartı
   if (c.type === "easter") {
@@ -5698,43 +5714,51 @@ function decide(dir) {
     // Rastgele varyasyon: hedef aralığın ±%25'i
     const _rndIv = (base) => Math.round(base * (0.75 + Math.random() * 0.5));
 
-    // Saray Kedisi: ortalama 65 kart, aralık 49-81
-    if (cardsPlayed >= _easterKediNext) {
-      _easterKediNext = cardsPlayed + _rndIv(65);
-      forcedQueue.push({ ...EASTER_CARDS.saray_kedisi });
-    }
-    // Yanlış Adam: ortalama 55 kart, aralık 41-69
-    if (cardsPlayed >= _easterYanlisNext) {
-      _easterYanlisNext = cardsPlayed + _rndIv(55);
-      _easterYanlisCount++;
-      const yanlis = { ...EASTER_CARDS.yanlis_adam };
-      if (_easterYanlisCount >= 3) yanlis.easter_type = "yanlis_idam";
-      forcedQueue.push(yanlis);
-    }
-    // Tarihsel Kehanet: ortalama 60 kart, aralık 45-75
-    if (cardsPlayed >= _easterKehanetNext) {
-      _easterKehanetNext = cardsPlayed + _rndIv(60);
-      forcedQueue.push(getKehanetCard());
-    }
-    // Evliya Çelebi: ortalama 45 kart, aralık 34-56
-    if (cardsPlayed > 0 && cardsPlayed >= _easterEvliyaNext) {
-      _easterEvliyaNext = cardsPlayed + _rndIv(45);
-      forcedQueue.push(getEvliyaCard());
-    }
-    // Tarihsel figürler (Barbaros / Leonardo / Mahidevran): ortalama 70 kart, aralık 53-88
-    if (cardsPlayed >= _easterHistNext) {
-      _easterHistNext = cardsPlayed + _rndIv(70);
-      forcedQueue.push(getNextHistoricalCard());
-    }
-    // Zaman Yolcusu: ortalama 80 kart, aralık 60-100
-    if (cardsPlayed >= _easterZamanNext) {
-      _easterZamanNext = cardsPlayed + _rndIv(80);
-      forcedQueue.push(getZamanCard());
-    }
-    // Fısıltı karakteri: ortalama 95 kart, aralık 71-119, sadece gece
-    if (isNight && cardsPlayed >= _easterFisildayanNext) {
-      _easterFisildayanNext = cardsPlayed + _rndIv(95);
-      forcedQueue.push(getFisildayanCard());
+    // Bu 7 "sırf eğlence" easter egg'i (+ aşağıdaki Pargalı) paylaşılan bir 40-kart
+    // bekleme süresine tabi — her biri kendi aralığına uysa bile üst üste binip
+    // "çok sık easter egg geliyor" hissi yaratıyordu. Süre dolmadıysa hiçbiri
+    // ateşlenmez (kendi eşiği geçmiş olsa da bir sonraki uygun ana ertelenir).
+    if (cardsPlayed - _lastEasterEggAt >= 40) {
+      const _eggQueueLenBefore = forcedQueue.length;
+      // Saray Kedisi: ortalama 65 kart, aralık 49-81
+      if (cardsPlayed >= _easterKediNext) {
+        _easterKediNext = cardsPlayed + _rndIv(65);
+        forcedQueue.push({ ...EASTER_CARDS.saray_kedisi });
+      }
+      // Yanlış Adam: ortalama 55 kart, aralık 41-69
+      else if (cardsPlayed >= _easterYanlisNext) {
+        _easterYanlisNext = cardsPlayed + _rndIv(55);
+        _easterYanlisCount++;
+        const yanlis = { ...EASTER_CARDS.yanlis_adam };
+        if (_easterYanlisCount >= 3) yanlis.easter_type = "yanlis_idam";
+        forcedQueue.push(yanlis);
+      }
+      // Tarihsel Kehanet: ortalama 60 kart, aralık 45-75
+      else if (cardsPlayed >= _easterKehanetNext) {
+        _easterKehanetNext = cardsPlayed + _rndIv(60);
+        forcedQueue.push(getKehanetCard());
+      }
+      // Evliya Çelebi: ortalama 45 kart, aralık 34-56
+      else if (cardsPlayed > 0 && cardsPlayed >= _easterEvliyaNext) {
+        _easterEvliyaNext = cardsPlayed + _rndIv(45);
+        forcedQueue.push(getEvliyaCard());
+      }
+      // Tarihsel figürler (Barbaros / Leonardo / Mahidevran): ortalama 70 kart, aralık 53-88
+      else if (cardsPlayed >= _easterHistNext) {
+        _easterHistNext = cardsPlayed + _rndIv(70);
+        forcedQueue.push(getNextHistoricalCard());
+      }
+      // Zaman Yolcusu: ortalama 80 kart, aralık 60-100
+      else if (cardsPlayed >= _easterZamanNext) {
+        _easterZamanNext = cardsPlayed + _rndIv(80);
+        forcedQueue.push(getZamanCard());
+      }
+      // Fısıltı karakteri: ortalama 95 kart, aralık 71-119, sadece gece
+      else if (isNight && cardsPlayed >= _easterFisildayanNext) {
+        _easterFisildayanNext = cardsPlayed + _rndIv(95);
+        forcedQueue.push(getFisildayanCard());
+      }
+      if (forcedQueue.length > _eggQueueLenBefore) _lastEasterEggAt = cardsPlayed;
     }
     // Dönüm Noktası: her ~5 yılda bir tekrarlanır (oyun başına en fazla _donumMaxShows kez)
     if (_donumShownCount < _donumMaxShows && cardsPlayed >= _donumNextCard) {
@@ -5816,9 +5840,11 @@ function decide(dir) {
     }
     // Padişah Ödülü tılsımı: 3 tur boyunca 4 ana güçte hiçbir negatif etki uygulanmaz
     if (_sultanFavorTurns > 0) _sultanFavorTurns--;
-    // Pargalı İbrahim: en erken 35. kart, oyun başına 1 kez, %4
-    if (!_easterPargaliDone && cardsPlayed >= 35 && Math.random() < 0.04) {
+    // Pargalı İbrahim: en erken 35. kart, oyun başına 1 kez, %4 — o da paylaşılan
+    // 40-kart easter egg bekleme süresine tabi.
+    if (!_easterPargaliDone && cardsPlayed >= 35 && (cardsPlayed - _lastEasterEggAt >= 40) && Math.random() < 0.04) {
       _easterPargaliDone = true;
+      _lastEasterEggAt = cardsPlayed;
       forcedQueue.push({ ...EASTER_CARDS.pargali });
     }
 
