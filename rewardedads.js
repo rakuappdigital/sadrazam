@@ -41,19 +41,29 @@ const RewardedAds = (() => {
   // formatı, native SDK seviyesinde ödül eşiğine ulaşılmadan reklamın
   // kapatılmasına zaten izin vermiyor — yani "dismissed" olayının gelmesi TEK
   // BAŞINA ödülün hak edildiğini gösterir, ayrı bir onay beklemeye gerek yok.
-  const show = (onReward, onCancel) => {
+  // onShow: native "onRewardedVideoAdShowed" — reklam gerçekten tam ekrana
+  // çıktı. Çağıran taraf (game.js) bunu, "reklam hiç açılmadı" için koyduğu
+  // kısa güvenlik zaman aşımını iptal etmek için kullanır — reklamın izlenme
+  // süresi (15-30+ sn) boyunca ayrıca bir zaman aşımı OLMAMALI, yoksa reklam
+  // hâlâ oynarken kod "takıldı" sanıp gerçek sonucu (dismiss/reward) görmezden
+  // gelir (bu tam olarak yaşanan bug'dı).
+  const show = (onReward, onCancel, onShow) => {
     if (!_cap || !_ready) {
       _showSimulatedAd(onReward, onCancel);
       return;
     }
+    const showedListener = _cap.addListener("onRewardedVideoAdShowed", () => {
+      showedListener.remove();
+      if (onShow) onShow();
+    });
     const rewardListener = _cap.addListener("onRewardedVideoAdReward", () => {});
     const dismissListener = _cap.addListener("onRewardedVideoAdDismissed", () => {
-      rewardListener.remove(); dismissListener.remove();
+      showedListener.remove(); rewardListener.remove(); dismissListener.remove();
       prepare(); // sıradaki gösterim için yeniden hazırla
       onReward();
     });
     _cap.showRewardVideoAd().catch(() => {
-      rewardListener.remove(); dismissListener.remove();
+      showedListener.remove(); rewardListener.remove(); dismissListener.remove();
       onCancel();
     });
   };

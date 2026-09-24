@@ -323,8 +323,13 @@ function showSecondChanceOffer(reason) {
     if (adsLeft <= 0 || _handled) return;
     _handled = true;
     lockButtons();
-    // Native reklam çağrısı native tarafta hiç yanıt vermezse (özellikle simülatörde)
-    // arayüz sonsuza dek kilitli kalmasın diye güvenlik zaman aşımı
+    // Native reklam çağrısı native tarafta hiç yanıt vermezse (özellikle simülatörde
+    // reklam hiç AÇILMAZSA) arayüz sonsuza dek kilitli kalmasın diye güvenlik zaman
+    // aşımı — ama SADECE reklam açılana kadar geçerli. Reklam bir kez tam ekrana
+    // çıktıysa (onShow) bu sayaç iptal edilir: gerçek reklamlar 15-30+ sn sürebiliyor,
+    // bunu kısa bir sabit sayıyla sınırlarsak reklam hâlâ oynarken "takıldı" sanıp
+    // ikinci bir teklif ekranı açardık — asıl dismiss/reward sonucu geldiğinde de
+    // `settled` zaten true olduğu için ödül asla verilmezdi (yaşanan gerçek bug buydu).
     let settled = false;
     const safety = setTimeout(() => {
       if (settled) return;
@@ -333,7 +338,7 @@ function showSecondChanceOffer(reason) {
       showSecondChanceOffer(reason);
     }, 8000);
     RewardedAds.show(
-      () => { // reklam tamamlandı
+      () => { // reklam tamamlandı (izlendi ya da izlenmeden kapatıldı — her ikisi de ödüllü)
         if (settled) return;
         settled = true; clearTimeout(safety);
         incrementSecondChanceAdsUsedToday();
@@ -346,6 +351,10 @@ function showSecondChanceOffer(reason) {
         settled = true; clearTimeout(safety);
         closeOverlay();
         showSecondChanceOffer(reason);
+      },
+      () => { // reklam tam ekrana çıktı — artık ne kadar sürerse sürsün bekle
+        if (settled) return;
+        clearTimeout(safety);
       }
     );
   };
