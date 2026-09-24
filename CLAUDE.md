@@ -224,6 +224,17 @@ dışarıda bir görsel üretici gerekmiyor.
   `GADApplicationIdentifier`/`SKAdNetworkItems`/`NSUserTrackingUsageDescription`
   ayarlı. `app-ads.txt` hem kökte hem `www/`'de (`google.com,
   pub-7882143822556333, DIRECT, f08c47fec0942fa0`).
+- **KRİTİK — İkinci Şans reklam güvenlik zaman aşımı (25 Eylül 2026'da düzeltildi):**
+  `game.js`'te `RewardedAds.show()` çağrısındaki "reklam takıldıysa" güvenlik
+  zaman aşımı SADECE reklam hiç açılmadıysa (native `onRewardedVideoAdShowed`
+  event'i hiç gelmediyse) çalışmalı — reklam gerçek ekrana çıktıktan sonra
+  ASLA kısa sabit bir süreyle (ör. 8sn) sınırlanmamalı, çünkü gerçek rewarded
+  video'lar 15-30+ sn sürüyor. Bu değer kısa tutulursa reklam hâlâ oynarken
+  kod "takıldı" sanıp ikinci bir teklif ekranı açıyor, asıl `Dismissed`/ödül
+  sonucu geldiğinde de `settled` bayrağı zaten true olduğu için ödül hiç
+  verilmiyor (gerçek, canlıda görülmüş bug'dı — kullanıcı reklamı tam izlese
+  bile oyuna dönemiyordu). `rewardedads.js`'teki `show(onReward, onCancel,
+  onShow)` üçüncü parametresi tam bunun için var — bu callback'i kaldırma.
 - **Promosyon kodu UI'ı:** Ayarlar'da "PROMOSYON KODU" butonu →
   `RC.presentCodeRedemptionSheet()` (Apple'ın NATİF kod giriş ekranı — kendi
   metin kutusu YAPMA, iOS'ta bu şekilde çalışmıyor; Apple'ın ASC'de ürettiğin
