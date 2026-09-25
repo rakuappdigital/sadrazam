@@ -282,8 +282,18 @@ dışarıda bir görsel üretici gerekmiyor.
 
 ## 7. Test metodolojisi
 
+- **GÜNCELLEME (25 Eylül 2026):** `/Users/mac/Projects/sadrazamtest/`
+  yerel klasörü artık tamamen silinmiş durumda — `node_modules/puppeteer`
+  da onunla gitti. Aşağıdaki puppeteer yolu artık ÇALIŞMIYOR, önce
+  `find / -iname puppeteer -path "*/node_modules/*"` ile başka bir kurulum
+  var mı kontrol et, yoksa gerekirse `npm install puppeteer` ile bu projeye
+  (`sadrazam-web`) kur. Native (Capacitor/AdMob gibi) davranışları test
+  etmen gerekiyorsa zaten puppeteer/tarayıcı bunu test edemez — bkz. §9'daki
+  "reklam ödülü" fix'inde native köprüyü Node `vm` ile taklit eden birim testi
+  örneği.
 - Puppeteer, `/Users/mac/Projects/sadrazamtest/node_modules/puppeteer`
-  yolundan `require` edilir (ayrı bir proje ama paket oradan kullanılıyor).
+  yolundan `require` edilir (ayrı bir proje ama paket oradan kullanılıyor,
+  yukarıdaki güncellemeye bkz — bu artık geçerli değil).
 - Yerel sunucu: `python3 -m http.server <port> --directory
   /Users/mac/Projects/sadrazam-web` (kökten servis et, `www/`'den değil —
   kaynak dosyaları test ediyoruz).
@@ -317,3 +327,66 @@ Puppeteer testi (gerçek senaryo, gerçek tıklama/timing) → 2 kopyaya senkron
 App Store'a gönderim (archive/upload) gibi geri dönüşü zor adımlar öncesi
 kısa bir onay iste (zaten sık talep ediliyorsa tekrar sorma, ama versiyon
 numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
+
+## 9. Değişiklik Geçmişi (kronolojik, en yeni en üstte)
+
+Her önemli düzeltme/özellik burada kısa bir kayıt olarak tutulur — "ne
+bozulmuştu, neden, nasıl düzeltildi" hızlıca hatırlanabilsin diye. Bir konu
+tekrar gündeme gelirse önce burayı tara.
+
+### 25 Eylül 2026 — İkinci Şans reklamında ödül verilmeme + gelir kaybı (v1.3.9, build 22)
+
+**Şikayet (kullanıcı, defalarca yaşanmış, ciddi kullanıcı/gelir kaybına yol
+açmış):** İkinci Şans'ta "Reklam İzle"ye basınca bazen 2 reklam üst üste
+gösteriliyor, reklam bitince "ödül ver" gelmiyor ya da geldiğinde tıklanınca
+oyuna dönmüyor — reklam izlense bile ne AdMob'da düzgün "izlendi" sayılıyor
+ne de kullanıcıya ödül/oyuna devam veriliyor.
+
+**Kök neden 1 — `game.js`'teki güvenlik zaman aşımı:** `RewardedAds.show()`
+çağrısından sonra sabit **8 saniyelik** bir "reklam takıldı" zaman aşımı
+vardı. Gerçek rewarded video reklamlar 15-30+ sn sürdüğü için bu süre reklam
+HÂLÂ OYNARKEN doluyordu; kod erkenden "sonuçlandı" (`settled=true`) sayıp
+ikinci bir teklif ekranı açıyordu. Reklam gerçekten bitip native
+`onRewardedVideoAdDismissed` geldiğinde `if (settled) return` yüzünden asıl
+ödül/oyuna-devam mantığı hiç çalışmıyordu.
+
+**Kök neden 2 (daha ciddi) — `@capacitor-community/admob`'un iOS native
+kaynağı (`node_modules/.../ios/.../Rewarded/AdRewardExecutor.swift`)
+incelenerek bulundu:** Reklam gösterimi native tarafta başarısız olursa
+(`didFailToPresentFullScreenContentWithError`), plugin JS'teki
+`showRewardVideoAd()` promise'ini **hiç resolve/reject etmiyor** — sadece
+ayrı bir `onRewardedVideoAdFailedToShow` event'i yayınlıyor. Bu event eskiden
+HİÇ dinlenmiyordu, yani bu senaryoda arayüz **süresiz kilitli** kalıyordu.
+Ayrıca `_ready`/`_adLoaded` bayrağı reklam gerçekten yüklenmeden (sadece
+`initialize()` biter bitmez) true oluyordu, ve bir yükleme hatasından sonra
+(`onRewardedVideoAdFailedToLoad`) o oturumda BİR DAHA HİÇ yeniden
+denenmiyordu.
+
+**Fix (`rewardedads.js` + `game.js`):**
+- `show(onReward, onCancel, onShow)` — üçüncü `onShow` parametresi native
+  `onRewardedVideoAdShowed` event'ine bağlı; `game.js`'teki zaman aşımı
+  SADECE reklam hiç açılmadıysa (bu event hiç gelmediyse) devreye giriyor,
+  reklam bir kez açıldı mı iptal ediliyor. Reklam açıldıktan sonra da
+  native'in tamamen sessiz kalma ihtimaline karşı çok uzun (45sn) ayrı bir
+  son çare (`hangGuard`) eklendi — normal reklam süresini asla kesmiyor.
+- `onRewardedVideoAdFailedToShow` artık dinleniyor → bu durumda `onCancel()`
+  çağrılıp kullanıcı teklif ekranına döndürülüyor (eskiden sonsuza dek
+  kilitleniyordu).
+- `_adLoaded` artık sadece gerçek `onRewardedVideoAdLoaded` event'inde true
+  oluyor; `onRewardedVideoAdFailedToLoad` olursa 30sn sonra otomatik tekrar
+  deneniyor.
+- Doğrulama: Puppeteer mevcut değildi (`sadrazamtest` silinmiş — bkz. §7),
+  bunun yerine Node `vm` ile sahte bir Capacitor/AdMob köprüsü kurulup 3
+  senaryo test edildi: (a) uzun reklam + geç dismiss → ödül veriliyor,
+  (b) native sessiz hata (FailedToShow) → kilitlenmeden `onCancel`
+  çalışıyor, (c) reklam hiç yüklenmemiş → native çağrı hiç yapılmadan
+  simüle reklama düşülüyor. Üçü de PASS.
+- Versiyon 1.3.8 zaten onaylı/yayında olduğu için (ASC yeni build kabul
+  etmiyor) **1.3.9, build 22** olarak TestFlight'a yüklendi
+  (Delivery UUID `3d47ae49-bc3b-4512-a0d7-531f8ab31563`). Kullanıcı gerçek
+  cihazda doğrulayacak.
+- **Bu konu tekrar gündeme gelirse:** önce bu fix'in gerçekten TestFlight'ta
+  doğrulanıp doğrulanmadığını sor/kontrol et — henüz doğrulanmadıysa aynı
+  bug'ın tekrarı mı yoksa yeni bir varyant mı ayırt etmek için native
+  event log'larına (Xcode konsolu / `NSLog` satırları
+  `AdRewardExecutor.swift`'te zaten var) bakılmalı.
