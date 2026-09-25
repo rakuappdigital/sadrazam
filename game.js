@@ -323,15 +323,22 @@ function showSecondChanceOffer(reason) {
     if (adsLeft <= 0 || _handled) return;
     _handled = true;
     lockButtons();
-    // Native reklam çağrısı native tarafta hiç yanıt vermezse (özellikle simülatörde
-    // reklam hiç AÇILMAZSA) arayüz sonsuza dek kilitli kalmasın diye güvenlik zaman
-    // aşımı — ama SADECE reklam açılana kadar geçerli. Reklam bir kez tam ekrana
-    // çıktıysa (onShow) bu sayaç iptal edilir: gerçek reklamlar 15-30+ sn sürebiliyor,
-    // bunu kısa bir sabit sayıyla sınırlarsak reklam hâlâ oynarken "takıldı" sanıp
-    // ikinci bir teklif ekranı açardık — asıl dismiss/reward sonucu geldiğinde de
-    // `settled` zaten true olduğu için ödül asla verilmezdi (yaşanan gerçek bug buydu).
+    // İki ayrı güvenlik zaman aşımı, iki ayrı senaryo için:
+    //   1) launchGuard: reklam native tarafta hiç AÇILMAZSA (çağrı sessizce
+    //      düşerse) arayüz sonsuza dek kilitli kalmasın — reklam gösterime
+    //      girmeden önceki, çok kısa pencereyi kapsar. `onShow` gelir gelmez
+    //      iptal edilir, gerçek reklam süresini ASLA kısıtlamaz (eskiden 8sn
+    //      sabit bir süre reklamın TAMAMINI sınırlıyordu — bu, reklam hâlâ
+    //      oynarken kodun "takıldı" sanıp ikinci bir teklif ekranı açmasına
+    //      ve gerçek dismiss/reward sonucu geldiğinde `settled` zaten true
+    //      olduğu için ödülün asla verilmemesine yol açan bug'dı).
+    //   2) hangGuard: reklam açıldıktan SONRA native tarafın tamamen sessiz
+    //      kalması (SDK/plugin hatası) ihtimaline karşı çok uzun bir son çare
+    //      — normal bir ödüllü reklamın en uzun süresinin bile üstünde
+    //      tutulur, gerçek izlemeyi kesintiye uğratmaz.
     let settled = false;
-    const safety = setTimeout(() => {
+    let hangGuard = null;
+    const launchGuard = setTimeout(() => {
       if (settled) return;
       settled = true;
       closeOverlay();
@@ -340,21 +347,27 @@ function showSecondChanceOffer(reason) {
     RewardedAds.show(
       () => { // reklam tamamlandı (izlendi ya da izlenmeden kapatıldı — her ikisi de ödüllü)
         if (settled) return;
-        settled = true; clearTimeout(safety);
+        settled = true; clearTimeout(launchGuard); clearTimeout(hangGuard);
         incrementSecondChanceAdsUsedToday();
         _secondChanceUsedThisDeath = true;
         closeOverlay();
         resolveSecondChance();
       },
-      () => { // izlemeden kapattı / kullanılamadı, teklif ekranına dön
+      () => { // izlemeden kapattı / hiç gösterilemedi, teklif ekranına dön
         if (settled) return;
-        settled = true; clearTimeout(safety);
+        settled = true; clearTimeout(launchGuard); clearTimeout(hangGuard);
         closeOverlay();
         showSecondChanceOffer(reason);
       },
       () => { // reklam tam ekrana çıktı — artık ne kadar sürerse sürsün bekle
         if (settled) return;
-        clearTimeout(safety);
+        clearTimeout(launchGuard);
+        hangGuard = setTimeout(() => {
+          if (settled) return;
+          settled = true;
+          closeOverlay();
+          showSecondChanceOffer(reason);
+        }, 45000);
       }
     );
   };
