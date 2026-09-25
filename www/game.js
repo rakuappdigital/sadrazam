@@ -7019,6 +7019,14 @@ document.getElementById('sett-promo-btn')?.addEventListener('click', async () =>
 document.getElementById('sett-close').addEventListener('click',   hideSettingsOverlay);
 _settOv.addEventListener('click', e => { if (e.target === _settOv) hideSettingsOverlay(); });
 
+// ── Hakkında Popup ───────────────────────────────────────────────
+const _aboutOv = document.getElementById('about-overlay');
+function showAboutOverlay() { _aboutOv.style.display = 'flex'; }
+function hideAboutOverlay() { _aboutOv.style.display = 'none'; }
+document.getElementById('sett-about-btn').addEventListener('click', showAboutOverlay);
+document.getElementById('about-close').addEventListener('click', hideAboutOverlay);
+_aboutOv.addEventListener('click', e => { if (e.target === _aboutOv) hideAboutOverlay(); });
+
 function showHaritaOverlay() {
   document.getElementById('harita-overlay')?.remove();
   const isEN = window.LANG === 'en';

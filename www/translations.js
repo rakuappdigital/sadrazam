@@ -494,6 +494,11 @@ window.UI_STRINGS = {
     'sett.promo_btn':       'PROMOSYON KODU',
     'sett.promo_unavailable': 'Şu an kullanılamıyor.',
     'sett.close':           'KAPAT',
+    'sett.about_btn':       'HAKKINDA',
+    'about.title':          'HAKKINDA',
+    'about.text':           'Divan, bir stüdyoda değil, bir kişinin ekranında doğdu. Her kart, her denge, her yeni özellik tek bir geliştiricinin elinden çıkıyor. Oyun büyümeye devam ediyor — sen de bu hikâyenin bir parçasısın. Desteğin, bu yolculuğun sürmesini sağlıyor.',
+    'about.thanks':         'Desteğin için teşekkürler ♡',
+    'about.close':          'KAPAT',
     // Harita
     'harita.title':         'İMPARATORLUK HARİTASI',
     'harita.status':        'İmparatorluk Durumu',
@@ -668,6 +673,11 @@ window.UI_STRINGS = {
     'sett.promo_btn':       'PROMO CODE',
     'sett.promo_unavailable': 'Not available right now.',
     'sett.close':           'CLOSE',
+    'sett.about_btn':       'ABOUT',
+    'about.title':          'ABOUT',
+    'about.text':           'The Divan wasn’t born in a studio — it was built on one person’s screen. Every card, every balance, every new feature comes from a single developer’s hands. The Divan keeps growing, and you’re part of that story. Your support is what keeps this journey going.',
+    'about.thanks':         'Thank you for your support ♡',
+    'about.close':          'CLOSE',
     // Map
     'harita.title':         'IMPERIAL MAP',
     'harita.status':        'Empire Status',

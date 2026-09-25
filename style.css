@@ -4146,6 +4146,61 @@ html, body {
   min-height: 14px;
   margin-top: 6px;
 }
+.sett-about-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  padding: 11px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(201,162,39,0.2);
+  background: transparent;
+  color: rgba(201,162,39,0.55);
+  cursor: pointer;
+  margin-top: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+.sett-about-btn svg { width: 12px; height: 12px; opacity: 0.8; flex-shrink: 0; }
+.sett-about-btn:active { background: rgba(201,162,39,0.1); color: var(--gold); }
+
+/* Hakkında Popup — ayarlar panelinin üzerinde açılır */
+#about-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.72);
+  z-index: 550; display: none; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+#about-box {
+  background: #0E0B1A; border: 1px solid var(--gold-dim); border-radius: 14px;
+  padding: 32px 24px; max-width: 320px; width: 88%;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  text-align: center; animation: iipSlideUp 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+#about-ornament { color: var(--gold); font-size: 18px; }
+#about-title {
+  font-family: 'Cinzel Decorative', serif; font-size: 16px;
+  color: var(--gold); letter-spacing: 3px;
+}
+#about-divider { width: 60px; height: 1px; background: var(--gold-dim); }
+#about-text {
+  font-family: 'IM Fell English', serif; font-size: 14px;
+  color: var(--text); line-height: 1.75; opacity: 0.88; font-style: italic;
+  margin: 0;
+}
+#about-thanks {
+  font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px;
+  color: var(--gold-light);
+}
+#about-close {
+  width: 100%; padding: 12px; font-family: 'Cinzel', serif; font-size: 12px;
+  letter-spacing: 2px; color: var(--gold); background: rgba(201,162,39,0.1);
+  border: 1px solid var(--gold-dim); border-radius: 6px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; transition: background 0.2s; margin-top: 4px;
+}
+#about-close:active { background: rgba(201,162,39,0.22); }
 
 /* ════════════════════════════════════════
    EYALET DİVANI
