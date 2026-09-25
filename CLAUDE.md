@@ -252,6 +252,20 @@ dışarıda bir görsel üretici gerekmiyor.
   `onRewardedVideoAdShowed`/`onRewardedVideoAdFailedToShow`/
   `onRewardedVideoAdLoaded`/`onRewardedVideoAdFailedToLoad` dinleyicilerini
   kaldırma — hepsi gerçek, doğrulanmış bug'ları kapatıyor.
+- **Market + Reklamsız (25 Eylül 2026):** Ana menüdeki eski "AKÇE AL" butonu
+  (`#btn-akcesystem`, id değişmedi) artık "MARKET". Aynı `#akce-screen`
+  içinde iki bölüm var: **Reklamsız** (non-consumable
+  `com.rakuappdigital.sadrazam.noads`, ₺59,99 / $1.99) ve **Akçe Keseleri**.
+  Reklamsız alınınca `localStorage.sadrazam_noads='1'` →
+  `_maybeShowInterstitialThenStartGame()` geçiş reklamını hiç göstermez;
+  İkinci Şans'taki ödüllü reklam isteğe bağlı olduğu için etkilenmez.
+  RevenueCat'te ayrı entitlement YOK — sahiplik
+  `customerInfo.allPurchasedProductIdentifiers`/`nonSubscriptionTransactions`
+  üzerinden `_applyNoAdsFromCustomerInfo()` ile okunuyor (her customerInfo
+  güncellemesinde `_applyCustomerInfo` içinden). Market'te "Satın Almaları Geri
+  Yükle" linki var (non-consumable için Apple şartı). Yetersiz akçe yüzünden
+  `redirectToAkcePurchase()` ile gelindiyse `#akce-screen.from-need` sınıfı
+  Reklamsız bölümünü gizler.
 - **Promosyon kodu UI'ı:** Ayarlar'da "PROMOSYON KODU" butonu →
   `RC.presentCodeRedemptionSheet()` (Apple'ın NATİF kod giriş ekranı — kendi
   metin kutusu YAPMA, iOS'ta bu şekilde çalışmıyor; Apple'ın ASC'de ürettiğin

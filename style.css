@@ -1453,10 +1453,10 @@ html, body {
   background: linear-gradient(180deg, #14101F 0%, var(--card-bg) 100%);
   border: 1px solid var(--gold-dim);
   border-radius: 20px;
-  padding: 40px 30px 32px;
+  padding: 30px 22px 22px;
   max-width: 400px;
-  width: 90%;
-  margin: auto;
+  width: calc(100% - 32px);
+  margin: 24px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1467,26 +1467,28 @@ html, body {
     0 0 90px rgba(201,162,39,0.18),
     0 20px 60px rgba(0,0,0,0.95);
 }
-#akce-crest {
-  font-size: 40px;
-  margin-bottom: 2px;
+#market-crest {
+  width: 46px; height: 46px;
+  color: var(--gold);
+  filter: drop-shadow(0 0 12px rgba(201,162,39,0.35));
   animation: paywallPulse 2.6s ease-in-out infinite;
 }
+#market-crest svg { width: 100%; height: 100%; display: block; }
 #akce-title {
   font-family: 'Cinzel Decorative', serif;
-  font-size: 20px;
+  font-size: 22px;
   color: var(--gold);
-  letter-spacing: 1.5px;
+  letter-spacing: 3px;
 }
-#akce-divider { width: 70px; height: 1px; background: var(--gold-dim); margin: 2px 0; }
+#akce-divider { width: 70px; height: 1px; background: var(--gold-dim); margin: 0 0 2px; }
 #akce-text {
   font-family: 'IM Fell English', serif;
-  font-size: 14px;
+  font-style: italic;
+  font-size: 12.5px;
   color: var(--text);
-  line-height: 1.6;
-  margin: 0;
-  opacity: 0.9;
-  max-width: 320px;
+  line-height: 1.45;
+  margin: -2px 0 12px;
+  opacity: 0.6;
 }
 #akce-balance-row {
   width: 100%;
@@ -1494,18 +1496,121 @@ html, body {
   align-items: center;
   justify-content: space-between;
   font-family: 'Cinzel', serif;
-  font-size: 12px;
-  letter-spacing: 1px;
-  color: rgba(240,230,208,0.6);
-  padding: 8px 4px;
-  border-top: 1px solid rgba(201,162,39,0.15);
-  border-bottom: 1px solid rgba(201,162,39,0.15);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(240,230,208,0.55);
+  padding: 9px 14px;
+  border: 1px solid rgba(201,162,39,0.18);
+  border-radius: 10px;
+  background: rgba(201,162,39,0.04);
 }
+#akce-balance-row .akce-balance-wrap { color: var(--gold); font-size: 10px; letter-spacing: 1.5px; }
 #akce-balance-row .akce-balance-display {
   font-family: 'Cinzel Decorative', serif;
-  color: var(--gold);
-  font-size: 15px;
+  color: var(--gold-light);
+  font-size: 16px;
+  letter-spacing: 0;
 }
+
+/* ── Market bölümleri ── */
+.market-section { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 4px; }
+.market-section-head {
+  width: 100%;
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(201,162,39,0.75);
+  margin-bottom: 10px;
+}
+.market-section-head::before,
+.market-section-head::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,162,39,0.4));
+}
+.market-section-head::after { background: linear-gradient(90deg, rgba(201,162,39,0.4), transparent); }
+
+#noads-card {
+  width: 100%;
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 12px 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(201,162,39,0.45);
+  background:
+    radial-gradient(ellipse at 0% 50%, rgba(179,39,31,0.18), transparent 60%),
+    linear-gradient(135deg, rgba(201,162,39,0.12), rgba(201,162,39,0.03));
+  box-shadow: 0 0 22px rgba(201,162,39,0.10), inset 0 1px 0 rgba(232,200,74,0.12);
+  text-align: left;
+}
+#noads-emblem {
+  flex-shrink: 0;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 38% 32%, #c4342b, #7a1712 72%);
+  border: 2px double var(--gold-light);
+  color: var(--gold-light);
+  box-shadow: 0 0 14px rgba(179,39,31,0.4);
+}
+#noads-emblem svg { width: 26px; height: 26px; }
+#noads-info { flex: 1; min-width: 0; }
+#noads-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: 0.5px;
+  color: var(--gold-light);
+  margin-bottom: 3px;
+}
+#noads-desc {
+  font-family: 'IM Fell English', serif;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: rgba(240,230,208,0.78);
+}
+#noads-buy-btn {
+  flex-shrink: 0;
+  min-width: 78px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-light);
+  background: linear-gradient(180deg, #E8C84A, #B38D1C);
+  color: #1a1206;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(201,162,39,0.3);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.12s;
+}
+#noads-buy-btn:active { transform: scale(0.95); }
+#noads-card.owned { border-color: rgba(201,162,39,0.3); box-shadow: none; }
+#noads-card.owned #noads-buy-btn {
+  background: transparent;
+  border-color: rgba(201,162,39,0.4);
+  color: var(--gold);
+  box-shadow: none;
+  min-width: 0;
+  padding: 8px 10px;
+  font-size: 9.5px;
+  letter-spacing: 1px;
+  cursor: default;
+}
+#noads-note {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 11.5px;
+  color: rgba(240,230,208,0.45);
+  margin-top: 7px;
+}
+/* Yetersiz akçe yüzünden başka bir ekrandan gelindiyse sadece akçe keseleri görünsün */
+#akce-screen.from-need #market-noads { display: none; }
+
 /* ── Ferman Mührü — fiyat/miktar gösterimi (Akçe + Tam Sürüm ortak) ── */
 .pack-caption {
   font-family: 'Cinzel', serif;
@@ -1561,31 +1666,75 @@ html, body {
 #akce-pack-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin: 4px 0 6px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
 }
 .akce-pack-btn {
-  background: none;
-  border: none;
-  padding: 4px 2px 8px;
+  position: relative;
+  background: rgba(201,162,39,0.03);
+  border: 1px solid rgba(201,162,39,0.16);
+  border-radius: 12px;
+  padding: 14px 2px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 9px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  border-radius: 12px;
-  transition: background 0.15s;
+  touch-action: manipulation;
+  transition: background 0.15s, border-color 0.15s;
 }
-.akce-pack-btn:active { background: rgba(201,162,39,0.08); }
-.akce-pack-btn .ferman { transition: transform 0.15s; }
-.akce-pack-btn:active .ferman { transform: scale(0.96); }
+.akce-pack-btn:active { background: rgba(201,162,39,0.1); border-color: rgba(201,162,39,0.45); }
+.akce-pack-btn .ferman { width: 60px; height: 60px; border-width: 2px; transition: transform 0.15s; }
+.akce-pack-btn .ferman::before { inset: 4px; }
+.akce-pack-btn .ferman .famt { font-size: 17px; transform: none; }
+.akce-pack-btn .ferman .funit {
+  font-family: 'Cinzel', serif;
+  font-size: 7.5px;
+  letter-spacing: 1px;
+  color: rgba(232,200,74,0.85);
+  margin-top: 2px;
+}
+.akce-pack-btn:active .ferman { transform: scale(0.94); }
+.akce-pack-btn .price-in {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 11.5px;
+  color: var(--gold-light);
+  white-space: nowrap;
+}
+.akce-pack-btn .pack-ribbon {
+  position: absolute;
+  top: -8px; left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 6.5px;
+  letter-spacing: 1px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #E8C84A, #B38D1C);
+  color: #1a1206;
+}
+.akce-pack-btn:has(.pack-ribbon) { border-color: rgba(201,162,39,0.45); }
 #akce-panel .intro-btn { width: 100%; }
 #akce-status {
   font-family: 'IM Fell English', serif;
-  font-size: 12px;
-  color: rgba(240,230,208,0.5);
+  font-size: 12.5px;
+  color: rgba(232,200,74,0.8);
   min-height: 16px;
+}
+#market-restore-btn {
+  background: none; border: none;
+  font-family: 'IM Fell English', serif;
+  font-size: 12px;
+  color: rgba(240,230,208,0.42);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 2px 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ════════════════════════════════════════

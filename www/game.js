@@ -24,6 +24,10 @@ const AKCE_PACKS = [
   { amount: 100, productId: "com.rakuappdigital.sadrazam.akce100" },
 ];
 const AKCE_FALLBACK_PRICES = { 10: "₺9,99", 20: "₺19,99", 50: "₺39,99", 100: "₺59,99" }; // FREEMIUM_ENABLED=false test modunda
+// Reklamsız: tek seferlik (non-consumable) satın alma, geçiş reklamlarını kalıcı kapatır.
+// İkinci Şans'taki ödüllü reklam isteğe bağlı olduğu için etkilenmez.
+const NOADS_PRODUCT_ID = "com.rakuappdigital.sadrazam.noads";
+const NOADS_FALLBACK_PRICE = "₺59,99";
 // Akçe simgesi — emoji yerine tema rengini (currentColor) alan tek SVG, her yerde tutarlı görünsün
 const AKCE_COIN_SVG = '<svg class="akce-coin-svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12" r="5.5" stroke="currentColor" stroke-width="1"/><path d="M12 8.3v7.4M9.8 10l2.2-1.7 2.2 1.7M9.8 14l2.2 1.7 2.2-1.7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/></svg>';
 // Stok emoji yerine geçen ince altın çizgi ikonlar — AKCE_COIN_SVG ile aynı dil
@@ -2018,7 +2022,28 @@ function _setFullVersionUnlocked(unlocked) {
 function _applyCustomerInfo(customerInfo) {
   const active = !!customerInfo?.entitlements?.active?.[REVENUECAT_ENTITLEMENT_ID];
   _setFullVersionUnlocked(active);
+  _applyNoAdsFromCustomerInfo(customerInfo);
   return active;
+}
+
+// ── Reklamsız ──
+// RevenueCat'te ayrı bir entitlement gerektirmesin diye doğrudan satın alınmış
+// ürün listesine bakılıyor (non-consumable, allPurchasedProductIdentifiers'ta kalıcı durur).
+function isAdFreeUnlocked() {
+  return localStorage.getItem('sadrazam_noads') === '1';
+}
+function _setAdFreeUnlocked(unlocked) {
+  localStorage.setItem('sadrazam_noads', unlocked ? '1' : '0');
+  updateNoAdsUI();
+}
+function _customerOwnsNoAds(customerInfo) {
+  if (!customerInfo) return false;
+  if ((customerInfo.allPurchasedProductIdentifiers || []).includes(NOADS_PRODUCT_ID)) return true;
+  return (customerInfo.nonSubscriptionTransactions || []).some(tx => tx?.productIdentifier === NOADS_PRODUCT_ID);
+}
+function _applyNoAdsFromCustomerInfo(customerInfo) {
+  if (!customerInfo) return;
+  _setAdFreeUnlocked(_customerOwnsNoAds(customerInfo));
 }
 
 async function initRevenueCat() {
@@ -2056,16 +2081,22 @@ async function initRevenueCat() {
 const AKCE_SYSTEM_ENABLED = true;
 
 let _akceProducts = {}; // productId -> RevenueCat StoreProduct (consumable, entitlement'a bağlı değil)
+let _noadsProduct = null; // Reklamsız StoreProduct (non-consumable)
 
 async function initAkceProduct() {
   if (!AKCE_SYSTEM_ENABLED) return;
   const RC = window.RevenueCatPurchases;
   if (!RC || !_rcReady) return;
   try {
-    const { products } = await RC.getProducts({ productIdentifiers: AKCE_PACKS.map(p => p.productId) });
+    const { products } = await RC.getProducts({ productIdentifiers: [...AKCE_PACKS.map(p => p.productId), NOADS_PRODUCT_ID] });
     _akceProducts = {};
-    (products || []).forEach(p => { _akceProducts[p.identifier] = p; });
+    _noadsProduct = null;
+    (products || []).forEach(p => {
+      if (p.identifier === NOADS_PRODUCT_ID) _noadsProduct = p;
+      else _akceProducts[p.identifier] = p;
+    });
     updateAkcePriceUI();
+    updateNoAdsUI();
   } catch (e) {
     console.warn('Akçe ürünleri alınamadı:', e);
   }
@@ -2088,10 +2119,35 @@ function updateAkcePriceUI() {
   });
 }
 
+function updateNoAdsUI() {
+  const card = document.getElementById('noads-card');
+  const priceEl = document.getElementById('noads-price');
+  if (!card || !priceEl) return;
+  const owned = isAdFreeUnlocked();
+  card.classList.toggle('owned', owned);
+  const btn = document.getElementById('noads-buy-btn');
+  if (btn) btn.disabled = owned;
+  if (owned) {
+    priceEl.textContent = (window.t && t('market.noads_owned')) || (window.LANG === 'en' ? 'OWNED' : 'SATIN ALINDI');
+  } else if (_noadsProduct?.priceString) {
+    priceEl.textContent = _noadsProduct.priceString;
+  } else if (!FREEMIUM_ENABLED) {
+    priceEl.textContent = NOADS_FALLBACK_PRICE;
+  } else {
+    priceEl.textContent = '…';
+  }
+}
+
 function showAkceScreen() {
-  document.getElementById('akce-screen')?.classList.add('visible');
+  const scr = document.getElementById('akce-screen');
+  scr?.classList.add('visible');
+  // İkinci Şans / Eşya Dükkanı gibi bir yerden akçe yetmediği için gelindiyse
+  // Reklamsız bölümünü gizle, oyuncu doğrudan akçe keselerini görsün.
+  scr?.classList.toggle('from-need', !!_akceReturnCallback);
+  scr && (scr.scrollTop = 0);
   updateAkceUI();
   updateAkcePriceUI();
+  updateNoAdsUI();
   const status = document.getElementById('akce-status');
   if (status) status.textContent = '';
 }
@@ -2145,10 +2201,66 @@ async function purchaseAkcePack(amount) {
   }
 }
 
+async function purchaseNoAds() {
+  if (isAdFreeUnlocked()) return;
+  const RC = window.RevenueCatPurchases;
+  const status = document.getElementById('akce-status');
+  const isEN = window.LANG === 'en';
+
+  if (!_rcReady || !RC) {
+    if (status) status.textContent = isEN ? 'Purchases are not available right now.' : 'Satın alma şu an kullanılamıyor.';
+    return;
+  }
+  if (!_noadsProduct) {
+    if (status) status.textContent = isEN ? 'No product found. Try again shortly.' : 'Ürün bulunamadı, birazdan tekrar dene.';
+    initAkceProduct(); // ürün listesi ilk açılışta gelmemiş olabilir, arka planda tekrar dene
+    return;
+  }
+  if (status) status.textContent = isEN ? 'Processing…' : 'İşleniyor…';
+  try {
+    const result = await RC.purchaseStoreProduct({ product: _noadsProduct });
+    // Satın alma başarıyla döndüyse ürün artık oyuncunun — customerInfo gecikse bile kilidi aç
+    _setAdFreeUnlocked(true);
+    processAkceTransactions(result?.customerInfo);
+    if (window.playSelectConfirm) playSelectConfirm();
+    if (status) status.textContent = isEN ? 'Ads removed. Enjoy!' : 'Reklamlar kaldırıldı. Keyifli oyunlar!';
+  } catch (e) {
+    if (e?.userCancelled) {
+      if (status) status.textContent = '';
+    } else if (status) {
+      status.textContent = isEN ? 'Purchase failed. Please try again.' : 'Satın alma başarısız oldu, tekrar dene.';
+    }
+  }
+}
+
+async function restoreMarketPurchases() {
+  const RC = window.RevenueCatPurchases;
+  const status = document.getElementById('akce-status');
+  const isEN = window.LANG === 'en';
+  if (!_rcReady || !RC) {
+    if (status) status.textContent = isEN ? 'Purchases are not available right now.' : 'Satın alma şu an kullanılamıyor.';
+    return;
+  }
+  if (status) status.textContent = isEN ? 'Restoring…' : 'Geri yükleniyor…';
+  try {
+    const { customerInfo } = await RC.restorePurchases();
+    const fullUnlocked = _applyCustomerInfo(customerInfo); // Reklamsız da burada güncellenir
+    processAkceTransactions(customerInfo);
+    const restoredAny = fullUnlocked || isAdFreeUnlocked();
+    if (status) status.textContent = restoredAny
+      ? (isEN ? 'Purchases restored.' : 'Satın almalar geri yüklendi.')
+      : (isEN ? 'No previous purchase found.' : 'Önceki bir satın alma bulunamadı.');
+  } catch (e) {
+    if (status) status.textContent = isEN ? 'Restore failed. Please try again.' : 'Geri yükleme başarısız oldu, tekrar dene.';
+  }
+}
+
 document.querySelectorAll('.akce-pack-btn').forEach(btn => {
   btn.addEventListener('click', () => purchaseAkcePack(parseInt(btn.dataset.amount, 10)));
 });
 document.getElementById('akce-close-btn')?.addEventListener('click', hideAkceScreen);
+document.getElementById('noads-buy-btn')?.addEventListener('click', purchaseNoAds);
+document.getElementById('market-restore-btn')?.addEventListener('click', restoreMarketPurchases);
 
 function updatePaywallPriceUI() {
   const el = document.getElementById('paywall-price');
@@ -2498,9 +2610,9 @@ function confirmAdvisor() {
 // "OYUNA BAŞLA" tuşuna her basıldığında sayılır, HER 2. basışta bir geçiş
 // reklamı gösterilir. Reklam gösterilemese/hiç yüklenmemiş olsa bile
 // InterstitialAds.show() her koşulda callback'i çağırır — oyun asla
-// reklama bağlı kalıp bloklanmaz. (İleride "reklamları kaldır" satın alımı
-// eklenince buraya o kontrol eklenecek.)
+// reklama bağlı kalıp bloklanmaz. Market'ten "Reklamsız" alındıysa hiç gösterilmez.
 function _maybeShowInterstitialThenStartGame() {
+  if (isAdFreeUnlocked()) { startGame(); return; }
   const n = parseInt(localStorage.getItem('sadrazam_start_count') || '0', 10) + 1;
   localStorage.setItem('sadrazam_start_count', String(n));
   if (typeof InterstitialAds !== 'undefined' && n % 2 === 0) {
