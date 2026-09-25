@@ -328,6 +328,25 @@ App Store'a gönderim (archive/upload) gibi geri dönüşü zor adımlar öncesi
 kısa bir onay iste (zaten sık talep ediliyorsa tekrar sorma, ama versiyon
 numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
+## 8b. Bekleyen (TODO)
+
+- **v1.4.0/build 23 doğrulaması (25 Eylül 2026'da yüklendi, Delivery UUID
+  `ac472189-bb59-42d3-8104-159c734c2416`):** Kullanıcı TestFlight'ta kendi
+  kontrol edip sonucu bildirecek. Bildirdiğinde:
+  1. Build App Store Connect'te işlendi mi, ilgili versiyona bağlandı mı
+     (otomatik olmuyor — bkz. §2 "Upload sonrası") kontrol et/bağla.
+  2. Geçiş reklamının (interstitial) gerçek cihazda **her 2. "OYUNA BAŞLA"
+     basışında** doğru tetiklendiğini teyit et (`interstitialads.js`,
+     `game.js` içindeki `_maybeShowInterstitialThenStartGame()`).
+  3. Ayarlar → "HAKKINDA" panelinin (buton + açılır panel, TR/EN metin)
+     gerçek cihazda düzgün açılıp kapandığını teyit et.
+  - Kullanıcı bir sorun bildirirse: önce bu maddeyi ve ilgili commit'leri
+    (`721a3eb`, `1c9171f`, `89c4555`, `a32fa06`) tara, kod tarafında zaten
+    headless Chrome ile test edilmiş senaryoları (§7'ye bak) tekrar
+    doğrulamak yerine gerçek cihaza özgü farkı (native SDK doldurma oranı,
+    ATT izni, gerçek reklam süresi vb.) araştır.
+  - Sonuç olumluysa bu maddeyi silip §9'a kısa bir kayıt düş.
+
 ## 9. Değişiklik Geçmişi (kronolojik, en yeni en üstte)
 
 Her önemli düzeltme/özellik burada kısa bir kayıt olarak tutulur — "ne
