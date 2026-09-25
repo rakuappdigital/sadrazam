@@ -2492,7 +2492,22 @@ function confirmAdvisor() {
   if (selectedAdvisors.length !== 2) { alert("Lütfen tam olarak 2 danışman seçin."); return; }
   if (window.playSelectConfirm) playSelectConfirm();
   advisorScreen.classList.add("hidden");
-  startGame();
+  _maybeShowInterstitialThenStartGame();
+}
+
+// "OYUNA BAŞLA" tuşuna her basıldığında sayılır, HER 2. basışta bir geçiş
+// reklamı gösterilir. Reklam gösterilemese/hiç yüklenmemiş olsa bile
+// InterstitialAds.show() her koşulda callback'i çağırır — oyun asla
+// reklama bağlı kalıp bloklanmaz. (İleride "reklamları kaldır" satın alımı
+// eklenince buraya o kontrol eklenecek.)
+function _maybeShowInterstitialThenStartGame() {
+  const n = parseInt(localStorage.getItem('sadrazam_start_count') || '0', 10) + 1;
+  localStorage.setItem('sadrazam_start_count', String(n));
+  if (typeof InterstitialAds !== 'undefined' && n % 2 === 0) {
+    InterstitialAds.show(startGame);
+  } else {
+    startGame();
+  }
 }
 
 // ── Sultan Seçim Ekranı ───────────────────────────────────────────
