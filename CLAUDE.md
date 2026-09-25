@@ -344,6 +344,15 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
 
+- **v1.4.0/build 24 (25 Eylül 2026'da yüklendi, Delivery UUID
+  `98a7a7b7-f668-4328-9129-b4b76573876a`) — build 23'ün üstüne Market +
+  Reklamsız eklendi.** TestFlight'ta doğrulanacak: Market açılıyor mu,
+  Reklamsız fiyatı (₺59,99) geliyor mu, satın alınca geçiş reklamı kesiliyor
+  mu, "Geri Yükle" çalışıyor mu. `noads` IAP'ı ASC'de READY_TO_SUBMIT — ilk
+  kez eklendiği için 1.4.0 App Store sürümü incelemeye gönderilirken sürüme
+  eklenmeli. **Karar (kullanıcı):** Tam Sürüm alanlar geçiş reklamını görmeye
+  devam eder, Reklamsız tamamen ayrı bir ürün — ikisini birleştirme.
+
 - **v1.4.0/build 23 doğrulaması (25 Eylül 2026'da yüklendi, Delivery UUID
   `ac472189-bb59-42d3-8104-159c734c2416`):** Kullanıcı TestFlight'ta kendi
   kontrol edip sonucu bildirecek. Bildirdiğinde:
