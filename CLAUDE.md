@@ -224,17 +224,34 @@ dışarıda bir görsel üretici gerekmiyor.
   `GADApplicationIdentifier`/`SKAdNetworkItems`/`NSUserTrackingUsageDescription`
   ayarlı. `app-ads.txt` hem kökte hem `www/`'de (`google.com,
   pub-7882143822556333, DIRECT, f08c47fec0942fa0`).
-- **KRİTİK — İkinci Şans reklam güvenlik zaman aşımı (25 Eylül 2026'da düzeltildi):**
-  `game.js`'te `RewardedAds.show()` çağrısındaki "reklam takıldıysa" güvenlik
-  zaman aşımı SADECE reklam hiç açılmadıysa (native `onRewardedVideoAdShowed`
-  event'i hiç gelmediyse) çalışmalı — reklam gerçek ekrana çıktıktan sonra
-  ASLA kısa sabit bir süreyle (ör. 8sn) sınırlanmamalı, çünkü gerçek rewarded
-  video'lar 15-30+ sn sürüyor. Bu değer kısa tutulursa reklam hâlâ oynarken
-  kod "takıldı" sanıp ikinci bir teklif ekranı açıyor, asıl `Dismissed`/ödül
-  sonucu geldiğinde de `settled` bayrağı zaten true olduğu için ödül hiç
-  verilmiyor (gerçek, canlıda görülmüş bug'dı — kullanıcı reklamı tam izlese
-  bile oyuna dönemiyordu). `rewardedads.js`'teki `show(onReward, onCancel,
-  onShow)` üçüncü parametresi tam bunun için var — bu callback'i kaldırma.
+- **KRİTİK — İkinci Şans reklam ödülü verilmeme sorunu (25 Eylül 2026'da
+  düzeltildi, 2 ayrı kök nedeni vardı, ikisi de gerçek kullanıcı kaybına yol
+  açmıştı):**
+  1. `game.js`'teki "reklam takıldıysa" güvenlik zaman aşımı SADECE reklam
+     hiç açılmadıysa (native `onRewardedVideoAdShowed` event'i hiç
+     gelmediyse) çalışmalı — reklam gerçek ekrana çıktıktan sonra ASLA kısa
+     sabit bir süreyle (eskiden 8sn) sınırlanmamalı, çünkü gerçek rewarded
+     video'lar 15-30+ sn sürüyor. Kısa tutulursa reklam hâlâ oynarken kod
+     "takıldı" sanıp ikinci bir teklif ekranı açıyor, asıl `Dismissed`/ödül
+     sonucu geldiğinde `settled` bayrağı zaten true olduğu için ödül hiç
+     verilmiyordu.
+  2. **Daha ciddisi:** `@capacitor-community/admob`'un iOS native kaynağında
+     (`AdRewardExecutor.swift`) reklam gösterimi başarısız olursa
+     (`didFailToPresentFullScreenContentWithError`), plugin JS tarafındaki
+     `showRewardVideoAd()` promise'ini HİÇ resolve/reject ETMİYOR — sadece
+     `onRewardedVideoAdFailedToShow` event'i yayınlıyor. Bu event eskiden hiç
+     dinlenmiyordu, yani bu senaryoda arayüz SÜRESİZ kilitli kalıyordu (ne
+     ödül ne iptal). `rewardedads.js`'te artık bu event de dinleniyor.
+     Ayrıca `_adLoaded` artık sadece gerçek `onRewardedVideoAdLoaded`
+     event'inde true oluyor (eskiden `initialize()` biter bitmez, reklam
+     daha yüklenmeden true oluyordu) ve `onRewardedVideoAdFailedToLoad`
+     olursa 30sn sonra otomatik yeniden deneniyor (eskiden bir yükleme
+     hatasından sonra o oturumda bir daha asla reklam hazırlanmıyordu).
+
+  `rewardedads.js`'teki `show(onReward, onCancel, onShow)` imzasını ve
+  `onRewardedVideoAdShowed`/`onRewardedVideoAdFailedToShow`/
+  `onRewardedVideoAdLoaded`/`onRewardedVideoAdFailedToLoad` dinleyicilerini
+  kaldırma — hepsi gerçek, doğrulanmış bug'ları kapatıyor.
 - **Promosyon kodu UI'ı:** Ayarlar'da "PROMOSYON KODU" butonu →
   `RC.presentCodeRedemptionSheet()` (Apple'ın NATİF kod giriş ekranı — kendi
   metin kutusu YAPMA, iOS'ta bu şekilde çalışmıyor; Apple'ın ASC'de ürettiğin
