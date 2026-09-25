@@ -10,7 +10,7 @@
 // koşulda onDone() çağırır.
 
 const InterstitialAds = (() => {
-  const INTERSTITIAL_AD_UNIT_ID = "INTERSTITIAL_AD_UNIT_ID_BURAYA"; // AdMob > Ad units > Interstitial
+  const INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-7882143822556333/7014017328"; // AdMob > Ad units > Interstitial
   const ADMOB_ENABLED = INTERSTITIAL_AD_UNIT_ID !== "INTERSTITIAL_AD_UNIT_ID_BURAYA";
 
   let _cap = null;
