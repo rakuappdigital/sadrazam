@@ -3548,7 +3548,9 @@ function getEligible() {
     const times = playCounts[c.id] || 0;
     let w = c.weight || 10;
     if (times > 0) w = Math.max(1, Math.floor(w / (times * 2)));
-    if (knotPull.has(c.id)) w = w * KNOT_PULL_BOOST;
+    // Çekim sadece bu oyunda henüz hiç çıkmamış kaynak karta: oyuncu kartı
+    // görüp diğer seçeneği seçtiyse aynı kart arka arkaya geri gelmesin
+    if (times === 0 && knotPull.has(c.id)) w = w * KNOT_PULL_BOOST;
     if (w !== (c.weight || 10)) return { ...c, weight: w };
     return c;
   });

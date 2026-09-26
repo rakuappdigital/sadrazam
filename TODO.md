@@ -19,20 +19,20 @@ sayfasında build 25'i seçip review'a gönderiyor.
       Reklamsız fiyatı (₺59,99) geliyor mu, satın alınca geçiş reklamı kesiliyor
       mu, "Geri Yükle" çalışıyor mu. `noads` IAP'ı sürüme eklendi mi kontrol et.
 
-## Tespit edilen hata (26 Eylül 2026, henüz düzeltilmedi)
+## Düğüm / gecikmeli sonuç sistemi — dalda HAZIR, main'e birleştirilmedi
 
-- **`game.js` `CHAIN_RULES` içindeki 7 gecikmeli sonucun HİÇBİRİ oyunda
-  tetiklenmiyor**: kuralların beklediği bayrakları (`yeni_kışla_reddedildi`,
-  `venedik_1_sinirlendi`, `defterdar_borc_alındı`, `casuslar_op_baslatildi`,
-  `veba_gormezden_gelindi_2`, `sehzade_affedildi`, `kaptan_filo_izni`)
-  `data/cards.json`'daki hiçbir kart set etmiyor (isimler uyuşmuyor; ör.
-  kartlarda `kışla_reddedildi` var). Ayrıca `venedik_geri_dondu` kartı hiç yok.
-  Düzeltme: bayrak adlarını kartlardakiyle eşleştir + eksik kartı yaz.
+Dal: `ozellik/dugum` (push edilmedi). Kullanıcı onayı bekleniyor: main'e
+birleştir → 2 kopya senkron → cap sync → simülatör smoke test → (istenirse) build.
+Ayrıntı: CLAUDE.md §3b. 99/99 regresyon testi geçti (26 Eylül 2026).
 
-## Düğüm mekaniği (kullanıcı demo gördü, içerik planı konuşuldu, henüz kodlanmadı)
+Bu dalda ayrıca düzeltilen mevcut hatalar: 7 ölü zincir kuralı, sonuç kartı
+çift/tekrar gelmesi, gizli hain oyunların 1/3'ünde bozuk, Şeyhülislam görsel
+dosya adı (iPhone'da boş portre riski), 'Hiç borçlanma' başarımı.
 
-Demo: https://claude.ai/artifact/NpiW7iiJccUHkoeTeJEVzw — yerel dal
-`onizleme/hatirlatma-satiri` (hatırlatma satırı denemesi, push edilmedi).
+Açık kalan (bu işten bağımsız, kullanıcıya bildirildi):
+- 375x667 (iPhone SE/8) ekranda stat çubukları ekran dışında (canlıda da var)
+- Gizli hain adaylarının 11/18'inin soruşturulabilir kartı yok (içerik eksiği)
+- Venedik Balyosu portresi farklı çerçeve/stil (birleşik kartta uyumsuz)
 
 ## Bu session'da yapılanlar (26 Eylül 2026)
 

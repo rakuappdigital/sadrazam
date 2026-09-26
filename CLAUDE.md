@@ -165,6 +165,37 @@ screenshot`) kontrol et. Archive ile üretilen `.app` **simülatörde çalışma
   (kart sayısına göre) zamanlanmış tetikleyiciler, `checkScheduledCards()` her
   `dealNext()`'te kontrol edip süresi dolanları `forcedQueue`'ya aktarır.
 
+## 3b. Gecikmeli sonuçlar ve birleşik sonuç (düğüm) — 26 Eylül 2026
+
+**Oyunda "iplik/düğüm" kelimesi GEÇMEZ** (kullanıcı kararı). Kod içi ad: knot.
+
+- **Gecikmeli sonuç kaynakları:** (1) kartta `triggers_on_left/right` +
+  `trigger_delay`, (2) `CHAIN_RULES` (bayrak → kart; bayrak adı cards.json'daki
+  `*_flags_set` ile BİREBİR aynı olmalı, `altCardId` = asıl kart engelliyse
+  alternatif), (3) grup baskısı. Hepsi `scheduleConsequence()` ile kuyruğa girer
+  (`playsAtSchedule` saklanır).
+- **Korumalar:** zamanlanmış kart beklerken destede rastgele çekilmez
+  (`getEligible`), bu arada oynandıysa ya da "çözüldü" bayrağı açıksa vakti
+  gelince gösterilmez (`_resolveDueConsequence`), `once` zinciri
+  `activeFlags._chain_fired_<kart>` ile bir kez.
+- **Sonuç kartı şablonu:** `weight: 1` (sadece zamanlı gelir),
+  `required_flags: [kaynak bayrağı]`, iki tarafta da `<id>_resolved` bayrağı +
+  `excluded_flags: [<id>_resolved]`. TR ≤ ~160, EN ≤ ~180 karakter.
+- **Birleşik kart:** cards.json'da `knot_of: [A, B]` + `knot_characters:
+  [portre1, portre2]` (FARKLI iki portre; `character` = portre1). A'nın vakti
+  gelince B `KNOT_WINDOW` (8) kart içinde bekliyorsa ikisi yerine birleşik kart
+  gelir, A ve B'nin çözüldü bayrakları açılır. Metin TR ≤ 150 / EN ≤ 170 (üstte
+  "İki kararınız aynı gün geri döndü" satırı var).
+- **Tematik çekim:** bekleyen sonucun birleşik ortağının kaynak kartı, bu oyunda
+  hiç çıkmadıysa destede `KNOT_PULL_BOOST` (25x). Doğal oyunda ölçüm: her 2-3
+  oyunda bir birleşme. Daha sık yapma — sadece 15 birleşik kart var.
+- **Görünüm:** `renderKnotVisual()` (dealNext, flyOff, Padişah ziyaretinde
+  sıfırlanır); `#card-image-knot` + `#card-knot-seam` absolute +
+  pointer-events:none; birleşik kartta nefes animasyonu kapalı.
+- Test betikleri (Puppeteer, scratchpad'te yeniden yazılabilir): her zincir
+  için zamanlama + negatif taraf, kaydet/kapat/devam (eski kayıt biçimi dahil),
+  birleşik kartlar uçtan uca, 375x667 TR/EN taşma, uzun doğal oyun.
+
 ## 4. Kritik sabitler
 
 - `CARDS_PER_YEAR = 24` (satır ~6) — **çok önemli**, yeni bir "N kartta bir
