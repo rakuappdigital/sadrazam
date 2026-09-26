@@ -361,7 +361,9 @@
         "ulema": -2,
         "hazine": 0
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "disiplin_gevsek"
+      ],
       "right_flags_set": [
         "disiplin_uygulandı"
       ],
@@ -378,7 +380,9 @@
       "right_text_en": "Do what must be done",
       "investigate_text_en": "",
       "speech_left_en": "A hungry soldier's weapon weeps.",
-      "speech_right_en": "Inform your Sultan — we are pleased."
+      "speech_right_en": "Inform your Sultan — we are pleased.",
+      "triggers_on_left": "disiplin_gevsedi",
+      "trigger_delay": 10
     },
     {
       "id": "yeniceri_yaşlı_birlik",
@@ -522,7 +526,8 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "zındıklık_soruşturması"
+        "zındıklık_soruşturması",
+        "zindiklik_sorusturmasi"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -538,7 +543,9 @@
       "right_text_en": "Begin the investigation",
       "investigate_text_en": "Upon examining the scribe's writings, they appear to contain satire rather than heresy. The real target seems to be someone in the Şeyhülislam's circle.",
       "speech_left_en": "This is not the path of God, Pasha.",
-      "speech_right_en": "So sharia commands — rightly done."
+      "speech_right_en": "So sharia commands — rightly done.",
+      "triggers_on_right": "zindiklik_davasi",
+      "trigger_delay": 10
     },
     {
       "id": "seyhulislam_hutbe",
@@ -720,7 +727,9 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "dış_borç"
+        "dış_borç",
+        "ceneviz_borcu_alindi",
+        "defterdar_borc_alındı"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -736,7 +745,9 @@
       "right_text_en": "Accept the offer",
       "investigate_text_en": "",
       "speech_left_en": "You will regret this, my lord.",
-      "speech_right_en": "The state has found safety."
+      "speech_right_en": "The state has found safety.",
+      "triggers_on_right": "borc_vadesi_geldi",
+      "trigger_delay": 14
     },
     {
       "id": "defterdar_pazar_ruhsatı",
@@ -799,7 +810,8 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "gümrük_artırıldı"
+        "gümrük_artırıldı",
+        "gumruk_iki_kati"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -814,7 +826,9 @@
       "right_text_en": "Raise the tariff",
       "investigate_text_en": "",
       "speech_left_en": "You will regret this, my lord.",
-      "speech_right_en": "The state has found safety."
+      "speech_right_en": "The state has found safety.",
+      "triggers_on_right": "gumruk_artisi_tepki",
+      "trigger_delay": 10
     },
     {
       "id": "valide_evlilik",
@@ -949,7 +963,9 @@
         "ulema": -2,
         "hazine": -3
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "cariye_arastirilmadi"
+      ],
       "right_flags_set": [
         "cariyer_araştırma"
       ],
@@ -967,7 +983,9 @@
       "right_text_en": "Investigate quietly",
       "investigate_text_en": "According to intelligence, it is not the concubine but a palace official close to her who is suspect.",
       "speech_left_en": "You should listen to your mother, Pasha.",
-      "speech_right_en": "A wise decision — may God be pleased."
+      "speech_right_en": "A wise decision — may God be pleased.",
+      "triggers_on_left": "cariye_casus_cikti",
+      "trigger_delay": 12
     },
     {
       "id": "valide_vasiyet",
@@ -1319,7 +1337,8 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "fransız_pakt"
+        "fransız_pakt",
+        "fransiz_muzakeresi"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -1334,7 +1353,9 @@
       "right_text_en": "Begin negotiations",
       "investigate_text_en": "",
       "speech_left_en": "This refusal means war, Pasha.",
-      "speech_right_en": "My homeland thanks you."
+      "speech_right_en": "My homeland thanks you.",
+      "triggers_on_right": "fransiz_ittifak_haberi",
+      "trigger_delay": 14
     },
     {
       "id": "elci_esir_takası",
@@ -1554,7 +1575,8 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "rakip_ittifak"
+        "rakip_ittifak",
+        "rakiple_ittifak"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -1569,7 +1591,9 @@
       "right_text_en": "Form a temporary alliance",
       "investigate_text_en": "",
       "speech_left_en": "You have made a mistake — you will remember it.",
-      "speech_right_en": "Unexpected understanding, Pasha."
+      "speech_right_en": "Unexpected understanding, Pasha.",
+      "triggers_on_right": "rakip_ittifak_ihaneti",
+      "trigger_delay": 14
     },
     {
       "id": "rakip_hakaret",
@@ -2601,7 +2625,9 @@
         "ulema": 0,
         "hazine": -5
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "sizinti_takip_edilmedi"
+      ],
       "right_flags_set": [
         "casuslar_ağı_genişledi"
       ],
@@ -2618,7 +2644,9 @@
       "right_text_en": "Find the source",
       "investigate_text_en": "",
       "speech_left_en": "Shadows speak in silence.",
-      "speech_right_en": "The right decision — knowledge is power."
+      "speech_right_en": "The right decision — knowledge is power.",
+      "triggers_on_left": "sizinti_devam",
+      "trigger_delay": 10
     },
     {
       "id": "casuslar_tutuklama",
@@ -2721,7 +2749,8 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "viyana_ajan"
+        "viyana_ajan",
+        "viyana_ajani_yerlesti"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -2736,7 +2765,9 @@
       "right_text_en": "Place the agent",
       "investigate_text_en": "",
       "speech_left_en": "Shadows speak in silence.",
-      "speech_right_en": "The right decision — knowledge is power."
+      "speech_right_en": "The right decision — knowledge is power.",
+      "triggers_on_right": "viyana_ajani_rapor",
+      "trigger_delay": 16
     },
     {
       "id": "casuslar_çifte_ajan",
@@ -2924,7 +2955,8 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "lonca_muafiyet"
+        "lonca_muafiyet",
+        "lonca_muafiyet_verildi"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -2939,7 +2971,9 @@
       "right_text_en": "Grant a partial exemption",
       "investigate_text_en": "",
       "speech_left_en": "The people's patience is running thin, Pasha.",
-      "speech_right_en": "The people pray for you — may God be pleased."
+      "speech_right_en": "The people pray for you — may God be pleased.",
+      "triggers_on_right": "lonca_muafiyet_sonuc",
+      "trigger_delay": 12
     },
     {
       "id": "halk_kalabalık",
@@ -3661,7 +3695,9 @@
         "ulema": 4,
         "hazine": -8
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "vergi_ertelenmedi"
+      ],
       "right_flags_set": [
         "vergi_ertelendi"
       ],
@@ -3678,7 +3714,9 @@
       "right_text_en": "Defer it for this year",
       "investigate_text_en": "",
       "speech_left_en": "The peasant cries — no one hears.",
-      "speech_right_en": "The state has not forgotten us — thanks be."
+      "speech_right_en": "The state has not forgotten us — thanks be.",
+      "triggers_on_left": "koylu_topraktan_kacti",
+      "trigger_delay": 12
     },
     {
       "id": "köylü_su_kanalı",
@@ -4168,7 +4206,9 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "yahudi_borç"
+        "yahudi_borç",
+        "yahudi_borc_alindi",
+        "defterdar_borc_alındı"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -4183,7 +4223,9 @@
       "right_text_en": "Make the deal",
       "investigate_text_en": "",
       "speech_left_en": "Fear demands a higher interest than money.",
-      "speech_right_en": "Your treasury will grow, Pasha."
+      "speech_right_en": "Your treasury will grow, Pasha.",
+      "triggers_on_right": "yahudi_borc_vadesi",
+      "trigger_delay": 14
     },
     {
       "id": "yahudi_cemaat_hak",
@@ -4284,7 +4326,9 @@
         "ulema": 0,
         "hazine": -2
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "habsburg_haberi_bekletildi"
+      ],
       "right_flags_set": [
         "habsburg_ittifak_haberi"
       ],
@@ -4301,7 +4345,9 @@
       "right_text_en": "Report it to the Head of Spies",
       "investigate_text_en": "",
       "speech_left_en": "Fear demands a higher interest than money.",
-      "speech_right_en": "Your treasury will grow, Pasha."
+      "speech_right_en": "Your treasury will grow, Pasha.",
+      "triggers_on_left": "habsburg_hazirligi_gercekti",
+      "trigger_delay": 12
     },
     {
       "id": "yahudi_müsadere_korkusu",
@@ -4443,7 +4489,8 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "gizli_ateşkes"
+        "gizli_ateşkes",
+        "gizli_ateskes_dinlendi"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -4459,7 +4506,9 @@
       "right_text_en": "Hear the secret terms",
       "investigate_text_en": "It is not coincidence that this proposal comes to you before the Sultan. The Shah wants to separate you from him.",
       "speech_left_en": "The Shah will not forgive this, Pasha.",
-      "speech_right_en": "Peace benefits both sides."
+      "speech_right_en": "Peace benefits both sides.",
+      "triggers_on_right": "gizli_ateskes_ortaya_cikti",
+      "trigger_delay": 12
     },
     {
       "id": "safevi_esir_teklifi",
@@ -4720,7 +4769,8 @@
       },
       "left_flags_set": [],
       "right_flags_set": [
-        "avrupalı_esir"
+        "avrupalı_esir",
+        "korsan_fidyeyi_kendi_aldi"
       ],
       "required_flags": [],
       "excluded_flags": [],
@@ -4735,7 +4785,9 @@
       "right_text_en": "Negotiate yourselves",
       "investigate_text_en": "",
       "speech_left_en": "On the sea, I set the rules.",
-      "speech_right_en": "The Ottoman banner waves on."
+      "speech_right_en": "The Ottoman banner waves on.",
+      "triggers_on_right": "korsan_fidye_skandal",
+      "trigger_delay": 10
     },
     {
       "id": "derviş_kıyamet",
@@ -8839,7 +8891,9 @@
         "ulema": 4,
         "hazine": -2
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "ekmek_kampanyasi_dagitildi"
+      ],
       "right_flags_set": [],
       "required_flags": [],
       "excluded_flags": [],
@@ -8854,7 +8908,9 @@
       "right_text_en": "Grant permission",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_left": "ekmek_kampanyasi_yeralti",
+      "trigger_delay": 10
     },
     {
       "id": "halk_onderi_3",
@@ -8914,7 +8970,9 @@
         "hazine": -5
       },
       "left_flags_set": [],
-      "right_flags_set": [],
+      "right_flags_set": [
+        "asevi_vakfi_onaylandi"
+      ],
       "required_flags": [],
       "excluded_flags": [],
       "weight": 8,
@@ -8928,7 +8986,9 @@
       "right_text_en": "Grant the approval",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_right": "asevi_acildi",
+      "trigger_delay": 14
     },
     {
       "id": "dogu_alim_2",
@@ -8950,7 +9010,9 @@
         "ulema": 6,
         "hazine": -7
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "dogu_karantinasi_yapilmadi"
+      ],
       "right_flags_set": [],
       "required_flags": [],
       "excluded_flags": [],
@@ -8965,7 +9027,9 @@
       "right_text_en": "Apply the quarantine",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_left": "dogu_vebasi_geldi",
+      "trigger_delay": 12
     },
     {
       "id": "dogu_alim_3",
@@ -9173,7 +9237,9 @@
         "hazine": 0
       },
       "left_flags_set": [],
-      "right_flags_set": [],
+      "right_flags_set": [
+        "sair_oven_siir_serbest"
+      ],
       "required_flags": [],
       "excluded_flags": [],
       "weight": 8,
@@ -9187,7 +9253,9 @@
       "right_text_en": "Take it in stride",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_right": "sair_sultan_kuskusu",
+      "trigger_delay": 10
     },
     {
       "id": "saray_sairi_yazma",
@@ -9320,7 +9388,9 @@
         "ulema": 2,
         "hazine": 0
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "aga_suistimali_gormezden"
+      ],
       "right_flags_set": [],
       "required_flags": [],
       "excluded_flags": [],
@@ -9335,7 +9405,9 @@
       "right_text_en": "Investigate the lord",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_left": "aga_zulum_buyudu",
+      "trigger_delay": 12
     },
     {
       "id": "koylu_iyi_hasat",
@@ -9727,7 +9799,9 @@
         "ulema": 5,
         "hazine": -5
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "saray_salgini_gormezden"
+      ],
       "right_flags_set": [],
       "required_flags": [],
       "excluded_flags": [],
@@ -9742,7 +9816,9 @@
       "right_text_en": "Apply the quarantine",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_left": "saray_salgini_yayildi",
+      "trigger_delay": 8
     },
     {
       "id": "hekimbasi_ilaç",
@@ -9765,7 +9841,9 @@
         "hazine": 0
       },
       "left_flags_set": [],
-      "right_flags_set": [],
+      "right_flags_set": [
+        "hint_ilaci_izinli"
+      ],
       "required_flags": [],
       "excluded_flags": [],
       "weight": 8,
@@ -9779,7 +9857,9 @@
       "right_text_en": "Permit its use",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_right": "ilac_tartismasi",
+      "trigger_delay": 10
     },
     {
       "id": "sipahi_ret",
@@ -9801,7 +9881,9 @@
         "ulema": 0,
         "hazine": -4
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "sipahi_sadece_uyarildi"
+      ],
       "right_flags_set": [],
       "required_flags": [],
       "excluded_flags": [],
@@ -9816,7 +9898,9 @@
       "right_text_en": "Punish the regiment",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_left": "sipahi_itaatsizlik_yayildi",
+      "trigger_delay": 12
     },
     {
       "id": "sipahi_yeni_anlaşmazlık",
@@ -10060,7 +10144,9 @@
         "ulema": 3,
         "hazine": -5
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "su_sorunu_birakildi"
+      ],
       "right_flags_set": [],
       "required_flags": [],
       "excluded_flags": [],
@@ -10075,7 +10161,9 @@
       "right_text_en": "Send an inspection team",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_left": "su_salgin_riski",
+      "trigger_delay": 10
     },
     {
       "id": "saray_agasi_kaçış",
@@ -10320,7 +10408,9 @@
         "hazine": 13
       },
       "left_flags_set": [],
-      "right_flags_set": [],
+      "right_flags_set": [
+        "defterdar_borc_alındı"
+      ],
       "required_flags": [],
       "excluded_flags": [],
       "weight": 8,
@@ -10468,7 +10558,9 @@
         "hazine": 0
       },
       "left_flags_set": [],
-      "right_flags_set": [],
+      "right_flags_set": [
+        "dervise_saygi"
+      ],
       "required_flags": [],
       "excluded_flags": [],
       "weight": 8,
@@ -10482,7 +10574,9 @@
       "right_text_en": "If it is true prophecy, show respect",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_right": "dervis_tarikat_buyudu",
+      "trigger_delay": 12
     },
     {
       "id": "dervis_valide",
@@ -10689,7 +10783,9 @@
         "ulema": 0,
         "hazine": -9
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "donanma_korumasiz"
+      ],
       "right_flags_set": [],
       "required_flags": [],
       "excluded_flags": [],
@@ -10704,7 +10800,9 @@
       "right_text_en": "Open an emergency shipyard budget",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_left": "kiyi_baskini",
+      "trigger_delay": 10
     },
     {
       "id": "kaptan_venedik",
@@ -10948,7 +11046,9 @@
         "ulema": 0,
         "hazine": -5
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "ganimet_komutanlara"
+      ],
       "right_flags_set": [],
       "required_flags": [],
       "excluded_flags": [],
@@ -10963,7 +11063,9 @@
       "right_text_en": "Issue an order for equal distribution",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "triggers_on_left": "ganimet_huzursuzluk",
+      "trigger_delay": 8
     },
     {
       "id": "seyhulislam_rakip_fetva",
@@ -11592,7 +11694,9 @@
         "hazine": 12
       },
       "left_flags_set": [],
-      "right_flags_set": [],
+      "right_flags_set": [
+        "vakif_gelirine_el"
+      ],
       "required_flags": [],
       "excluded_flags": [],
       "weight": 5,
@@ -11607,7 +11711,9 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "You will regret this, sir.",
-      "speech_right_en": "The state is now safe."
+      "speech_right_en": "The state is now safe.",
+      "triggers_on_right": "vakif_duzenleme_tepki",
+      "trigger_delay": 10
     },
     {
       "id": "defterdar_lüks_vergi",
@@ -12921,7 +13027,9 @@
         "ulema": 0,
         "hazine": -6
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "kervan_korumasiz"
+      ],
       "right_flags_set": [],
       "required_flags": [],
       "excluded_flags": [],
@@ -12937,7 +13045,9 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "Trade stops, and the state starves.",
-      "speech_right_en": "Istanbul will prosper, Pasha."
+      "speech_right_en": "Istanbul will prosper, Pasha.",
+      "triggers_on_left": "kervan_eskiya_buyudu",
+      "trigger_delay": 12
     },
     {
       "id": "tuccar_yabanci_ortak",
@@ -17458,7 +17568,9 @@
         "hazine": -3
       },
       "left_flags_set": [],
-      "right_flags_set": [],
+      "right_flags_set": [
+        "balyosa_iyilik_borcu"
+      ],
       "required_flags": [],
       "excluded_flags": [],
       "weight": 7,
@@ -17467,7 +17579,9 @@
       "character_name_en": "Venetian Bailo",
       "text_en": "The bailo offers to share the route of corsair fleets roaming the Mediterranean — in exchange for a small favor.",
       "left_text_en": "Refuse the intelligence",
-      "right_text_en": "Take the information and grant the favor"
+      "right_text_en": "Take the information and grant the favor",
+      "triggers_on_right": "balyos_iyilik_talebi",
+      "trigger_delay": 12
     },
     {
       "id": "balyos_din_azinlik",
@@ -18628,6 +18742,1356 @@
       "investigate_text_en": "",
       "speech_left_en": "A silenced word finds another mouth, Pasha.",
       "speech_right_en": "Justice outlives the sword, Pasha."
+    },
+    {
+      "id": "borc_vadesi_geldi",
+      "character": "4-defterdar",
+      "character_name": "Defterdar",
+      "faction": "saray",
+      "text": "Paşam, Cenevizli bankacıların borcunun vadesi geldi. Faiziyle birlikte istiyorlar; ödeyemezsek Galata'daki depolarımıza el koyacaklar.",
+      "left_text": "Vadeyi uzatmalarını isteyin",
+      "right_text": "Hazineden hemen ödeyin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": -6
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -15
+      },
+      "left_flags_set": [
+        "borc_vadesi_geldi_resolved"
+      ],
+      "right_flags_set": [
+        "borc_vadesi_geldi_resolved"
+      ],
+      "required_flags": [
+        "ceneviz_borcu_alindi"
+      ],
+      "excluded_flags": [
+        "borc_vadesi_geldi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Faiz de uzar, Paşam.",
+      "speech_right": "Borçsuz devlet, başı dik devlettir.",
+      "character_name_en": "Treasurer",
+      "text_en": "Pasha, the Genoese bankers' loan has come due. They want it with interest; if we cannot pay, they will seize our warehouses in Galata.",
+      "left_text_en": "Ask them to extend the term",
+      "right_text_en": "Pay it from the treasury now",
+      "investigate_text_en": "",
+      "speech_left_en": "The interest grows too, Pasha.",
+      "speech_right_en": "A state without debt holds its head high."
+    },
+    {
+      "id": "yahudi_borc_vadesi",
+      "character": "22-yahudi_bankaci",
+      "character_name": "Yahudi Bankacı",
+      "faction": "halk",
+      "text": "Paşam, verdiğim borcun vadesi doldu. Ailem Osmanlı'ya sadıktır ama benim de alacaklılarım var. Bir kısmını olsun ödeyebilir misiniz?",
+      "left_text": "Biraz daha sabır gösterin",
+      "right_text": "Borcu kapatın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -13
+      },
+      "left_flags_set": [
+        "yahudi_borc_vadesi_resolved"
+      ],
+      "right_flags_set": [
+        "yahudi_borc_vadesi_resolved"
+      ],
+      "required_flags": [
+        "yahudi_borc_alindi"
+      ],
+      "excluded_flags": [
+        "yahudi_borc_vadesi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Sabır da bir sermayedir, Paşam.",
+      "speech_right": "Güveniniz için teşekkürler, Paşam.",
+      "character_name_en": "Jewish Banker",
+      "text_en": "Pasha, the loan I gave has come due. My family is loyal to the Ottomans, but I have creditors too. Could you repay at least part of it?",
+      "left_text_en": "Show a little more patience",
+      "right_text_en": "Settle the debt",
+      "investigate_text_en": "",
+      "speech_left_en": "Patience is capital too, Pasha.",
+      "speech_right_en": "Thank you for your trust, Pasha."
+    },
+    {
+      "id": "gumruk_artisi_tepki",
+      "character": "13-buyuk_tuccar",
+      "character_name": "Büyük Tüccar",
+      "faction": "halk",
+      "text": "Paşam, gümrüğü iki katına çıkardığınızdan beri yabancı gemiler Boğaz'a uğramıyor. Liman boşaldı; bizim mallarımız da elimizde kaldı.",
+      "left_text": "Vergi kalsın, gemiler döner",
+      "right_text": "Vergiyi yarıya indirin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -7
+      },
+      "left_flags_set": [
+        "gumruk_artisi_tepki_resolved"
+      ],
+      "right_flags_set": [
+        "gumruk_artisi_tepki_resolved"
+      ],
+      "required_flags": [
+        "gumruk_iki_kati"
+      ],
+      "excluded_flags": [
+        "gumruk_artisi_tepki_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Deniz sabırsızdır, Paşam.",
+      "speech_right": "Liman yeniden dolacak, Paşam.",
+      "character_name_en": "Great Merchant",
+      "text_en": "Pasha, since you doubled the customs duty, foreign ships no longer call at the Bosphorus. The port is empty, and our goods sit unsold.",
+      "left_text_en": "Keep the duty, ships will return",
+      "right_text_en": "Cut the duty in half",
+      "investigate_text_en": "",
+      "speech_left_en": "The sea is impatient, Pasha.",
+      "speech_right_en": "The port will fill again, Pasha."
+    },
+    {
+      "id": "vakif_duzenleme_tepki",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "faction": "din",
+      "text": "Sadrazam Hazretleri, vakıf gelirlerini hazineye aldınız. Medreselerin ekmeği kesildi, talebeler dağılıyor. Bu, vakfedenlerin vasiyetine ihanettir.",
+      "left_text": "Hazinenin ihtiyacı önceliklidir",
+      "right_text": "Medreselere pay ayırın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -10,
+        "hazine": 5
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 8,
+        "hazine": -8
+      },
+      "left_flags_set": [
+        "vakif_duzenleme_tepki_resolved"
+      ],
+      "right_flags_set": [
+        "vakif_duzenleme_tepki_resolved"
+      ],
+      "required_flags": [
+        "vakif_gelirine_el"
+      ],
+      "excluded_flags": [
+        "vakif_duzenleme_tepki_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "religious",
+      "speech_left": "Allah şahittir, Paşam.",
+      "speech_right": "İlim yaşarsa devlet de yaşar.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "Grand Vizier, you took the endowment revenues into the treasury. The madrasas have lost their bread and the students are leaving. This betrays the founders' will.",
+      "left_text_en": "The treasury's need comes first",
+      "right_text_en": "Set aside a share for the madrasas",
+      "investigate_text_en": "",
+      "speech_left_en": "God is witness, Pasha.",
+      "speech_right_en": "If learning lives, so does the state."
+    },
+    {
+      "id": "lonca_muafiyet_sonuc",
+      "character": "15-halk_temsilcisi",
+      "character_name": "Halk Temsilcisi",
+      "faction": "halk",
+      "text": "Paşam, verdiğiniz vergi muafiyeti sayesinde loncalar canlandı. Ama şimdi muafiyet dışında kalan esnaf da aynı hakkı istiyor.",
+      "left_text": "Muafiyet sona ersin",
+      "right_text": "Herkese genişletin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 7
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 3,
+        "ulema": 2,
+        "hazine": -10
+      },
+      "left_flags_set": [
+        "lonca_muafiyet_sonuc_resolved"
+      ],
+      "right_flags_set": [
+        "lonca_muafiyet_sonuc_resolved"
+      ],
+      "required_flags": [
+        "lonca_muafiyet_verildi"
+      ],
+      "excluded_flags": [
+        "lonca_muafiyet_sonuc_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Çarşı söylenecek, Paşam.",
+      "speech_right": "Çarşı size dua ediyor, Paşam.",
+      "character_name_en": "People's Representative",
+      "text_en": "Pasha, the tax exemption you granted revived the guilds. But now the tradesmen left outside it demand the same right.",
+      "left_text_en": "End the exemption",
+      "right_text_en": "Extend it to everyone",
+      "investigate_text_en": "",
+      "speech_left_en": "The bazaar will grumble, Pasha.",
+      "speech_right_en": "The bazaar prays for you, Pasha."
+    },
+    {
+      "id": "ganimet_huzursuzluk",
+      "character": "18-yeniceri_isyancisi",
+      "character_name": "Yeniçeri İsyancısı",
+      "faction": "ordu",
+      "text": "Ganimeti komutanlara bıraktınız, Paşam. Onlar paylaştı, biz baktık. Ortalarda 'kazanı kim kaldırır' diye soran var.",
+      "left_text": "Tehditle konuşulmaz",
+      "right_text": "Askere ek pay dağıtın",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": -9,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 8,
+        "ulema": 0,
+        "hazine": -7
+      },
+      "left_flags_set": [
+        "ganimet_huzursuzluk_resolved"
+      ],
+      "right_flags_set": [
+        "ganimet_huzursuzluk_resolved"
+      ],
+      "required_flags": [
+        "ganimet_komutanlara"
+      ],
+      "excluded_flags": [
+        "ganimet_huzursuzluk_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Siz bilirsiniz, Paşam.",
+      "speech_right": "İşte bu bir Paşa sözü.",
+      "character_name_en": "Janissary Rebel",
+      "text_en": "You left the spoils to the commanders, Pasha. They shared, we watched. Some are asking who will overturn the cauldron.",
+      "left_text_en": "No one speaks with threats",
+      "right_text_en": "Give the soldiers an extra share",
+      "investigate_text_en": "",
+      "speech_left_en": "As you wish, Pasha.",
+      "speech_right_en": "Now that is a Pasha's word."
+    },
+    {
+      "id": "sipahi_itaatsizlik_yayildi",
+      "character": "11-sipahi_agasi",
+      "character_name": "Sipahi Ağası",
+      "faction": "ordu",
+      "text": "Paşam, görevi reddeden alay yalnızca uyarıyla kurtuldu. Şimdi iki alay daha sefere çıkmak istemiyor. 'Nasılsa ceza yok' diyorlar.",
+      "left_text": "Tımarlarını ellerinden alın",
+      "right_text": "Bir kez daha uyarın",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 6,
+        "ulema": 0,
+        "hazine": 4
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": -8,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "sipahi_itaatsizlik_yayildi_resolved"
+      ],
+      "right_flags_set": [
+        "sipahi_itaatsizlik_yayildi_resolved"
+      ],
+      "required_flags": [
+        "sipahi_sadece_uyarildi"
+      ],
+      "excluded_flags": [
+        "sipahi_itaatsizlik_yayildi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Emriniz yerine gelir, Paşam.",
+      "speech_right": "Uyarı artık işlemiyor, Paşam.",
+      "character_name_en": "Sipahi Commander",
+      "text_en": "Pasha, the regiment that refused its orders got off with a warning. Now two more regiments refuse to march. 'There is no punishment anyway,' they say.",
+      "left_text_en": "Strip them of their fiefs",
+      "right_text_en": "Warn them once more",
+      "investigate_text_en": "",
+      "speech_left_en": "Your order will be done, Pasha.",
+      "speech_right_en": "Warnings no longer work, Pasha."
+    },
+    {
+      "id": "kiyi_baskini",
+      "character": "24-korsanbasi",
+      "character_name": "Korsanbaşı",
+      "faction": "ordu",
+      "text": "Paşam, donanmanız tersanede yatarken Malta şövalyeleri Ege kıyısındaki üç köyü yağmaladı. Bana izin verin, peşlerine düşeyim.",
+      "left_text": "Korsana iş verilmez",
+      "right_text": "Peşlerine düşsün",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": -5,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 6,
+        "ulema": -2,
+        "hazine": 6
+      },
+      "left_flags_set": [
+        "kiyi_baskini_resolved"
+      ],
+      "right_flags_set": [
+        "kiyi_baskini_resolved"
+      ],
+      "required_flags": [
+        "donanma_korumasiz"
+      ],
+      "excluded_flags": [
+        "kiyi_baskini_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Denizde yalnız kaldınız, Paşam.",
+      "speech_right": "Ganimetin payı sizin, Paşam.",
+      "character_name_en": "Corsair Chief",
+      "text_en": "Pasha, while your fleet lay in the dockyard, the Knights of Malta raided three Aegean villages. Give me leave and I will hunt them down.",
+      "left_text_en": "No work for corsairs",
+      "right_text_en": "Let him give chase",
+      "investigate_text_en": "",
+      "speech_left_en": "You are alone at sea, Pasha.",
+      "speech_right_en": "Your share of the spoils awaits, Pasha."
+    },
+    {
+      "id": "kervan_eskiya_buyudu",
+      "character": "13-buyuk_tuccar",
+      "character_name": "Büyük Tüccar",
+      "faction": "halk",
+      "text": "Paşam, kervanlara asker vermediniz; eşkıya çoğaldı. Artık Anadolu yolunda tek kervan geçmiyor. İstanbul'da fiyatlar ikiye katlandı.",
+      "left_text": "Tüccar kendi derdine baksın",
+      "right_text": "Eşkıyaya karşı sefer açın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 6,
+        "ulema": 0,
+        "hazine": -9
+      },
+      "left_flags_set": [
+        "kervan_eskiya_buyudu_resolved"
+      ],
+      "right_flags_set": [
+        "kervan_eskiya_buyudu_resolved"
+      ],
+      "required_flags": [
+        "kervan_korumasiz"
+      ],
+      "excluded_flags": [
+        "kervan_eskiya_buyudu_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Yollar kapanırsa şehir aç kalır.",
+      "speech_right": "Yollar yeniden açılacak, Paşam.",
+      "character_name_en": "Great Merchant",
+      "text_en": "Pasha, you gave the caravans no escort, and the bandits multiplied. Not a single caravan crosses Anatolia now. Prices in Istanbul have doubled.",
+      "left_text_en": "Let merchants mind themselves",
+      "right_text_en": "Send a campaign against the bandits",
+      "investigate_text_en": "",
+      "speech_left_en": "If the roads close, the city starves.",
+      "speech_right_en": "The roads will open again, Pasha."
+    },
+    {
+      "id": "disiplin_gevsedi",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası",
+      "faction": "ordu",
+      "text": "Paşam, kavga eden bölüklere ceza verilmedi. Şimdi askerler çarşıda esnafı haraca bağlıyor. Halk ocaktan şikâyetçi.",
+      "left_text": "Askerin gönlü hoş olsun",
+      "right_text": "Suçluları kalebentliğe gönderin",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": 5,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": -6,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "disiplin_gevsedi_resolved"
+      ],
+      "right_flags_set": [
+        "disiplin_gevsedi_resolved"
+      ],
+      "required_flags": [
+        "disiplin_gevsek"
+      ],
+      "excluded_flags": [
+        "disiplin_gevsedi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Ocak size minnettar, Paşam.",
+      "speech_right": "Disiplin geri gelecek, Paşam.",
+      "character_name_en": "Janissary Agha",
+      "text_en": "Pasha, the brawling companies went unpunished. Now soldiers extort the tradesmen in the bazaar. The people complain about the corps.",
+      "left_text_en": "Keep the soldiers content",
+      "right_text_en": "Send the culprits to fortress duty",
+      "investigate_text_en": "",
+      "speech_left_en": "The corps is grateful, Pasha.",
+      "speech_right_en": "Discipline will return, Pasha."
+    },
+    {
+      "id": "su_salgin_riski",
+      "character": "10-hekimbasi",
+      "character_name": "Hekimbaşı",
+      "faction": "halk",
+      "text": "Paşam, su sıkıntısı çeken mahallede insanlar kirli çeşmelerden içmeye başladı. İshal vakaları arttı; bu gidişle salgın kapıda.",
+      "left_text": "Halk kaynatarak içsin",
+      "right_text": "Yeni su yolu yaptırın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": -2,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 3,
+        "ulema": 4,
+        "hazine": -11
+      },
+      "left_flags_set": [
+        "su_salgin_riski_resolved"
+      ],
+      "right_flags_set": [
+        "su_salgin_riski_resolved"
+      ],
+      "required_flags": [
+        "su_sorunu_birakildi"
+      ],
+      "excluded_flags": [
+        "su_salgin_riski_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Sonra çok geç olabilir, Paşam.",
+      "speech_right": "Su hayattır, Paşam.",
+      "character_name_en": "Chief Physician",
+      "text_en": "Pasha, in the district short of water, people have begun drinking from dirty fountains. Cases of flux are rising; an epidemic is at the door.",
+      "left_text_en": "Tell people to boil their water",
+      "right_text_en": "Build a new water channel",
+      "investigate_text_en": "",
+      "speech_left_en": "Later may be too late, Pasha.",
+      "speech_right_en": "Water is life, Pasha."
+    },
+    {
+      "id": "koylu_topraktan_kacti",
+      "character": "19-koylu",
+      "character_name": "Köylü",
+      "faction": "halk",
+      "text": "Paşam, vergiyi erteletmediniz; evlerimizi sattık, bir kısmımız şehre kaçtı. Tarlalar boş, gelecek yıl kimse ekmeyecek.",
+      "left_text": "Kaçanlar köye geri gönderilsin",
+      "right_text": "Tohum ve erteleme verin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": -3,
+        "ulema": -4,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 2,
+        "ulema": 4,
+        "hazine": -10
+      },
+      "left_flags_set": [
+        "koylu_topraktan_kacti_resolved"
+      ],
+      "right_flags_set": [
+        "koylu_topraktan_kacti_resolved"
+      ],
+      "required_flags": [
+        "vergi_ertelenmedi"
+      ],
+      "excluded_flags": [
+        "koylu_topraktan_kacti_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Zorla ekilen tarla verim vermez.",
+      "speech_right": "Toprak size dua edecek, Paşam.",
+      "character_name_en": "Peasant",
+      "text_en": "Pasha, you did not postpone the tax; we sold our homes and some of us fled to the city. The fields are empty and no one will sow next year.",
+      "left_text_en": "Send the runaways back to the villages",
+      "right_text_en": "Give seed and a deferral",
+      "investigate_text_en": "",
+      "speech_left_en": "A field sown by force bears no fruit.",
+      "speech_right_en": "The land will bless you, Pasha."
+    },
+    {
+      "id": "ekmek_kampanyasi_yeralti",
+      "character": "30-halk-onderi",
+      "character_name": "Halk Önderi",
+      "faction": "halk",
+      "text": "Toplantımızı dağıttınız, Paşam. Biz de camilerin avlusuna çekildik. Şimdi her cuma namazından sonra ekmek fiyatı konuşuluyor.",
+      "left_text": "Avlulara bekçi koyun",
+      "right_text": "Narh fiyatını düşürün",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": -3,
+        "ulema": -6,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 4,
+        "ulema": 3,
+        "hazine": -8
+      },
+      "left_flags_set": [
+        "ekmek_kampanyasi_yeralti_resolved"
+      ],
+      "right_flags_set": [
+        "ekmek_kampanyasi_yeralti_resolved"
+      ],
+      "required_flags": [
+        "ekmek_kampanyasi_dagitildi"
+      ],
+      "excluded_flags": [
+        "ekmek_kampanyasi_yeralti_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Sessizlik öfkeyi büyütür, Paşam.",
+      "speech_right": "Halk bunu unutmaz, Paşam.",
+      "character_name_en": "People's Leader",
+      "text_en": "You broke up our meeting, Pasha. So we moved to the mosque courtyards. Now bread prices are discussed after every Friday prayer.",
+      "left_text_en": "Post watchmen in the courtyards",
+      "right_text_en": "Lower the fixed bread price",
+      "investigate_text_en": "",
+      "speech_left_en": "Silence feeds anger, Pasha.",
+      "speech_right_en": "The people will not forget this, Pasha."
+    },
+    {
+      "id": "aga_zulum_buyudu",
+      "character": "19-koylu",
+      "character_name": "Köylü",
+      "faction": "halk",
+      "text": "Paşam, ağanın askerleri artık hasatımıza da el koyuyor. Şikâyet eden iki komşumuzu dövdüler. Devlet nerede?",
+      "left_text": "Ağa yerel düzeni sağlıyor",
+      "right_text": "Ağayı azledin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": -3,
+        "ulema": -4,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 5,
+        "ulema": 4,
+        "hazine": -3
+      },
+      "left_flags_set": [
+        "aga_zulum_buyudu_resolved"
+      ],
+      "right_flags_set": [
+        "aga_zulum_buyudu_resolved"
+      ],
+      "required_flags": [
+        "aga_suistimali_gormezden"
+      ],
+      "excluded_flags": [
+        "aga_zulum_buyudu_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Allah'a havale ediyoruz.",
+      "speech_right": "Devlet buradaymış, Paşam.",
+      "character_name_en": "Peasant",
+      "text_en": "Pasha, the agha's soldiers now seize our harvest too. They beat two neighbours who complained. Where is the state?",
+      "left_text_en": "The agha keeps local order",
+      "right_text_en": "Dismiss the agha",
+      "investigate_text_en": "",
+      "speech_left_en": "We leave it to God.",
+      "speech_right_en": "So the state is here after all, Pasha."
+    },
+    {
+      "id": "asevi_acildi",
+      "character": "30-halk-onderi",
+      "character_name": "Halk Önderi",
+      "faction": "halk",
+      "text": "Paşam, onay verdiğiniz vakfın aşevi açıldı; her gün yüzlerce yoksul doyuyor. Ama tahıl yetmiyor. Devlet ambarından yardım olabilir mi?",
+      "left_text": "Vakıf kendi kaynağıyla yürüsün",
+      "right_text": "Ambardan tahıl verin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": -3,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 4,
+        "ulema": 5,
+        "hazine": -8
+      },
+      "left_flags_set": [
+        "asevi_acildi_resolved"
+      ],
+      "right_flags_set": [
+        "asevi_acildi_resolved"
+      ],
+      "required_flags": [
+        "asevi_vakfi_onaylandi"
+      ],
+      "excluded_flags": [
+        "asevi_acildi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Bereket de azalır, Paşam.",
+      "speech_right": "Duası size, Paşam.",
+      "character_name_en": "People's Leader",
+      "text_en": "Pasha, the soup kitchen of the endowment you approved has opened; hundreds of poor eat daily. But the grain runs short. Could the state granary help?",
+      "left_text_en": "Let the endowment run on its own",
+      "right_text_en": "Give grain from the granary",
+      "investigate_text_en": "",
+      "speech_left_en": "Plenty runs out too, Pasha.",
+      "speech_right_en": "Their prayers are yours, Pasha."
+    },
+    {
+      "id": "ilac_tartismasi",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "faction": "din",
+      "text": "Sadrazam Hazretleri, Hint ilacına izin verdiğinizden beri medreselerde 'kâfir ilacı' tartışması var. Bir fetva vermem isteniyor.",
+      "left_text": "İlaç yasaklansın",
+      "right_text": "Şifa haramdan ayrıdır deyin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 7,
+        "hazine": -2
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -6,
+        "hazine": 2
+      },
+      "left_flags_set": [
+        "ilac_tartismasi_resolved"
+      ],
+      "right_flags_set": [
+        "ilac_tartismasi_resolved"
+      ],
+      "required_flags": [
+        "hint_ilaci_izinli"
+      ],
+      "excluded_flags": [
+        "ilac_tartismasi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "religious",
+      "speech_left": "Fetva hazırlanacak, Paşam.",
+      "speech_right": "Bunu savunmak zor olacak.",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "Grand Vizier, since you allowed the Indian remedy, the madrasas argue over the 'infidels' medicine'. I am asked to issue a fetva.",
+      "left_text_en": "Ban the remedy",
+      "right_text_en": "Say healing is not forbidden",
+      "investigate_text_en": "",
+      "speech_left_en": "The fetva will be prepared, Pasha.",
+      "speech_right_en": "That will be hard to defend."
+    },
+    {
+      "id": "saray_salgini_yayildi",
+      "character": "10-hekimbasi",
+      "character_name": "Hekimbaşı",
+      "faction": "saray",
+      "text": "Paşam, karantina yapılmadı; salgın Divan kâtiplerine sıçradı. Üç kâtip yatakta, defterler yazılamıyor. Divan'ı kapatmamız gerekiyor.",
+      "left_text": "Divan çalışmaya devam etsin",
+      "right_text": "Divan'ı bir ay kapatın",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": -3,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": 2,
+        "ulema": 4,
+        "hazine": -4
+      },
+      "left_flags_set": [
+        "saray_salgini_yayildi_resolved"
+      ],
+      "right_flags_set": [
+        "saray_salgini_yayildi_resolved"
+      ],
+      "required_flags": [
+        "saray_salgini_gormezden"
+      ],
+      "excluded_flags": [
+        "saray_salgini_yayildi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Hastalık rütbe tanımaz, Paşam.",
+      "speech_right": "Akıllıca, Paşam.",
+      "character_name_en": "Chief Physician",
+      "text_en": "Pasha, there was no quarantine, and the sickness has spread to the Divan's clerks. Three are bedridden and the registers go unwritten. We must close the Divan.",
+      "left_text_en": "The Divan keeps working",
+      "right_text_en": "Close the Divan for a month",
+      "investigate_text_en": "",
+      "speech_left_en": "Sickness knows no rank, Pasha.",
+      "speech_right_en": "Wise, Pasha."
+    },
+    {
+      "id": "dogu_vebasi_geldi",
+      "character": "31-dogu-alim",
+      "character_name": "Doğulu Alim",
+      "faction": "din",
+      "text": "Paşam, uyarmıştım. Doğu kapıları açık kaldı; veba kervanlarla Erzurum'a ulaştı. Şimdi İstanbul yolunu kesmek için son fırsat.",
+      "left_text": "Yolu açık tutun",
+      "right_text": "Erzurum yolunu kapatın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": -4,
+        "ulema": -4,
+        "hazine": 5
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 3,
+        "ulema": 4,
+        "hazine": -10
+      },
+      "left_flags_set": [
+        "dogu_vebasi_geldi_resolved"
+      ],
+      "right_flags_set": [
+        "dogu_vebasi_geldi_resolved"
+      ],
+      "required_flags": [
+        "dogu_karantinasi_yapilmadi"
+      ],
+      "excluded_flags": [
+        "dogu_vebasi_geldi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Kervan durursa çarşı da durur.",
+      "speech_right": "Geç de olsa doğru karar.",
+      "character_name_en": "Eastern Scholar",
+      "text_en": "Pasha, I warned you. The eastern gates stayed open, and the plague reached Erzurum with the caravans. This is the last chance to cut the road to Istanbul.",
+      "left_text_en": "Keep the road open",
+      "right_text_en": "Close the Erzurum road",
+      "investigate_text_en": "",
+      "speech_left_en": "If the caravan stops, so does the bazaar.",
+      "speech_right_en": "Late, but the right decision."
+    },
+    {
+      "id": "zindiklik_davasi",
+      "character": "28-kadi",
+      "character_name": "Kadı",
+      "faction": "din",
+      "text": "Paşam, zındıklıkla suçlanan kâtibin davası önümde. Delil zayıf ama Ulema idam istiyor. Beraat verirsem Şeyhülislam'la ters düşeceğim.",
+      "left_text": "Beraat verin",
+      "right_text": "Ulema'nın istediği olsun",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -8,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 8,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "zindiklik_davasi_resolved"
+      ],
+      "right_flags_set": [
+        "zindiklik_davasi_resolved"
+      ],
+      "required_flags": [
+        "zindiklik_sorusturmasi"
+      ],
+      "excluded_flags": [
+        "zindiklik_davasi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "religious",
+      "speech_left": "Adalet Ulema'dan büyüktür.",
+      "speech_right": "Vicdanım rahat değil, Paşam.",
+      "character_name_en": "Judge",
+      "text_en": "Pasha, the case of the clerk accused of heresy is before me. The evidence is weak, but the ulema demand execution. If I acquit, I cross the Şeyhülislam.",
+      "left_text_en": "Acquit him",
+      "right_text_en": "Let the ulema have their way",
+      "investigate_text_en": "",
+      "speech_left_en": "Justice is greater than the ulema.",
+      "speech_right_en": "My conscience is not at ease, Pasha."
+    },
+    {
+      "id": "dervis_tarikat_buyudu",
+      "character": "25-deli_dervis",
+      "character_name": "Deli Derviş",
+      "faction": "din",
+      "text": "Ey Paşa! Kerametime saygı gösterdin, müritlerim çoğaldı. Tekkemiz dar geldi; bir ev bağışla, sana her sabah dua edelim.",
+      "left_text": "Tekke kendi yolunu bulsun",
+      "right_text": "Bir ev bağışlayın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -5,
+        "hazine": -4
+      },
+      "left_flags_set": [
+        "dervis_tarikat_buyudu_resolved"
+      ],
+      "right_flags_set": [
+        "dervis_tarikat_buyudu_resolved"
+      ],
+      "required_flags": [
+        "dervise_saygi"
+      ],
+      "excluded_flags": [
+        "dervis_tarikat_buyudu_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "religious",
+      "speech_left": "Hû! Yol uzun, Paşa.",
+      "speech_right": "Dualar kabul olsun, Paşa!",
+      "character_name_en": "Mad Dervish",
+      "text_en": "O Pasha! You honoured my miracle and my disciples multiplied. Our lodge is too small; grant us a house and we will pray for you every morning.",
+      "left_text_en": "Let the lodge find its own way",
+      "right_text_en": "Grant them a house",
+      "investigate_text_en": "",
+      "speech_left_en": "Hu! The road is long, Pasha.",
+      "speech_right_en": "May the prayers be answered, Pasha!"
+    },
+    {
+      "id": "sizinti_devam",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "Paşam, kaynağı aramadık; sızıntı durmadı. Bu sabah Venedik elçisi, Divan'da daha dün konuştuğumuz bir kararı biliyordu.",
+      "left_text": "Divan'da konuşmayı kısın",
+      "right_text": "Ağı hemen genişletin",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -7
+      },
+      "left_flags_set": [
+        "sizinti_devam_resolved"
+      ],
+      "right_flags_set": [
+        "sizinti_devam_resolved"
+      ],
+      "required_flags": [
+        "sizinti_takip_edilmedi"
+      ],
+      "excluded_flags": [
+        "sizinti_devam_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Duvarların kulağı var, Paşam.",
+      "speech_right": "Fare deliğinden çıkacak, Paşam.",
+      "character_name_en": "Spymaster",
+      "text_en": "Pasha, we did not search for the source, and the leak did not stop. This morning the Venetian envoy knew a decision we discussed in the Divan only yesterday.",
+      "left_text_en": "Speak less in the Divan",
+      "right_text_en": "Widen the network at once",
+      "investigate_text_en": "",
+      "speech_left_en": "The walls have ears, Pasha.",
+      "speech_right_en": "The rat will leave its hole, Pasha."
+    },
+    {
+      "id": "rakip_ittifak_ihaneti",
+      "character": "8-rakip-vezir",
+      "character_name": "Rakip Vezir",
+      "faction": "saray",
+      "text": "Ortaklığımız iyi gitti, Paşam. Ama Sultan bir sadrazam istiyor, iki değil. Size bir teklifim var: ya çekilirsiniz ya da bildiklerimi anlatırım.",
+      "left_text": "Tehdidini Sultan'a kendin götür",
+      "right_text": "Sessizliğini satın alın",
+      "left_effects": {
+        "saray": -6,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": -12
+      },
+      "left_flags_set": [
+        "rakip_ittifak_ihaneti_resolved"
+      ],
+      "right_flags_set": [
+        "rakip_ittifak_ihaneti_resolved"
+      ],
+      "required_flags": [
+        "rakiple_ittifak"
+      ],
+      "excluded_flags": [
+        "rakip_ittifak_ihaneti_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Göreceğiz, Paşam.",
+      "speech_right": "Akıllı bir yatırım, Paşam.",
+      "character_name_en": "Rival Vizier",
+      "text_en": "Our partnership went well, Pasha. But the Sultan wants one grand vizier, not two. I have an offer: either you step aside, or I tell what I know.",
+      "left_text_en": "Take your threat to the Sultan yourself",
+      "right_text_en": "Buy his silence",
+      "investigate_text_en": "",
+      "speech_left_en": "We shall see, Pasha.",
+      "speech_right_en": "A clever investment, Pasha."
+    },
+    {
+      "id": "cariye_casus_cikti",
+      "character": "5-valide-sultan",
+      "character_name": "Valide Sultan",
+      "faction": "saray",
+      "text": "Paşa, araştırmayı durdurdunuz. Şimdi o cariyenin mektupları Venedik gemisinde yakalandı. Harem'den devlet sırrı çıkmış, bunu Sultan'a nasıl açıklarsınız?",
+      "left_text": "Kendim açıklarım",
+      "right_text": "Sizin himayenizi isterim",
+      "left_effects": {
+        "saray": -6,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": -5
+      },
+      "left_flags_set": [
+        "cariye_casus_cikti_resolved"
+      ],
+      "right_flags_set": [
+        "cariye_casus_cikti_resolved"
+      ],
+      "required_flags": [
+        "cariye_arastirilmadi"
+      ],
+      "excluded_flags": [
+        "cariye_casus_cikti_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Cesaretinize hayranım.",
+      "speech_right": "Bunun bir bedeli olacak, Paşa.",
+      "character_name_en": "Valide Sultan",
+      "text_en": "Pasha, you stopped the inquiry. Now that concubine's letters were caught on a Venetian ship. State secrets left the harem; how will you explain this to the Sultan?",
+      "left_text_en": "I will explain it myself",
+      "right_text_en": "I ask for your protection",
+      "investigate_text_en": "",
+      "speech_left_en": "I admire your courage.",
+      "speech_right_en": "This will have a price, Pasha."
+    },
+    {
+      "id": "viyana_ajani_rapor",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "Paşam, Viyana'ya yerleştirdiğimiz ajan ilk raporunu gönderdi: Habsburglar ilkbaharda Budin'e yürüyecek. Önceden hazırlanabiliriz.",
+      "left_text": "Bilgiyi saklayın",
+      "right_text": "Budin'e takviye gönderin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 8,
+        "ulema": 0,
+        "hazine": -8
+      },
+      "left_flags_set": [
+        "viyana_ajani_rapor_resolved"
+      ],
+      "right_flags_set": [
+        "viyana_ajani_rapor_resolved"
+      ],
+      "required_flags": [
+        "viyana_ajani_yerlesti"
+      ],
+      "excluded_flags": [
+        "viyana_ajani_rapor_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Bilgi de bir kılıçtır, Paşam.",
+      "speech_right": "Yatırım meyvesini verdi, Paşam.",
+      "character_name_en": "Spymaster",
+      "text_en": "Pasha, our agent in Vienna sent the first report: the Habsburgs will march on Buda in spring. We can prepare in advance.",
+      "left_text_en": "Keep the knowledge to ourselves",
+      "right_text_en": "Reinforce Buda",
+      "investigate_text_en": "",
+      "speech_left_en": "Knowledge is a sword too, Pasha.",
+      "speech_right_en": "The investment has paid off, Pasha."
+    },
+    {
+      "id": "sair_sultan_kuskusu",
+      "character": "12-saray_sairi",
+      "character_name": "Saray Şairi",
+      "faction": "saray",
+      "text": "Paşam, o genç şairin sizi öven şiiri Sultan'ın kulağına gitmiş. 'Sadrazamın şairi var, benimki nerede?' demiş. Saray huzursuz.",
+      "left_text": "Şairi Sultan'a hediye edin",
+      "right_text": "Şiiri kendiniz yasaklayın",
+      "left_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -4,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "sair_sultan_kuskusu_resolved"
+      ],
+      "right_flags_set": [
+        "sair_sultan_kuskusu_resolved"
+      ],
+      "required_flags": [
+        "sair_oven_siir_serbest"
+      ],
+      "excluded_flags": [
+        "sair_sultan_kuskusu_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Şiir artık Sultan'ın, Paşam.",
+      "speech_right": "Kalem kırıldı, Paşam.",
+      "character_name_en": "Court Poet",
+      "text_en": "Pasha, that young poet's verse praising you reached the Sultan's ear. 'The grand vizier has a poet; where is mine?' he said. The palace is uneasy.",
+      "left_text_en": "Present the poet to the Sultan",
+      "right_text_en": "Ban the poem yourself",
+      "investigate_text_en": "",
+      "speech_left_en": "The poem is the Sultan's now, Pasha.",
+      "speech_right_en": "The pen is broken, Pasha."
+    },
+    {
+      "id": "gizli_ateskes_ortaya_cikti",
+      "character": "23-safevi_elcisi",
+      "character_name": "Safevi Elçisi",
+      "faction": "dış",
+      "text": "Paşam, gizli ateşkesimiz sınırda işledi; ama Şah'ın vezirleri konuşmuş. Tebriz'de herkes 'Osmanlı sadrazamı Sultan'ından habersiz anlaştı' diyor.",
+      "left_text": "Her şeyi inkâr edin",
+      "right_text": "Sultan'a kendiniz anlatın",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 2,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "gizli_ateskes_ortaya_cikti_resolved"
+      ],
+      "right_flags_set": [
+        "gizli_ateskes_ortaya_cikti_resolved"
+      ],
+      "required_flags": [
+        "gizli_ateskes_dinlendi"
+      ],
+      "excluded_flags": [
+        "gizli_ateskes_ortaya_cikti_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Yalan kısa yaşar, Paşam.",
+      "speech_right": "Cesur bir hamle, Paşam.",
+      "character_name_en": "Safavid Envoy",
+      "text_en": "Pasha, our secret truce held at the border, but the Shah's viziers talked. All Tabriz says the Ottoman grand vizier made a deal behind his Sultan's back.",
+      "left_text_en": "Deny everything",
+      "right_text_en": "Tell the Sultan yourself",
+      "investigate_text_en": "",
+      "speech_left_en": "A lie lives short, Pasha.",
+      "speech_right_en": "A bold move, Pasha."
+    },
+    {
+      "id": "fransiz_ittifak_haberi",
+      "character": "7-yabanci-elci",
+      "character_name": "Yabancı Elçi",
+      "faction": "dış",
+      "text": "Paşam, Fransa ile müzakereler Habsburg casuslarının kulağına gitmiş. Viyana elçisi resmen protesto etti ve sınır kalelerine asker yığıyor.",
+      "left_text": "Fransa'yla anlaşmayı imzalayın",
+      "right_text": "Müzakereleri dondurun",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 5,
+        "ulema": -3,
+        "hazine": 6
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": -3,
+        "ulema": 2,
+        "hazine": -4
+      },
+      "left_flags_set": [
+        "fransiz_ittifak_haberi_resolved"
+      ],
+      "right_flags_set": [
+        "fransiz_ittifak_haberi_resolved"
+      ],
+      "required_flags": [
+        "fransiz_muzakeresi"
+      ],
+      "excluded_flags": [
+        "fransiz_ittifak_haberi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Artık saklanacak bir şey yok.",
+      "speech_right": "Temkin iyidir, Paşam.",
+      "character_name_en": "Foreign Ambassador",
+      "text_en": "Pasha, word of the talks with France reached Habsburg spies. The Viennese envoy has formally protested and is massing troops at the border forts.",
+      "left_text_en": "Sign the treaty with France",
+      "right_text_en": "Freeze the negotiations",
+      "investigate_text_en": "",
+      "speech_left_en": "There is nothing left to hide.",
+      "speech_right_en": "Caution is good, Pasha."
+    },
+    {
+      "id": "korsan_fidye_skandal",
+      "character": "24-korsanbasi",
+      "character_name": "Korsanbaşı",
+      "faction": "dış",
+      "text": "Paşam, fidyeyi kendim topladım dedim ya; soylunun ailesi Papa'ya şikâyet etmiş. Şimdi Avrupa bizi 'devlet eliyle korsanlık' ile suçluyor.",
+      "left_text": "Korsanı feda edin",
+      "right_text": "Suçlamayı görmezden gelin",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -2,
+        "ulema": 2,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 3,
+        "ulema": -2,
+        "hazine": 5
+      },
+      "left_flags_set": [
+        "korsan_fidye_skandal_resolved"
+      ],
+      "right_flags_set": [
+        "korsan_fidye_skandal_resolved"
+      ],
+      "required_flags": [
+        "korsan_fidyeyi_kendi_aldi"
+      ],
+      "excluded_flags": [
+        "korsan_fidye_skandal_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Beni satacak mısınız, Paşam?",
+      "speech_right": "Deniz bizimdir, Paşam!",
+      "character_name_en": "Corsair Chief",
+      "text_en": "Pasha, I collected the ransom myself as you allowed; the noble's family complained to the Pope. Now Europe accuses us of piracy by the state's hand.",
+      "left_text_en": "Sacrifice the corsair",
+      "right_text_en": "Ignore the accusation",
+      "investigate_text_en": "",
+      "speech_left_en": "Will you sell me out, Pasha?",
+      "speech_right_en": "The sea is ours, Pasha!"
+    },
+    {
+      "id": "balyos_iyilik_talebi",
+      "character": "venedikbalyosu",
+      "character_name": "Venedik Balyosu",
+      "faction": "dış",
+      "text": "Paşam, korsan rotalarını size bildirmiştim; gemileriniz kurtuldu. Şimdi sıra sizde: yeğenimin Galata'daki davasında hâkime bir söz söyleyin.",
+      "left_text": "Yargıya karışmam",
+      "right_text": "Hâkimle görüşün",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": -5,
+        "hazine": 5
+      },
+      "left_flags_set": [
+        "balyos_iyilik_talebi_resolved"
+      ],
+      "right_flags_set": [
+        "balyos_iyilik_talebi_resolved"
+      ],
+      "required_flags": [
+        "balyosa_iyilik_borcu"
+      ],
+      "excluded_flags": [
+        "balyos_iyilik_talebi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Venedik unutmaz, Paşam.",
+      "speech_right": "Dostluk karşılıklıdır, Paşam.",
+      "character_name_en": "Venetian Bailo",
+      "text_en": "Pasha, I told you the corsairs' routes and your ships were saved. Now it is your turn: put in a word with the judge on my nephew's case in Galata.",
+      "left_text_en": "I do not interfere with the courts",
+      "right_text_en": "Speak with the judge",
+      "investigate_text_en": "",
+      "speech_left_en": "Venice does not forget, Pasha.",
+      "speech_right_en": "Friendship is mutual, Pasha."
+    },
+    {
+      "id": "habsburg_hazirligi_gercekti",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "Paşam, bankacının haberini doğrulamak için beklettik; haber doğruymuş. Habsburg ittifakı tamam, bizim sınırlar hazırlıksız.",
+      "left_text": "Sınırlara acil takviye",
+      "right_text": "Barış elçisi gönderin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 6,
+        "ulema": 0,
+        "hazine": -10
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": -4,
+        "ulema": 3,
+        "hazine": -3
+      },
+      "left_flags_set": [
+        "habsburg_hazirligi_gercekti_resolved"
+      ],
+      "right_flags_set": [
+        "habsburg_hazirligi_gercekti_resolved"
+      ],
+      "required_flags": [
+        "habsburg_haberi_bekletildi"
+      ],
+      "excluded_flags": [
+        "habsburg_hazirligi_gercekti_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Zaman daraldı, Paşam.",
+      "speech_right": "Diplomasi de bir silahtır.",
+      "character_name_en": "Spymaster",
+      "text_en": "Pasha, we waited to verify the banker's news, and it was true. The Habsburg alliance is sealed and our borders are unprepared.",
+      "left_text_en": "Rush reinforcements to the border",
+      "right_text_en": "Send a peace envoy",
+      "investigate_text_en": "",
+      "speech_left_en": "Time is short, Pasha.",
+      "speech_right_en": "Diplomacy is a weapon too."
     }
   ]
 }
