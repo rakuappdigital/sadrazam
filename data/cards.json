@@ -18529,6 +18529,105 @@
       "investigate_text_en": "",
       "speech_left_en": "Then we shall meet at sea, Pasha.",
       "speech_right_en": "A wise decision, Pasha."
+    },
+    {
+      "id": "dugum_tufek_vergi",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası · Köylü",
+      "faction": "ordu",
+      "knot_of": [
+        "tufek_savas_sonucu",
+        "vergi_tepkisi"
+      ],
+      "knot_characters": [
+        "2-yeniceri",
+        "19-koylu"
+      ],
+      "text": "Paşam, vergiyle aldığınız tüfekler sınırda zafer getirdi; ama o vergiyi ödeyen köylüler dağa çıktı. Ağa, isyanı aynı tüfeklerle bastırmayı öneriyor.",
+      "left_text": "Vergiyi affedin, tüfekler sınırda kalsın",
+      "right_text": "Tüfeklerle isyanı bastırın",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": 4,
+        "ulema": 6,
+        "hazine": -18
+      },
+      "right_effects": {
+        "saray": 6,
+        "yeniçeri": 12,
+        "ulema": -10,
+        "hazine": 8
+      },
+      "left_flags_set": [
+        "dugum_tufek_vergi_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_tufek_vergi_resolved",
+        "dugum_tufek_vergi_bastirildi"
+      ],
+      "triggers_on_right": "dugum_isyan_ulema_tepkisi",
+      "trigger_delay": 12,
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_tufek_vergi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Merhamet de bir güçtür, Paşam.",
+      "speech_right": "Emredersiniz, Paşam. Dağlar temizlenecek.",
+      "character_name_en": "Janissary Agha · Peasant",
+      "text_en": "Pasha, the muskets your taxes bought won at the border, but the peasants who paid took to the hills. The Agha wants to crush the revolt with those same muskets.",
+      "left_text_en": "Forgive the tax, keep the muskets at the border",
+      "right_text_en": "Crush the revolt with the muskets",
+      "investigate_text_en": "",
+      "speech_left_en": "Mercy is a strength too, Pasha.",
+      "speech_right_en": "As you command, Pasha. The hills will be cleared."
+    },
+    {
+      "id": "dugum_isyan_ulema_tepkisi",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "faction": "din",
+      "text": "Paşam, köylülerin tüfekle bastırılması medreselerde konuşuluyor. Bir müderris cuma hutbesinde açıkça zulümden bahsetti. Ne yapmamı istersiniz?",
+      "left_text": "Müderrisi görevden alın",
+      "right_text": "Köylere diyet ödeyin",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": 3,
+        "ulema": -10,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": -2,
+        "ulema": 8,
+        "hazine": -10
+      },
+      "left_flags_set": [
+        "dugum_isyan_ulema_tepkisi_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_isyan_ulema_tepkisi_resolved"
+      ],
+      "required_flags": [
+        "dugum_tufek_vergi_bastirildi"
+      ],
+      "excluded_flags": [
+        "dugum_isyan_ulema_tepkisi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "religious",
+      "speech_left": "Susturulan söz, başka ağızdan çıkar, Paşam.",
+      "speech_right": "Adalet, kılıçtan uzun yaşar, Paşam.",
+      "character_name_en": "Sheikh ul-Islam",
+      "text_en": "Pasha, the crushing of the peasants with muskets is the talk of the madrasas. A professor openly spoke of tyranny in the Friday sermon. What would you have me do?",
+      "left_text_en": "Dismiss the professor",
+      "right_text_en": "Pay blood money to the villages",
+      "investigate_text_en": "",
+      "speech_left_en": "A silenced word finds another mouth, Pasha.",
+      "speech_right_en": "Justice outlives the sword, Pasha."
     }
   ]
 }

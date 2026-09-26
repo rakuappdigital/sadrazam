@@ -3436,12 +3436,49 @@ function getNextCard() {
   return weightedPick(eligible);
 }
 
+// ── Birleşik Sonuç (Düğüm) ────────────────────────────────────────
+// İki gecikmeli sonuç birbirine KNOT_WINDOW kart kadar yakın zamana denk
+// gelirse, ayrı ayrı gelmek yerine onları birlikte anlatan tek bir kart gelir.
+// Hangi çiftlerin birleşeceği veriden okunur: cards.json'da "knot_of": [A, B]
+// alanı olan kart, A ve B sonuçlarının birleşik hâlidir.
+const KNOT_WINDOW = 5;
+
+function _findKnotCard(idA, idB) {
+  return allCards.find(k => Array.isArray(k.knot_of) && k.knot_of.length === 2 &&
+    k.knot_of.includes(idA) && k.knot_of.includes(idB) && idA !== idB);
+}
+
+// Birleşen sonuçlar bir daha ayrıca (zamanlı ya da rastgele) gelmesin:
+// kartın kendi "çözüldü" bayraklarını (hem set ettiği hem excluded olan) aç.
+function _consumeConsequence(c) {
+  const sets = new Set([...(c.left_flags_set || []), ...(c.right_flags_set || [])]);
+  (c.excluded_flags || []).forEach(f => { if (sets.has(f)) activeFlags[f] = true; });
+}
+
 function checkScheduledCards() {
   const due = scheduledCards.filter(sc => cardsPlayed >= sc.afterCardsPlayed);
   scheduledCards = scheduledCards.filter(sc => cardsPlayed < sc.afterCardsPlayed);
+  const consumed = new Set();
   due.forEach(sc => {
+    if (consumed.has(sc)) return;
     const c = _resolveDueConsequence(sc);
-    if (c) forcedQueue.unshift(c);
+    if (!c) return;
+    // Birleşme adayı: vadesi gelmiş ya da KNOT_WINDOW içinde gelecek başka bir sonuç
+    const candidates = due.concat(scheduledCards).filter(o =>
+      o !== sc && !consumed.has(o) && o.afterCardsPlayed <= cardsPlayed + KNOT_WINDOW);
+    for (const other of candidates) {
+      const knot = _findKnotCard(sc.cardId, other.cardId);
+      if (!knot) continue;
+      if ((knot.excluded_flags || []).some(f => activeFlags[f])) continue;
+      const oc = _resolveDueConsequence(other);
+      if (!oc) continue;
+      consumed.add(sc); consumed.add(other);
+      scheduledCards = scheduledCards.filter(x => x !== other);
+      _consumeConsequence(c); _consumeConsequence(oc);
+      forcedQueue.unshift(knot);
+      return;
+    }
+    forcedQueue.unshift(c);
   });
   updateFateBar();
 }
@@ -3453,6 +3490,9 @@ function getEligible() {
     if (c.arc_id) return false;
     if (c.is_traitor_reveal) return false;
     if (c.type === "letter") return false;
+    // Zamanı gelince zaten gelecek bir sonuç, beklerken rastgele çekilmesin
+    // (yoksa erken gelip hem zamanlamayı hem birleşik sonucu bozuyordu)
+    if (scheduledCards.some(sc => sc.cardId === c.id)) return false;
     // Faction baskı kartları sadece tetiklenince
     if (c.required_faction_pressure && !activeFlags["faction_pressure_" + c.required_faction_pressure]) return false;
     // weight:1 özel kartlar arc dışında çıkmasın
@@ -3556,6 +3596,38 @@ const HALK_TEMSILCISI_VARIANTS = [
 // Oyun boyunca her vatandaş kartında rastgele bir görsel seç
 let _halkTemsilcisiCurrent = 0;
 
+// Birleşik sonuç kartı: iki karakterin portresi çapraz bölünmüş gösterilir,
+// kartın üstünde "iki kararınız aynı gün geri döndü" satırı çıkar.
+// Asıl görsel (#card-image) knot_characters[0] ile normal yoldan yüklenir;
+// ikinci portre üstüne, sağ-çapraz yarıya kırpılarak bindirilir.
+function renderKnotVisual(c) {
+  const knotImg = document.getElementById("card-image-knot");
+  const seam    = document.getElementById("card-knot-seam");
+  const kicker  = document.getElementById("card-knot-kicker");
+  const isKnot  = !!(c && Array.isArray(c.knot_characters) && c.knot_characters.length === 2);
+  card.classList.toggle("knot-card", isKnot);
+  if (!knotImg || !seam || !kicker) return;
+  if (!isKnot) {
+    knotImg.classList.remove("visible"); knotImg.removeAttribute("src");
+    seam.classList.remove("visible");
+    kicker.classList.remove("visible"); kicker.textContent = "";
+    return;
+  }
+  kicker.textContent = window.LANG === 'en'
+    ? "Two of your decisions returned on the same day."
+    : "İki kararınız aynı gün geri döndü.";
+  kicker.classList.add("visible");
+  knotImg.classList.remove("visible");
+  seam.classList.remove("visible");
+  const src = "assets/characters/" + encodeURIComponent(c.knot_characters[1] + ".jpg");
+  const pre = new Image();
+  pre.onload = () => {
+    if (currentCard !== c) return; // bu arada başka kart geldiyse uygulama
+    knotImg.src = src; knotImg.classList.add("visible"); seam.classList.add("visible");
+  };
+  pre.src = src;
+}
+
 function getCharacterImageName(key) {
   // Vatandaş: görseller arasında döner
   if (key === "15-halk_temsilcisi") {
@@ -3574,6 +3646,7 @@ function getCharacterImageName(key) {
 
 function dealNext() {
   if (isGameOver) return;
+  renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
 
   // Item expiry: her kart açılışında sayacı azalt
   for (let i = 0; i < 3; i++) {
@@ -3775,6 +3848,8 @@ function dealNext() {
   // Soruşturma butonu kaldırıldı
   const _invBtn = document.getElementById("investigate-btn");
   if (_invBtn) _invBtn.classList.add("hidden");
+
+  renderKnotVisual(c);
 
   // Görseli yükle — hazır olunca göster, yoksa gizle (spinner çıkmasın)
   cardImage.removeAttribute("src");
@@ -4664,6 +4739,7 @@ function tryPadisahZiyareti() {
 }
 
 function showPadisahZiyareti() {
+  renderKnotVisual(null); // dealNext'ten geçmiyor — önceki birleşik görünüm kalmasın
   const _isENpv = window.LANG === 'en';
   const _pvPool = (_isENpv && window.EN_PADISAH_ZIYARET_TEXTS) ? window.EN_PADISAH_ZIYARET_TEXTS : PADISAH_ZIYARET_TEXTS;
   const data = _pvPool[Math.floor(Math.random() * _pvPool.length)];
@@ -6228,6 +6304,7 @@ function flyOff(dir) {
     card.style.transition = "none";
     card.style.transform = "translateX(0) rotate(0deg)";
     cardImage.src = "";
+    renderKnotVisual(null);
     charName.textContent = "";
     cardText.textContent = "";
     choiceLeft.style.opacity = "0";
