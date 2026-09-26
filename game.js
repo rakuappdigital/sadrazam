@@ -1704,7 +1704,7 @@ let challengeComplete = false;
 
 const CHALLENGE_POOL = [
   { id:'yeni_ret_4',    label_tr:'Yeniçeri Ağası\'nı 4 kez reddet',         label_en:'Refuse the Janissary Commander 4 times',        check: s => (s.characterMemory['2-yeniceri']?.left||0) >= 4 },
-  { id:'seyh_des_3',   label_tr:'Şeyhülislam\'ı 3 kez destekle',            label_en:'Support the Şeyhülislam 3 times',               check: s => (s.characterMemory['3-Seyhulislam']?.right||0) >= 3 },
+  { id:'seyh_des_3',   label_tr:'Şeyhülislam\'ı 3 kez destekle',            label_en:'Support the Şeyhülislam 3 times',               check: s => (s.characterMemory['3-seyhulislam']?.right||0) >= 3 },
   { id:'haz_min_30',   label_tr:'Hazine hiç 30\'un altına düşmesin',         label_en:'Keep treasury above 30 throughout',             check: s => s.minHazine >= 30 },
   { id:'rakip_4',      label_tr:'Rakip Vezir ile 4 kez yüzleş',              label_en:'Confront the Rival Vizier 4 times',             check: s => ((s.characterMemory['8-rakip-vezir']?.left||0)+(s.characterMemory['8-rakip-vezir']?.right||0)) >= 4 },
   { id:'10_yil',       label_tr:'10 yıl hayatta kal',                        label_en:'Survive for 10 years',                          check: s => s.year >= 10 },
@@ -2824,9 +2824,9 @@ function startGame() {
   hicriMonth = 0;
 
   // Gizli hain seç
-  const characterKeys = ["2-yeniceri", "3-Seyhulislam", "4. Defterdar",
-    "5. Valide Sultan", "6. Kaptan-ı Derya", "7. Yabancı Elçi",
-    "8. Rakip Vezir", "10-hekimbasi", "11-sipahi_agasi",
+  const characterKeys = ["2-yeniceri", "3-seyhulislam", "4-defterdar",
+    "5-valide-sultan", "6-kaptan-i-derya", "7-yabanci-elci",
+    "8-rakip-vezir", "10-hekimbasi", "11-sipahi_agasi",
     "12-saray_sairi", "13-buyuk_tuccar", "14-casuslar_basi",
     "15-halk_temsilcisi", "16-saray_agasi", "22-yahudi_bankaci",
     "24-korsanbasi", "25-deli_dervis", "26-genc_pasa"];
@@ -3724,7 +3724,7 @@ function dealNext() {
     }
 
     // Şeyhülislam — 3+ destek (sağ) → güvenli ton
-    if (key === '3-Seyhulislam' && _rgt >= 3) {
+    if (key === '3-seyhulislam' && _rgt >= 3) {
       displayText += _isEN
         ? " — He spoke with a familiar confidence."
         : " — Tanıdık bir özgüvenle konuştu.";
