@@ -19,6 +19,21 @@ sayfasında build 25'i seçip review'a gönderiyor.
       Reklamsız fiyatı (₺59,99) geliyor mu, satın alınca geçiş reklamı kesiliyor
       mu, "Geri Yükle" çalışıyor mu. `noads` IAP'ı sürüme eklendi mi kontrol et.
 
+## Tespit edilen hata (26 Eylül 2026, henüz düzeltilmedi)
+
+- **`game.js` `CHAIN_RULES` içindeki 7 gecikmeli sonucun HİÇBİRİ oyunda
+  tetiklenmiyor**: kuralların beklediği bayrakları (`yeni_kışla_reddedildi`,
+  `venedik_1_sinirlendi`, `defterdar_borc_alındı`, `casuslar_op_baslatildi`,
+  `veba_gormezden_gelindi_2`, `sehzade_affedildi`, `kaptan_filo_izni`)
+  `data/cards.json`'daki hiçbir kart set etmiyor (isimler uyuşmuyor; ör.
+  kartlarda `kışla_reddedildi` var). Ayrıca `venedik_geri_dondu` kartı hiç yok.
+  Düzeltme: bayrak adlarını kartlardakiyle eşleştir + eksik kartı yaz.
+
+## Düğüm mekaniği (kullanıcı demo gördü, içerik planı konuşuldu, henüz kodlanmadı)
+
+Demo: https://claude.ai/artifact/NpiW7iiJccUHkoeTeJEVzw — yerel dal
+`onizleme/hatirlatma-satiri` (hatırlatma satırı denemesi, push edilmedi).
+
 ## Bu session'da yapılanlar (26 Eylül 2026)
 
 Commit'ler: `1cbce90`, `cb22f65`, `7b310a3`, `8ffee08` (hepsi push edildi).
