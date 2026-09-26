@@ -3441,7 +3441,42 @@ function getNextCard() {
 // gelirse, ayrı ayrı gelmek yerine onları birlikte anlatan tek bir kart gelir.
 // Hangi çiftlerin birleşeceği veriden okunur: cards.json'da "knot_of": [A, B]
 // alanı olan kart, A ve B sonuçlarının birleşik hâlidir.
-const KNOT_WINDOW = 5;
+const KNOT_WINDOW = 8;
+// Tematik çekim: bir sonuç beklerken, onunla birleşebilecek diğer sonucun
+// KAYNAK kartı destede bu kat daha olası çekilir (ör. Ceneviz borcu alındıysa
+// bankacının borç teklifi yakında gelir). Simülasyon (26 Eylül 2026, gerçek
+// kart ağırlıklarıyla): çekim olmadan birleşme oyunların ~%4'ünde görülüyordu;
+// pencere 8 + 25x ile 5 yıllık oyunda ort. ~1,2 birleşme, oyunların ~%71'i.
+const KNOT_PULL_BOOST = 25;
+
+// sonuç kartı id → onu doğurabilen kaynak kart id'leri (bir kez hesaplanır)
+let _consequenceSources = null;
+function _getConsequenceSources() {
+  if (_consequenceSources && _consequenceSources._n === allCards.length) return _consequenceSources;
+  const m = { _n: allCards.length };
+  const add = (cid, sid) => { (m[cid] = m[cid] || []).includes(sid) || m[cid].push(sid); };
+  allCards.forEach(c => ["left", "right"].forEach(side => { const t = c["triggers_on_" + side]; if (t) add(t, c.id); }));
+  CHAIN_RULES.forEach(r => allCards.forEach(c => {
+    if ([...(c.left_flags_set || []), ...(c.right_flags_set || [])].includes(r.flag)) add(r.cardId, c.id);
+  }));
+  return (_consequenceSources = m);
+}
+
+// Şu an destede güçlendirilecek kaynak kartlar
+function _knotPullSources() {
+  const out = new Set();
+  if (!scheduledCards.length) return out;
+  const pending = new Set(scheduledCards.map(sc => sc.cardId));
+  const srcMap = _getConsequenceSources();
+  allCards.forEach(k => {
+    if (!Array.isArray(k.knot_of) || k.knot_of.length !== 2) return;
+    if ((k.excluded_flags || []).some(f => activeFlags[f])) return;
+    const [a, b] = k.knot_of;
+    if (pending.has(a) && !pending.has(b)) (srcMap[b] || []).forEach(id => out.add(id));
+    if (pending.has(b) && !pending.has(a)) (srcMap[a] || []).forEach(id => out.add(id));
+  });
+  return out;
+}
 
 function _findKnotCard(idA, idB) {
   return allCards.find(k => Array.isArray(k.knot_of) && k.knot_of.length === 2 &&
@@ -3484,6 +3519,7 @@ function checkScheduledCards() {
 }
 
 function getEligible() {
+  const knotPull = _knotPullSources();
   return allCards.filter(c => {
     if (c.is_pasa_terfi && (!isPasaMode || pasaPromoted)) return false;
     if (c.is_event) return false;
@@ -3510,9 +3546,10 @@ function getEligible() {
     return passesFilters(c);
   }).map(c => {
     const times = playCounts[c.id] || 0;
-    if (times > 0) {
-      return { ...c, weight: Math.max(1, Math.floor((c.weight || 10) / (times * 2))) };
-    }
+    let w = c.weight || 10;
+    if (times > 0) w = Math.max(1, Math.floor(w / (times * 2)));
+    if (knotPull.has(c.id)) w = w * KNOT_PULL_BOOST;
+    if (w !== (c.weight || 10)) return { ...c, weight: w };
     return c;
   });
 }

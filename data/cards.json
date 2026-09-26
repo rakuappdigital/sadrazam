@@ -20092,6 +20092,720 @@
       "investigate_text_en": "",
       "speech_left_en": "Time is short, Pasha.",
       "speech_right_en": "Diplomacy is a weapon too."
+    },
+    {
+      "id": "dugum_iki_alacakli",
+      "character": "4-defterdar",
+      "character_name": "Defterdar · Yahudi Bankacı",
+      "faction": "saray",
+      "knot_of": [
+        "borc_vadesi_geldi",
+        "yahudi_borc_vadesi"
+      ],
+      "knot_characters": [
+        "4-defterdar",
+        "22-yahudi_bankaci"
+      ],
+      "text": "Paşam, Cenevizliler ve bankacı aynı gün kapıda. İkisinin de vadesi doldu, kasada ise tek borca yetecek para var.",
+      "left_text": "Bankacıyı öde, Cenevizliler beklesin",
+      "right_text": "Yeni vergiyle ikisini de ödeyin",
+      "left_effects": {
+        "saray": -6,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -12
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": -4,
+        "ulema": -6,
+        "hazine": -8
+      },
+      "left_flags_set": [
+        "dugum_iki_alacakli_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_iki_alacakli_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_iki_alacakli_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Galata depoları gidebilir, Paşam.",
+      "speech_right": "Halk bu vergiyi sevmeyecek.",
+      "character_name_en": "Treasurer · Jewish Banker",
+      "text_en": "Pasha, the Genoese and the banker are at the door on the same day. Both loans are due, and the treasury holds enough for only one.",
+      "left_text_en": "Pay the banker, the Genoese can wait",
+      "right_text_en": "Pay both with a new tax",
+      "investigate_text_en": "",
+      "speech_left_en": "The Galata warehouses may be lost, Pasha.",
+      "speech_right_en": "The people will not like this tax."
+    },
+    {
+      "id": "dugum_borc_maas",
+      "character": "4-defterdar",
+      "character_name": "Defterdar · Yeniçeri İsyancısı",
+      "faction": "ordu",
+      "knot_of": [
+        "borc_vadesi_geldi",
+        "maaş_isyan_tehlikesi"
+      ],
+      "knot_characters": [
+        "4-defterdar",
+        "18-yeniceri_isyancisi"
+      ],
+      "text": "Paşam, kasa tek; Cenevizlilerin vadesi de yeniçerinin maaşı da bugün. Ocakta kazanlar ateşe konmuş, Galata'da da alacaklılar bekliyor.",
+      "left_text": "Cenevizlileri ödeyin",
+      "right_text": "Maaşları ödeyin",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -14,
+        "ulema": 0,
+        "hazine": -12
+      },
+      "right_effects": {
+        "saray": -8,
+        "yeniçeri": 12,
+        "ulema": 0,
+        "hazine": -12
+      },
+      "left_flags_set": [
+        "dugum_borc_maas_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_borc_maas_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_borc_maas_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Kazan devrilecek, Paşam!",
+      "speech_right": "Ocak size sadık kalacak.",
+      "character_name_en": "Treasurer · Janissary Rebel",
+      "text_en": "Pasha, there is one treasury; the Genoese debt and the Janissaries' pay are both due today. The cauldrons are on the fire, and the creditors wait in Galata.",
+      "left_text_en": "Pay the Genoese",
+      "right_text_en": "Pay the soldiers",
+      "investigate_text_en": "",
+      "speech_left_en": "The cauldron will be overturned, Pasha!",
+      "speech_right_en": "The corps will stay loyal to you."
+    },
+    {
+      "id": "dugum_koyler_bosaliyor",
+      "character": "19-koylu",
+      "character_name": "Köylü · Defterdar",
+      "faction": "halk",
+      "knot_of": [
+        "vergi_tepkisi",
+        "koylu_topraktan_kacti"
+      ],
+      "knot_characters": [
+        "19-koylu",
+        "4-defterdar"
+      ],
+      "text": "Paşam, ağır vergi ve ertelenmeyen borç bir araya geldi: köyler boşalıyor. Defterdar gelecek yıl tahsil edecek köylü bulamayacağını söylüyor.",
+      "left_text": "Kaçakları zorla geri gönderin",
+      "right_text": "Üç yıl vergi affı ilan edin",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -6,
+        "ulema": -6,
+        "hazine": 6
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 4,
+        "ulema": 6,
+        "hazine": -15
+      },
+      "left_flags_set": [
+        "dugum_koyler_bosaliyor_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_koyler_bosaliyor_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_koyler_bosaliyor_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Zorla tutulan köy, ilk fırsatta kaçar.",
+      "speech_right": "Toprak yeniden yeşerecek, Paşam.",
+      "character_name_en": "Peasant · Treasurer",
+      "text_en": "Pasha, heavy taxes and unpostponed debts came together: the villages are emptying. The Treasurer says there will be no peasants left to tax next year.",
+      "left_text_en": "Force the runaways back",
+      "right_text_en": "Declare a three-year tax amnesty",
+      "investigate_text_en": "",
+      "speech_left_en": "A village held by force flees at the first chance.",
+      "speech_right_en": "The land will turn green again, Pasha."
+    },
+    {
+      "id": "dugum_venedik_gumruk",
+      "character": "7-yabanci-elci",
+      "character_name": "Venedik Elçisi · Büyük Tüccar",
+      "faction": "dış",
+      "knot_of": [
+        "gumruk_artisi_tepki",
+        "venedik_geri_dondu"
+      ],
+      "knot_characters": [
+        "7-yabanci-elci",
+        "13-buyuk_tuccar"
+      ],
+      "text": "Paşam, Venedik yüksek gümrüğü bahane edip Ceneviz'le anlaştı; Boğaz'a gemi uğramıyor. Tüccarlar da elçi de gümrüğün düşmesini istiyor.",
+      "left_text": "Gümrük düşmez, Venedik boyun eğer",
+      "right_text": "Gümrüğü eski hâline getirin",
+      "left_effects": {
+        "saray": 5,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": -10
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 12
+      },
+      "left_flags_set": [
+        "dugum_venedik_gumruk_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_venedik_gumruk_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_venedik_gumruk_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Denizde karşılaşırız, Paşam.",
+      "speech_right": "Liman yeniden dolacak.",
+      "character_name_en": "Venetian Ambassador · Great Merchant",
+      "text_en": "Pasha, Venice used the high customs as an excuse to side with Genoa, and no ships call at the Bosphorus. Merchants and envoy alike want the duty lowered.",
+      "left_text_en": "The duty stays, Venice will yield",
+      "right_text_en": "Restore the old customs rate",
+      "investigate_text_en": "",
+      "speech_left_en": "Then we meet at sea, Pasha.",
+      "speech_right_en": "The port will fill again."
+    },
+    {
+      "id": "dugum_kazan_kalkti",
+      "character": "18-yeniceri_isyancisi",
+      "character_name": "Yeniçeri İsyancısı · Yeniçeri Ağası",
+      "faction": "ordu",
+      "knot_of": [
+        "ganimet_huzursuzluk",
+        "maaş_isyan_tehlikesi"
+      ],
+      "knot_characters": [
+        "18-yeniceri_isyancisi",
+        "2-yeniceri"
+      ],
+      "text": "Paşam, kazan kaldırıldı! Gecikmiş maaşlar ve paylaşılmayan ganimet ocağı birleştirdi. Ağa bile askerleri tutamıyor; At Meydanı dolu.",
+      "left_text": "Elebaşlarını teslim edin derim",
+      "right_text": "Maaş ve ganimeti hemen dağıtın",
+      "left_effects": {
+        "saray": 6,
+        "yeniçeri": -15,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -6,
+        "yeniçeri": 14,
+        "ulema": 0,
+        "hazine": -15
+      },
+      "left_flags_set": [
+        "dugum_kazan_kalkti_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_kazan_kalkti_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_kazan_kalkti_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Kan dökülebilir, Paşam.",
+      "speech_right": "Kazan yere indi, Paşam.",
+      "character_name_en": "Janissary Rebel · Janissary Agha",
+      "text_en": "Pasha, the cauldron has been overturned! Late wages and unshared spoils united the corps. Even the Agha cannot hold the men; the Hippodrome is full.",
+      "left_text_en": "Demand the ringleaders",
+      "right_text_en": "Pay wages and spoils at once",
+      "investigate_text_en": "",
+      "speech_left_en": "Blood may be spilled, Pasha.",
+      "speech_right_en": "The cauldron is set down, Pasha."
+    },
+    {
+      "id": "dugum_ocak_carsida",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası · Halk Temsilcisi",
+      "faction": "ordu",
+      "knot_of": [
+        "disiplin_gevsedi",
+        "kışla_sonuç"
+      ],
+      "knot_characters": [
+        "2-yeniceri",
+        "15-halk_temsilcisi"
+      ],
+      "text": "Paşam, çürük kışlada yaşayan ve ceza görmeyen askerler geceleri çarşıya iniyor. Esnaf kepenk kapattı, Ağa da kışla olmadan düzen sağlanmaz diyor.",
+      "left_text": "Kışlayı yaptırın, suçlular cezalansın",
+      "right_text": "Çarşıya bekçi, askere ceza",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": 6,
+        "ulema": 2,
+        "hazine": -14
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": -10,
+        "ulema": 3,
+        "hazine": -3
+      },
+      "left_flags_set": [
+        "dugum_ocak_carsida_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_ocak_carsida_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_ocak_carsida_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Çatı olursa disiplin de olur.",
+      "speech_right": "Asker bunu unutmaz, Paşam.",
+      "character_name_en": "Janissary Agha · People's Representative",
+      "text_en": "Pasha, soldiers living in a rotten barracks and never punished roam the bazaar at night. The shops have closed, and the Agha says there is no order without barracks.",
+      "left_text_en": "Build the barracks and punish the guilty",
+      "right_text_en": "Guards for the bazaar, punishment for soldiers",
+      "investigate_text_en": "",
+      "speech_left_en": "With a roof comes discipline.",
+      "speech_right_en": "The soldiers will not forget, Pasha."
+    },
+    {
+      "id": "dugum_kiyi_kadirga",
+      "character": "6-kaptan-i-derya",
+      "character_name": "Kaptan-ı Derya · Korsanbaşı",
+      "faction": "ordu",
+      "knot_of": [
+        "kiyi_baskini",
+        "tersane_getirisi"
+      ],
+      "knot_characters": [
+        "6-kaptan-i-derya",
+        "24-korsanbasi"
+      ],
+      "text": "Paşam, yeni kadırgalar denize indiği gün Malta şövalyeleri Ege'yi yağmaladı. Kaptan donanmayla, Korsanbaşı kendi gemileriyle peşlerine düşmek istiyor.",
+      "left_text": "Donanma çıksın, iş devletindir",
+      "right_text": "Korsanlara izin verin",
+      "left_effects": {
+        "saray": 5,
+        "yeniçeri": 8,
+        "ulema": 2,
+        "hazine": -10
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 4,
+        "ulema": -3,
+        "hazine": 8
+      },
+      "left_flags_set": [
+        "dugum_kiyi_kadirga_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_kiyi_kadirga_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_kiyi_kadirga_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Yeni kadırgalar ilk sınavında!",
+      "speech_right": "Ganimet bizden, izin sizden.",
+      "character_name_en": "Grand Admiral · Corsair Chief",
+      "text_en": "Pasha, on the day the new galleys were launched, the Knights of Malta raided the Aegean. The Admiral wants to pursue with the fleet, the Corsair Chief with his own ships.",
+      "left_text_en": "Send the fleet, this is state work",
+      "right_text_en": "Give the corsairs leave",
+      "investigate_text_en": "",
+      "speech_left_en": "The new galleys face their first test!",
+      "speech_right_en": "The spoils are ours, the permission yours."
+    },
+    {
+      "id": "dugum_gocle_gelen_veba",
+      "character": "31-dogu-alim",
+      "character_name": "Doğulu Alim · Köylü",
+      "faction": "halk",
+      "knot_of": [
+        "dogu_vebasi_geldi",
+        "goc_sonuc"
+      ],
+      "knot_characters": [
+        "31-dogu-alim",
+        "19-koylu"
+      ],
+      "text": "Paşam, açık bıraktığınız doğu yolundan gelen veba, İstanbul'a akın eden göçmenlerle şehre girdi. Kalabalık mahallelerde hastalık hızla yayılıyor.",
+      "left_text": "Göçmen mahallelerini kapatın",
+      "right_text": "Şehrin kapılarını kapatın",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 3,
+        "ulema": -5,
+        "hazine": -6
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": -4,
+        "ulema": 6,
+        "hazine": -12
+      },
+      "left_flags_set": [
+        "dugum_gocle_gelen_veba_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_gocle_gelen_veba_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_gocle_gelen_veba_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Kapalı mahalle, öfkeli mahalledir.",
+      "speech_right": "Şehir nefesini tutacak, Paşam.",
+      "character_name_en": "Eastern Scholar · Peasant",
+      "text_en": "Pasha, the plague that came along the open eastern road entered the city with the migrants flooding into Istanbul. It spreads fast in the crowded quarters.",
+      "left_text_en": "Seal off the migrant quarters",
+      "right_text_en": "Close the city gates",
+      "investigate_text_en": "",
+      "speech_left_en": "A sealed quarter is an angry quarter.",
+      "speech_right_en": "The city will hold its breath, Pasha."
+    },
+    {
+      "id": "dugum_salginda_ilac",
+      "character": "10-hekimbasi",
+      "character_name": "Hekimbaşı · Şeyhülislam",
+      "faction": "din",
+      "knot_of": [
+        "saray_salgini_yayildi",
+        "ilac_tartismasi"
+      ],
+      "knot_characters": [
+        "10-hekimbasi",
+        "3-seyhulislam"
+      ],
+      "text": "Paşam, Divan'daki salgında tek işe yarayan Hint ilacı. Hekimbaşı herkese verilmesini, Şeyhülislam ise yasaklanmasını istiyor.",
+      "left_text": "İlaç herkese verilsin",
+      "right_text": "Fetvaya uyun, ilaç yasak",
+      "left_effects": {
+        "saray": 5,
+        "yeniçeri": 3,
+        "ulema": -10,
+        "hazine": -5
+      },
+      "right_effects": {
+        "saray": -6,
+        "yeniçeri": -3,
+        "ulema": 9,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "dugum_salginda_ilac_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_salginda_ilac_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_salginda_ilac_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "religious",
+      "speech_left": "Şifa Allah'tandır, ilaç vesiledir.",
+      "speech_right": "Hasta ölürse vebali kimde?",
+      "character_name_en": "Chief Physician · Şeyhülislam",
+      "text_en": "Pasha, in the Divan's epidemic the only thing that works is the Indian remedy. The Chief Physician wants it given to all; the Şeyhülislam wants it banned.",
+      "left_text_en": "Give the remedy to everyone",
+      "right_text_en": "Obey the fetva, ban the remedy",
+      "investigate_text_en": "",
+      "speech_left_en": "Healing is from God; the remedy is the means.",
+      "speech_right_en": "If the sick die, whose sin is it?"
+    },
+    {
+      "id": "dugum_harem_sizintisi",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı · Valide Sultan",
+      "faction": "saray",
+      "knot_of": [
+        "sizinti_devam",
+        "cariye_casus_cikti"
+      ],
+      "knot_characters": [
+        "14-casuslar_basi",
+        "5-valide-sultan"
+      ],
+      "text": "Paşam, sızıntının kaynağı Harem'deki o cariyeymiş. Casuslar Başı onu sorgulamak istiyor; Valide Sultan ise meselenin Harem'de kalmasını şart koşuyor.",
+      "left_text": "Casuslar Başı sorgulasın",
+      "right_text": "Valide Sultan'a bırakın",
+      "left_effects": {
+        "saray": -6,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 6,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": -3
+      },
+      "left_flags_set": [
+        "dugum_harem_sizintisi_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_harem_sizintisi_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_harem_sizintisi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Harem'e yabancı girmez, Paşa!",
+      "speech_right": "Doğru kararı verdiniz, Paşa.",
+      "character_name_en": "Spymaster · Valide Sultan",
+      "text_en": "Pasha, the leak was that concubine in the harem. The Spymaster wants to interrogate her; the Valide Sultan insists the matter stay inside the harem.",
+      "left_text_en": "Let the Spymaster interrogate her",
+      "right_text_en": "Leave it to the Valide Sultan",
+      "investigate_text_en": "",
+      "speech_left_en": "No stranger enters the harem, Pasha!",
+      "speech_right_en": "You chose rightly, Pasha."
+    },
+    {
+      "id": "dugum_rakip_skandal",
+      "character": "8-rakip-vezir",
+      "character_name": "Rakip Vezir · Baş Muhasip",
+      "faction": "saray",
+      "knot_of": [
+        "rakip_ittifak_ihaneti",
+        "muhasip_skandal"
+      ],
+      "knot_characters": [
+        "8-rakip-vezir",
+        "basmuhasip"
+      ],
+      "text": "Paşam, eski ortağınız muhasibin rüşvet skandalını Sultan'a götürüp 'Sadrazam biliyordu' diyecek. Muhasip ise sizi korumak için suçu üstlenmeye hazır.",
+      "left_text": "Muhasip suçu üstlensin",
+      "right_text": "Sultan'a önce siz gidin",
+      "left_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": -5,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": -5
+      },
+      "left_flags_set": [
+        "dugum_rakip_skandal_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_rakip_skandal_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_rakip_skandal_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Bir piyon feda edildi.",
+      "speech_right": "Doğruyu söyleyen dokuz köyden kovulur.",
+      "character_name_en": "Rival Vizier · Chief Accountant",
+      "text_en": "Pasha, your former partner will take the accountant's bribery scandal to the Sultan and say you knew. The accountant is ready to take the blame to shield you.",
+      "left_text_en": "Let the Accountant take the blame",
+      "right_text_en": "Go to the Sultan first",
+      "investigate_text_en": "",
+      "speech_left_en": "A pawn has been sacrificed.",
+      "speech_right_en": "The truth-teller is driven from nine villages."
+    },
+    {
+      "id": "dugum_gizli_anlasmalar",
+      "character": "23-safevi_elcisi",
+      "character_name": "Safevi Elçisi · Yabancı Elçi",
+      "faction": "dış",
+      "knot_of": [
+        "gizli_ateskes_ortaya_cikti",
+        "fransiz_ittifak_haberi"
+      ],
+      "knot_characters": [
+        "23-safevi_elcisi",
+        "7-yabanci-elci"
+      ],
+      "text": "Paşam, iki gizli anlaşmanız aynı hafta duyuldu: Şah'la ateşkes ve Fransa'yla ittifak. Divan'da 'Sadrazam devleti kendi başına yönetiyor' deniyor.",
+      "left_text": "Sultan'a hepsini anlatın",
+      "right_text": "Anlaşmaları Divan'a onaylatın",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": -6,
+        "yeniçeri": 4,
+        "ulema": -4,
+        "hazine": 8
+      },
+      "left_flags_set": [
+        "dugum_gizli_anlasmalar_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_gizli_anlasmalar_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_gizli_anlasmalar_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Dürüstlük pahalıdır ama sağlamdır.",
+      "speech_right": "Cüretkâr bir hamle, Paşam.",
+      "character_name_en": "Safavid Envoy · Foreign Ambassador",
+      "text_en": "Pasha, both of your secret deals came out the same week: the truce with the Shah and the alliance with France. The Divan says the Grand Vizier runs the state on his own.",
+      "left_text_en": "Tell the Sultan everything",
+      "right_text_en": "Have the Divan approve the deals",
+      "investigate_text_en": "",
+      "speech_left_en": "Honesty is costly but sound.",
+      "speech_right_en": "A daring move, Pasha."
+    },
+    {
+      "id": "dugum_sehir_koy_ayaklanmasi",
+      "character": "30-halk-onderi",
+      "character_name": "Halk Önderi · Köylü",
+      "faction": "halk",
+      "knot_of": [
+        "ekmek_kampanyasi_yeralti",
+        "aga_zulum_buyudu"
+      ],
+      "knot_characters": [
+        "30-halk-onderi",
+        "19-koylu"
+      ],
+      "text": "Paşam, şehirdeki ekmek hareketiyle ağadan kaçan köylüler birleşti. Cami avlularında köylüler de konuşuyor; Halk Önderi hepsinin sesi olmak istiyor.",
+      "left_text": "Önderi tutuklayın",
+      "right_text": "Önderle Divan'da görüşün",
+      "left_effects": {
+        "saray": 5,
+        "yeniçeri": -5,
+        "ulema": -8,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 5,
+        "ulema": 6,
+        "hazine": -8
+      },
+      "left_flags_set": [
+        "dugum_sehir_koy_ayaklanmasi_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_sehir_koy_ayaklanmasi_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_sehir_koy_ayaklanmasi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Bir önder gider, bin önder gelir.",
+      "speech_right": "Halkın sesi Divan'a ulaştı!",
+      "character_name_en": "People's Leader · Peasant",
+      "text_en": "Pasha, the city's bread movement and the peasants fleeing the agha have joined. Peasants now speak in the mosque courtyards; the People's Leader wants to be their voice.",
+      "left_text_en": "Arrest the leader",
+      "right_text_en": "Meet the leader in the Divan",
+      "investigate_text_en": "",
+      "speech_left_en": "One leader falls, a thousand rise.",
+      "speech_right_en": "The people's voice has reached the Divan!"
+    },
+    {
+      "id": "dugum_korsan_balyos",
+      "character": "venedikbalyosu",
+      "character_name": "Venedik Balyosu · Korsanbaşı",
+      "faction": "dış",
+      "knot_of": [
+        "korsan_fidye_skandal",
+        "balyos_iyilik_talebi"
+      ],
+      "knot_characters": [
+        "venedikbalyosu",
+        "24-korsanbasi"
+      ],
+      "text": "Paşam, korsanın fidyesini aldığı soylu, Venedik balyosunun kuzeni çıktı. Balyos iyilik isterken bir yandan da fidyenin iadesini şart koşuyor.",
+      "left_text": "Fidyeyi iade edin",
+      "right_text": "Korsanı ve fidyeyi koruyun",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -3,
+        "ulema": 2,
+        "hazine": -12
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": 5,
+        "ulema": -2,
+        "hazine": 6
+      },
+      "left_flags_set": [
+        "dugum_korsan_balyos_resolved"
+      ],
+      "right_flags_set": [
+        "dugum_korsan_balyos_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "dugum_korsan_balyos_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Venedik bunu unutmaz, Paşam.",
+      "speech_right": "Deniz bizimdir, Paşam!",
+      "character_name_en": "Venetian Bailo · Corsair Chief",
+      "text_en": "Pasha, the noble whose ransom the corsair took turns out to be the Venetian bailo's cousin. The bailo asks his favour and demands the ransom back as well.",
+      "left_text_en": "Return the ransom",
+      "right_text_en": "Protect the corsair and the ransom",
+      "investigate_text_en": "",
+      "speech_left_en": "Venice will not forget this, Pasha.",
+      "speech_right_en": "The sea is ours, Pasha!"
     }
   ]
 }
