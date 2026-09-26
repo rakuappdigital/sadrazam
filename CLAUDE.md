@@ -344,6 +344,12 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
 
+- **v1.4.1/build 25 (26 Eylül 2026'da yüklendi, Delivery UUID
+  `04631759-f487-44c9-8d66-b9e83f247f74`, ASC'de VALID)** — ödüllü reklam
+  45sn hangGuard kök neden fix'i + canlıda sahte reklam kaldırıldı. Kullanıcı
+  1.4.1 sürüm sayfasına build'i seçip review'a kendisi gönderecek. Yayına
+  çıkınca: gerçek reklamda ödül + sayaç düşüşü, AdMob'da gösterim/gelir kontrolü.
+
 - **v1.4.0/build 24 (25 Eylül 2026'da yüklendi, Delivery UUID
   `98a7a7b7-f668-4328-9129-b4b76573876a`) — build 23'ün üstüne Market +
   Reklamsız eklendi.** TestFlight'ta doğrulanacak: Market açılıyor mu,
