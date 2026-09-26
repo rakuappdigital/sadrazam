@@ -3193,7 +3193,9 @@
         "ulema": 4,
         "hazine": -8
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "veba_gormezden_gelindi"
+      ],
       "right_flags_set": [
         "veba_önlemi"
       ],
@@ -5225,7 +5227,9 @@
         "ulema": -5,
         "hazine": 18
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "venedik_1_sinirlendi"
+      ],
       "right_flags_set": [
         "venedik_ittifak_1"
       ],
@@ -6489,13 +6493,18 @@
         "hazine": -15
       },
       "left_flags_set": [
-        "isyan_kıvılcımı"
+        "isyan_kıvılcımı",
+        "kışla_sonuç_resolved"
       ],
-      "right_flags_set": [],
+      "right_flags_set": [
+        "kışla_sonuç_resolved"
+      ],
       "required_flags": [
         "kışla_reddedildi"
       ],
-      "excluded_flags": [],
+      "excluded_flags": [
+        "kışla_sonuç_resolved"
+      ],
       "weight": 8,
       "min_year": 2,
       "category": "military",
@@ -6534,12 +6543,18 @@
         "ulema": 0,
         "hazine": -14
       },
-      "left_flags_set": [],
-      "right_flags_set": [],
+      "left_flags_set": [
+        "maaş_isyan_tehlikesi_resolved"
+      ],
+      "right_flags_set": [
+        "maaş_isyan_tehlikesi_resolved"
+      ],
       "required_flags": [
         "maaş_gecikti"
       ],
-      "excluded_flags": [],
+      "excluded_flags": [
+        "maaş_isyan_tehlikesi_resolved"
+      ],
       "weight": 9,
       "min_year": 1,
       "category": "military",
@@ -8252,7 +8267,7 @@
       ],
       "required_flags": [],
       "excluded_flags": [],
-      "weight": 1,
+      "weight": 5,
       "min_year": 5,
       "category": "intrigue",
       "investigate_text": "Bu emir doğrudan Sultan'dan mı geliyor, yoksa saray entrikasının parçası mı?",
@@ -8483,11 +8498,19 @@
         "ulema": -2,
         "hazine": -4
       },
-      "left_flags_set": [],
-      "right_flags_set": [],
-      "required_flags": [],
-      "excluded_flags": [],
-      "weight": 8,
+      "left_flags_set": [
+        "sehzade_avcisi_2_resolved"
+      ],
+      "right_flags_set": [
+        "sehzade_avcisi_2_resolved"
+      ],
+      "required_flags": [
+        "şehzade_tasfiye"
+      ],
+      "excluded_flags": [
+        "sehzade_avcisi_2_resolved"
+      ],
+      "weight": 1,
       "min_year": 2,
       "max_year": 99,
       "speech_left": "",
@@ -16669,12 +16692,18 @@
       "speech_right_en": "This is how blessings are shared."
     },
     {
-      "left_flags_set": [],
-      "right_flags_set": [],
+      "left_flags_set": [
+        "tersane_getirisi_resolved"
+      ],
+      "right_flags_set": [
+        "tersane_getirisi_resolved"
+      ],
       "required_flags": [
         "yeni_kadırgalar"
       ],
-      "excluded_flags": [],
+      "excluded_flags": [
+        "tersane_getirisi_resolved"
+      ],
       "investigate_text_en": "",
       "id": "tersane_getirisi",
       "character": "6-kaptan-i-derya",
@@ -16708,12 +16737,18 @@
       "speech_right_en": "To be seen at sea is to rule it."
     },
     {
-      "left_flags_set": [],
-      "right_flags_set": [],
+      "left_flags_set": [
+        "darüşşifa_getirisi_resolved"
+      ],
+      "right_flags_set": [
+        "darüşşifa_getirisi_resolved"
+      ],
       "required_flags": [
         "darüşşifa_açıldı"
       ],
-      "excluded_flags": [],
+      "excluded_flags": [
+        "darüşşifa_getirisi_resolved"
+      ],
       "investigate_text_en": "",
       "id": "darüşşifa_getirisi",
       "character": "10-hekimbasi",
@@ -18449,6 +18484,51 @@
       "right_text_en": "Grant the scholarship",
       "speech_left_en": "I understand, my lord. I will keep working hard.",
       "speech_right_en": "I will pray for you all my life, Grand Vizier."
+    },
+    {
+      "id": "venedik_geri_dondu",
+      "character": "7-yabanci-elci",
+      "character_name": "Venedik Elçisi",
+      "faction": "halk",
+      "text": "Paşam, ticaret yollarını sınırlı tuttuğunuzdan beri Venedik, Cenevizlilerle anlaştı. Şimdi Galata gümrüğünde indirim istiyoruz; yoksa Akdeniz korsanlarına göz yumarız.",
+      "left_text": "Tehdide boyun eğmeyiz",
+      "right_text": "İndirimi verin, ticaret sürsün",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": 3,
+        "ulema": 2,
+        "hazine": -9
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": -2,
+        "ulema": -3,
+        "hazine": 7
+      },
+      "left_flags_set": [
+        "venedik_geri_dondu_resolved"
+      ],
+      "right_flags_set": [
+        "venedik_geri_dondu_resolved"
+      ],
+      "required_flags": [
+        "venedik_1_sinirlendi"
+      ],
+      "excluded_flags": [
+        "venedik_geri_dondu_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Denizde karşılaşırız o hâlde, Paşam.",
+      "speech_right": "Akıllıca bir karar, Paşam.",
+      "character_name_en": "Venetian Ambassador",
+      "text_en": "Pasha, since you kept the trade routes limited, Venice has made terms with Genoa. Now we ask for a discount at the Galata customs, or we will turn a blind eye to the corsairs.",
+      "left_text_en": "We do not bow to threats",
+      "right_text_en": "Grant the discount, let trade go on",
+      "investigate_text_en": "",
+      "speech_left_en": "Then we shall meet at sea, Pasha.",
+      "speech_right_en": "A wise decision, Pasha."
     }
   ]
 }

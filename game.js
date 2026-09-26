@@ -1566,33 +1566,65 @@ let sadrazamHealth = 90;  // Sağlık barı (0-100)
 
 // ── Zincirleme Karar Sistemi (Chain Events) ───────────────────────
 const CHAIN_RULES = [
-  // [flagSet, delayCards, scheduledCardId, description]
-  // Yeniçeri maaşı gecikmesi 2x → kışla huzursuzluğu
-  { flag: 'yeni_kışla_reddedildi',    delay: 18, cardId: 'kışla_sonuç',         once: true  },
-  // Venedik ittifak reddi → Venedik rakiple görüşüyor
+  // Bir karar bir bayrak açınca, sonucu belirli kart sayısı sonra GARANTİLİ gelir.
+  // Bayrak adları data/cards.json'daki *_flags_set ile BİREBİR aynı olmalı
+  // (26 Eylül 2026'ya kadar hiçbiri eşleşmiyordu → bu zincirler hiç çalışmıyordu).
+  // Kışla talebi reddedildi → yeniçeri son uyarısı
+  { flag: 'kışla_reddedildi',         delay: 18, cardId: 'kışla_sonuç',          once: true  },
+  // Venedik'le ticaret sınırlı tutuldu → Venedik gücenmiş olarak geri döner
   { flag: 'venedik_1_sinirlendi',     delay: 24, cardId: 'venedik_geri_dondu',   once: true  },
-  // Defterdar borç alındı → vade sonucu
-  { flag: 'defterdar_borc_alındı',    delay: 32, cardId: 'maaş_isyan_tehlikesi', once: true  },
-  // Casuslar operasyonu → sonuç kartı
-  { flag: 'casuslar_op_baslatildi',   delay: 16, cardId: 'operasyon_başarı',     once: true  },
-  // Veba 2x görmezden gelindi → tam salgın
-  { flag: 'veba_gormezden_gelindi_2', delay: 12, cardId: 'kriz_veba',            once: true  },
-  // Şehzade affedildi → güç kazandı
-  { flag: 'sehzade_affedildi',        delay: 36, cardId: 'sehzade_avcisi_2',     once: true  },
-  // Kaptan filo izni → deniz savaşı sonucu
-  { flag: 'kaptan_filo_izni',         delay: 20, cardId: 'savaş_zafer',          once: true  },
+  // Maaş ödemesi ertelendi → ocakta kazan kaldırma konuşuluyor
+  { flag: 'maaş_gecikti',             delay: 12, cardId: 'maaş_isyan_tehlikesi', once: true  },
+  // Veba haberi hafife alındı → salgın şehri sarar
+  // (Ulema ittifakı hazırsa kriz_veba engellenir → onun yerine ittifak versiyonu gelir)
+  { flag: 'veba_gormezden_gelindi',   delay: 12, cardId: 'kriz_veba',            once: true, altCardId: 'kriz_veba_ally' },
+  // Şehzade tasfiye fermanı uygulandı → şehzade teslimatta kaçtı
+  { flag: 'şehzade_tasfiye',          delay: 12, cardId: 'sehzade_avcisi_2',     once: true  },
+  // (Casus operasyonu ve savaş zaferi zaten kartların triggers_on_* alanıyla
+  //  zamanlanıyor — buradaki eski ölü kopyaları kaldırıldı.)
 ];
 
 function checkChainTriggers(flagsSet) {
   for (const rule of CHAIN_RULES) {
     if (!flagsSet.includes(rule.flag)) continue;
+    // once: aynı zincir bir oyunda bir kez. activeFlags kayıtla birlikte
+    // saklandığı için uygulama yeniden açılsa da geçerli kalır.
+    const onceKey = "_chain_fired_" + rule.cardId;
+    if (rule.once && activeFlags[onceKey]) continue;
     const alreadyScheduled = scheduledCards.some(sc => sc.cardId === rule.cardId);
     if (alreadyScheduled) continue;
-    scheduledCards.push({
-      cardId: rule.cardId,
-      afterCardsPlayed: cardsPlayed + rule.delay,
-    });
+    if (rule.once) activeFlags[onceKey] = true;
+    scheduleConsequence(rule.cardId, rule.delay, rule.altCardId);
   }
+}
+
+// Gecikmeli bir sonucu kuyruğa ekler. playsAtSchedule: kart bu arada normal
+// desteden zaten çekilirse, vakti gelince İKİNCİ kez gösterilmesin diye.
+// altCardId: asıl kart vakti geldiğinde excluded_flags yüzünden geçersizse
+// onun yerine gösterilecek, aynı olayın başka bir versiyonu.
+function scheduleConsequence(cardId, delay, altCardId) {
+  const sc = {
+    cardId,
+    afterCardsPlayed: cardsPlayed + delay,
+    playsAtSchedule: playCounts[cardId] || 0,
+  };
+  if (altCardId) sc.altCardId = altCardId;
+  scheduledCards.push(sc);
+}
+
+// Zamanı gelen bir sonucun gerçekten gösterilecek kartını döndürür (ya da null)
+function _resolveDueConsequence(sc) {
+  const c = allCards.find(x => x.id === sc.cardId);
+  if (!c) return null;
+  // Bu arada normal desteden zaten oynandıysa tekrar gösterme
+  if (sc.playsAtSchedule !== undefined && (playCounts[c.id] || 0) > sc.playsAtSchedule) return null;
+  const blocked = (card) => (card.excluded_flags || []).some(f => activeFlags[f]);
+  if (!blocked(c)) return c;
+  if (sc.altCardId) {
+    const alt = allCards.find(x => x.id === sc.altCardId);
+    if (alt && !blocked(alt) && (alt.required_flags || []).every(f => activeFlags[f])) return alt;
+  }
+  return null; // "zaten çözüldü" bayrağı açılmış → gösterme
 }
 
 // ── Eyalet (Province) Sistemi ─────────────────────────────────────
@@ -3408,7 +3440,7 @@ function checkScheduledCards() {
   const due = scheduledCards.filter(sc => cardsPlayed >= sc.afterCardsPlayed);
   scheduledCards = scheduledCards.filter(sc => cardsPlayed < sc.afterCardsPlayed);
   due.forEach(sc => {
-    const c = allCards.find(x => x.id === sc.cardId);
+    const c = _resolveDueConsequence(sc);
     if (c) forcedQueue.unshift(c);
   });
   updateFateBar();
@@ -5727,10 +5759,7 @@ function decide(dir) {
     const triggerKey = "triggers_on_" + dir;
     if (currentCard[triggerKey]) {
       const delay = currentCard.trigger_delay ?? 3;
-      scheduledCards.push({
-        cardId: currentCard[triggerKey],
-        afterCardsPlayed: cardsPlayed + delay
-      });
+      scheduleConsequence(currentCard[triggerKey], delay);
       updateFateBar();
     }
   }
@@ -6033,10 +6062,7 @@ function checkFactionPressure(faction) {
       // Baskı kartını kuyruğa ekle
       const pressureCard = allCards.find(c => c.required_faction_pressure === rival);
       if (pressureCard) {
-        scheduledCards.push({
-          cardId: pressureCard.id,
-          afterCardsPlayed: cardsPlayed + 2
-        });
+        scheduleConsequence(pressureCard.id, 2);
         updateFateBar();
       }
     }
