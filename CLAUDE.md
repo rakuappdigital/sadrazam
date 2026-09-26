@@ -78,10 +78,8 @@ xcodebuild -project App.xcodeproj -scheme App -configuration Release -archivePat
 # 4) Export (ExportOptions.plist'i /tmp'ye yaz, aşağıdaki içerikle)
 xcodebuild -exportArchive -archivePath /tmp/Sadrazam.xcarchive -exportPath /tmp/SadrazamExport -exportOptionsPlist /tmp/ExportOptions.plist
 
-# 5) Upload (API key'i geçici olarak ~/private_keys/'e kopyala, işten sonra SİL)
-mkdir -p ~/private_keys && cp ~/Desktop/AuthKey_CPP9BC37NY.p8 ~/private_keys/
+# 5) Upload (.p8 ~/.appstoreconnect/private_keys/ içinde, altool otomatik bulur)
 xcrun altool --upload-app -f /tmp/SadrazamExport/App.ipa -t ios --apiKey CPP9BC37NY --apiIssuer bd32dbb1-cdfc-446b-8553-84464c16d280
-rm -f ~/private_keys/AuthKey_CPP9BC37NY.p8; rmdir ~/private_keys 2>/dev/null
 rm -rf /tmp/Sadrazam.xcarchive /tmp/SadrazamExport /tmp/ExportOptions.plist
 ```
 
