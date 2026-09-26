@@ -52,25 +52,44 @@ const InterstitialAds = (() => {
 
   // onDone: reklam kapandı, gösterilemedi ya da hiç hazır değildi — HER
   // KOŞULDA çağrılır, çağıran taraf (game.js) buna bakmadan oyuna devam eder.
+  //
+  // Canlıda ASLA sahte "SİMÜLE GEÇİŞ REKLAMI" gösterilmez (eskiden reklam
+  // yüklenmemişse gerçek kullanıcılara test ekranı çıkıyordu); reklam hazır
+  // değilse oyun beklemeden başlar ve sıradaki için yükleme tetiklenir.
+  // Reklam ekrandayken hiçbir zamanlayıcı akışı kesmez (bkz. rewardedads.js
+  // KÖK NEDEN notu); sadece native event'ler ya da "uygulama tekrar görünür
+  // oldu ama dismissed gelmedi" yedeği akışı bitirir.
+  const LAUNCH_TIMEOUT_MS = 8000;
   const show = async (onDone) => {
-    if (!_cap || !_ready || !_adLoaded) {
-      _showSimulatedAd(onDone);
-      return;
-    }
+    if (!_cap) { _showSimulatedAd(onDone); return; } // sadece web/geliştirme
+    if (!_ready || !_adLoaded) { prepare(); onDone(); return; }
+
     _adLoaded = false; // bu reklam artık tüketiliyor, tekrar hazır değil
-    let done = false;
-    let dismissListener, failListener;
-    const cleanup = () => { dismissListener?.remove(); failListener?.remove(); };
-    const finish = () => {
+    let done = false, shown = false;
+    let launchTimer = null, visTimer = null;
+    const handles = [];
+    const onVis = () => {
+      if (done || !shown || document.visibilityState !== "visible") return;
+      clearTimeout(visTimer);
+      visTimer = setTimeout(finish, 2000);
+    };
+    function finish() {
       if (done) return; done = true;
-      cleanup();
+      clearTimeout(launchTimer); clearTimeout(visTimer);
+      document.removeEventListener("visibilitychange", onVis);
+      handles.forEach((h) => { try { h?.remove(); } catch (e) {} });
       prepare(); // sıradaki gösterim için yeniden hazırla
       onDone();
-    };
-    [dismissListener, failListener] = await Promise.all([
+    }
+    handles.push(...await Promise.all([
+      _cap.addListener("interstitialAdShowed", () => { shown = true; clearTimeout(launchTimer); }),
       _cap.addListener("interstitialAdDismissed", finish),
       _cap.addListener("interstitialAdFailedToShow", finish),
-    ]);
+    ]));
+    document.addEventListener("visibilitychange", onVis);
+    launchTimer = setTimeout(() => {
+      if (!shown && document.visibilityState === "visible") finish();
+    }, LAUNCH_TIMEOUT_MS);
     _cap.showInterstitial().catch(finish);
   };
 

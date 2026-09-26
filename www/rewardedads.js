@@ -51,61 +51,115 @@ const RewardedAds = (() => {
     });
   };
 
-  // onReward: reklam sonuna kadar izlendi, ödülü ver
-  // onCancel: reklam izlenmeden kapatıldı / hiç gösterilemedi
+  // onReward: reklam izlendi → ödülü ver.  onCancel: reklam hiç gösterilemedi.
+  // onShow (opsiyonel): reklam gerçekten tam ekrana çıktı.
   //
-  // KRİTİK: ödülü SADECE "onRewardedVideoAdReward" olayına bağlamıyoruz.
-  // Bu olay bazı cihaz/ağ koşullarında hiç gelmiyor (@capacitor-community/admob
-  // ve altındaki GoogleMobileAds SDK'sında bilinen, gerçek kullanıcılarda
-  // görülmüş bir tutarsızlık) — gerçek kullanıcı reklamı baştan sona izlemesine
-  // rağmen bu event gelmeyince ödül reddediliyordu. AdMob'un "rewarded" reklam
-  // formatı, native SDK seviyesinde ödül eşiğine ulaşılmadan reklamın
-  // kapatılmasına zaten izin vermiyor — yani "dismissed" olayının gelmesi TEK
-  // BAŞINA ödülün hak edildiğini gösterir, ayrı bir onay beklemeye gerek yok.
+  // KÖK NEDEN (26 Eylül 2026, simülatörde Google test reklamıyla loglanarak
+  // KANITLANDI): eskiden game.js reklam açıldıktan 45 sn sonra "takıldı" deyip
+  // teklif ekranını yeniden açıyor ve akışı kapatıyordu. WebView'daki JS
+  // zamanlayıcıları reklam ekrandayken de ÇALIŞIYOR; gerçek (yayındaki) ödüllü
+  // reklamlar video + tanıtım kartı + "Ödül verildi" ekranıyla 45 sn'yi rahatça
+  // aşıyor. Sonuç: reklam izleniyor, native ödül event'i geliyor (eskiden boş
+  // bir fonksiyonla yok sayılıyordu), ama kapatınca gelen "dismissed" event'i
+  // "zaten bitti" diye atılıyordu → ödül yok, sayaç 5/5. TestFlight'ta kısa
+  // test reklamları geldiği için görünmüyordu.
   //
-  // onShow: native "onRewardedVideoAdShowed" — reklam gerçekten tam ekrana
-  // çıktı. Çağıran taraf (game.js) bunu, "reklam hiç açılmadı" için koyduğu
-  // kısa güvenlik zaman aşımını iptal etmek için kullanır.
-  //
-  // KRİTİK — ikinci bug: native Swift tarafında (AdRewardExecutor.swift)
-  // reklam gösterimi başarısız olursa (`didFailToPresentFullScreenContentWithError`)
-  // sadece "onRewardedVideoAdFailedToShow" event'i yayınlanıyor, JS tarafındaki
-  // showRewardVideoAd() promise'i HİÇ resolve/reject edilmiyor. Bu event
-  // dinlenmezse (eskiden dinlenmiyordu) bu senaryoda .catch() asla tetiklenmez
-  // ve arayüz sonsuza dek kilitli kalır — ne ödül verilir ne oyuna dönülür.
+  // KURAL: reklam ekrana çıktıktan sonra HİÇBİR zamanlayıcı akışı bitiremez.
+  // Akış yalnızca native event'lerle biter:
+  //   - onRewardedVideoAdReward / showRewardVideoAd() resolve → ödül kazanıldı
+  //   - onRewardedVideoAdDismissed → reklam kapandı → ödül verilir
+  //   - onRewardedVideoAdFailedToShow → gösterilemedi → iptal
+  // Tek yedek: reklam kapanıp uygulama tekrar görünür olduğu hâlde 2 sn içinde
+  // dismissed event'i gelmezse (event kaybı) yine ödül verilir — bu, reklamın
+  // süresine değil, reklamın gerçekten kapanmasına bağlıdır.
+  const LOAD_WAIT_MS = 10000;   // reklam henüz yüklenmediyse en fazla bu kadar bekle
+  const LAUNCH_TIMEOUT_MS = 10000; // show çağrısından sonra reklam hiç açılmazsa
+
+  const _waitForLoad = () => new Promise((resolve) => {
+    if (_adLoaded) return resolve(true);
+    prepare();
+    const start = Date.now();
+    const iv = setInterval(() => {
+      if (_adLoaded) { clearInterval(iv); resolve(true); return; }
+      if (Date.now() - start > LOAD_WAIT_MS) { clearInterval(iv); resolve(false); return; }
+      prepare(); // yükleme düştüyse (30 sn'lik otomatik denemeyi beklemeden) hemen tekrar dene
+    }, 300);
+  });
+
+  const _overlay = (text, withSpinner) => {
+    const el = document.createElement("div");
+    el.id = "simulated-ad-overlay";
+    el.innerHTML = `<div id="simulated-ad-box">
+        ${withSpinner ? '<div id="simulated-ad-spinner"></div>' : ""}
+        <div id="simulated-ad-label">${text}</div>
+      </div>`;
+    document.body.appendChild(el);
+    return el;
+  };
+
   const show = async (onReward, onCancel, onShow) => {
-    if (!_cap || !_ready || !_adLoaded) {
+    if (!_cap) { // web/tarayıcı geliştirme ortamı — native AdMob yok
       _showSimulatedAd(onReward, onCancel);
       return;
     }
-    _adLoaded = false; // bu reklam artık tüketiliyor, tekrar hazır değil
-    let done = false;
-    let showedListener, rewardListener, dismissListener, failListener;
-    const cleanup = () => {
-      showedListener?.remove(); rewardListener?.remove();
-      dismissListener?.remove(); failListener?.remove();
+    const isEN = window.LANG === 'en';
+
+    // Canlıda ASLA sahte reklam gösterilmez (eskiden reklam yüklenmemişse
+    // "SİMÜLE REKLAM" gösterilip bedava ödül veriliyordu → AdMob'a gösterim
+    // gitmiyordu). Gerçek reklam yüklenene kadar kısa bir süre bekle.
+    if (!_ready || !_adLoaded) {
+      const loadingEl = _overlay(isEN ? "Loading ad…" : "Reklam yükleniyor…", true);
+      const ok = await _waitForLoad();
+      loadingEl.remove();
+      if (!ok) {
+        const msg = _overlay(isEN ? "No ad available right now. Please try again shortly."
+                                  : "Şu an reklam bulunamadı. Lütfen biraz sonra tekrar deneyin.", false);
+        setTimeout(() => { msg.remove(); onCancel(); }, 2200);
+        return;
+      }
+    }
+
+    _adLoaded = false; // bu reklam artık tüketiliyor
+    let done = false, shown = false, earned = false;
+    let launchTimer = null, visTimer = null;
+    const handles = [];
+
+    const onVis = () => {
+      if (done || !shown || document.visibilityState !== "visible") return;
+      clearTimeout(visTimer);
+      visTimer = setTimeout(() => finish(true), 2000);
     };
-    [showedListener, rewardListener, dismissListener, failListener] = await Promise.all([
-      _cap.addListener("onRewardedVideoAdShowed", () => { if (onShow) onShow(); }),
-      _cap.addListener("onRewardedVideoAdReward", () => {}),
-      _cap.addListener("onRewardedVideoAdDismissed", () => {
-        if (done) return; done = true;
-        cleanup();
-        prepare(); // sıradaki gösterim için yeniden hazırla
-        onReward();
-      }),
-      _cap.addListener("onRewardedVideoAdFailedToShow", () => {
-        if (done) return; done = true;
-        cleanup();
-        prepare();
-        onCancel();
-      }),
-    ]);
-    _cap.showRewardVideoAd().catch(() => {
+    const finish = (rewarded) => {
       if (done) return; done = true;
-      cleanup();
-      onCancel();
-    });
+      clearTimeout(launchTimer); clearTimeout(visTimer);
+      document.removeEventListener("visibilitychange", onVis);
+      handles.forEach((h) => { try { h?.remove(); } catch (e) {} });
+      prepare(); // sıradaki gösterim için yeniden hazırla
+      if (rewarded) onReward(); else onCancel();
+    };
+
+    handles.push(...await Promise.all([
+      _cap.addListener("onRewardedVideoAdShowed", () => {
+        shown = true; clearTimeout(launchTimer);
+        if (onShow) onShow();
+      }),
+      _cap.addListener("onRewardedVideoAdReward", () => { earned = true; }),
+      _cap.addListener("onRewardedVideoAdDismissed", () => finish(true)),
+      _cap.addListener("onRewardedVideoAdFailedToShow", () => { if (!earned) finish(false); else finish(true); }),
+    ]));
+    document.addEventListener("visibilitychange", onVis);
+
+    // Reklam hiç açılmazsa (native çağrı sessizce düşerse) arayüz kilitli
+    // kalmasın. Uygulama görünür değilse reklam ekrandadır → asla iptal etme.
+    launchTimer = setTimeout(() => {
+      if (!shown && document.visibilityState === "visible") finish(false);
+    }, LAUNCH_TIMEOUT_MS);
+
+    // Native taraf bu promise'i kullanıcı ödülü kazandığında resolve eder;
+    // reject yalnızca reklam hiç sunulamadığında olur.
+    _cap.showRewardVideoAd()
+      .then(() => { earned = true; })
+      .catch(() => { if (!shown) finish(false); });
   };
 
   // ── Simülasyon modu (ID'ler girilene / gerçek cihazda test edilene kadar) ──

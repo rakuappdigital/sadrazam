@@ -376,6 +376,36 @@ Her önemli düzeltme/özellik burada kısa bir kayıt olarak tutulur — "ne
 bozulmuştu, neden, nasıl düzeltildi" hızlıca hatırlanabilsin diye. Bir konu
 tekrar gündeme gelirse önce burayı tara.
 
+### 26 Eylül 2026 — Ödüllü reklam ödülü HÂLÂ verilmiyordu (yayındaki 1.3.9 = 1.4.0/build 23 binary'si) — GERÇEK kök neden
+
+**Belirti (yayındaki sürümde, TestFlight'ta değil):** reklam izleniyor, "Ödül
+verildi" → X'e basınca teklif ekranına dönülüyor, ödül yok, sayaç 5/5 kalıyor.
+
+**Kanıt (tahmin değil):** simülatörde Debug build + Google test rewarded unit
+(`ca-app-pub-3940256099942544/1712485313`) + geçici `dbg.js` ile event'ler
+zaman damgalı loglandı: Showed +22.0s → Reward +27.7s → **+67.3s'de
+(Showed'dan tam 45 sn sonra) game.js'teki `hangGuard` reklam HÂLÂ ekrandayken
+teklif ekranını yeniden açtı** (`used=0`). WebView JS zamanlayıcıları reklam
+ekrandayken de çalışıyor. Sonra gelen Dismissed `settled` yüzünden atılıyordu;
+Reward event'i ise boş fonksiyonla dinleniyordu. Gerçek reklamlar (video +
+tanıtım kartı + "Ödül verildi") 45 sn'yi aşıyor, TestFlight'taki kısa
+reklamlar aşmıyordu → sadece yayında görünüyordu.
+
+**İkinci bulgu:** reklam yüklenmemişse gerçek kullanıcılara "SİMÜLE REKLAM
+(test modu)" gösterilip bedava ödül veriliyordu (geçiş reklamında da sahte
+ekran) → AdMob'a gösterim gitmiyor, gelir yok.
+
+**Fix:** game.js'teki tüm zaman aşımları kaldırıldı. `rewardedads.js`:
+reklam açıldıktan sonra hiçbir zamanlayıcı akışı bitiremez; yalnızca native
+Dismissed/FailedToShow ya da "uygulama tekrar görünür oldu + 2 sn içinde
+Dismissed gelmedi" yedeği bitirir. "Hiç açılmadı" zaman aşımı (10 sn) sadece
+`document.visibilityState === 'visible'` iken çalışır. Native'de sahte reklam
+yok: yüklenmemişse 10 sn gerçek reklam beklenir, gelmezse "reklam bulunamadı"
+mesajı + ödülsüz dönüş. `interstitialads.js` aynı desen; yüklenmemişse oyun
+reklamsız hemen başlar. **BİR DAHA reklam akışına sabit süreli zaman aşımı
+EKLEME.** Test: scratchpad `adtest.js` (Node vm, 17 senaryo) + simülatörde 90+
+sn açık tutulan reklamda teklif ekranının yeniden açılmadığı loglandı.
+
 ### 25 Eylül 2026 — İkinci Şans reklamında ödül verilmeme + gelir kaybı (v1.3.9, build 22)
 
 **Şikayet (kullanıcı, defalarca yaşanmış, ciddi kullanıcı/gelir kaybına yol
