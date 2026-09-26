@@ -6146,11 +6146,16 @@ function decide(dir) {
     if (revCard) {
       const enriched = { ...revCard };
       if (window.playTraitorReveal) playTraitorReveal();
+      // İngilizce oyunda da doğru dilde (eskiden text_en yoktu → her zaman Türkçe)
+      const _tName = getCharacterDisplayName(hiddenTraitor);
+      const _tNameEN = getCharacterDisplayName(hiddenTraitor, true);
       if (traitorInvestigated >= 2) {
-        enriched.text = `Paşam, yıllardır aramızda bir hain vardı: ${getCharacterDisplayName(hiddenTraitor)}. Ama siz bunu zaten fark etmişsiniz! Sultan'a rapor hazırlandı. Sarayınız güçlendi.`;
+        enriched.text = `Paşam, yıllardır aramızda bir hain vardı: ${_tName}. Ama siz bunu zaten fark etmişsiniz! Sultan'a rapor hazırlandı. Sarayınız güçlendi.`;
+        enriched.text_en = `Pasha, there was a traitor among us for years: the ${_tNameEN}. But you had already noticed! A report has been prepared for the Sultan. Your palace grows stronger.`;
         enriched.right_effects = { saray: 10 };
       } else {
-        enriched.text = `Paşam, çok geç! ${getCharacterDisplayName(hiddenTraitor)} bu gece sizi Sultan'a şikâyet etti. Belgeler sahte ama Sultan inanıyor...`;
+        enriched.text = `Paşam, çok geç! ${_tName} bu gece sizi Sultan'a şikâyet etti. Belgeler sahte ama Sultan inanıyor...`;
+        enriched.text_en = `Pasha, it is too late! Tonight the ${_tNameEN} denounced you to the Sultan. The documents are forged, but the Sultan believes them...`;
         enriched.right_effects = { saray: -15 };
       }
       forcedQueue.unshift(enriched);
@@ -6158,10 +6163,12 @@ function decide(dir) {
   }
 }
 
-function getCharacterDisplayName(key) {
-  if (!key) return "Bilinmeyen";
-  const c = allCards.find(x => x.character === key);
-  return c ? (c.character_name || key) : key;
+function getCharacterDisplayName(key, en) {
+  if (!key) return en ? "Unknown" : "Bilinmeyen";
+  // Birleşik kartlar "A · B" adı taşır — tek karakter adı için onları atla
+  const c = allCards.find(x => x.character === key && !x.knot_of);
+  if (!c) return key;
+  return (en && c.character_name_en) ? c.character_name_en : (c.character_name || key);
 }
 
 // ── Faction Pressure ──────────────────────────────────────────────

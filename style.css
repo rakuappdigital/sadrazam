@@ -4813,3 +4813,30 @@ html, body {
 /* Stok emoji yerine geçen ince altın çizgi ikonlar — currentColor ile boyanır,
    1em ile eskiden emoji'nin oturduğu font-size bağlamına aynen uyar. */
 .gi { width: 1em; height: 1em; vertical-align: -0.15em; flex-shrink: 0; }
+
+/* Kısa ekranlar (iPhone SE 2/3, 8: 375x667; SE 1: 320x568) — kart görseli
+   46vh iken #game içeriği ekrandan ~50px taşıyor, ortalandığı için üstte stat
+   çubukları ve altta eşya çubuğu kesiliyordu. .letter-card kuralı daha özgül,
+   etkilenmez. */
+@media (max-height: 700px) {
+  #card-image, #card-image-knot, #card-knot-seam { max-height: 24vh; }
+  #dynamic-subtitle { display: none; }
+  /* Mektup kartının kendi (daha özgül) kuralı var — ayrıca küçült */
+  .letter-card #card-image { max-height: 14vh; }
+  .letter-card #card-text { max-height: 26vh; }
+}
+@media (max-height: 600px) {
+  #card-image, #card-image-knot, #card-knot-seam { max-height: 18vh; }
+  #fate-bar { min-height: 24px; }
+  #stats-bar { padding-top: 8px; }
+  #header-row { padding-top: 2px; padding-bottom: 4px; }
+  #card-area { padding-bottom: 8px; }
+  #item-bar { padding-top: 4px; padding-bottom: 6px; }
+  /* Birleşik kart zaten bölünmüş portre + altın çerçeveyle belli; üst satır sığmıyor */
+  #card-knot-kicker.visible { display: none; }
+}
+@media (max-height: 560px) {
+  #card-image, #card-image-knot, #card-knot-seam { max-height: 15vh; }
+  .letter-card #card-image { max-height: 10vh; }
+  .letter-card #card-text { max-height: 22vh; }
+}
