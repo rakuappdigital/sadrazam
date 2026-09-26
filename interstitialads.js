@@ -33,10 +33,9 @@ const InterstitialAds = (() => {
       setTimeout(prepare, 30000);
     });
 
-    // RewardedAds zaten AdMob'u initialize + ATT izni ile başlatmış olabilir;
-    // aynı native SDK'yı iki kez initialize etmek zararsız ama gereksiz —
-    // yine de kendi ready bayrağımızı burada set ediyoruz.
-    _cap.initialize()
+    // rewardedads.js (önce yüklenir) AdMob'u başlatıp ATT iznini soruyor;
+    // ilk geçiş reklamı da ATT cevabından SONRA istensin (daha yüksek gelir).
+    (window.__admobReady || _cap.initialize())
       .then(() => { _ready = true; prepare(); })
       .catch((e) => console.warn('AdMob (interstitial) init hatası:', e));
   };

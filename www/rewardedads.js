@@ -36,8 +36,11 @@ const RewardedAds = (() => {
       setTimeout(prepare, 30000);
     });
 
-    _cap.initialize()
-      .then(() => _cap.requestTrackingAuthorization().catch(() => {})) // iOS 14+ ATT izni
+    // ATT cevabından sonra reklam istenir (IDFA'lı istek = daha yüksek gelir).
+    // interstitialads.js de aynı promise'i bekler (bkz. window.__admobReady).
+    window.__admobReady = _cap.initialize()
+      .then(() => _cap.requestTrackingAuthorization().catch(() => {})); // iOS 14+ ATT izni
+    window.__admobReady
       .then(() => { _ready = true; prepare(); })
       .catch((e) => console.warn('AdMob init hatası:', e));
   };
