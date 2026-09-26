@@ -105,7 +105,7 @@ rm -rf /tmp/Sadrazam.xcarchive /tmp/SadrazamExport /tmp/ExportOptions.plist
 - Bundle ID: `com.rakuappdigital.sadrazam` · App Store Connect App ID: `6783881003`
 - Team ID: `JF86RYY9ZS` · İmzalama sertifikası: keychain'de "Apple Distribution: DOGUS LUTFU TELATAR" olarak zaten kurulu
 - Provisioning profile: "Divan Sadrazam AppStore" (`~/Library/MobileDevice/Provisioning Profiles/791268a5-0afd-493b-99c6-71cdbf7855f0.mobileprovision`, orijinali `~/Desktop/Divan_Sadrazam_AppStore.mobileprovision`)
-- App Store Connect API: Issuer ID `bd32dbb1-cdfc-446b-8553-84464c16d280`, Key ID `CPP9BC37NY`, `.p8` dosyası `~/Desktop/AuthKey_CPP9BC37NY.p8` (kalıcı olarak orada duruyor, sadece upload sırasında geçici kopya `~/private_keys/`'e alınır, iş bitince silinir)
+- App Store Connect API: Issuer ID `bd32dbb1-cdfc-446b-8553-84464c16d280`, Key ID `CPP9BC37NY`, `.p8` dosyası `~/.appstoreconnect/private_keys/AuthKey_CPP9BC37NY.p8` (altool orayı otomatik bulur, kopyalamaya gerek yok)
 - ASC API read-only sorgular için `asc_common.py` yardımcı script'ini scratchpad'e yazıp kullan (issuer/key id'leri yukarıdaki gibi, `BASE = "https://api.appstoreconnect.apple.com/v1"`)
 
 **Upload sonrası:** Build işlenmesi (Apple tarafında) dakikalar-saatler sürebilir.
