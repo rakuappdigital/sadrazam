@@ -133,9 +133,16 @@
         <button id="btn-pasa-mode" class="intro-btn secondary">
           <span data-i18n="btn.pasa_mode">PAŞALIK MODU</span>
         </button>
+        <button id="btn-challenge" class="intro-btn secondary">
+          <span data-i18n="btn.challenge">MEYDAN OKUMA MODU</span>
+        </button>
         <button id="btn-achievements" class="intro-btn secondary">
           <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 5.2 5.6.6-4.2 3.8 1.2 5.6L12 14.8 7 17.2l1.2-5.6L4 7.8l5.6-.6L12 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
           <span data-i18n="btn.achievements">BAŞARIMLARIM</span> <span id="ach-count-badge"></span>
+        </button>
+        <button id="btn-pargali" class="intro-btn secondary hidden">
+          <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none"><path d="M6 3.5h9.5L19 7v13.5H6z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M15.5 3.5V7H19M9 10.5h7M9 13.5h7M9 16.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span class="pg-lbl">PARGALI'NIN MEKTUBU</span>
         </button>
         <button id="btn-howto" class="intro-btn secondary">
           <span data-i18n="btn.howto">❔ NASIL OYNANIR</span>
@@ -146,6 +153,10 @@
         <button id="btn-akcesystem" class="intro-btn ghost">
           <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none"><path d="M3.5 9.5L5 5h14l1.5 4.5" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M3.5 9.5c0 1.4 1.2 2.3 2.8 2.3s2.9-.9 2.9-2.3c0 1.4 1.2 2.3 2.8 2.3s2.8-.9 2.8-2.3c0 1.4 1.3 2.3 2.9 2.3s2.8-.9 2.8-2.3" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5 11.6V19h14v-7.4M10 19v-4.2h4V19" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
           <span data-i18n="btn.market">MARKET</span>
+        </button>
+        <button id="btn-daily-gift" class="intro-btn ghost">
+          <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M3 7h18v3H3zM12 7v13" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M12 7c-1.2-2.8-4.8-3.4-5.2-1.2C6.5 7.2 9 7 12 7zm0 0c1.2-2.8 4.8-3.4 5.2-1.2.3 1.4-2.2 1.2-5.2 1.2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+          <span data-i18n="btn.gift">HEDİYE</span>
         </button>
         <button id="btn-settings" class="intro-btn ghost">
           <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M12 3.5v2.2M12 18.3v2.2M18.5 12h2.2M3.3 12h2.2M16.9 7.1l1.5-1.5M5.6 18.4l1.5-1.5M16.9 16.9l1.5 1.5M5.6 5.6l1.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -185,8 +196,8 @@
       <div class="sett-row">
         <span class="sett-label" data-i18n="sett.preview">Deneyimli Mod</span>
         <div class="sett-toggle">
-          <button class="sett-opt" id="sett-preview-on" disabled>Açık</button>
-          <button class="sett-opt" id="sett-preview-off" disabled>Kapalı</button>
+          <button class="sett-opt" id="sett-preview-on">Açık</button>
+          <button class="sett-opt" id="sett-preview-off">Kapalı</button>
         </div>
       </div>
       <div class="sett-divider"></div>
@@ -504,6 +515,11 @@
       <section id="market-akce" class="market-section">
         <div class="market-section-head"><span data-i18n="market.akce_head">AKÇE KESELERİ</span></div>
         <p id="akce-text" data-i18n="akce.text">Bazen işler yolunda gitmez. Akçen, zor anlarda İkinci Şans için kullanılır.</p>
+        <button class="akce-pack-btn starter-pack gone" id="starter-pack-btn" data-amount="30" type="button">
+          <div class="ferman"><div class="famt">30</div><div class="funit" data-i18n="akce.unit">AKÇE</div></div>
+          <div class="starter-info"><div class="starter-name">BAŞLANGIÇ KESESİ</div><div class="starter-sub">Tek seferlik · yarı fiyatına</div></div>
+          <div class="price-in">…</div>
+        </button>
         <div id="akce-pack-grid">
           <button class="akce-pack-btn" data-amount="10">
             <div class="ferman"><div class="famt">10</div><div class="funit" data-i18n="akce.unit">AKÇE</div></div>
