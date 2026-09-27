@@ -528,6 +528,114 @@ const SEASON_EFFECTS = {
   3: { military: 0.9, economic: 1.0, religious: 1.2, social: 1.1 },   // Sonbahar
 };
 
+// ── Mevsim atmosferi: gerçekçi parçacıklar (27 Eylül 2026) ─────────────
+// Oyun ekranının EN ARKASINDA (#season-fx, z-index:-1 → kart, barlar ve
+// metin her zaman üstte) üç derinlik katmanında parçacık: kışın kar, baharda
+// lale yaprağı, yazın güneş huzmesinde toz zerresi, sonbaharda yaprak.
+// Mevsim değişince eski parçacıklar doğal biçimde ekrandan çıkar, yerlerine
+// yenileri gelir. Hareket zamana bağlı (60/120 Hz aynı hız). Oyun ekranı
+// kapalıyken, uygulama arka plandayken ya da ayar kapalıyken çizmez.
+// Ayar: localStorage sadrazam_season_fx ('off' = kapalı). "Hareketi azalt"
+// sistem ayarı açıksa hiç çalışmaz.
+const SeasonFx = (() => {
+  const COUNT = [60, 46, 60, 46]; // kış, bahar, yaz, sonbahar
+  let cv = null, ctx = null, W = 0, H = 0, DPR = 1, parts = [], running = false, last = 0, t = 0, drawnSeason = -1;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const reduce = () => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  const enabled = () => { try { return localStorage.getItem('sadrazam_season_fx') !== 'off'; } catch (e) { return true; } };
+  const season = () => (typeof getCurrentSeason === 'function' ? getCurrentSeason() : 0);
+  function size() {
+    if (!cv) return;
+    const r = cv.getBoundingClientRect();
+    DPR = Math.min(1.5, window.devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * DPR)), h = Math.max(1, Math.round(r.height * DPR));
+    if (w !== W || h !== H) { W = cv.width = w; H = cv.height = h; }
+  }
+  function mk(init, s) {
+    const layer = Math.random() < .45 ? 0 : (Math.random() < .6 ? 1 : 2); // 0 uzak · 1 orta · 2 yakın
+    const k = [0.45, 0.75, 1.15][layer];
+    const p = { s, layer, k, al: 1, x: rnd(0, W), y: init ? rnd(0, H) : rnd(-40, -10) * DPR, rot: rnd(0, 6.28), vr: rnd(-.03, .03), ph: rnd(0, 6.28), seed: Math.random() };
+    if (s === 0) { p.r = rnd(1.2, 2.6) * k * DPR; p.vy = rnd(.35, .6) * k * DPR; }
+    else if (s === 1) { p.r = rnd(3.5, 5) * k * DPR; p.vy = rnd(.4, .7) * k * DPR; p.vr = rnd(-.04, .04); }
+    else if (s === 2) { p.r = rnd(.7, 1.6) * k * DPR; p.vy = -rnd(.05, .15) * k * DPR; if (!init) p.y = H + 10; }
+    else { p.r = rnd(4, 7) * k * DPR; p.vy = rnd(.55, .9) * k * DPR; p.vr = rnd(-.05, .05); }
+    return p;
+  }
+  function flake(p, a) {
+    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 1.8);
+    g.addColorStop(0, 'rgba(255,255,255,' + a + ')'); g.addColorStop(.5, 'rgba(235,240,255,' + a * .55 + ')'); g.addColorStop(1, 'rgba(235,240,255,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 1.8, 0, 6.3); ctx.fill();
+    if (p.layer === 2 && p.seed > .6) { // yakın katmanda kar kristali
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.strokeStyle = 'rgba(255,255,255,' + a * .8 + ')'; ctx.lineWidth = .6 * DPR;
+      for (let i = 0; i < 6; i++) { ctx.rotate(Math.PI / 3); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, p.r * 2.4); ctx.moveTo(0, p.r * 1.4); ctx.lineTo(p.r * .6, p.r * 1.9); ctx.moveTo(0, p.r * 1.4); ctx.lineTo(-p.r * .6, p.r * 1.9); ctx.stroke(); }
+      ctx.restore();
+    }
+  }
+  function petal(p, a) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.scale(Math.cos(p.ph) * .9 + .1, 1);
+    const g = ctx.createLinearGradient(0, -p.r, 0, p.r); g.addColorStop(0, 'rgba(236,120,140,' + a + ')'); g.addColorStop(1, 'rgba(178,34,64,' + a + ')');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, -p.r); ctx.bezierCurveTo(p.r * .9, -p.r * .6, p.r * .7, p.r * .8, 0, p.r); ctx.bezierCurveTo(-p.r * .7, p.r * .8, -p.r * .9, -p.r * .6, 0, -p.r); ctx.fill(); ctx.restore();
+  }
+  const LEAF = [[196, 110, 30], [160, 62, 22], [205, 150, 40], [120, 50, 20]];
+  function leaf(p, a) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.scale(Math.cos(p.ph) * .85 + .15, 1);
+    const c = LEAF[Math.floor(p.seed * 4)], r = p.r;
+    ctx.fillStyle = 'rgba(' + c + ',' + a + ')';
+    ctx.beginPath(); ctx.moveTo(0, -r);
+    ctx.lineTo(r * .35, -r * .45); ctx.lineTo(r * .95, -r * .55); ctx.lineTo(r * .55, -r * .05); ctx.lineTo(r * .8, r * .45); ctx.lineTo(r * .2, r * .3); ctx.lineTo(0, r);
+    ctx.lineTo(-r * .2, r * .3); ctx.lineTo(-r * .8, r * .45); ctx.lineTo(-r * .55, -r * .05); ctx.lineTo(-r * .95, -r * .55); ctx.lineTo(-r * .35, -r * .45); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(70,30,10,' + a * .6 + ')'; ctx.lineWidth = .7 * DPR; ctx.beginPath(); ctx.moveTo(0, -r * .8); ctx.lineTo(0, r * 1.25); ctx.stroke(); ctx.restore();
+  }
+  function mote(p, a) { ctx.fillStyle = 'rgba(255,226,140,' + a * (.4 + .6 * Math.abs(Math.sin(p.ph))) + ')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.3); ctx.fill(); }
+  function visible() {
+    return enabled() && !reduce() && !document.hidden && typeof gameScreen !== 'undefined' && gameScreen && !gameScreen.classList.contains('hidden') && !isGameOver;
+  }
+  function frame(now) {
+    if (!running) return;
+    if (!visible()) { // görünmüyorsa çizme, seyrek kontrol et
+      if (ctx && drawnSeason !== -1) { ctx.clearRect(0, 0, W, H); drawnSeason = -1; }
+      last = 0; setTimeout(() => requestAnimationFrame(frame), 400); return;
+    }
+    size();
+    const dt = last ? Math.min(3, (now - last) / 16.667) : 1; last = now; t += dt * 16.667;
+    const s = season();
+    if (drawnSeason === -1 || parts.length === 0) { parts = []; for (let i = 0; i < COUNT[s]; i++) parts.push(mk(true, s)); }
+    else if (drawnSeason !== s) { // mevsim değişti: eskiler ~1 sn'de söner, yenileri her yerde yavaşça belirir
+      for (let i = 0; i < COUNT[s]; i++) { const n = mk(true, s); n.al = 0; parts.push(n); }
+    }
+    drawnSeason = s;
+    ctx.clearRect(0, 0, W, H);
+    if (s === 2) { // yaz: hafif güneş huzmesi
+      const gx = W * .65, g = ctx.createLinearGradient(gx, 0, gx - W * .3, H);
+      g.addColorStop(0, 'rgba(255,214,120,.10)'); g.addColorStop(1, 'rgba(255,214,120,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(gx - W * .05, 0); ctx.lineTo(gx + W * .12, 0); ctx.lineTo(gx - W * .1, H); ctx.lineTo(gx - W * .5, H); ctx.fill();
+    }
+    const wind = Math.sin(t * .0004) * .6 + Math.sin(t * .0011) * .3;
+    const night = gameScreen.classList.contains('night-mode') ? .7 : 1;
+    for (let i = 0; i < parts.length; i++) {
+      const p = parts[i];
+      p.ph += (.03 + p.seed * .02) * dt; p.rot += p.vr * dt;
+      p.x += (wind * p.k + Math.sin(p.ph) * .25 * p.k) * DPR * (p.s === 2 ? .3 : 1) * dt; p.y += p.vy * dt;
+      if (p.s !== s) p.al -= .018 * dt; else if (p.al < 1) p.al = Math.min(1, p.al + .012 * dt);
+      const a = [.35, .6, .9][p.layer] * night * Math.max(0, p.al);
+      if (p.s === 0) flake(p, a); else if (p.s === 1) petal(p, a); else if (p.s === 2) mote(p, a); else leaf(p, a);
+      if (p.y > H + 30 || p.y < -50 || p.x < -40 || p.x > W + 40) parts[i] = mk(false, s);
+    }
+    parts = parts.filter(p => p.s === s || p.al > 0);
+    while (parts.length < COUNT[s]) parts.push(mk(false, s));
+    parts.sort((a, b) => a.layer - b.layer);
+    requestAnimationFrame(frame);
+  }
+  function start() {
+    cv = document.getElementById('season-fx');
+    if (!cv || running) return;
+    ctx = cv.getContext('2d'); if (!ctx) return;
+    running = true; requestAnimationFrame(frame);
+  }
+  return { start, _state: () => ({ running, W, H, n: parts.length, season: drawnSeason, kinds: [...new Set(parts.map(p => p.s))] }) };
+})();
+setTimeout(() => SeasonFx.start(), 0);
+
 // ── Osmanlı Takvimi ───────────────────────────────────────────────
 const HICRI_MONTHS = [
   "Muharrem","Safer","Rebiülevvel","Rebiülahir",
@@ -8166,6 +8274,9 @@ function _settUpdateUI() {
   document.getElementById('sett-sfx-off').classList.toggle('active', window.sfxEnabled === false);
   document.getElementById('sett-lang-tr').classList.toggle('active', window.LANG !== 'en');
   document.getElementById('sett-lang-en').classList.toggle('active', window.LANG === 'en');
+  const _sfxOn = (() => { try { return localStorage.getItem('sadrazam_season_fx') !== 'off'; } catch (e) { return true; } })();
+  document.getElementById('sett-season-on').classList.toggle('active', _sfxOn);
+  document.getElementById('sett-season-off').classList.toggle('active', !_sfxOn);
   document.getElementById('sett-preview-on').classList.toggle('active', window.previewMode === true);
   document.getElementById('sett-preview-off').classList.toggle('active', window.previewMode !== true);
   const isEN = window.LANG === 'en';
@@ -8175,6 +8286,8 @@ function _settUpdateUI() {
   document.getElementById('sett-sfx-off').textContent = isEN ? 'Off' : 'Kapalı';
   document.getElementById('sett-preview-on').textContent  = isEN ? 'On'  : 'Açık';
   document.getElementById('sett-preview-off').textContent = isEN ? 'Off' : 'Kapalı';
+  document.getElementById('sett-season-on').textContent  = isEN ? 'On'  : 'Açık';
+  document.getElementById('sett-season-off').textContent = isEN ? 'Off' : 'Kapalı';
 }
 
 function showSettingsOverlay() {
@@ -8190,6 +8303,8 @@ document.getElementById('sett-mus-on').addEventListener('click',  () => { window
 document.getElementById('sett-mus-off').addEventListener('click', () => { window.musicEnabled = false; localStorage.setItem('sadrazam_music','off'); stopAllMusic();  _settUpdateUI(); });
 document.getElementById('sett-sfx-on').addEventListener('click',  () => { window.sfxEnabled = true;  localStorage.setItem('sadrazam_sfx','on');  _settUpdateUI(); });
 document.getElementById('sett-sfx-off').addEventListener('click', () => { window.sfxEnabled = false; localStorage.setItem('sadrazam_sfx','off'); _settUpdateUI(); });
+document.getElementById('sett-season-on').addEventListener('click',  () => { try { localStorage.setItem('sadrazam_season_fx','on'); } catch (e) {} _settUpdateUI(); });
+document.getElementById('sett-season-off').addEventListener('click', () => { try { localStorage.setItem('sadrazam_season_fx','off'); } catch (e) {} _settUpdateUI(); });
 document.getElementById('sett-lang-tr').addEventListener('click', () => { setLang('tr'); _settUpdateUI(); window.applyI18nHTML && window.applyI18nHTML(); });
 document.getElementById('sett-lang-en').addEventListener('click', () => { setLang('en'); _settUpdateUI(); window.applyI18nHTML && window.applyI18nHTML(); });
 document.getElementById('sett-preview-on').addEventListener('click',  () => {
