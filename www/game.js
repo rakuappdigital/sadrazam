@@ -1566,33 +1566,65 @@ let sadrazamHealth = 90;  // Sağlık barı (0-100)
 
 // ── Zincirleme Karar Sistemi (Chain Events) ───────────────────────
 const CHAIN_RULES = [
-  // [flagSet, delayCards, scheduledCardId, description]
-  // Yeniçeri maaşı gecikmesi 2x → kışla huzursuzluğu
-  { flag: 'yeni_kışla_reddedildi',    delay: 18, cardId: 'kışla_sonuç',         once: true  },
-  // Venedik ittifak reddi → Venedik rakiple görüşüyor
+  // Bir karar bir bayrak açınca, sonucu belirli kart sayısı sonra GARANTİLİ gelir.
+  // Bayrak adları data/cards.json'daki *_flags_set ile BİREBİR aynı olmalı
+  // (26 Eylül 2026'ya kadar hiçbiri eşleşmiyordu → bu zincirler hiç çalışmıyordu).
+  // Kışla talebi reddedildi → yeniçeri son uyarısı
+  { flag: 'kışla_reddedildi',         delay: 18, cardId: 'kışla_sonuç',          once: true  },
+  // Venedik'le ticaret sınırlı tutuldu → Venedik gücenmiş olarak geri döner
   { flag: 'venedik_1_sinirlendi',     delay: 24, cardId: 'venedik_geri_dondu',   once: true  },
-  // Defterdar borç alındı → vade sonucu
-  { flag: 'defterdar_borc_alındı',    delay: 32, cardId: 'maaş_isyan_tehlikesi', once: true  },
-  // Casuslar operasyonu → sonuç kartı
-  { flag: 'casuslar_op_baslatildi',   delay: 16, cardId: 'operasyon_başarı',     once: true  },
-  // Veba 2x görmezden gelindi → tam salgın
-  { flag: 'veba_gormezden_gelindi_2', delay: 12, cardId: 'kriz_veba',            once: true  },
-  // Şehzade affedildi → güç kazandı
-  { flag: 'sehzade_affedildi',        delay: 36, cardId: 'sehzade_avcisi_2',     once: true  },
-  // Kaptan filo izni → deniz savaşı sonucu
-  { flag: 'kaptan_filo_izni',         delay: 20, cardId: 'savaş_zafer',          once: true  },
+  // Maaş ödemesi ertelendi → ocakta kazan kaldırma konuşuluyor
+  { flag: 'maaş_gecikti',             delay: 12, cardId: 'maaş_isyan_tehlikesi', once: true  },
+  // Veba haberi hafife alındı → salgın şehri sarar
+  // (Ulema ittifakı hazırsa kriz_veba engellenir → onun yerine ittifak versiyonu gelir)
+  { flag: 'veba_gormezden_gelindi',   delay: 12, cardId: 'kriz_veba',            once: true, altCardId: 'kriz_veba_ally' },
+  // Şehzade tasfiye fermanı uygulandı → şehzade teslimatta kaçtı
+  { flag: 'şehzade_tasfiye',          delay: 12, cardId: 'sehzade_avcisi_2',     once: true  },
+  // (Casus operasyonu ve savaş zaferi zaten kartların triggers_on_* alanıyla
+  //  zamanlanıyor — buradaki eski ölü kopyaları kaldırıldı.)
 ];
 
 function checkChainTriggers(flagsSet) {
   for (const rule of CHAIN_RULES) {
     if (!flagsSet.includes(rule.flag)) continue;
+    // once: aynı zincir bir oyunda bir kez. activeFlags kayıtla birlikte
+    // saklandığı için uygulama yeniden açılsa da geçerli kalır.
+    const onceKey = "_chain_fired_" + rule.cardId;
+    if (rule.once && activeFlags[onceKey]) continue;
     const alreadyScheduled = scheduledCards.some(sc => sc.cardId === rule.cardId);
     if (alreadyScheduled) continue;
-    scheduledCards.push({
-      cardId: rule.cardId,
-      afterCardsPlayed: cardsPlayed + rule.delay,
-    });
+    if (rule.once) activeFlags[onceKey] = true;
+    scheduleConsequence(rule.cardId, rule.delay, rule.altCardId);
   }
+}
+
+// Gecikmeli bir sonucu kuyruğa ekler. playsAtSchedule: kart bu arada normal
+// desteden zaten çekilirse, vakti gelince İKİNCİ kez gösterilmesin diye.
+// altCardId: asıl kart vakti geldiğinde excluded_flags yüzünden geçersizse
+// onun yerine gösterilecek, aynı olayın başka bir versiyonu.
+function scheduleConsequence(cardId, delay, altCardId) {
+  const sc = {
+    cardId,
+    afterCardsPlayed: cardsPlayed + delay,
+    playsAtSchedule: playCounts[cardId] || 0,
+  };
+  if (altCardId) sc.altCardId = altCardId;
+  scheduledCards.push(sc);
+}
+
+// Zamanı gelen bir sonucun gerçekten gösterilecek kartını döndürür (ya da null)
+function _resolveDueConsequence(sc) {
+  const c = allCards.find(x => x.id === sc.cardId);
+  if (!c) return null;
+  // Bu arada normal desteden zaten oynandıysa tekrar gösterme
+  if (sc.playsAtSchedule !== undefined && (playCounts[c.id] || 0) > sc.playsAtSchedule) return null;
+  const blocked = (card) => (card.excluded_flags || []).some(f => activeFlags[f]);
+  if (!blocked(c)) return c;
+  if (sc.altCardId) {
+    const alt = allCards.find(x => x.id === sc.altCardId);
+    if (alt && !blocked(alt) && (alt.required_flags || []).every(f => activeFlags[f])) return alt;
+  }
+  return null; // "zaten çözüldü" bayrağı açılmış → gösterme
 }
 
 // ── Eyalet (Province) Sistemi ─────────────────────────────────────
@@ -1672,7 +1704,7 @@ let challengeComplete = false;
 
 const CHALLENGE_POOL = [
   { id:'yeni_ret_4',    label_tr:'Yeniçeri Ağası\'nı 4 kez reddet',         label_en:'Refuse the Janissary Commander 4 times',        check: s => (s.characterMemory['2-yeniceri']?.left||0) >= 4 },
-  { id:'seyh_des_3',   label_tr:'Şeyhülislam\'ı 3 kez destekle',            label_en:'Support the Şeyhülislam 3 times',               check: s => (s.characterMemory['3-Seyhulislam']?.right||0) >= 3 },
+  { id:'seyh_des_3',   label_tr:'Şeyhülislam\'ı 3 kez destekle',            label_en:'Support the Şeyhülislam 3 times',               check: s => (s.characterMemory['3-seyhulislam']?.right||0) >= 3 },
   { id:'haz_min_30',   label_tr:'Hazine hiç 30\'un altına düşmesin',         label_en:'Keep treasury above 30 throughout',             check: s => s.minHazine >= 30 },
   { id:'rakip_4',      label_tr:'Rakip Vezir ile 4 kez yüzleş',              label_en:'Confront the Rival Vizier 4 times',             check: s => ((s.characterMemory['8-rakip-vezir']?.left||0)+(s.characterMemory['8-rakip-vezir']?.right||0)) >= 4 },
   { id:'10_yil',       label_tr:'10 yıl hayatta kal',                        label_en:'Survive for 10 years',                          check: s => s.year >= 10 },
@@ -2792,13 +2824,7 @@ function startGame() {
   hicriMonth = 0;
 
   // Gizli hain seç
-  const characterKeys = ["2-yeniceri", "3-Seyhulislam", "4. Defterdar",
-    "5. Valide Sultan", "6. Kaptan-ı Derya", "7. Yabancı Elçi",
-    "8. Rakip Vezir", "10-hekimbasi", "11-sipahi_agasi",
-    "12-saray_sairi", "13-buyuk_tuccar", "14-casuslar_basi",
-    "15-halk_temsilcisi", "16-saray_agasi", "22-yahudi_bankaci",
-    "24-korsanbasi", "25-deli_dervis", "26-genc_pasa"];
-  hiddenTraitor = characterKeys[Math.floor(Math.random() * characterKeys.length)];
+  hiddenTraitor = TRAITOR_CANDIDATES[Math.floor(Math.random() * TRAITOR_CANDIDATES.length)];
 
   if (titleLabel) titleLabel.textContent = currentTitle;
 
@@ -3404,23 +3430,99 @@ function getNextCard() {
   return weightedPick(eligible);
 }
 
+// ── Birleşik Sonuç (Düğüm) ────────────────────────────────────────
+// İki gecikmeli sonuç birbirine KNOT_WINDOW kart kadar yakın zamana denk
+// gelirse, ayrı ayrı gelmek yerine onları birlikte anlatan tek bir kart gelir.
+// Hangi çiftlerin birleşeceği veriden okunur: cards.json'da "knot_of": [A, B]
+// alanı olan kart, A ve B sonuçlarının birleşik hâlidir.
+const KNOT_WINDOW = 8;
+// Tematik çekim: bir sonuç beklerken, onunla birleşebilecek diğer sonucun
+// KAYNAK kartı destede bu kat daha olası çekilir (ör. Ceneviz borcu alındıysa
+// bankacının borç teklifi yakında gelir). Simülasyon (26 Eylül 2026, gerçek
+// kart ağırlıklarıyla): çekim olmadan birleşme oyunların ~%4'ünde görülüyordu;
+// pencere 8 + 25x ile 5 yıllık oyunda ort. ~1,2 birleşme, oyunların ~%71'i.
+const KNOT_PULL_BOOST = 25;
+
+// sonuç kartı id → onu doğurabilen kaynak kart id'leri (bir kez hesaplanır)
+let _consequenceSources = null;
+function _getConsequenceSources() {
+  if (_consequenceSources && _consequenceSources._n === allCards.length) return _consequenceSources;
+  const m = { _n: allCards.length };
+  const add = (cid, sid) => { (m[cid] = m[cid] || []).includes(sid) || m[cid].push(sid); };
+  allCards.forEach(c => ["left", "right"].forEach(side => { const t = c["triggers_on_" + side]; if (t) add(t, c.id); }));
+  CHAIN_RULES.forEach(r => allCards.forEach(c => {
+    if ([...(c.left_flags_set || []), ...(c.right_flags_set || [])].includes(r.flag)) add(r.cardId, c.id);
+  }));
+  return (_consequenceSources = m);
+}
+
+// Şu an destede güçlendirilecek kaynak kartlar
+function _knotPullSources() {
+  const out = new Set();
+  if (!scheduledCards.length) return out;
+  const pending = new Set(scheduledCards.map(sc => sc.cardId));
+  const srcMap = _getConsequenceSources();
+  allCards.forEach(k => {
+    if (!Array.isArray(k.knot_of) || k.knot_of.length !== 2) return;
+    if ((k.excluded_flags || []).some(f => activeFlags[f])) return;
+    const [a, b] = k.knot_of;
+    if (pending.has(a) && !pending.has(b)) (srcMap[b] || []).forEach(id => out.add(id));
+    if (pending.has(b) && !pending.has(a)) (srcMap[a] || []).forEach(id => out.add(id));
+  });
+  return out;
+}
+
+function _findKnotCard(idA, idB) {
+  return allCards.find(k => Array.isArray(k.knot_of) && k.knot_of.length === 2 &&
+    k.knot_of.includes(idA) && k.knot_of.includes(idB) && idA !== idB);
+}
+
+// Birleşen sonuçlar bir daha ayrıca (zamanlı ya da rastgele) gelmesin:
+// kartın kendi "çözüldü" bayraklarını (hem set ettiği hem excluded olan) aç.
+function _consumeConsequence(c) {
+  const sets = new Set([...(c.left_flags_set || []), ...(c.right_flags_set || [])]);
+  (c.excluded_flags || []).forEach(f => { if (sets.has(f)) activeFlags[f] = true; });
+}
+
 function checkScheduledCards() {
   const due = scheduledCards.filter(sc => cardsPlayed >= sc.afterCardsPlayed);
   scheduledCards = scheduledCards.filter(sc => cardsPlayed < sc.afterCardsPlayed);
+  const consumed = new Set();
   due.forEach(sc => {
-    const c = allCards.find(x => x.id === sc.cardId);
-    if (c) forcedQueue.unshift(c);
+    if (consumed.has(sc)) return;
+    const c = _resolveDueConsequence(sc);
+    if (!c) return;
+    // Birleşme adayı: vadesi gelmiş ya da KNOT_WINDOW içinde gelecek başka bir sonuç
+    const candidates = due.concat(scheduledCards).filter(o =>
+      o !== sc && !consumed.has(o) && o.afterCardsPlayed <= cardsPlayed + KNOT_WINDOW);
+    for (const other of candidates) {
+      const knot = _findKnotCard(sc.cardId, other.cardId);
+      if (!knot) continue;
+      if ((knot.excluded_flags || []).some(f => activeFlags[f])) continue;
+      const oc = _resolveDueConsequence(other);
+      if (!oc) continue;
+      consumed.add(sc); consumed.add(other);
+      scheduledCards = scheduledCards.filter(x => x !== other);
+      _consumeConsequence(c); _consumeConsequence(oc);
+      forcedQueue.unshift(knot);
+      return;
+    }
+    forcedQueue.unshift(c);
   });
   updateFateBar();
 }
 
 function getEligible() {
+  const knotPull = _knotPullSources();
   return allCards.filter(c => {
     if (c.is_pasa_terfi && (!isPasaMode || pasaPromoted)) return false;
     if (c.is_event) return false;
     if (c.arc_id) return false;
     if (c.is_traitor_reveal) return false;
     if (c.type === "letter") return false;
+    // Zamanı gelince zaten gelecek bir sonuç, beklerken rastgele çekilmesin
+    // (yoksa erken gelip hem zamanlamayı hem birleşik sonucu bozuyordu)
+    if (scheduledCards.some(sc => sc.cardId === c.id)) return false;
     // Faction baskı kartları sadece tetiklenince
     if (c.required_faction_pressure && !activeFlags["faction_pressure_" + c.required_faction_pressure]) return false;
     // weight:1 özel kartlar arc dışında çıkmasın
@@ -3438,9 +3540,12 @@ function getEligible() {
     return passesFilters(c);
   }).map(c => {
     const times = playCounts[c.id] || 0;
-    if (times > 0) {
-      return { ...c, weight: Math.max(1, Math.floor((c.weight || 10) / (times * 2))) };
-    }
+    let w = c.weight || 10;
+    if (times > 0) w = Math.max(1, Math.floor(w / (times * 2)));
+    // Çekim sadece bu oyunda henüz hiç çıkmamış kaynak karta: oyuncu kartı
+    // görüp diğer seçeneği seçtiyse aynı kart arka arkaya geri gelmesin
+    if (times === 0 && knotPull.has(c.id)) w = w * KNOT_PULL_BOOST;
+    if (w !== (c.weight || 10)) return { ...c, weight: w };
     return c;
   });
 }
@@ -3524,6 +3629,38 @@ const HALK_TEMSILCISI_VARIANTS = [
 // Oyun boyunca her vatandaş kartında rastgele bir görsel seç
 let _halkTemsilcisiCurrent = 0;
 
+// Birleşik sonuç kartı: iki karakterin portresi çapraz bölünmüş gösterilir,
+// kartın üstünde "iki kararınız aynı gün geri döndü" satırı çıkar.
+// Asıl görsel (#card-image) knot_characters[0] ile normal yoldan yüklenir;
+// ikinci portre üstüne, sağ-çapraz yarıya kırpılarak bindirilir.
+function renderKnotVisual(c) {
+  const knotImg = document.getElementById("card-image-knot");
+  const seam    = document.getElementById("card-knot-seam");
+  const kicker  = document.getElementById("card-knot-kicker");
+  const isKnot  = !!(c && Array.isArray(c.knot_characters) && c.knot_characters.length === 2);
+  card.classList.toggle("knot-card", isKnot);
+  if (!knotImg || !seam || !kicker) return;
+  if (!isKnot) {
+    knotImg.classList.remove("visible"); knotImg.removeAttribute("src");
+    seam.classList.remove("visible");
+    kicker.classList.remove("visible"); kicker.textContent = "";
+    return;
+  }
+  kicker.textContent = window.LANG === 'en'
+    ? "Two of your decisions returned on the same day."
+    : "İki kararınız aynı gün geri döndü.";
+  kicker.classList.add("visible");
+  knotImg.classList.remove("visible");
+  seam.classList.remove("visible");
+  const src = "assets/characters/" + encodeURIComponent(c.knot_characters[1] + ".jpg");
+  const pre = new Image();
+  pre.onload = () => {
+    if (currentCard !== c) return; // bu arada başka kart geldiyse uygulama
+    knotImg.src = src; knotImg.classList.add("visible"); seam.classList.add("visible");
+  };
+  pre.src = src;
+}
+
 function getCharacterImageName(key) {
   // Vatandaş: görseller arasında döner
   if (key === "15-halk_temsilcisi") {
@@ -3542,6 +3679,8 @@ function getCharacterImageName(key) {
 
 function dealNext() {
   if (isGameOver) return;
+  renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
+  _hideInvestigateBtn();   // özel kart tiplerinde önceki kartın soruşturma düğmesi kalmasın
 
   // Item expiry: her kart açılışında sayacı azalt
   for (let i = 0; i < 3; i++) {
@@ -3692,7 +3831,7 @@ function dealNext() {
     }
 
     // Şeyhülislam — 3+ destek (sağ) → güvenli ton
-    if (key === '3-Seyhulislam' && _rgt >= 3) {
+    if (key === '3-seyhulislam' && _rgt >= 3) {
       displayText += _isEN
         ? " — He spoke with a familiar confidence."
         : " — Tanıdık bir özgüvenle konuştu.";
@@ -3740,9 +3879,10 @@ function dealNext() {
   // Mektup stili kaldır
   card.classList.remove("letter-card");
 
-  // Soruşturma butonu kaldırıldı
-  const _invBtn = document.getElementById("investigate-btn");
-  if (_invBtn) _invBtn.classList.add("hidden");
+  // Soruşturma düğmesi (gizli hain adaylarının kartlarında + investigate_text olan kartlarda)
+  setupInvestigateBtn(c, displayText);
+
+  renderKnotVisual(c);
 
   // Görseli yükle — hazır olunca göster, yoksa gizle (spinner çıkmasın)
   cardImage.removeAttribute("src");
@@ -3775,38 +3915,95 @@ function dealNext() {
   updateDynamicSubtitle();
 }
 
+// ── Gizli Hain: soruşturma ─────────────────────────────────────────
+// Oyun başında bu karakterlerden biri gizlice hain seçilir. Bu karakterlerin
+// HER kartında soruşturma (büyüteç) açılabilir: hain soruşturulursa şüpheli,
+// masum biri soruşturulursa masum bir ipucu çıkar — düğmenin varlığı haini
+// ele vermez, oyuncu metne bakıp karar verir. 60. kartta hain açıklanır;
+// hainin kartları en az 2 kez soruşturulduysa oyuncu onu fark etmiş sayılır.
+// (Düğme v1.1'de kaldırılmıştı, mekanik fiilen hep kötü bitiyordu — 27 Eylül 2026)
+const TRAITOR_CANDIDATES = ["2-yeniceri", "3-seyhulislam", "4-defterdar",
+  "5-valide-sultan", "6-kaptan-i-derya", "7-yabanci-elci",
+  "8-rakip-vezir", "10-hekimbasi", "11-sipahi_agasi",
+  "12-saray_sairi", "13-buyuk_tuccar", "14-casuslar_basi",
+  "15-halk_temsilcisi", "16-saray_agasi", "22-yahudi_bankaci",
+  "24-korsanbasi", "25-deli_dervis", "26-genc_pasa"];
+
+const TRAITOR_CLUES_SUSPICIOUS = [
+  { tr: "Sözlerinin arasında bir duraksama var; konuşurken gözü sürekli kapıda.", en: "There is a hesitation in their words; their eyes keep drifting to the door." },
+  { tr: "Kâtip, bu kişinin son aylarda Galata'da yabancılarla görüldüğünü not etmiş.", en: "The scribe notes that this person was seen with foreigners in Galata in recent months." },
+  { tr: "Mühürlü mektuplarının bir kısmı Divan defterine hiç kaydedilmemiş.", en: "Some of their sealed letters were never entered in the Divan register." },
+  { tr: "Hizmetkârı, geceleri saraydan gizli bir ulak çıktığını fısıldadı.", en: "A servant whispers that a secret courier leaves the palace at night." },
+  { tr: "Anlattıkları geçen haftaki sözleriyle çelişiyor. Bir şey saklıyor.", en: "What they say contradicts last week's words. They are hiding something." },
+];
+const TRAITOR_CLUES_INNOCENT = [
+  { tr: "Kayıtlar temiz. Sözleri önceki raporlarıyla tutarlı.", en: "The records are clean. Their words match earlier reports." },
+  { tr: "Hizmetkârları onun hakkında kötü bir şey söylemiyor; bildiği işi yapıyor.", en: "Their servants say nothing ill of them; they simply do their work." },
+  { tr: "Mektuplarının hepsi Divan defterine kayıtlı. Şüpheli bir iz yok.", en: "All their letters are in the Divan register. No suspicious trace." },
+  { tr: "Tedirgin görünüyor ama sebebi belli: istediği şey gerçekten acil.", en: "They seem uneasy, but the reason is plain: their request truly is urgent." },
+  { tr: "Casuslar Başı'nın notu kısa: 'Bu konuda endişe edecek bir şey yok.'", en: "The Spymaster's note is short: 'Nothing to worry about here.'" },
+];
+const ICON_INVESTIGATE = _gi('<circle cx="10.5" cy="10.5" r="6" stroke="currentColor" stroke-width="1.9"/><path d="M15 15L20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>');
+const ICON_INVESTIGATE_BACK = _gi('<path d="M10 6.5L5.5 11l4.5 4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 11H14a4.5 4.5 0 0 1 0 9h-2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>');
+
+// Aynı kart her açılışta aynı ipucunu versin (kart id'sinden sabit seçim)
+function _traitorClueFor(c) {
+  const pool = c.character === hiddenTraitor ? TRAITOR_CLUES_SUSPICIOUS : TRAITOR_CLUES_INNOCENT;
+  let h = 0;
+  for (const ch of String(c.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const clue = pool[h % pool.length];
+  return window.LANG === 'en' ? clue.en : clue.tr;
+}
+
+function _hideInvestigateBtn() {
+  const b = document.getElementById("investigate-btn");
+  if (b) { b.classList.add("hidden"); b.onclick = null; }
+}
+
 function setupInvestigateBtn(c, displayText) {
   let btn = document.getElementById("investigate-btn");
   if (!btn) {
     btn = document.createElement("button");
     btn.id = "investigate-btn";
-    btn.textContent = "🔍";
-    btn.title = "Soruştur";
+    // Düğmeye dokunmak kart sürüklemeyi başlatmasın (kart mousedown/touchstart dinliyor)
+    btn.addEventListener("mousedown", e => e.stopPropagation());
+    btn.addEventListener("touchstart", e => e.stopPropagation(), { passive: true });
     card.appendChild(btn);
   }
-
-  if (c.investigate_text) {
-    btn.classList.remove("hidden");
-    btn.onclick = () => {
-      if (isInvestigating) {
-        // Geri dön
-        cardText.textContent = displayText;
-        btn.textContent = "🔍";
-        isInvestigating = false;
-      } else {
-        // Soruştur
-        cardText.textContent = (window.LANG === 'en' && c.investigate_text_en) ? c.investigate_text_en : c.investigate_text;
-        btn.textContent = "↩";
-        isInvestigating = true;
-        // Traitor sayacı
-        if (c.character === hiddenTraitor || c.character_name === hiddenTraitor) {
-          traitorInvestigated++;
-        }
-      }
-    };
-  } else {
+  const isEN = window.LANG === 'en';
+  const setIcon = (back) => {
+    btn.innerHTML = back ? ICON_INVESTIGATE_BACK : ICON_INVESTIGATE;
+    btn.title = back ? (isEN ? "Back" : "Geri") : (isEN ? "Investigate" : "Soruştur");
+    btn.setAttribute("aria-label", btn.title);
+  };
+  const isCandidate = TRAITOR_CANDIDATES.includes(c.character) && !c.knot_of;
+  if (!c.investigate_text && !isCandidate) {
     btn.classList.add("hidden");
+    btn.onclick = null;
+    return;
   }
+  const investigateText = c.investigate_text
+    ? ((isEN && c.investigate_text_en) ? c.investigate_text_en : c.investigate_text)
+    : _traitorClueFor(c);
+  let counted = false; // aynı kart sayaca en fazla bir kez yazar (eskiden her tıklama sayılıyordu)
+  setIcon(false);
+  btn.classList.remove("hidden");
+  btn.onclick = (e) => {
+    if (e) e.stopPropagation();
+    if (isInvestigating) {
+      cardText.textContent = displayText;
+      setIcon(false);
+      isInvestigating = false;
+    } else {
+      cardText.textContent = investigateText;
+      setIcon(true);
+      isInvestigating = true;
+      if (!counted && c.character === hiddenTraitor) {
+        counted = true;
+        traitorInvestigated++;
+      }
+    }
+  };
 }
 
 function animateCardIn() {
@@ -4632,6 +4829,8 @@ function tryPadisahZiyareti() {
 }
 
 function showPadisahZiyareti() {
+  renderKnotVisual(null); // dealNext'ten geçmiyor — önceki birleşik görünüm kalmasın
+  _hideInvestigateBtn();
   const _isENpv = window.LANG === 'en';
   const _pvPool = (_isENpv && window.EN_PADISAH_ZIYARET_TEXTS) ? window.EN_PADISAH_ZIYARET_TEXTS : PADISAH_ZIYARET_TEXTS;
   const data = _pvPool[Math.floor(Math.random() * _pvPool.length)];
@@ -5727,10 +5926,7 @@ function decide(dir) {
     const triggerKey = "triggers_on_" + dir;
     if (currentCard[triggerKey]) {
       const delay = currentCard.trigger_delay ?? 3;
-      scheduledCards.push({
-        cardId: currentCard[triggerKey],
-        afterCardsPlayed: cardsPlayed + delay
-      });
+      scheduleConsequence(currentCard[triggerKey], delay);
       updateFateBar();
     }
   }
@@ -6002,11 +6198,16 @@ function decide(dir) {
     if (revCard) {
       const enriched = { ...revCard };
       if (window.playTraitorReveal) playTraitorReveal();
+      // İngilizce oyunda da doğru dilde (eskiden text_en yoktu → her zaman Türkçe)
+      const _tName = getCharacterDisplayName(hiddenTraitor);
+      const _tNameEN = getCharacterDisplayName(hiddenTraitor, true);
       if (traitorInvestigated >= 2) {
-        enriched.text = `Paşam, yıllardır aramızda bir hain vardı: ${getCharacterDisplayName(hiddenTraitor)}. Ama siz bunu zaten fark etmişsiniz! Sultan'a rapor hazırlandı. Sarayınız güçlendi.`;
+        enriched.text = `Paşam, yıllardır aramızda bir hain vardı: ${_tName}. Ama siz bunu zaten fark etmişsiniz! Sultan'a rapor hazırlandı. Sarayınız güçlendi.`;
+        enriched.text_en = `Pasha, there was a traitor among us for years: the ${_tNameEN}. But you had already noticed! A report has been prepared for the Sultan. Your palace grows stronger.`;
         enriched.right_effects = { saray: 10 };
       } else {
-        enriched.text = `Paşam, çok geç! ${getCharacterDisplayName(hiddenTraitor)} bu gece sizi Sultan'a şikâyet etti. Belgeler sahte ama Sultan inanıyor...`;
+        enriched.text = `Paşam, çok geç! ${_tName} bu gece sizi Sultan'a şikâyet etti. Belgeler sahte ama Sultan inanıyor...`;
+        enriched.text_en = `Pasha, it is too late! Tonight the ${_tNameEN} denounced you to the Sultan. The documents are forged, but the Sultan believes them...`;
         enriched.right_effects = { saray: -15 };
       }
       forcedQueue.unshift(enriched);
@@ -6014,10 +6215,12 @@ function decide(dir) {
   }
 }
 
-function getCharacterDisplayName(key) {
-  if (!key) return "Bilinmeyen";
-  const c = allCards.find(x => x.character === key);
-  return c ? (c.character_name || key) : key;
+function getCharacterDisplayName(key, en) {
+  if (!key) return en ? "Unknown" : "Bilinmeyen";
+  // Birleşik kartlar "A · B" adı taşır — tek karakter adı için onları atla
+  const c = allCards.find(x => x.character === key && !x.knot_of);
+  if (!c) return key;
+  return (en && c.character_name_en) ? c.character_name_en : (c.character_name || key);
 }
 
 // ── Faction Pressure ──────────────────────────────────────────────
@@ -6033,10 +6236,7 @@ function checkFactionPressure(faction) {
       // Baskı kartını kuyruğa ekle
       const pressureCard = allCards.find(c => c.required_faction_pressure === rival);
       if (pressureCard) {
-        scheduledCards.push({
-          cardId: pressureCard.id,
-          afterCardsPlayed: cardsPlayed + 2
-        });
+        scheduleConsequence(pressureCard.id, 2);
         updateFateBar();
       }
     }
@@ -6202,6 +6402,8 @@ function flyOff(dir) {
     card.style.transition = "none";
     card.style.transform = "translateX(0) rotate(0deg)";
     cardImage.src = "";
+    renderKnotVisual(null);
+    _hideInvestigateBtn();
     charName.textContent = "";
     cardText.textContent = "";
     choiceLeft.style.opacity = "0";
