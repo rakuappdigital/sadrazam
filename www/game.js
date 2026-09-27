@@ -296,14 +296,14 @@ const SECOND_CHANCE_RESCUE_TR = [
   "Divan'da kimse bilmeden, gizli bir el kaderini değiştirdi.",
   "Bir mucize mi, bir komplo mu? Saltanatın bir nefes daha aldı.",
   "Ölüm fermanı imzalanmadan geri çekildi.",
-  "Kader iplerini bir kez daha kendi ellerinle örüyorsun."
+  "Kaderini bir kez daha kendi ellerinle yazıyorsun."
 ];
 const SECOND_CHANCE_RESCUE_EN = [
   "A loyal advisor intervened just in time, and disaster was postponed.",
   "Unknown to the Divan, a hidden hand altered your fate.",
   "A miracle, or a conspiracy? Your reign draws one more breath.",
   "The execution order was withdrawn before it could be signed.",
-  "Once again, you weave the threads of fate with your own hands."
+  "Once again, you write your fate with your own hands."
 ];
 
 // ── Şaka Onay Easter Egg ────────────────────────────────────────────
@@ -743,7 +743,7 @@ const ACHIEVEMENTS = [
   { id: "balanced",       tier:"silver", icon:GAME_ICONS.balanced, name:"Denge Ustası",          desc:"Oyun bitiminde tüm statlar 40-65 arası.",     check: s => Object.values(s.stats).every(v=>v>=40&&v<=65) },
   { id: "hazine_guard",   tier:"silver", icon:GAME_ICONS.hazine_guard, name:"Hazine Bekçisi",        desc:"5 yıl hazine hiç 30'un altına düşmesin.",     check: s => s.year >= 5 && s.minHazine >= 30 },
   { id: "saray_high",     tier:"silver", icon:GAME_ICONS.saray_high, name:"Sultan'ın Gözdesi",     desc:"Saray 80+'a çıksın.",                        check: s => s.maxSaray >= 80 },
-  { id: "chain_complete", tier:"silver", icon:GAME_ICONS.chain_complete, name:"İplik Takipçisi",       desc:"Bir zincirleme karar dizisi tamamla.",        check: s => s.chainsCompleted > 0 },
+  { id: "chain_complete", tier:"silver", icon:GAME_ICONS.chain_complete, name:"Kararın Yankısı",       desc:"Bir zincirleme karar dizisi tamamla.",        check: s => s.chainsCompleted > 0 },
   { id: "traitor_found",  tier:"silver", icon:GAME_ICONS.traitor_found, name:"Haini Buldun",         desc:"Gizli haini tespit et (2+ soruştur).",       check: s => s.traitorInvestigated >= 2 },
   { id: "war_victory",    tier:"silver", icon:GAME_ICONS.war_victory, name:"Zafer Habercisi",       desc:"Savaşı kabul et ve zaferi gör.",              check: s => s.warVictory },
   { id: "all_letters",    tier:"silver", icon:GAME_ICONS.all_letters, name:"Tüm Mektuplar",         desc:"Tek oyunda 4 sultan mektubunu al.",           check: s => s.receivedLetters >= 4 },

@@ -331,7 +331,7 @@ window.EN_ACHIEVEMENTS = {
   balanced:        { name: "Master of Balance",        desc: "End the game with all stats between 40–65." },
   hazine_guard:    { name: "Treasury Guardian",        desc: "Keep the treasury above 30 for 5 years." },
   saray_high:      { name: "The Sultan's Favorite",    desc: "Raise the Palace stat above 80." },
-  chain_complete:  { name: "Thread Follower",          desc: "Complete a chain decision sequence." },
+  chain_complete:  { name: "Echo of a Decision",       desc: "Complete a chain decision sequence." },
   traitor_found:   { name: "Found the Traitor",        desc: "Identify the hidden traitor (investigate 2+ times)." },
   war_victory:     { name: "Herald of Victory",        desc: "Accept a war and see it to victory." },
   all_letters:     { name: "All the Letters",          desc: "Receive 4 sultan letters in one game." },

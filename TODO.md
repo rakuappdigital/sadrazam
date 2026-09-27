@@ -47,8 +47,8 @@ Ayrıntı: CLAUDE.md §3b, §3c, §5.
       geliyor mu, satın alınca +30 akçe ve teklif kayboluyor mu.
 - [ ] Kullanıcı kararı bekleyen: görsel demolardan hangileri uygulanacak
       (mevsimler A/B/C, mühür, eşya kutuları, vakayiname, yaşlanan portreler);
-      "İplik Takipçisi" başarımının adı ("iplik" kelimesi oyunda geçmesin
-      kuralı); Venedik Balyosu portresi.
+      Venedik Balyosu portresi. ("İplik Takipçisi" başarımı → "Kararın
+      Yankısı" / "Echo of a Decision" oldu, oyunda "iplik" kalmadı.)
 
 ## Yeni karakter görselleri — kullanıcı üretecek (27 Eylül 2026)
 
