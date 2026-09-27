@@ -2060,6 +2060,7 @@ let characterMemory = {};
 let activeArcs = {};
 let triggeredArcs = {};
 let decisionLog = [];           // Vezirlik Günlüğü — kayda değer kararların kronolojik listesi
+let chronicle = [];             // Vakayiname — ölüm ekranındaki tarih sayfası için önemli olaylar (kayıtla saklanır)
 let isPaywalled = false;        // ücretsiz deneme sınırına takılınca true olur, oyun durur
 let _paywallSoftOffer = false;  // ARTIK KULLANILMIYOR (geriye dönük uyumluluk için tutuluyor) — eskiden
                                  // her 3 yeniden başlatmada çıkan, "Oynamaya Devam Et" ile reddedilebilen
@@ -3197,6 +3198,7 @@ function startGame() {
   activeArcs = {};
   triggeredArcs = {};
   decisionLog = [];
+  chronicle = [];
   isPaywalled = false;
   _secondChanceUsedThisDeath = false;
   _secondChanceOfferedThisGame = false;
@@ -3617,6 +3619,7 @@ function saveGameState() {
       secondChanceOfferedThisGame: _secondChanceOfferedThisGame,
       receivedLetters,
       muneccimN: _muneccimN, muneccimAt: _muneccimAt,
+      chronicle,
       v: 3
     };
     localStorage.setItem('sadrazam_save', JSON.stringify(state));
@@ -3723,6 +3726,7 @@ function loadGameState(s) {
   _secondChanceOfferedThisGame = s.secondChanceOfferedThisGame || false;
   receivedLetters = s.receivedLetters || 0;
   _muneccimN = s.muneccimN || 0; _muneccimAt = s.muneccimAt ?? -999;
+  chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
   isGameOver = false;
   activeArcs = {};
   triggeredArcs = {};
@@ -6992,6 +6996,7 @@ function decide(dir) {
     });
     if (decisionLog.length > 40) decisionLog.shift();
   }
+  _recordChronicle(currentCard, dir, newFlags);
 
   // Item grant — koşul kontrolü
   const grantKey = "grants_item_on_" + dir;
@@ -7738,6 +7743,8 @@ function triggerGameOver(reason) {
 
 function _actuallyTriggerGameOver(reason) {
   isGameOver = true;
+  // Açık kalmış oyun içi pencereler ölüm ekranının üstünde kalmasın
+  ["katib-overlay", "empty-slot-tip", "item-confirm-popup"].forEach(id => document.getElementById(id)?.remove());
   clearSave();
   stopAmbientMusic();
   Haptics.gameOver();
@@ -8037,6 +8044,63 @@ function getEpilogText() {
   return lines;
 }
 
+// ── Vakayiname (27 Eylül 2026) ───────────────────────────────────────
+// Oyun boyunca önemli olaylar kaydedilir (Hicri yıl + mevsim, TR/EN metin,
+// önem puanı); ölüm ekranında en önemli 7'si kronolojik sırayla bir Osmanlı
+// tarih kitabı sayfası olarak yazılır. Puan: birleşik olay 5, kriz ve geri
+// dönen sonuç 4, sonuç doğuran karar ve olay 3, iz bırakan karar 1.
+const CHRONICLE_MAX = 60, CHRONICLE_SHOW = 7;
+function _recordChronicle(c, dir, newFlags) {
+  if (!c || !dir || c.type === "easter" || c.type === "padisah_ziyaret") return;
+  const srcMap = _getConsequenceSources();
+  let k = null, sc = 0;
+  if (c.knot_of) { k = "knot"; sc = 5; }
+  else if (c.is_crisis) { k = "crisis"; sc = 4; }
+  else if (srcMap[c.id]) { k = "result"; sc = 4; }
+  else if (c["triggers_on_" + dir]) { k = "seed"; sc = 3; }
+  else if (c.is_event) { k = "event"; sc = 3; }
+  else if ((newFlags || []).some(f => !/_resolved$/.test(f))) { k = "mark"; sc = 1; }
+  if (!k) return;
+  const tr = c[dir + "_text"], en = c[dir + "_text_en"];
+  if (!tr) return;
+  chronicle.push({ hy: hicriYear, s: getCurrentSeason(), k, sc,
+    n: c.character_name || "", ne: c.character_name_en || c.character_name || "", t: tr, te: en || tr });
+  if (chronicle.length > CHRONICLE_MAX) { // en düşük puanlı en eskiyi at
+    let drop = 0; chronicle.forEach((e, i) => { if (e.sc < chronicle[drop].sc) drop = i; });
+    chronicle.splice(drop, 1);
+  }
+}
+function _chronicleHTML() {
+  const en = window.LANG === 'en';
+  const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  const seasons = en ? SEASONS_EN : SEASONS_TR;
+  // Puan sırasıyla doldur; sığmayan puan grubundan saltanat boyunca eşit
+  // aralıklarla seç (hep en yeniler seçilirse ilk yıllar sayfadan düşüyordu)
+  const all = chronicle.map((e, i) => ({ e, i }));
+  let pick = [];
+  for (const sc of [...new Set(all.map(x => x.e.sc))].sort((a, b) => b - a)) {
+    const tier = all.filter(x => x.e.sc === sc), room = CHRONICLE_SHOW - pick.length;
+    if (room <= 0) break;
+    if (tier.length <= room) { pick = pick.concat(tier); continue; }
+    for (let j = 0; j < room; j++) pick.push(tier[room === 1 ? 0 : Math.round(j * (tier.length - 1) / (room - 1))]);
+  }
+  pick.sort((a, b) => a.i - b.i);
+  const enS = (en && window.EN_SULTANS && selectedSultan) ? window.EN_SULTANS[selectedSultan.id] : null;
+  const sultanName = enS ? enS.name : (selectedSultan ? selectedSultan.name : "Sultan");
+  const start = (selectedSultan && SULTAN_HICRI_START[selectedSultan.id]) || hicriYear;
+  const epilog = getEpilogText();
+  const items = pick.length
+    ? pick.map(({ e }) => `<li class="vk-${e.k}"><span class="vk-yr">${e.hy} · ${seasons[e.s] ? seasons[e.s].toLocaleUpperCase(en ? 'en' : 'tr') : ""}</span><br>${e.k === "knot" ? "✦ " : ""}${esc(en ? e.ne : e.n)} · “${esc(en ? e.te : e.t)}”</li>`).join("")
+    : `<li class="vk-empty">${en ? "Nothing great enough to record was decided in so brief a vizierate." : "Bu kısa sadrazamlıkta kayda geçecek büyük bir karar alınamadı."}</li>`;
+  return `<div class="vk-title">${en ? "CHRONICLE" : "VAKAYİNAME"}</div>
+    <div class="vk-sub">${en ? `Grand Vizier under ${esc(sultanName)} · ${start}–${hicriYear} AH` : `${esc(sultanName)} devrinin sadrazamı · ${start}–${hicriYear} H.`}</div>
+    <div class="vk-orn">✦ ✦ ✦</div>
+    <p class="vk-intro">${esc(epilog[0] || "")}</p>
+    <ol class="vk-list">${items}</ol>
+    <div class="vk-end">${epilog.slice(1).map(l => `<p>${esc(l)}</p>`).join("")}</div>
+    <div class="vk-stamp"><b>${year}</b><span>${en ? (year === 1 ? "YEAR" : "YEARS") : "YIL"}</span></div>`;
+}
+
 function renderEpilog() {
   let section = document.getElementById("gameover-epilog");
   if (!section) {
@@ -8048,10 +8112,9 @@ function renderEpilog() {
       panel.insertBefore(section, restartBtn);
     }
   }
-  const isEN = window.LANG === 'en';
-  const title = isEN ? "HISTORIANS' NOTE" : "TARİHÇİLERİN NOTU";
-  const lines = getEpilogText();
-  section.innerHTML = `<div class="epilog-title">${title}</div>` + lines.map(l => `<p class="epilog-line">${l}</p>`).join("");
+  // Vakayiname sayfası (Tarihçilerin Notu cümleleri sayfanın açılışı ve kapanışı oldu)
+  section.className = "vakayiname";
+  section.innerHTML = _chronicleHTML();
 }
 
 function saveHighScore() {

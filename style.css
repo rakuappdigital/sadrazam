@@ -5113,3 +5113,22 @@ html, body {
 #empty-slot-tip .est-desc { font-family: 'IM Fell English', serif; font-size: 14px; line-height: 1.35; color: var(--text, #F0E6D0); }
 #empty-slot-tip .est-where { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13px; line-height: 1.4; color: rgba(240,230,208,.72); }
 #empty-slot-tip .est-shop { align-self: stretch; font-family: 'Cinzel', serif; font-weight: 600; font-size: 12px; letter-spacing: .1em; color: var(--gold-light); background: rgba(201,162,39,.1); border: 1px solid var(--gold-dim); border-radius: 9px; padding: 9px 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+/* ── Vakayiname: ölüm ekranında tarih kitabı sayfası (27 Eylül 2026) ── */
+#gameover-epilog.vakayiname { position: relative; margin: 6px 0; padding: 20px 18px 18px; border-radius: 6px; text-align: left; color: #3B2A14; background: #E9DDBF;
+  box-shadow: 0 12px 32px rgba(0,0,0,.5), inset 0 0 60px rgba(120,80,30,.25);
+  border: 9px solid transparent; border-image: repeating-linear-gradient(45deg, #1c3f6e 0 6px, #b8892a 6px 9px, #8e1b1b 9px 12px, #b8892a 12px 15px) 12; }
+.vakayiname .vk-title { font-family: 'Cinzel', serif; font-weight: 700; text-align: center; font-size: 19px; letter-spacing: .14em; color: #5a1010; }
+.vakayiname .vk-sub { font-family: 'IM Fell English', serif; font-style: italic; text-align: center; font-size: 13.5px; line-height: 1.35; margin-top: 3px; color: #3B2A14; }
+.vakayiname .vk-orn { text-align: center; color: #8e1b1b; letter-spacing: .5em; font-size: 11px; margin: 8px 0 6px; }
+.vakayiname .vk-intro { font-family: 'IM Fell English', serif; font-size: 13.5px; line-height: 1.45; margin: 0 0 10px; color: #3B2A14; text-align: center; }
+.vakayiname .vk-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-family: 'IM Fell English', serif; font-size: 14px; line-height: 1.4; color: #3B2A14; overflow-wrap: anywhere; }
+.vakayiname .vk-list li::marker { color: #8e1b1b; font-family: 'Cinzel', serif; font-size: 11px; }
+.vakayiname .vk-yr { font-family: 'Cinzel', serif; font-size: 10.5px; color: #7a4a10; letter-spacing: .06em; }
+.vakayiname .vk-knot, .vakayiname .vk-crisis { color: #5a1010; }
+.vakayiname .vk-empty { list-style: none; margin-left: -18px; font-style: italic; text-align: center; }
+.vakayiname .vk-end { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(90,16,16,.3); text-align: center; }
+.vakayiname .vk-end p { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13.5px; line-height: 1.45; margin: 3px 0; color: #3B2A14; }
+.vakayiname .vk-stamp { width: 58px; height: 58px; margin: 10px auto 0; border-radius: 50%; border: 2px solid rgba(142,27,27,.6); color: rgba(142,27,27,.78); display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-12deg); font-family: 'Cinzel', serif; }
+.vakayiname .vk-stamp b { font-size: 18px; line-height: 1; }
+.vakayiname .vk-stamp span { font-size: 8.5px; letter-spacing: .12em; margin-top: 2px; }
