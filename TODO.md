@@ -1,5 +1,34 @@
 # Sadrazam — TODO
 
+## SIRADAKİ SESSION — kullanıcının istediği 5 geliştirme (27 Eylül 2026)
+
+Kullanıcının kuralı: yaratıcı ol, en uygun ve hatasız eklenebilecek örnekleri
+seç; her eklemeyi TEST EDEREK, ADIM ADIM git (bu session'daki gibi: dal →
+adım → Puppeteer gerçek akış testi → commit → yüzde ile ilerleme raporu).
+"İplik" oyunda görünmeyen bir KAVRAM (kod: gecikmeli sonuç / knot) — oyunda
+bu kelime geçmez. Mimari: CLAUDE.md §3b.
+
+1. **Tek butonlu kartları iki seçenekli yap.** Önce tek butonla geçilen
+   kartların listesini çıkar (Padişah ziyareti, saraya giren kedi vb. — ipucu:
+   `type: "easter"` kartlar, `easter-action-btn`, `showEasterCard`,
+   `showPadisahZiyareti`, `advanceEasterCard`, chance kartları). Sonra HER
+   kart için kullanıcıyla konuş: iki seçeneğin metinleri, işleyiş mekaniği
+   önerisi, hem anlık stat etkisi hem gecikmeli sonuç (oyunun genel gidişatı)
+   etkisi. Liste onaylanmadan kod yazma.
+2. **Görsel iyileştirme fikirleri öner.** Kullanıcı beğendiklerini seçecek,
+   sonra web üzerinden (Artifact demo, oyuna uygulamadan) gösterilecek.
+3. **Reklam izlemeyi ve akçe satışını artıracak çok pratik öneriler.** Akıllıca
+   ve sürükleyici olmalı. (Mevcut: İkinci Şans 5/gün reklam veya 1 akçe, Eşya
+   Dükkanı 1 akçe, geçiş reklamı her 2. oyun başı, Reklamsız IAP, akçe paketleri
+   10/20/50/100. Önceki öneriler: memory project_sadrazam_kader_tezgahi.)
+4. **Yeni karakterler ve olaylar öner.** Oyunu zengin gösterecek, oyuna etki
+   edecek. Karakterler oyunda belli yerlerde, gecikmeli sonuçların yarattığı
+   belli sonuçlarda ortaya çıkacak. Sonra görsel PROMPTLARIYLA birlikte yaz
+   (kullanıcı görselleri üretecek), ardından oyuna eklenecek.
+5. **Rakip oyun analizi.** Benzer oyunlardan (Reigns serisi vb.) eksik
+   kaldığımız yerleri tespit et, iyileştirme öner; bize özgü güçlü yönleri de
+   geliştir/ekle.
+
 ## SIRADAKİ (sonraki session buradan başlar)
 
 **v1.4.1 / build 25** — 26 Eylül 2026'da ASC'ye yüklendi (Delivery UUID

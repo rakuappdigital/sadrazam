@@ -1199,13 +1199,15 @@ html, body {
 
 /* Soruşturma butonu */
 #investigate-btn {
+  /* Portrenin sol üst köşesi: kart metniyle hiç çakışmaz (eskiden bottom:60px
+     metnin üstüne biniyordu). Resim üstünde okunsun diye koyu zemin. */
   position: absolute;
-  bottom: 60px;
-  left: 14px;
-  background: rgba(201,162,39,0.1);
-  border: 1px solid var(--gold-dim);
-  color: var(--gold-dim);
-  font-size: 16px;
+  top: 10px;
+  left: 10px;
+  background: rgba(8,6,18,0.88);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font-size: 20px;
   width: 36px;
   height: 36px;
   border-radius: 50%;

@@ -2824,13 +2824,7 @@ function startGame() {
   hicriMonth = 0;
 
   // Gizli hain seç
-  const characterKeys = ["2-yeniceri", "3-seyhulislam", "4-defterdar",
-    "5-valide-sultan", "6-kaptan-i-derya", "7-yabanci-elci",
-    "8-rakip-vezir", "10-hekimbasi", "11-sipahi_agasi",
-    "12-saray_sairi", "13-buyuk_tuccar", "14-casuslar_basi",
-    "15-halk_temsilcisi", "16-saray_agasi", "22-yahudi_bankaci",
-    "24-korsanbasi", "25-deli_dervis", "26-genc_pasa"];
-  hiddenTraitor = characterKeys[Math.floor(Math.random() * characterKeys.length)];
+  hiddenTraitor = TRAITOR_CANDIDATES[Math.floor(Math.random() * TRAITOR_CANDIDATES.length)];
 
   if (titleLabel) titleLabel.textContent = currentTitle;
 
@@ -3686,6 +3680,7 @@ function getCharacterImageName(key) {
 function dealNext() {
   if (isGameOver) return;
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
+  _hideInvestigateBtn();   // özel kart tiplerinde önceki kartın soruşturma düğmesi kalmasın
 
   // Item expiry: her kart açılışında sayacı azalt
   for (let i = 0; i < 3; i++) {
@@ -3884,9 +3879,8 @@ function dealNext() {
   // Mektup stili kaldır
   card.classList.remove("letter-card");
 
-  // Soruşturma butonu kaldırıldı
-  const _invBtn = document.getElementById("investigate-btn");
-  if (_invBtn) _invBtn.classList.add("hidden");
+  // Soruşturma düğmesi (gizli hain adaylarının kartlarında + investigate_text olan kartlarda)
+  setupInvestigateBtn(c, displayText);
 
   renderKnotVisual(c);
 
@@ -3921,38 +3915,95 @@ function dealNext() {
   updateDynamicSubtitle();
 }
 
+// ── Gizli Hain: soruşturma ─────────────────────────────────────────
+// Oyun başında bu karakterlerden biri gizlice hain seçilir. Bu karakterlerin
+// HER kartında soruşturma (büyüteç) açılabilir: hain soruşturulursa şüpheli,
+// masum biri soruşturulursa masum bir ipucu çıkar — düğmenin varlığı haini
+// ele vermez, oyuncu metne bakıp karar verir. 60. kartta hain açıklanır;
+// hainin kartları en az 2 kez soruşturulduysa oyuncu onu fark etmiş sayılır.
+// (Düğme v1.1'de kaldırılmıştı, mekanik fiilen hep kötü bitiyordu — 27 Eylül 2026)
+const TRAITOR_CANDIDATES = ["2-yeniceri", "3-seyhulislam", "4-defterdar",
+  "5-valide-sultan", "6-kaptan-i-derya", "7-yabanci-elci",
+  "8-rakip-vezir", "10-hekimbasi", "11-sipahi_agasi",
+  "12-saray_sairi", "13-buyuk_tuccar", "14-casuslar_basi",
+  "15-halk_temsilcisi", "16-saray_agasi", "22-yahudi_bankaci",
+  "24-korsanbasi", "25-deli_dervis", "26-genc_pasa"];
+
+const TRAITOR_CLUES_SUSPICIOUS = [
+  { tr: "Sözlerinin arasında bir duraksama var; konuşurken gözü sürekli kapıda.", en: "There is a hesitation in their words; their eyes keep drifting to the door." },
+  { tr: "Kâtip, bu kişinin son aylarda Galata'da yabancılarla görüldüğünü not etmiş.", en: "The scribe notes that this person was seen with foreigners in Galata in recent months." },
+  { tr: "Mühürlü mektuplarının bir kısmı Divan defterine hiç kaydedilmemiş.", en: "Some of their sealed letters were never entered in the Divan register." },
+  { tr: "Hizmetkârı, geceleri saraydan gizli bir ulak çıktığını fısıldadı.", en: "A servant whispers that a secret courier leaves the palace at night." },
+  { tr: "Anlattıkları geçen haftaki sözleriyle çelişiyor. Bir şey saklıyor.", en: "What they say contradicts last week's words. They are hiding something." },
+];
+const TRAITOR_CLUES_INNOCENT = [
+  { tr: "Kayıtlar temiz. Sözleri önceki raporlarıyla tutarlı.", en: "The records are clean. Their words match earlier reports." },
+  { tr: "Hizmetkârları onun hakkında kötü bir şey söylemiyor; bildiği işi yapıyor.", en: "Their servants say nothing ill of them; they simply do their work." },
+  { tr: "Mektuplarının hepsi Divan defterine kayıtlı. Şüpheli bir iz yok.", en: "All their letters are in the Divan register. No suspicious trace." },
+  { tr: "Tedirgin görünüyor ama sebebi belli: istediği şey gerçekten acil.", en: "They seem uneasy, but the reason is plain: their request truly is urgent." },
+  { tr: "Casuslar Başı'nın notu kısa: 'Bu konuda endişe edecek bir şey yok.'", en: "The Spymaster's note is short: 'Nothing to worry about here.'" },
+];
+const ICON_INVESTIGATE = _gi('<circle cx="10.5" cy="10.5" r="6" stroke="currentColor" stroke-width="1.9"/><path d="M15 15L20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>');
+const ICON_INVESTIGATE_BACK = _gi('<path d="M10 6.5L5.5 11l4.5 4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 11H14a4.5 4.5 0 0 1 0 9h-2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>');
+
+// Aynı kart her açılışta aynı ipucunu versin (kart id'sinden sabit seçim)
+function _traitorClueFor(c) {
+  const pool = c.character === hiddenTraitor ? TRAITOR_CLUES_SUSPICIOUS : TRAITOR_CLUES_INNOCENT;
+  let h = 0;
+  for (const ch of String(c.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const clue = pool[h % pool.length];
+  return window.LANG === 'en' ? clue.en : clue.tr;
+}
+
+function _hideInvestigateBtn() {
+  const b = document.getElementById("investigate-btn");
+  if (b) { b.classList.add("hidden"); b.onclick = null; }
+}
+
 function setupInvestigateBtn(c, displayText) {
   let btn = document.getElementById("investigate-btn");
   if (!btn) {
     btn = document.createElement("button");
     btn.id = "investigate-btn";
-    btn.textContent = "🔍";
-    btn.title = "Soruştur";
+    // Düğmeye dokunmak kart sürüklemeyi başlatmasın (kart mousedown/touchstart dinliyor)
+    btn.addEventListener("mousedown", e => e.stopPropagation());
+    btn.addEventListener("touchstart", e => e.stopPropagation(), { passive: true });
     card.appendChild(btn);
   }
-
-  if (c.investigate_text) {
-    btn.classList.remove("hidden");
-    btn.onclick = () => {
-      if (isInvestigating) {
-        // Geri dön
-        cardText.textContent = displayText;
-        btn.textContent = "🔍";
-        isInvestigating = false;
-      } else {
-        // Soruştur
-        cardText.textContent = (window.LANG === 'en' && c.investigate_text_en) ? c.investigate_text_en : c.investigate_text;
-        btn.textContent = "↩";
-        isInvestigating = true;
-        // Traitor sayacı
-        if (c.character === hiddenTraitor || c.character_name === hiddenTraitor) {
-          traitorInvestigated++;
-        }
-      }
-    };
-  } else {
+  const isEN = window.LANG === 'en';
+  const setIcon = (back) => {
+    btn.innerHTML = back ? ICON_INVESTIGATE_BACK : ICON_INVESTIGATE;
+    btn.title = back ? (isEN ? "Back" : "Geri") : (isEN ? "Investigate" : "Soruştur");
+    btn.setAttribute("aria-label", btn.title);
+  };
+  const isCandidate = TRAITOR_CANDIDATES.includes(c.character) && !c.knot_of;
+  if (!c.investigate_text && !isCandidate) {
     btn.classList.add("hidden");
+    btn.onclick = null;
+    return;
   }
+  const investigateText = c.investigate_text
+    ? ((isEN && c.investigate_text_en) ? c.investigate_text_en : c.investigate_text)
+    : _traitorClueFor(c);
+  let counted = false; // aynı kart sayaca en fazla bir kez yazar (eskiden her tıklama sayılıyordu)
+  setIcon(false);
+  btn.classList.remove("hidden");
+  btn.onclick = (e) => {
+    if (e) e.stopPropagation();
+    if (isInvestigating) {
+      cardText.textContent = displayText;
+      setIcon(false);
+      isInvestigating = false;
+    } else {
+      cardText.textContent = investigateText;
+      setIcon(true);
+      isInvestigating = true;
+      if (!counted && c.character === hiddenTraitor) {
+        counted = true;
+        traitorInvestigated++;
+      }
+    }
+  };
 }
 
 function animateCardIn() {
@@ -4779,6 +4830,7 @@ function tryPadisahZiyareti() {
 
 function showPadisahZiyareti() {
   renderKnotVisual(null); // dealNext'ten geçmiyor — önceki birleşik görünüm kalmasın
+  _hideInvestigateBtn();
   const _isENpv = window.LANG === 'en';
   const _pvPool = (_isENpv && window.EN_PADISAH_ZIYARET_TEXTS) ? window.EN_PADISAH_ZIYARET_TEXTS : PADISAH_ZIYARET_TEXTS;
   const data = _pvPool[Math.floor(Math.random() * _pvPool.length)];
@@ -6351,6 +6403,7 @@ function flyOff(dir) {
     card.style.transform = "translateX(0) rotate(0deg)";
     cardImage.src = "";
     renderKnotVisual(null);
+    _hideInvestigateBtn();
     charName.textContent = "";
     cardText.textContent = "";
     choiceLeft.style.opacity = "0";
