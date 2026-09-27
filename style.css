@@ -2442,16 +2442,16 @@ html, body {
 #card.dragging #card-image { animation: none; }
 
 #card-image.state-danger {
-  filter: contrast(1.15) saturate(0.7) brightness(0.9);
+  filter: contrast(1.15) saturate(0.7) brightness(0.9) var(--age-f,);
   animation: breatheFast 2s ease-in-out infinite;
 }
 #card-image.state-excess {
-  filter: contrast(1.1) saturate(1.3) brightness(1.05) sepia(0.15);
+  filter: contrast(1.1) saturate(1.3) brightness(1.05) sepia(0.15) var(--age-f,);
 }
 #card-image.state-blessed {
-  filter: brightness(1.08) saturate(1.15);
+  filter: brightness(1.08) saturate(1.15) var(--age-f,);
 }
-#card-image.state-normal { filter: none; }
+#card-image.state-normal { filter: var(--age-f, none); }
 
 /* ── Birleşik sonuç kartı (iki kararın sonucu aynı anda) ──────────────
    #card-image-knot: ikinci portre; #card-image ile BİREBİR aynı kutuya oturur
@@ -5132,3 +5132,9 @@ html, body {
 .vakayiname .vk-stamp { width: 58px; height: 58px; margin: 10px auto 0; border-radius: 50%; border: 2px solid rgba(142,27,27,.6); color: rgba(142,27,27,.78); display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-12deg); font-family: 'Cinzel', serif; }
 .vakayiname .vk-stamp b { font-size: 18px; line-height: 1; }
 .vakayiname .vk-stamp span { font-size: 8.5px; letter-spacing: .12em; margin-top: 2px; }
+
+/* ── Yaşlanan portreler (27 Eylül 2026) ── */
+#card-image { filter: var(--age-f, none); }
+#card-image-age { position: absolute; top: 0; left: 0; width: 100%; aspect-ratio: 3/4; max-height: 46vh; object-fit: cover; object-position: top center; display: none; pointer-events: none; -webkit-user-select: none; user-select: none; opacity: 1; filter: var(--age-f, none); transition: opacity 1.5s ease; }
+#card-image-age.visible { display: block; }
+#card-image-age.fade { opacity: 0; }

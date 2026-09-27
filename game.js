@@ -3165,6 +3165,7 @@ function startGame() {
   scheduledCards = [];
   _criticalShownCount = 0; _criticalLastAt = -999;
   _muneccimN = 0; _muneccimAt = -999;
+  _agedSeenThisGame = new Set();
   _hekimYesCount = 0; _knotIdsSeenThisGame = new Set(); _challengeRewarded = false;
   document.getElementById("challenge-list")?.remove();
   _lastDecision = null;
@@ -4175,12 +4176,43 @@ let currentCard = null;
 // Karakter görsel versiyonu sistemi
 // MADDE 7: Belli karakterler yıllar içinde görsel değiştiriyor (v2 dosyası gerekir)
 // MADDE 8: Vatandaş (halk_temsilcisi) için farklı görseller rastgele seçilir
+// ── Yaşlanan portreler (27 Eylül 2026) ─────────────────────────────────
+// Listedeki karakterlerin portresi yıllar geçtikçe hafifçe solar/sepyaya
+// döner (1 → AGING_TINT_MAX_YEAR. yıl, CSS değişkeni --age-f, tehlike/bolluk
+// filtreleriyle birlikte çalışır); AGING_V2_YEAR. yıldan sonra ikinci
+// (yaşlı) portreye geçer. O oyunda yaşlı hâliyle ilk gelişinde genç portre
+// yaşlıya yumuşakça dönüşür (#card-image-age). Yeni karakter eklemek için
+// assets/characters/<anahtar>_v2.jpg dosyasını koyup buraya satır ekle —
+// dosyası olmayan satır EKLEME (portre boş kalır).
+const AGING_V2_YEAR = 10;
+const AGING_TINT_MAX_YEAR = 20;
 const CHARACTER_EVOLUTIONS = {
-  // 50+ kartta görsel değişiyor (assets/characters/9-cellat_v2.jpg gerekir)
-  "9-cellat":   { threshold: 50, version: "9-cellat_v2" },
-  // 50+ kartta görsel değişiyor (assets/characters/2-yeniceri_v2.jpg gerekir)
-  "2-yeniceri": { threshold: 50, version: "2-yeniceri_v2" },
+  "9-cellat":   { version: "9-cellat_v2" },
+  "2-yeniceri": { version: "2-yeniceri_v2" },
 };
+let _agedSeenThisGame = new Set();
+function _agingTint(key) {
+  if (!CHARACTER_EVOLUTIONS[key]) return "";
+  const t = Math.min(1, Math.max(0, (year - 1) / (AGING_TINT_MAX_YEAR - 1)));
+  return t > 0 ? `saturate(${(1 - t * .25).toFixed(3)}) sepia(${(t * .18).toFixed(3)})` : "";
+}
+function _hideAgeOverlay() {
+  const o = document.getElementById("card-image-age");
+  if (o) { o.classList.remove("visible", "fade"); o.removeAttribute("src"); }
+}
+// Yaşlı portre ilk kez gösterilirken: genç portre üstte başlar, yavaşça söner
+function _playAgingReveal(key, c) {
+  const o = document.getElementById("card-image-age");
+  if (!o || _agedSeenThisGame.has(key)) return;
+  _agedSeenThisGame.add(key);
+  const pre = new Image();
+  pre.onload = () => {
+    if (currentCard !== c) return;
+    o.src = pre.src; o.classList.remove("fade"); o.classList.add("visible");
+    requestAnimationFrame(() => setTimeout(() => { if (currentCard === c) o.classList.add("fade"); }, 700));
+  };
+  pre.src = "assets/characters/" + encodeURIComponent(key + ".jpg");
+}
 
 // Yeni karakterlerin portresi henüz eklenmediyse (dosya yoksa) benzer bir
 // portre gösterilir — görsel gelince kod değişmeden kendi portresi çıkar.
@@ -4252,11 +4284,9 @@ function getCharacterImageName(key) {
     return HALK_TEMSILCISI_VARIANTS[idx];
   }
 
-  // Karakter evrimi: yeterli kart oynanmışsa v2'yi dene
+  // Yaşlanan portre: AGING_V2_YEAR. yıldan sonra ikinci portre
   const evo = CHARACTER_EVOLUTIONS[key];
-  if (evo && cardsPlayed >= evo.threshold) {
-    return evo.version; // Dosya yoksa preload.onerror gizler, sorun yok
-  }
+  if (evo && year >= AGING_V2_YEAR) return evo.version;
 
   return key;
 }
@@ -4264,6 +4294,7 @@ function getCharacterImageName(key) {
 function dealNext() {
   if (isGameOver) return;
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
+  _hideAgeOverlay(); card.style.removeProperty("--age-f");
   _hideInvestigateBtn();   // özel kart tiplerinde önceki kartın soruşturma düğmesi kalmasın
   _hideEasterChoices();
   _hideCriticalOffer();
@@ -4370,6 +4401,9 @@ function dealNext() {
 
   const imgName = getCharacterImageName(key) + ".jpg";
   const imgPath = "assets/characters/" + encodeURIComponent(imgName);
+  const _tint = _agingTint(key);
+  if (_tint) card.style.setProperty("--age-f", _tint);
+  const _agedNow = !!CHARACTER_EVOLUTIONS[key] && imgName === CHARACTER_EVOLUTIONS[key].version + ".jpg";
 
   const _isEN = window.LANG === 'en';
 
@@ -4480,6 +4514,7 @@ function dealNext() {
   preload.onload = () => {
     cardImage.src = imgPath;
     cardImage.style.visibility = "";
+    if (_agedNow && currentCard === c && !c.knot_of) _playAgingReveal(key, c); // birleşik kartta iki portre zaten bölünmüş
   };
   preload.onerror = () => {
     // Portresi henüz eklenmemiş yeni karakter → benzer bir portre
