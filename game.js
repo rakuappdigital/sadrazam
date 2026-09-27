@@ -2407,6 +2407,7 @@ function showPaywallScreen(fromMenu = false) {
   if (scr) scr.classList.add('visible');
   scr?.classList.toggle('from-menu', fromMenu);
   updatePaywallPriceUI();
+  _renderPaywallPersonal(fromMenu);
   const status = document.getElementById('paywall-status');
   if (status) status.textContent = '';
   const buyBtn = document.getElementById('paywall-buy-btn');
@@ -2423,6 +2424,30 @@ function showPaywallScreen(fromMenu = false) {
     resetBtn.classList.toggle('hidden', !showReset);
   }
 }
+// Tam Sürüm ekranında kişisel bağlam: oyuncunun bekleyen kararları hangi
+// yılda geri dönecekti (27 Eylül 2026). Menüden açıldıysa gösterilmez.
+function _renderPaywallPersonal(fromMenu) {
+  const txt = document.getElementById('paywall-text');
+  let box = document.getElementById('paywall-personal');
+  if (!box && txt) { box = document.createElement('div'); box.id = 'paywall-personal'; txt.insertAdjacentElement('afterend', box); }
+  if (!box) return;
+  box.innerHTML = '';
+  if (fromMenu) return;
+  const en = window.LANG === 'en';
+  const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  const items = scheduledCards.filter(sc => sc.src && sc.src.tr).sort((a, b) => a.afterCardsPlayed - b.afterCardsPlayed).slice(0, 2);
+  if (!items.length) return;
+  const lines = items.map(sc => {
+    const y = Math.max(year, Math.floor(sc.afterCardsPlayed / CARDS_PER_YEAR) + 1);
+    const q = esc(en ? sc.src.en : sc.src.tr);
+    return `<li><span class="pc-q">“${q}”</span> ${en ? `— its result arrives in year ${y}.` : `kararınızın sonucu ${y}. yılda gelecek.`}</li>`;
+  }).join('');
+  const ids = scheduledCards.map(x => x.cardId);
+  let knot = '';
+  outer: for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) if (_findKnotCard(ids[i], ids[j])) { knot = `<li class="pc-knot">${en ? "Two of your decisions are about to meet." : "İki kararınız birleşmek üzere."}</li>`; break outer; }
+  box.innerHTML = `<div class="pending-cons awaits"><div class="pc-title">${en ? "WHAT AWAITS YOU" : "SİZİ BEKLEYENLER"}</div><ul>${lines}${knot}</ul></div>`;
+}
+
 function hidePaywallScreen() {
   document.getElementById('paywall-screen')?.classList.remove('visible');
 }
