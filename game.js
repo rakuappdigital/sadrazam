@@ -3506,18 +3506,91 @@ function updateFateBar() {
     groups[label]++;
   });
 
+  const _en = window.LANG === 'en';
   scheduledCards.forEach(sc => {
-    const c = allCards.find(x => x.id === sc.cardId);
     const remaining = Math.max(0, sc.afterCardsPlayed - cardsPlayed);
     const chip = document.createElement("div");
-    chip.className = "fate-thread";
-    chip.textContent = `⧖ ${remaining} kart`;
-    // Bilinmezlik korunuyor — karakter adı gösterilmez
-    chip.title = `Bir kararının yankısı ${remaining} kart içinde gelecek…`;
-    chip.setAttribute('data-tooltip', `Bir kararının yankısı ${remaining} kart içinde gelecek…`);
-    chip.addEventListener('click', () => showFateTooltip(chip));
+    chip.className = "fate-thread" + (sc.revealed ? " revealed" : "");
+    chip.textContent = `⧖ ${remaining} ${_en ? (remaining === 1 ? "card" : "cards") : "kart"}`;
+    // Bilinmezlik korunuyor — dokununca Kâtibin Notu açılır (reklam / 1 akçe)
+    chip.title = _en ? `The echo of a decision arrives in ${remaining} cards…` : `Bir kararının yankısı ${remaining} kart içinde gelecek…`;
+    chip.addEventListener('click', () => showKatibNotu(sc));
     fb.appendChild(chip);
   });
+}
+
+// ── Kâtibin Notu (27 Eylül 2026) ───────────────────────────────────────
+// Üstteki "⧖ N kart" göstergesine dokununca: bekleyen sonucu reklamla ya da
+// 1 akçeyle öğren — hangi karardan, kimden, en çok hangi gücü etkileyeceği ve
+// genel yönü. Sadece bilgi verir (oyunu değiştirmez). Açılan not kaydedilir.
+function _katibAnalysis(sc) {
+  const en = window.LANG === 'en';
+  const c = allCards.find(x => x.id === sc.cardId);
+  if (!c) return null;
+  const sum = (fx) => Object.values(fx || {}).reduce((a, b) => a + (typeof b === "number" ? b : 0), 0);
+  const L = sum(c.left_effects), R = sum(c.right_effects);
+  const tone = (L >= 0 && R >= 0) ? "good" : (L <= 0 && R <= 0) ? "bad" : "mixed";
+  const tot = {};
+  [c.left_effects, c.right_effects].forEach(fx => Object.entries(fx || {}).forEach(([k, v]) => { if (typeof v === "number") tot[k] = (tot[k] || 0) + Math.abs(v); }));
+  const top = Object.entries(tot).sort((a, b) => b[1] - a[1])[0];
+  const names = { saray: ["Saray'ı", "Palace"], "yeniçeri": ["Ordu'yu", "Army"], ulema: ["Ulema'yı", "Clergy"], hazine: ["Hazine'yi", "Treasury"] };
+  return {
+    who: (en && c.character_name_en) ? c.character_name_en : c.character_name,
+    knot: !!c.knot_of,
+    stat: top ? names[top[0]][en ? 1 : 0] : null,
+    tone,
+    toneText: en ? { good: "It looks favourable.", bad: "It looks dangerous.", mixed: "The outcome will depend on your choice." }[tone]
+                 : { good: "Hayırlı görünüyor.", bad: "Tehlikeli görünüyor.", mixed: "Sonucu vereceğiniz karara bağlı." }[tone],
+  };
+}
+function showKatibNotu(sc) {
+  if (document.getElementById("katib-overlay")) return;
+  if (!scheduledCards.includes(sc)) return;
+  const en = window.LANG === 'en';
+  const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  const overlay = document.createElement("div");
+  overlay.id = "katib-overlay";
+  const close = () => { overlay.classList.remove("visible"); setTimeout(() => overlay.remove(), 220); };
+  const render = () => {
+    const n = Math.max(0, sc.afterCardsPlayed - cardsPlayed);
+    const when = en ? `in ${n} ${n === 1 ? "card" : "cards"}` : `${n} kart sonra`;
+    let body;
+    if (sc.revealed) {
+      const a = _katibAnalysis(sc) || {};
+      const src = sc.src ? `<div class="kn-src">“${esc(en ? sc.src.en : sc.src.tr)}”</div>` : "";
+      body = `<div class="kn-paper">
+          ${src}
+          <div class="kn-line">${en ? "Its result arrives" : "Sonucu"} <b>${when}</b>${en ? "" : " gelecek"}${a.who ? (en ? `, brought by the <b>${esc(a.who)}</b>.` : `; <b>${esc(a.who)}</b> getirecek.`) : "."}</div>
+          ${a.stat ? `<div class="kn-line">${en ? "It will weigh most on the" : "En çok"} <b>${esc(a.stat)}</b>${en ? "." : " etkileyecek."}</div>` : ""}
+          <div class="kn-tone ${a.tone || ""}">${esc(a.toneText || "")}</div>
+        </div>`;
+    } else {
+      const bal = getAkceBalance();
+      body = `<div class="kn-lead">${en ? `The echo of one of your decisions arrives ${when}. The scribe knows which one.` : `Bir kararınızın yankısı ${when} gelecek. Kâtip hangisi olduğunu biliyor.`}</div>
+        <div class="kn-btns">
+          <button class="kn-ad">${en ? "Watch Ad" : "Reklam İzle"}</button>
+          <button class="kn-akce">${bal >= 1 ? (en ? "1 Akce" : "1 Akçe") : (en ? "Get Akce" : "Akçe Al")} <span class="kn-bal">(${bal})</span></button>
+        </div>
+        <div class="kn-msg"></div>`;
+    }
+    overlay.innerHTML = `<div id="katib-box"><div class="kn-title">${en ? "THE SCRIBE'S NOTE" : "KÂTİBİN NOTU"}</div>${body}<button class="kn-close">${en ? "Close" : "Kapat"}</button></div>`;
+    overlay.querySelector(".kn-close").onclick = close;
+    if (sc.revealed) return;
+    const msg = overlay.querySelector(".kn-msg");
+    const lock = (on) => overlay.querySelectorAll(".kn-btns button").forEach(b => b.disabled = on);
+    const reveal = () => { if (!scheduledCards.includes(sc)) { close(); return; } sc.revealed = true; if (typeof saveGameState === "function" && !isGameOver) saveGameState(); updateFateBar(); render(); };
+    overlay.querySelector(".kn-ad").onclick = () => {
+      lock(true); msg.textContent = "";
+      RewardedAds.show(() => { if (document.body.contains(overlay)) reveal(); }, () => { lock(false); msg.textContent = en ? "The ad could not be shown." : "Reklam gösterilemedi."; });
+    };
+    overlay.querySelector(".kn-akce").onclick = () => {
+      if (spendAkce(1)) { reveal(); return; }
+      close(); redirectToAkcePurchase(() => showKatibNotu(sc));
+    };
+  };
+  render();
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add("visible"));
 }
 
 function showFateTooltip(chip) {

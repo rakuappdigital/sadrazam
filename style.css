@@ -4982,3 +4982,30 @@ html, body {
 .pending-cons .pc-more { opacity: .6; }
 #gameover-pending:empty { display: none; }
 #gameover-pending .pending-cons { max-width: 320px; margin-left: auto; margin-right: auto; }
+
+/* ── Kâtibin Notu (27 Eylül 2026) ── */
+.fate-thread.revealed { color: var(--gold-light); border-color: var(--gold); }
+.fate-thread.revealed::after { content: ' ✎'; font-size: 10px; }
+#katib-overlay { position: fixed; inset: 0; z-index: 900; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(3,2,8,.75); opacity: 0; transition: opacity .22s; }
+#katib-overlay.visible { opacity: 1; }
+#katib-box { width: 100%; max-width: 330px; background: linear-gradient(180deg, #16112a, #0c0918); border: 1.5px solid var(--gold); border-radius: 16px; padding: 20px 18px 12px; text-align: center; box-shadow: 0 0 0 4px rgba(201,162,39,.1), 0 18px 44px rgba(0,0,0,.7); }
+.kn-title { font-family: 'Cinzel', serif; font-size: 16px; letter-spacing: 3px; color: var(--gold-light); margin-bottom: 10px; }
+.kn-lead { font-family: 'IM Fell English', serif; font-style: italic; font-size: 14.5px; line-height: 1.5; color: var(--text); margin-bottom: 14px; }
+.kn-btns { display: flex; gap: 8px; }
+.kn-btns button { flex: 1; font-family: 'Cinzel', serif; font-weight: 600; font-size: 12px; letter-spacing: 1px; border-radius: 10px; padding: 12px 6px; cursor: pointer; }
+.kn-ad { color: #1a1206; border: 0; background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A); box-shadow: 0 4px 12px rgba(201,162,39,.3); }
+.kn-akce { color: var(--gold); background: rgba(201,162,39,.08); border: 1px solid var(--gold-dim); }
+.kn-bal { opacity: .7; font-weight: 400; }
+.kn-btns button:disabled { opacity: .5; cursor: default; }
+.kn-msg { min-height: 0; margin-top: 6px; font-family: 'IM Fell English', serif; font-size: 13px; color: #e07070; }
+.kn-msg:empty { display: none; }
+.kn-paper { background: linear-gradient(180deg, #e3d4ad, #EBDFC2 15%, #EBDFC2 85%, #e3d4ad); color: #3B2A14; border-radius: 6px; padding: 14px 14px 12px; text-align: left; box-shadow: inset 0 0 30px rgba(120,80,30,.25); animation: knInk .6s ease-out both; }
+@keyframes knInk { from { opacity: 0; transform: translateY(6px); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+.kn-src { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13.5px; color: #5a1010; margin-bottom: 8px; text-align: center; }
+.kn-line { font-family: 'IM Fell English', serif; font-size: 14px; line-height: 1.45; margin-bottom: 5px; }
+.kn-line b { font-weight: 700; }
+.kn-tone { margin-top: 8px; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px; text-align: center; padding: 6px; border-radius: 6px; }
+.kn-tone.good { color: #1f5c2a; background: rgba(39,120,60,.14); }
+.kn-tone.bad { color: #7a1712; background: rgba(142,27,27,.14); }
+.kn-tone.mixed { color: #6b4a10; background: rgba(160,110,20,.14); }
+.kn-close { margin-top: 8px; background: none; border: 0; color: rgba(240,230,208,.55); font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
