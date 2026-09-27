@@ -453,6 +453,7 @@ window.UI_STRINGS = {
     'card.default_right':   'Evet',
     'chance.desc':          'Kaderin elinde...',
     'hud.title':            'SADRAZAM',
+    'hud.health':           'Sıhhat',
     // Game over
     'gameover.title_init':  'SADRAZAMLIK SONA ERDİ',
     'btn.restart':          'YENİDEN BAŞLA',
@@ -499,6 +500,7 @@ window.UI_STRINGS = {
     'sett.title':           'AYARLAR',
     'sett.music':           'Müzik',
     'sett.effects':         'Efektler',
+    'sett.season':         'Mevsim Efekti',
     'sett.preview':         'Deneyimli Mod',
     'sett.on':              'Açık',
     'sett.off':             'Kapalı',
@@ -644,6 +646,7 @@ window.UI_STRINGS = {
     'card.default_right':   'Yes',
     'chance.desc':          'In the hands of fate...',
     'hud.title':            'GRAND VIZIER',
+    'hud.health':           'Health',
     // Game over
     'gameover.title_init':  'YOUR TENURE AS GRAND VIZIER HAS ENDED',
     'btn.restart':          'PLAY AGAIN',
@@ -690,6 +693,7 @@ window.UI_STRINGS = {
     'sett.title':           'SETTINGS',
     'sett.music':           'Music',
     'sett.effects':         'Effects',
+    'sett.season':         'Season Effects',
     'sett.preview':         'Expert Mode',
     'sett.on':              'On',
     'sett.off':             'Off',

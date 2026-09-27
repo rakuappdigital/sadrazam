@@ -194,6 +194,13 @@
         </div>
       </div>
       <div class="sett-row">
+        <span class="sett-label" data-i18n="sett.season">Mevsim Efekti</span>
+        <div class="sett-toggle">
+          <button class="sett-opt" id="sett-season-on">Açık</button>
+          <button class="sett-opt" id="sett-season-off">Kapalı</button>
+        </div>
+      </div>
+      <div class="sett-row">
         <span class="sett-label" data-i18n="sett.preview">Deneyimli Mod</span>
         <div class="sett-toggle">
           <button class="sett-opt" id="sett-preview-on">Açık</button>
@@ -350,6 +357,7 @@
 
   <!-- ── OYUN ── -->
   <div id="game" class="hidden">
+    <canvas id="season-fx" aria-hidden="true"></canvas>
     <div id="ios-safe-top"></div>
     <div id="stats-bar">
       <div class="stat" data-stat="saray">
@@ -394,6 +402,7 @@
           <span id="speech-text"></span>
         </div>
         <img id="card-image" src="" alt="" />
+        <img id="card-image-age" src="" alt="" aria-hidden="true" />
         <img id="card-image-knot" src="" alt="" />
         <div id="card-knot-seam"></div>
         <div id="card-bottom">
@@ -421,7 +430,7 @@
       <div id="swipe-hint-right" class="swipe-hint" data-i18n="hint.right">Evet →</div>
     </div>
     <div id="health-bar-row">
-      <span id="health-label">Sıhhat</span>
+      <span id="health-label" data-i18n="hud.health">Sıhhat</span>
       <div id="health-track">
         <div id="health-fill-h"></div>
       </div>
