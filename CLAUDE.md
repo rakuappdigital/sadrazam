@@ -236,8 +236,10 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   `felaket-yangin`): `CHAIN_RULES_MULTI` — `göç_dalgası` + (`kanal_yapılmadı`
   ya da `su_sorunu_birakildi`), sıra fark etmez → 14 kart. Vakti gelmeden su
   yolu yaptırılırsa (`su_yolu_yapildi`) çıkmaz. → 6 kart → `yangin_sonrasi`.
-- **Yedek portre:** `CHARACTER_IMAGE_FALLBACK` — yeni karakterin .jpg'si yoksa
-  benzer portre (kart, ölüm ekranı, Kodeks). Görsel eklenince kod değişmez.
+- **Portreler (27 Eylül 2026 eklendi):** kullanıcının ürettiği 766x1024
+  görsellerin sol/üst krem kenarı ve sağ bakır şeridi kırpılıp 1200x1600 (3:4,
+  kartın gösterim oranı) yapıldı. `CHARACTER_IMAGE_FALLBACK` güvenlik ağı
+  olarak duruyor (dosya bir gün eksik olursa benzer portre).
 - Test: scratchpad `chars_test.js` (20 senaryo) + `ov_chars.js` (375x667 TR/EN).
 
 ## 4. Kritik sabitler
