@@ -2816,6 +2816,7 @@ function startGame() {
   playCounts = {};
   forcedQueue = [];
   scheduledCards = [];
+  _criticalShownCount = 0; _criticalLastAt = -999;
   characterMemory = {};
 
   // Easter egg sayaçları sıfırla
@@ -3776,6 +3777,7 @@ function dealNext() {
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
   _hideInvestigateBtn();   // özel kart tiplerinde önceki kartın soruşturma düğmesi kalmasın
   _hideEasterChoices();
+  _hideCriticalOffer();
 
   // Item expiry: her kart açılışında sayacı azalt
   for (let i = 0; i < 3; i++) {
@@ -3976,6 +3978,7 @@ function dealNext() {
 
   // Soruşturma düğmesi (gizli hain adaylarının kartlarında + investigate_text olan kartlarda)
   setupInvestigateBtn(c, displayText);
+  setTimeout(maybeShowCriticalOffer, 650); // kart yerine oturduktan sonra
 
   renderKnotVisual(c);
 
@@ -5064,6 +5067,94 @@ function getEasterChoices(c) {
     C("Haberciyi ödüllendirin", "Reward the messenger", { keep: true, fx: { hazine: -2, saray: 2 } }),
   ];
   return null;
+}
+
+// ── Kritik An Teklifi (27 Eylül 2026) ─────────────────────────────────
+// Bir güç CRITICAL_THRESHOLD'un altına düşünce, yeni kart gelir gelmez alttan
+// küçük bir panel: Şifa Otu (en düşük güç +20) — reklamla ya da 1 akçeyle,
+// anında uygulanır. Kartı kapatmaz; kart kaydırılınca panel kapanır.
+// Sınırlar: en az CRITICAL_COOLDOWN kartta bir, oyun başına CRITICAL_MAX_PER_GAME.
+// Çantada zaten Şifa Otu varsa teklif yok — o eşya parlatılır.
+const CRITICAL_THRESHOLD = 15;
+const CRITICAL_COOLDOWN = 20;
+const CRITICAL_MAX_PER_GAME = 2;
+let _criticalShownCount = 0;
+let _criticalLastAt = -999;
+const _STAT_NAMES = { saray: ["Saray", "Palace"], "yeniçeri": ["Ordu", "Army"], ulema: ["Ulema", "Clergy"], hazine: ["Hazine", "Treasury"] };
+
+function _hideCriticalOffer() {
+  const el = document.getElementById("critical-offer");
+  if (el) el.remove();
+  document.querySelectorAll(".stat.critical-focus").forEach(x => x.classList.remove("critical-focus"));
+}
+
+function _applyCriticalHeal() {
+  const lowest = Object.entries(stats).reduce((a, b) => b[1] < a[1] ? b : a);
+  stats[lowest[0]] = Math.min(100, stats[lowest[0]] + 20);
+  showStatDelta(lowest[0], 20);
+  updateStatUI();
+  const en = window.LANG === 'en';
+  showItemToast((en ? "Healing Herb — +20 " : "Şifa Otu — +20 ") + _STAT_NAMES[lowest[0]][en ? 1 : 0]);
+  if (typeof Haptics !== "undefined" && Haptics.statPositive) Haptics.statPositive();
+}
+
+function maybeShowCriticalOffer() {
+  if (isGameOver || isPaywalled || !currentCard) return;
+  if (document.getElementById("critical-offer")) return;
+  if (_criticalShownCount >= CRITICAL_MAX_PER_GAME) return;
+  if (cardsPlayed - _criticalLastAt < CRITICAL_COOLDOWN) return;
+  const low = Object.entries(stats).filter(([k, v]) => v <= CRITICAL_THRESHOLD).sort((a, b) => a[1] - b[1])[0];
+  if (!low) return;
+  const has = playerItems.indexOf("sifa_otu");
+  if (has >= 0) { // zaten var — kullanmayı hatırlat
+    const sl = document.getElementById("item-slot-" + has);
+    if (sl) { sl.classList.remove("critical-hint"); void sl.offsetWidth; sl.classList.add("critical-hint"); setTimeout(() => sl.classList.remove("critical-hint"), 3200); }
+    return;
+  }
+  _criticalShownCount++;
+  _criticalLastAt = cardsPlayed;
+  const en = window.LANG === 'en';
+  const [key, val] = low;
+  const statEl = document.querySelector('.stat[data-stat="' + (key === "yeniçeri" ? "yeniceri" : key) + '"]');
+  if (statEl) statEl.classList.add("critical-focus");
+  const bal = getAkceBalance();
+  const el = document.createElement("div");
+  el.id = "critical-offer";
+  el.innerHTML = `
+    <button class="co-x" aria-label="${en ? "Close" : "Kapat"}">✕</button>
+    <div class="co-head">
+      <img class="co-icon" src="assets/icons/item-sifa-otu.png" alt="">
+      <div class="co-txt">
+        <div class="co-title">${en ? `${_STAT_NAMES[key][1]} is in danger` : `${_STAT_NAMES[key][0]} tehlikede`} <span class="co-val">${en ? Math.round(val) + "%" : "%" + Math.round(val)}</span></div>
+        <div class="co-desc">${en ? "Healing Herb raises your weakest power by 20, right now." : "Şifa Otu en düşük gücünü anında +20 yapar."}</div>
+      </div>
+    </div>
+    <div class="co-btns">
+      <button class="co-ad">${en ? "Watch Ad" : "Reklam İzle"}</button>
+      <button class="co-akce">${bal >= 1 ? (en ? "1 Akce" : "1 Akçe") : (en ? "Get Akce" : "Akçe Al")} <span class="co-bal">(${bal})</span></button>
+    </div>
+    <div class="co-msg"></div>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add("visible"));
+  const msg = el.querySelector(".co-msg");
+  const lock = (on) => el.querySelectorAll(".co-btns button").forEach(b => b.disabled = on);
+  const done = () => { _applyCriticalHeal(); el.classList.remove("visible"); setTimeout(_hideCriticalOffer, 260); };
+  el.querySelector(".co-x").onclick = () => { el.classList.remove("visible"); setTimeout(_hideCriticalOffer, 260); };
+  el.querySelector(".co-ad").onclick = () => {
+    lock(true); msg.textContent = "";
+    RewardedAds.show(
+      () => { if (!document.getElementById("critical-offer") || isGameOver) return; done(); },
+      () => { lock(false); msg.textContent = en ? "The ad could not be shown." : "Reklam gösterilemedi."; }
+    );
+  };
+  el.querySelector(".co-akce").onclick = () => {
+    if (spendAkce(1)) { done(); return; }
+    // Bakiye yok: Market'e git, dönünce panel yerinde (teklif hakkı yanmaz)
+    redirectToAkcePurchase(() => {
+      const b = el.querySelector(".co-akce");
+      if (b) { const nb = getAkceBalance(); b.innerHTML = (nb >= 1 ? (en ? "1 Akce" : "1 Akçe") : (en ? "Get Akce" : "Akçe Al")) + ` <span class="co-bal">(${nb})</span>`; }
+    });
+  };
 }
 
 function _hideEasterChoices() {
@@ -6160,6 +6251,7 @@ function triggerCurse() {
 // ── Karar ─────────────────────────────────────────────────────────
 function decide(dir) {
   if (!currentCard) return;
+  _hideCriticalOffer(); // oyuncu teklif yerine kararını verdi
 
   // Padişah bizzat ziyaret — sağ = kabul, sol = ölüm
   if (currentCard.type === "padisah_ziyaret") {
@@ -6701,6 +6793,7 @@ function flyOff(dir) {
     renderKnotVisual(null);
     _hideInvestigateBtn();
     _hideEasterChoices();
+    _hideCriticalOffer();
     charName.textContent = "";
     cardText.textContent = "";
     choiceLeft.style.opacity = "0";
@@ -6970,6 +7063,7 @@ function checkRelationshipEffects() {
 // ── Game Over ─────────────────────────────────────────────────────
 function triggerGameOver(reason) {
   if (isGameOver) return;
+  _hideCriticalOffer(); // İkinci Şans / ölüm ekranının üstünde kalmasın
   // İkinci Şans ekranı gösterilirken de oyunu HEMEN "bitmiş" say — decide()/dealNext()/
   // checkGameOver() hepsi isGameOver'a bakıp durur. Bu satır olmadan teklif ekranı açıkken
   // arka planda kart dağıtılmaya devam ediyor (bkz. resolveSecondChance) ve bazen ölüm

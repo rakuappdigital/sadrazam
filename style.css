@@ -4935,3 +4935,34 @@ html, body {
 .dg-msg.ok { color: #7fd18b; }
 .dg-close { margin-top: 6px; background: none; border: 0; color: rgba(240,230,208,.55); font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
 @media (max-width: 360px) { .dg-seal .dg-day { font-size: 6.5px; } .dg-seal .dg-amt { font-size: 11px; } }
+
+/* ── Kritik An Teklifi (27 Eylül 2026) ── */
+#critical-offer {
+  position: fixed; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 130%); width: min(92vw, 380px); z-index: 700;
+  background: linear-gradient(180deg, rgba(34,10,12,.97), rgba(14,8,16,.97));
+  border: 1px solid rgba(216,72,60,.7); border-radius: 14px; padding: 12px 12px 10px;
+  box-shadow: 0 0 0 3px rgba(216,72,60,.12), 0 -6px 30px rgba(0,0,0,.6);
+  transition: transform .28s cubic-bezier(.2,.9,.3,1.1);
+}
+#critical-offer.visible { transform: translate(-50%, 0); }
+#critical-offer .co-x { position: absolute; top: 6px; right: 8px; background: none; border: 0; color: rgba(240,230,208,.5); font-size: 14px; cursor: pointer; padding: 4px 6px; }
+#critical-offer .co-head { display: flex; gap: 10px; align-items: center; padding-right: 18px; }
+#critical-offer .co-icon { width: 40px; height: 40px; flex: none; filter: drop-shadow(0 0 6px rgba(39,174,96,.6)); }
+#critical-offer .co-title { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 1.2px; color: #f08a7e; }
+#critical-offer .co-val { color: #ff5b4d; font-weight: 700; }
+#critical-offer .co-desc { font-family: 'IM Fell English', serif; font-size: 13px; line-height: 1.4; color: var(--text); opacity: .9; margin-top: 2px; }
+#critical-offer .co-btns { display: flex; gap: 8px; margin-top: 10px; }
+#critical-offer .co-btns button {
+  flex: 1; font-family: 'Cinzel', serif; font-weight: 600; font-size: 12px; letter-spacing: 1px; border-radius: 10px; padding: 11px 6px; cursor: pointer;
+}
+#critical-offer .co-ad { color: #1a1206; border: 0; background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A); box-shadow: 0 4px 12px rgba(201,162,39,.3); }
+#critical-offer .co-akce { color: var(--gold); background: rgba(201,162,39,.08); border: 1px solid var(--gold-dim); }
+#critical-offer .co-bal { opacity: .7; font-weight: 400; }
+#critical-offer .co-btns button:disabled { opacity: .5; cursor: default; }
+#critical-offer .co-msg { min-height: 0; font-family: 'IM Fell English', serif; font-size: 12.5px; color: #e07070; text-align: center; margin-top: 4px; }
+#critical-offer .co-msg:empty { display: none; }
+.stat.critical-focus .stat-track { animation: criticalPulse 1s ease-in-out infinite; }
+@keyframes criticalPulse { 50% { box-shadow: 0 0 0 2px rgba(216,72,60,.8), 0 0 12px rgba(216,72,60,.7); } }
+.item-slot.critical-hint, [id^="item-slot-"].critical-hint { animation: criticalHint .8s ease-in-out 4; }
+@keyframes criticalHint { 50% { box-shadow: 0 0 0 2px rgba(39,174,96,.9), 0 0 16px rgba(39,174,96,.6); } }
