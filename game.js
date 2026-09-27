@@ -386,6 +386,7 @@ function showSecondChanceOffer(reason) {
       <div id="second-chance-icon">⏳</div>
       <div id="second-chance-title">${isEN ? "SECOND CHANCE" : "İKİNCİ ŞANS"}</div>
       <div id="second-chance-text">${offerText}</div>
+      ${_pendingConsequencesHTML(window.innerHeight <= 620 ? 2 : 3)}
       <button id="second-chance-ad-btn" class="second-chance-btn"${adsLeft <= 0 ? " disabled" : ""}>
         🎬 ${isEN ? "Watch Ad" : "Reklam İzle"} <span class="sc-sub">(${adsLeft}/${SECOND_CHANCE_DAILY_AD_LIMIT})</span>
       </button>
@@ -1691,7 +1692,38 @@ function scheduleConsequence(cardId, delay, altCardId) {
     playsAtSchedule: playCounts[cardId] || 0,
   };
   if (altCardId) sc.altCardId = altCardId;
+  // Hangi karardan doğdu (ölüm/İkinci Şans ekranındaki "yarım kalan" listesi için)
+  if (_lastDecision && _lastDecision.tr) sc.src = { tr: _lastDecision.tr, en: _lastDecision.en || _lastDecision.tr };
   scheduledCards.push(sc);
+}
+
+// En son verilen karar: decide() ve iki seçenekli özel kartlar doldurur
+let _lastDecision = null;
+function _setLastDecision(card, dir) {
+  if (!card || !dir) { _lastDecision = null; return; }
+  const tr = card[dir + "_text"], en = card[dir + "_text_en"];
+  _lastDecision = tr ? { tr, en: en || tr } : null;
+}
+
+// ── Yarım kalan sonuçlar (İkinci Şans + ölüm ekranı) ──────────────────
+function _pendingConsequencesHTML(maxItems) {
+  const en = window.LANG === 'en';
+  const items = scheduledCards.filter(sc => sc.src && sc.src.tr).sort((a, b) => a.afterCardsPlayed - b.afterCardsPlayed);
+  if (!items.length) return "";
+  const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  const lines = items.slice(0, maxItems).map(sc => {
+    const n = Math.max(1, sc.afterCardsPlayed - cardsPlayed);
+    const src = esc(en ? sc.src.en : sc.src.tr);
+    return `<li><span class="pc-q">“${src}”</span> ${en ? `— its result was ${n} ${n === 1 ? "card" : "cards"} away.` : `kararınızın sonucu ${n} kart sonra gelecekti.`}</li>`;
+  }).join("");
+  // Bekleyenlerden ikisi birleşmek üzereyse
+  let knotLine = "";
+  const ids = scheduledCards.map(x => x.cardId);
+  outer: for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) {
+    if (_findKnotCard(ids[i], ids[j])) { knotLine = `<li class="pc-knot">${en ? "Two of your decisions were about to meet." : "İki kararınız birleşmek üzereydi."}</li>`; break outer; }
+  }
+  const more = items.length > maxItems ? `<li class="pc-more">${en ? `and ${items.length - maxItems} more…` : `ve ${items.length - maxItems} karar daha…`}</li>` : "";
+  return `<div class="pending-cons"><div class="pc-title">${en ? "UNFINISHED" : "YARIM KALACAK"}</div><ul>${lines}${more}${knotLine}</ul></div>`;
 }
 
 // Zamanı gelen bir sonucun gerçekten gösterilecek kartını döndürür (ya da null)
@@ -2817,6 +2849,7 @@ function startGame() {
   forcedQueue = [];
   scheduledCards = [];
   _criticalShownCount = 0; _criticalLastAt = -999;
+  _lastDecision = null;
   characterMemory = {};
 
   // Easter egg sayaçları sıfırla
@@ -4381,6 +4414,7 @@ function showEasterCard(c) {
         if (ch.fx) applyEffects(ch.fx);
         if (ch.run) ch.run();
         if (ch.flag) activeFlags[ch.flag] = true;
+        _lastDecision = { tr: ch.tr, en: ch.en };
         if (ch.sched) {
           const onceKey = "_easter_sched_" + ch.sched[0];
           if (!activeFlags[onceKey] && allCards.some(x => x.id === ch.sched[0])) {
@@ -6252,6 +6286,7 @@ function triggerCurse() {
 function decide(dir) {
   if (!currentCard) return;
   _hideCriticalOffer(); // oyuncu teklif yerine kararını verdi
+  _setLastDecision(currentCard, dir);
 
   // Padişah bizzat ziyaret — sağ = kabul, sol = ölüm
   if (currentCard.type === "padisah_ziyaret") {
@@ -7169,6 +7204,11 @@ function showGameOver(reason) {
   // Tarihçilerin Notu (epilog)
   renderEpilog();
 
+  // Yarım kalan sonuçlar
+  const _goPanel = document.getElementById("gameover-panel");
+  let _pc = document.getElementById("gameover-pending");
+  if (!_pc) { _pc = document.createElement("div"); _pc.id = "gameover-pending"; const y = document.getElementById("gameover-year"); if (y && y.parentNode === _goPanel) y.insertAdjacentElement("afterend", _pc); }
+  _pc.innerHTML = _pendingConsequencesHTML(3);
   gameoverScreen.classList.add("visible");
 
   // Rating prompt — her 3. oyundan sonra, en az 2 yıl hayatta kaldıysa göster
