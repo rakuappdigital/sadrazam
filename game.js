@@ -6474,7 +6474,7 @@ function showEsyaReplaceConfirm(onConfirm) {
 function activateItem(slotIndex) {
   if (isGameOver) return;
   const itemId = playerItems[slotIndex];
-  if (!itemId) return;
+  if (!itemId) { showEmptySlotTip(slotIndex); return; }
   const item = ITEMS[itemId];
   Haptics.tap();
   showItemConfirm(slotIndex, item);
@@ -6578,6 +6578,33 @@ function consumeActiveItem() {
   updateItemBar();
 }
 
+// ── Boş eşya kutuları (27 Eylül 2026) ──────────────────────────────────
+// Boş kutu artık bomboş durmuyor: her kutuda Eşya Dükkânı'nda satılan farklı
+// bir eşyanın soluk silueti ve "+" var; dokununca o eşyanın ne yaptığı ve
+// nereden alındığı kısaca yazar, "Dükkânı aç" düğmesi dükkâna götürür.
+const EMPTY_SLOT_GHOSTS = ["sifa_otu", "yeniceri_nisan", "dervis_muska"];
+function showEmptySlotTip(slotIndex) {
+  const game = document.getElementById("game");
+  if (!game || isGameOver) return;
+  document.getElementById("empty-slot-tip")?.remove();
+  const en = window.LANG === 'en';
+  const id = EMPTY_SLOT_GHOSTS[slotIndex] || "sifa_otu";
+  const itm = ITEMS[id], e = (en && window.EN_ITEMS) ? window.EN_ITEMS[id] : null;
+  const name = e ? e.name : itm.name, desc = e ? e.desc : itm.desc;
+  const tip = document.createElement("div");
+  tip.id = "empty-slot-tip";
+  tip.innerHTML = `<div class="est-row"><img src="${itm.icon}" alt=""><div><b>${name}</b><div class="est-desc">${desc}.</div></div></div>
+    <div class="est-where">${en ? `Empty slot. Items are earned on rare cards or bought in the Item Shop for ${ITEM_AKCE_COST} akce.` : `Boş kutu. Eşyalar nadir kartlarla kazanılır ya da Eşya Dükkânı'ndan ${ITEM_AKCE_COST} akçeye alınır.`}</div>
+    <button class="est-shop" type="button">${en ? "OPEN ITEM SHOP" : "EŞYA DÜKKÂNINI AÇ"}</button>`;
+  game.appendChild(tip);
+  const close = () => { clearTimeout(tip._t); tip.remove(); document.removeEventListener("pointerdown", outside, true); };
+  const outside = (ev) => { if (!tip.contains(ev.target) && !ev.target.closest?.(".item-slot")) close(); };
+  tip.querySelector(".est-shop").onclick = () => { close(); showEsyaDukkani(); };
+  tip._t = setTimeout(close, 5000);
+  setTimeout(() => document.addEventListener("pointerdown", outside, true), 0);
+  if (typeof Haptics !== "undefined") Haptics.tap();
+}
+
 function updateItemBar() {
   for (let i = 0; i < 3; i++) {
     const slot = document.getElementById("item-slot-" + i);
@@ -6587,9 +6614,12 @@ function updateItemBar() {
     const name = slot.querySelector(".item-name");
     if (itemId && ITEMS[itemId]) {
       const itm = ITEMS[itemId];
-      icon.innerHTML = `<img src="${itm.icon}" alt="${itm.name}" onerror="this.parentElement.textContent='?'">`;
+      const _en = (window.LANG === 'en' && window.EN_ITEMS) ? window.EN_ITEMS[itemId] : null;
+      icon.innerHTML = `<img src="${itm.icon}" alt="${_en ? _en.name : itm.name}" onerror="this.parentElement.textContent='?'">`;
       icon.style.fontSize = "";
-      name.textContent = itm.name;
+      name.textContent = _en ? _en.name : itm.name;
+      slot.classList.remove("ghost");
+      slot.querySelector(".item-plus")?.remove();
       slot.style.borderColor = activeItemIndex === i ? (itm.color || "var(--gold)") : "";
       slot.classList.remove("empty");
       slot.classList.toggle("active", activeItemIndex === i);
@@ -6604,9 +6634,13 @@ function updateItemBar() {
         badge.remove();
       }
     } else {
-      icon.textContent = "";
+      // Boş kutu: dükkânda satılan bir eşyanın soluk silueti + "+" (27 Eylül 2026)
+      const ghostId = EMPTY_SLOT_GHOSTS[i];
+      icon.innerHTML = `<img src="${ITEMS[ghostId].icon}" alt="" aria-hidden="true">`;
       icon.style.fontSize = "";
       name.textContent = "";
+      if (!slot.querySelector(".item-plus")) { const pl = document.createElement("span"); pl.className = "item-plus"; pl.textContent = "+"; slot.appendChild(pl); }
+      slot.classList.add("ghost");
       slot.style.borderColor = "";
       slot.classList.add("empty");
       slot.classList.remove("active");

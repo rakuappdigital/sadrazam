@@ -5099,3 +5099,17 @@ html, body {
 
 /* ── Mevsim atmosferi (27 Eylül 2026): oyun ekranının en arkasında ── */
 #season-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+
+/* ── Boş eşya kutuları: soluk eşya silueti + "+" (27 Eylül 2026) ── */
+.item-slot.empty.ghost { opacity: 1; cursor: pointer; border-style: dashed; border-color: rgba(201,162,39,.35); background: rgba(14,11,23,.85); }
+.item-slot.empty.ghost .item-icon img { opacity: .16; filter: grayscale(1) sepia(.6) brightness(1.4); transition: opacity .25s; }
+.item-slot.empty.ghost:active .item-icon img { opacity: .34; }
+.item-slot .item-plus { position: absolute; right: 7px; bottom: 4px; font-family: 'Cinzel', serif; font-size: 11px; line-height: 1; color: var(--gold-dim); pointer-events: none; }
+#empty-slot-tip { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); width: min(88%, 340px); z-index: 60; background: rgba(8,6,18,.96); border: 1px solid var(--gold-dim); border-radius: 12px; padding: 12px 14px; box-shadow: 0 10px 28px rgba(0,0,0,.6); display: flex; flex-direction: column; gap: 8px; animation: estIn .2s ease-out; }
+@keyframes estIn { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+#empty-slot-tip .est-row { display: flex; gap: 10px; align-items: center; }
+#empty-slot-tip .est-row img { width: 34px; height: 34px; object-fit: contain; flex: 0 0 auto; }
+#empty-slot-tip b { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: .06em; color: var(--gold-light); font-weight: 600; }
+#empty-slot-tip .est-desc { font-family: 'IM Fell English', serif; font-size: 14px; line-height: 1.35; color: var(--text, #F0E6D0); }
+#empty-slot-tip .est-where { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13px; line-height: 1.4; color: rgba(240,230,208,.72); }
+#empty-slot-tip .est-shop { align-self: stretch; font-family: 'Cinzel', serif; font-weight: 600; font-size: 12px; letter-spacing: .1em; color: var(--gold-light); background: rgba(201,162,39,.1); border: 1px solid var(--gold-dim); border-radius: 9px; padding: 9px 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }

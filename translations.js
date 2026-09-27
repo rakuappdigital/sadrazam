@@ -453,6 +453,7 @@ window.UI_STRINGS = {
     'card.default_right':   'Evet',
     'chance.desc':          'Kaderin elinde...',
     'hud.title':            'SADRAZAM',
+    'hud.health':           'Sıhhat',
     // Game over
     'gameover.title_init':  'SADRAZAMLIK SONA ERDİ',
     'btn.restart':          'YENİDEN BAŞLA',
@@ -645,6 +646,7 @@ window.UI_STRINGS = {
     'card.default_right':   'Yes',
     'chance.desc':          'In the hands of fate...',
     'hud.title':            'GRAND VIZIER',
+    'hud.health':           'Health',
     // Game over
     'gameover.title_init':  'YOUR TENURE AS GRAND VIZIER HAS ENDED',
     'btn.restart':          'PLAY AGAIN',
