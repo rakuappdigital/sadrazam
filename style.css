@@ -5062,3 +5062,37 @@ html, body {
 #pargali-letter .pl-end { margin-top: 8px; padding: 10px; border-radius: 6px; background: rgba(142,27,27,.1); font-family: 'IM Fell English', serif; font-size: 13.5px; line-height: 1.45; color: #5a1010; text-align: center; }
 #pargali-letter .pl-close { display: block; margin: 8px auto 0; background: none; border: 0; color: #7a4a10; font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
 #easter-action-btn.pargali_sayfa { border-color: rgba(216,192,138,.55); color: #d8c08a; background: rgba(216,192,138,.08); }
+
+/* ── Başlangıç Kesesi: Ferman Mührü (27 Eylül 2026) ───────────────────── */
+#starter-offer { position: fixed; inset: 0; z-index: 950; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(3,2,8,.72); opacity: 0; transition: opacity .25s; }
+#starter-offer.visible { opacity: 1; }
+#starter-offer .so-wrap { width: 100%; max-width: 300px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+#starter-offer.visible .so-wrap { animation: soUnroll .7s cubic-bezier(.3,1.2,.4,1) both; }
+@keyframes soUnroll { from { transform: scaleY(.1); opacity: 0; } to { transform: none; opacity: 1; } }
+#starter-offer .so-scroll { width: 100%; position: relative; text-align: center; color: #3B2A14; border-radius: 6px; padding: 18px 18px 14px; background: linear-gradient(180deg, #d9c89e, #EBDFC2 12%, #EBDFC2 88%, #d9c89e); box-shadow: 0 16px 40px rgba(0,0,0,.6); }
+#starter-offer .so-scroll::before, #starter-offer .so-scroll::after { content: ''; position: absolute; left: -8px; right: -8px; height: 14px; border-radius: 7px; background: linear-gradient(180deg, #8a5a22, #5d3a12); }
+#starter-offer .so-scroll::before { top: -7px; }
+#starter-offer .so-scroll::after { bottom: -7px; }
+#starter-offer .so-once { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: .22em; color: #8e1b1b; }
+#starter-offer .so-title { font-family: 'Cinzel', serif; font-weight: 700; font-size: 17px; letter-spacing: .16em; margin: 4px 0 2px; color: #5a1010; }
+#starter-offer .so-text { color: #3B2A14; opacity: 1; font-family: 'IM Fell English', serif; font-style: italic; font-size: 14px; line-height: 1.45; margin: 0 0 8px; }
+#starter-offer .so-seal { width: 124px; height: 124px; border-radius: 50%; margin: 6px auto 8px; position: relative; transform: rotate(-4deg); display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 36% 30%, #d8483c, #C4342B 30%, #7a1712 74%); border: 3px double var(--gold-light, #E8C84A); box-shadow: 0 0 28px rgba(179,39,31,.5), 0 10px 18px rgba(0,0,0,.5); }
+#starter-offer .so-seal::before { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(232,200,74,.55); border-radius: 50%; }
+#starter-offer .so-seal .n { font-family: 'Cinzel Decorative', serif; font-weight: 700; font-size: 34px; color: #F6DCA0; line-height: 1; text-shadow: 0 2px 0 #5a0f0f; }
+#starter-offer .so-seal .u { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: .2em; color: #F0CF8C; margin-top: 2px; }
+#starter-offer .so-seal .p { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; color: #E8C84A; margin-top: 6px; white-space: nowrap; }
+#starter-offer .so-cmp { color: #3B2A14; opacity: 1; font-family: 'IM Fell English', serif; font-size: 13.5px; margin: 0; }
+#starter-offer .so-strike { text-decoration: line-through; text-decoration-color: rgba(196,52,43,.9); text-decoration-thickness: 2px; color: #6e5a3c; }
+#starter-offer .so-buy { width: 100%; font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px; letter-spacing: .08em; border: 0; border-radius: 12px; padding: 13px 10px; cursor: pointer; color: #1a1206; background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A); box-shadow: 0 6px 18px rgba(201,162,39,.35), inset 0 1px 0 rgba(255,255,255,.5); margin-top: 6px; -webkit-tap-highlight-color: transparent; }
+#starter-offer .so-buy:disabled { opacity: .6; }
+#starter-offer .so-status { min-height: 16px; font-family: 'IM Fell English', serif; font-size: 14px; color: #F0E6D0; text-align: center; }
+#starter-offer .so-later { background: none; border: 0; color: #A99E86; font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
+
+/* Market'teki Başlangıç Kesesi satırı */
+.akce-pack-btn.starter-pack { width: 100%; flex-direction: row; justify-content: flex-start; gap: 12px; padding: 12px 14px; margin-bottom: 10px; border-color: rgba(196,52,43,.55); background: linear-gradient(90deg, rgba(196,52,43,.12), rgba(201,162,39,.04)); }
+.akce-pack-btn.starter-pack.gone { display: none; }
+.akce-pack-btn.starter-pack .ferman { flex: 0 0 auto; margin: 0; }
+.akce-pack-btn.starter-pack .starter-info { flex: 1 1 auto; min-width: 0; text-align: left; display: flex; flex-direction: column; gap: 3px; }
+.akce-pack-btn.starter-pack .starter-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 12px; letter-spacing: .12em; color: var(--gold-light, #E8C84A); }
+.akce-pack-btn.starter-pack .starter-sub { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13px; color: rgba(240,230,208,.8); }
+.akce-pack-btn.starter-pack .price-in { flex: 0 0 auto; font-size: 13px; }

@@ -339,6 +339,17 @@ dışarıda bir görsel üretici gerekmiyor.
   Yükle" linki var (non-consumable için Apple şartı). Yetersiz akçe yüzünden
   `redirectToAkcePurchase()` ile gelindiyse `#akce-screen.from-need` sınıfı
   Reklamsız bölümünü gizler.
+- **Başlangıç Kesesi (27 Eylül 2026):** consumable
+  `com.rakuappdigital.sadrazam.akce30start` (ASC id `6816653153`, TR ₺14,99 /
+  ABD $1,49 baz, 175 ülke, READY_TO_SUBMIT — ilk kez eklendiği için bir
+  sonraki App Store sürümü incelemeye gönderilirken sürüme EKLENMELİ).
+  `AKCE_PACKS`'te `starter:true`, kredi yine `processAkceTransactions`.
+  5 oyun bittikten sonra ana menüye dönüşte (`restartGame` → 
+  `maybeShowStarterOffer`) BİR KEZ "Ferman Mührü" penceresi
+  (`showStarterOffer`); ürün mağazadan gelmediyse hak yanmaz, sonraki dönüşte.
+  Alınana kadar Market'te `#starter-pack-btn`. Alındı bilgisi
+  `sadrazam_starter_bought` (geri yüklemede işlem görülünce de set edilir).
+  Karşılaştırma fiyatı = 20'lik kese × 1,5 (kuruş cinsinden tam sayı).
 - **Promosyon kodu UI'ı:** Ayarlar'da "PROMOSYON KODU" butonu →
   `RC.presentCodeRedemptionSheet()` (Apple'ın NATİF kod giriş ekranı — kendi
   metin kutusu YAPMA, iOS'ta bu şekilde çalışmıyor; Apple'ın ASC'de ürettiğin

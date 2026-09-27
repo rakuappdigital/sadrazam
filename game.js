@@ -22,8 +22,11 @@ const AKCE_PACKS = [
   { amount: 20,  productId: "com.rakuappdigital.sadrazam.akce20" },
   { amount: 50,  productId: "com.rakuappdigital.sadrazam.akce50" },
   { amount: 100, productId: "com.rakuappdigital.sadrazam.akce100" },
+  // Başlangıç Kesesi: tek seferlik, yarı fiyatına 30 akçe (27 Eylül 2026)
+  { amount: 30,  productId: "com.rakuappdigital.sadrazam.akce30start", starter: true },
 ];
-const AKCE_FALLBACK_PRICES = { 10: "₺9,99", 20: "₺19,99", 50: "₺39,99", 100: "₺59,99" }; // FREEMIUM_ENABLED=false test modunda
+const STARTER_PRODUCT_ID = "com.rakuappdigital.sadrazam.akce30start";
+const AKCE_FALLBACK_PRICES = { 10: "₺9,99", 20: "₺19,99", 50: "₺39,99", 100: "₺59,99", 30: "₺14,99" }; // FREEMIUM_ENABLED=false test modunda
 // Reklamsız: tek seferlik (non-consumable) satın alma, geçiş reklamlarını kalıcı kapatır.
 // İkinci Şans'taki ödüllü reklam isteğe bağlı olduğu için etkilenmez.
 const NOADS_PRODUCT_ID = "com.rakuappdigital.sadrazam.noads";
@@ -141,6 +144,8 @@ function processAkceTransactions(customerInfo) {
   if (!Array.isArray(txs) || !txs.length) return;
   const processed = _getProcessedAkceTxIds();
   for (const tx of txs) {
+    // Başlangıç Kesesi bir kez alındıysa (geri yüklemede de) bir daha teklif edilmez
+    if (tx && tx.productIdentifier === STARTER_PRODUCT_ID) _markStarterBought();
     if (!tx || !tx.transactionIdentifier || processed.has(tx.transactionIdentifier)) continue;
     const pack = AKCE_PACKS.find(p => p.productId === tx.productIdentifier);
     if (!pack) continue;
@@ -2267,9 +2272,85 @@ async function initAkceProduct() {
     });
     updateAkcePriceUI();
     updateNoAdsUI();
+    updateStarterUI();
   } catch (e) {
     console.warn('Akçe ürünleri alınamadı:', e);
   }
+}
+
+// ── Başlangıç Kesesi (27 Eylül 2026) ─────────────────────────────────
+// 5. oyun bittikten sonra ana menüye dönülünce BİR KEZ "Ferman Mührü"
+// penceresiyle teklif edilir (ürün o an mağazadan gelmediyse sonraki dönüşte).
+// Satın alınana kadar Market'te Akçe Keseleri'nin üstünde durur.
+const STARTER_BOUGHT_KEY = "sadrazam_starter_bought";
+const STARTER_SEEN_KEY = "sadrazam_starter_offer_seen";
+const STARTER_AFTER_GAMES = 5;
+function isStarterBought() { try { return localStorage.getItem(STARTER_BOUGHT_KEY) === "1"; } catch (e) { return false; } }
+function _markStarterBought() {
+  try { localStorage.setItem(STARTER_BOUGHT_KEY, "1"); } catch (e) {}
+  document.getElementById("starter-pack-btn")?.classList.add("gone");
+}
+// Teklif gösterilebilir mi: ürün mağazadan geldiyse (ya da test modunda sabit fiyatla)
+function _starterAvailable() {
+  if (!AKCE_SYSTEM_ENABLED || isStarterBought()) return false;
+  return !!_akceProducts[STARTER_PRODUCT_ID] || !FREEMIUM_ENABLED;
+}
+function _starterPrice() { return _akceProducts[STARTER_PRODUCT_ID]?.priceString || AKCE_FALLBACK_PRICES[30]; }
+// Karşılaştırma: aynı 30 akçenin 20'lik keseyle normal fiyatı (20'lik × 1,5;
+// ₺19,99 → ₺29,99). Mağazanın kendi para birimiyle; hesaplanamazsa gösterilmez.
+function _starterNormalPrice() {
+  const p = _akceProducts[STARTER_PRODUCT_ID], p20 = _akceProducts["com.rakuappdigital.sadrazam.akce20"];
+  if (p && p20 && typeof p20.price === "number" && p20.currencyCode) {
+    try { return new Intl.NumberFormat(window.LANG === 'en' ? 'en-US' : 'tr-TR', { style: 'currency', currency: p20.currencyCode }).format(Math.round(Math.round(p20.price * 100) * 1.5) / 100); } catch (e) {}
+  }
+  return p ? "" : "₺29,99";
+}
+function updateStarterUI() {
+  const btn = document.getElementById("starter-pack-btn");
+  if (!btn) return;
+  const en = window.LANG === 'en';
+  btn.classList.toggle("gone", !_starterAvailable());
+  const n = btn.querySelector(".starter-name"), sub = btn.querySelector(".starter-sub");
+  if (n) n.textContent = en ? "STARTER POUCH" : "BAŞLANGIÇ KESESİ";
+  if (sub) sub.textContent = en ? "One time only · half price" : "Tek seferlik · yarı fiyatına";
+}
+function maybeShowStarterOffer() {
+  if (document.getElementById("starter-offer")) return;
+  let games = 0, seen = false;
+  try { games = parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10); seen = localStorage.getItem(STARTER_SEEN_KEY) === "1"; } catch (e) { return; }
+  if (seen || games < STARTER_AFTER_GAMES || !_starterAvailable()) return;
+  if (introScreen.style.display === "none") return; // ana menüde değilsek bekle
+  if (document.querySelector("#rating-overlay, #katib-overlay, #daily-gift-overlay")) return;
+  try { localStorage.setItem(STARTER_SEEN_KEY, "1"); } catch (e) {}
+  showStarterOffer();
+}
+function showStarterOffer() {
+  const en = window.LANG === 'en';
+  const price = _starterPrice(), normal = _starterNormalPrice();
+  const ov = document.createElement("div");
+  ov.id = "starter-offer";
+  ov.innerHTML = `<div class="so-wrap">
+      <div class="so-scroll">
+        <div class="so-once">${en ? "A ONE-TIME DECREE" : "TEK SEFERLİK FERMAN"}</div>
+        <div class="so-title">${en ? "STARTER POUCH" : "BAŞLANGIÇ KESESİ"}</div>
+        <p class="so-text">${en ? "For the Grand Vizier newly come to the Divan, a pouch is granted from the treasury, once and only once." : "Divan'a yeni adım atan sadrazama, hazineden bir defaya mahsus kese çıkarılmıştır."}</p>
+        <div class="so-seal"><div class="n">30</div><div class="u">${en ? "AKCE" : "AKÇE"}</div><div class="p">${price}</div></div>
+        <p class="so-cmp">${normal ? `<span class="so-strike">${normal}</span> · ` : ""}${en ? "half price" : "yarı fiyatına"}</p>
+      </div>
+      <button class="so-buy" type="button">${en ? "ACCEPT THE SEAL" : "MÜHRÜ KABUL ET"} · ${price}</button>
+      <div class="so-status" aria-live="polite"></div>
+      <button class="so-later" type="button">${en ? "Later" : "Daha sonra"}</button>
+    </div>`;
+  document.body.appendChild(ov);
+  const close = () => { ov.classList.remove("visible"); setTimeout(() => ov.remove(), 250); };
+  const buy = ov.querySelector(".so-buy"), status = ov.querySelector(".so-status");
+  ov.querySelector(".so-later").onclick = close;
+  buy.onclick = async () => {
+    buy.disabled = true;
+    const ok = await purchaseAkcePack(30, status);
+    if (ok) { updateAkceUI(); setTimeout(close, 1300); } else buy.disabled = false;
+  };
+  requestAnimationFrame(() => ov.classList.add("visible"));
 }
 
 function updateAkcePriceUI() {
@@ -2318,6 +2399,7 @@ function showAkceScreen() {
   updateAkceUI();
   updateAkcePriceUI();
   updateNoAdsUI();
+  updateStarterUI();
   const status = document.getElementById('akce-status');
   if (status) status.textContent = '';
 }
@@ -2333,9 +2415,9 @@ function hideAkceScreen() {
   }
 }
 
-async function purchaseAkcePack(amount) {
+async function purchaseAkcePack(amount, statusEl) {
   const RC = window.RevenueCatPurchases;
-  const status = document.getElementById('akce-status');
+  const status = statusEl || document.getElementById('akce-status');
   const isEN = window.LANG === 'en';
   const pack = AKCE_PACKS.find(p => p.amount === amount);
 
@@ -2356,12 +2438,14 @@ async function purchaseAkcePack(amount) {
     // görürse (her zaman görür) akçe iki kez eklenmez.
     processAkceTransactions(result?.customerInfo);
     if (window.playSelectConfirm) playSelectConfirm();
+    if (pack.starter) _markStarterBought(); // customerInfo gecikse bile teklif bir daha çıkmasın
     if (status) status.textContent = isEN ? `+${amount} akce added!` : `+${amount} akçe eklendi!`;
     // Başka bir ekrandan (İkinci Şans, Eşya Dükkanı, vs.) yönlendirildiysek,
     // kısa bir onay anından sonra otomatik olarak oraya geri dön
-    if (_akceReturnCallback) {
+    if (_akceReturnCallback && !statusEl) {
       setTimeout(() => hideAkceScreen(), 900);
     }
+    return true;
   } catch (e) {
     if (e?.userCancelled) {
       if (status) status.textContent = '';
@@ -8067,6 +8151,7 @@ function restartGame() {
   if (cinematicEl) cinematicEl.classList.add("hidden");
 
   introScreen.style.display = "";
+  setTimeout(maybeShowStarterOffer, 700); // 5. oyundan sonra Başlangıç Kesesi (bir kez)
 }
 
 // ── Oyun İçi Menü ────────────────────────────────────────────────

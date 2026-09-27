@@ -493,7 +493,7 @@ window.UI_STRINGS = {
     // Danışman max uyarısı
     'advisor.max_alert':    'En fazla 2 danışman seçebilirsiniz.',
     // Challenge modu
-    'btn.challenge':        '⚔ CHALLENGE',
+    'btn.challenge':        '⚔ MEYDAN OKUMA',
     'btn.howto':            '❔ NASIL OYNANIR',
     // Ayarlar
     'sett.title':           'AYARLAR',
