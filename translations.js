@@ -370,6 +370,7 @@ window.UI_STRINGS = {
     // Ana menü butonları
     'btn.sadrazam_mode':    'SADRAZAM MODU',
     'btn.pasa_mode':        'PAŞALIK MODU',
+    'btn.challenge':        'MEYDAN OKUMA MODU',
     'btn.achievements':     'BAŞARIMLARIM',
     'btn.buy_coins':        'AKÇE AL',
     'btn.settings':         'AYARLAR',
@@ -560,6 +561,7 @@ window.UI_STRINGS = {
     // Main menu buttons
     'btn.sadrazam_mode':    'GRAND VIZIER MODE',
     'btn.pasa_mode':        'PASHA MODE',
+    'btn.challenge':        'CHALLENGE MODE',
     'btn.achievements':     'ACHIEVEMENTS',
     'btn.buy_coins':        'BUY COINS',
     'btn.settings':         'SETTINGS',
