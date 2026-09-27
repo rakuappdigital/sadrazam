@@ -159,6 +159,88 @@ function _todayKey() {
   const dd = String(d.getDate()).padStart(2, "0");
   return `${d.getFullYear()}-${mm}-${dd}`;
 }
+// ── Günlük Divan Hediyesi (27 Eylül 2026) ─────────────────────────────
+// Günde bir kez ödüllü reklam → 1 akçe. 7 gün üst üste gelinirse 7. gün 1+3.
+// Bir gün kaçırılırsa seri 1'den başlar; 7. günden sonra seri yeniden 1'e döner.
+// Tarih: cihazın YEREL günü (_todayKey) — saat dilimi kaymasıyla hile/kayıp olmasın.
+const DAILY_GIFT_KEY = "sadrazam_daily_gift";
+const DAILY_GIFT_STREAK_BONUS = 3;
+function _dateKeyOffset(days) {
+  const d = new Date(); d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function _readDailyGift() {
+  try { const o = JSON.parse(localStorage.getItem(DAILY_GIFT_KEY) || "{}"); return { last: o.last || "", streak: +o.streak || 0 }; }
+  catch (e) { return { last: "", streak: 0 }; }
+}
+// { claimed: bugün alındı mı, day: bugünün seri günü (1-7), reward: bugünkü ödül, streakShown }
+function getDailyGiftStatus() {
+  const st = _readDailyGift(), today = _todayKey();
+  if (st.last === today) return { claimed: true, day: st.streak, reward: 0 };
+  const day = (st.last === _dateKeyOffset(-1)) ? (st.streak % 7) + 1 : 1;
+  return { claimed: false, day, reward: day === 7 ? 1 + DAILY_GIFT_STREAK_BONUS : 1 };
+}
+function _claimDailyGift() {
+  const stt = getDailyGiftStatus();
+  if (stt.claimed) return 0;
+  localStorage.setItem(DAILY_GIFT_KEY, JSON.stringify({ last: _todayKey(), streak: stt.day }));
+  addAkce(stt.reward);
+  return stt.reward;
+}
+function updateDailyGiftBadge() {
+  const b = document.getElementById("btn-daily-gift");
+  if (b) b.classList.toggle("ready", !getDailyGiftStatus().claimed);
+}
+function showDailyGift() {
+  if (document.getElementById("daily-gift-overlay")) return;
+  const isEN = window.LANG === 'en';
+  const overlay = document.createElement("div");
+  overlay.id = "daily-gift-overlay";
+  const render = () => {
+    const stt = getDailyGiftStatus();
+    const seals = [1, 2, 3, 4, 5, 6, 7].map(i => {
+      const done = stt.claimed ? i <= stt.day : i < stt.day;
+      const today = !stt.claimed && i === stt.day;
+      return `<div class="dg-seal${done ? " done" : ""}${today ? " today" : ""}${i === 7 ? " last" : ""}">
+        <span class="dg-amt">${i === 7 ? "+" + (1 + DAILY_GIFT_STREAK_BONUS) : "+1"}</span><span class="dg-day">${isEN ? "Day" : "Gün"} ${i}</span></div>`;
+    }).join("");
+    overlay.innerHTML = `
+      <div id="daily-gift-box">
+        <div class="dg-title">${isEN ? "DIVAN GIFT" : "DİVAN HEDİYESİ"}</div>
+        <div class="dg-sub">${isEN ? "Each day the treasury sends an akce to the grand vizier who attends the Divan. Seven days in a row brings a bonus." : "Divan'a her gün uğrayan sadrazama hazineden bir akçe. Yedi gün üst üste gelene bonus."}</div>
+        <div class="dg-seals">${seals}</div>
+        ${stt.claimed
+          ? `<div class="dg-done">${isEN ? "Today's gift has been received. Come back tomorrow." : "Bugünün hediyesi alındı. Yarın yine gel."}</div>`
+          : `<button id="dg-claim" class="dg-claim">${isEN ? "Watch Ad" : "Reklam İzle"} · +${stt.reward} ${isEN ? "AKCE" : "AKÇE"}</button>`}
+        <div class="dg-msg" id="dg-msg"></div>
+        <button id="dg-close" class="dg-close">${isEN ? "Close" : "Kapat"}</button>
+      </div>`;
+    overlay.querySelector("#dg-close").onclick = () => { overlay.classList.remove("visible"); setTimeout(() => overlay.remove(), 250); };
+    const claim = overlay.querySelector("#dg-claim");
+    if (claim) claim.onclick = () => {
+      claim.disabled = true;
+      overlay.querySelector("#dg-msg").textContent = "";
+      RewardedAds.show(
+        () => { // izlendi
+          const got = _claimDailyGift();
+          updateAkceUI(); updateDailyGiftBadge();
+          if (window.playSelectConfirm) playSelectConfirm();
+          render();
+          overlay.querySelector("#dg-msg").textContent = isEN ? `+${got} akce added to your treasury.` : `+${got} akçe hazinene eklendi.`;
+          overlay.querySelector("#dg-msg").classList.add("ok");
+        },
+        () => { // gösterilemedi
+          claim.disabled = false;
+          overlay.querySelector("#dg-msg").textContent = isEN ? "The ad could not be shown. Please try again shortly." : "Reklam gösterilemedi. Biraz sonra tekrar dene.";
+        }
+      );
+    };
+  };
+  render();
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add("visible"));
+}
+
 function getSecondChanceAdsUsedToday() {
   const today = _todayKey();
   if (localStorage.getItem("sadrazam_second_chance_date") !== today) {
@@ -2552,6 +2634,13 @@ document.getElementById("btn-pasa-mode").addEventListener("click", () => {
 
 document.getElementById("btn-settings").addEventListener("click",    showSettingsOverlay);
 document.getElementById("btn-settings").addEventListener("touchend", showSettingsOverlay, { passive: true });
+
+document.getElementById("btn-daily-gift").addEventListener("click", () => {
+  if (window.playButtonTap) playButtonTap();
+  showDailyGift();
+});
+updateDailyGiftBadge();
+setInterval(updateDailyGiftBadge, 60000); // gece yarısı geçince rozet yeniden yansın
 
 document.getElementById("btn-akcesystem").addEventListener("click", () => {
   if (AKCE_SYSTEM_ENABLED) { showAkceScreen(); return; }
