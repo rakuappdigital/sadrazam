@@ -3247,7 +3247,11 @@ function loadGameState(s) {
   playCounts = s.playCounts || {};
   cursedEver = s.cursedEver;
   traitorInvestigated = s.traitorInvestigated;
-  hiddenTraitor = s.hiddenTraitor;
+  // Eski kayıtlarda bozuk biçimli hain anahtarı olabilir (27 Eylül 2026 öncesi)
+  const _legacyTraitorKeys = { "3-Seyhulislam": "3-seyhulislam", "4. Defterdar": "4-defterdar",
+    "5. Valide Sultan": "5-valide-sultan", "6. Kaptan-ı Derya": "6-kaptan-i-derya",
+    "7. Yabancı Elçi": "7-yabanci-elci", "8. Rakip Vezir": "8-rakip-vezir" };
+  hiddenTraitor = _legacyTraitorKeys[s.hiddenTraitor] || s.hiddenTraitor;
   scheduledCards = s.scheduledCards || [];
   forcedQueue = (s.forcedQueueIds || []).map(id => allCards.find(c => c.id === id)).filter(Boolean);
   _sultanWarningShown = s.sultanWarningShown || false;
@@ -5898,6 +5902,13 @@ function decide(dir) {
   }
 
   // İnvestigating state temizle - sultanSabir cezası
+  // Ceza SADECE kendi özel soruşturma metni olan kartlarda (orijinal tasarım, ~15
+  // kart). Gizli hain ipucu soruşturmaları ücretsiz: düğme 18 karakterin bütün
+  // kartlarında olduğundan, ceza her kartta uygulanınca her şeyi soruşturan oyuncu
+  // ortalama 28 kartta Sultan sabrından ölüyordu (denge simülasyonu, 27 Eylül 2026).
+  if (isInvestigating && !currentCard.investigate_text) {
+    isInvestigating = false;
+  }
   if (isInvestigating) {
     let sabirPenalty = -3;
     if (hasAdvisor("semsi")) sabirPenalty = Math.round(sabirPenalty * 0.5);

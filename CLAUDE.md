@@ -189,6 +189,13 @@ screenshot`) kontrol et. Archive ile üretilen `.app` **simülatörde çalışma
 - **Tematik çekim:** bekleyen sonucun birleşik ortağının kaynak kartı, bu oyunda
   hiç çıkmadıysa destede `KNOT_PULL_BOOST` (25x). Doğal oyunda ölçüm: her 2-3
   oyunda bir birleşme. Daha sık yapma — sadece 15 birleşik kart var.
+- **Denge (27 Eylül 2026 simülasyonu, 80 oyun, %70 dengeci oyuncu):** yeni
+  sürüm medyan 78 kart (eski 74), hazine ölümü %24 (eski %25). Yeni sonuç
+  kartı yazarken: her kartta hazineyi koruyan bir seçenek olsun (iki seçenek de
+  hazine eksi → sadece bilinçli ikilem kartında), tek etki ≤ 15.
+- **Soruşturma:** 18 hain adayının her kartında büyüteç (TRAITOR_CANDIDATES).
+  Sultan sabrı −3 cezası SADECE kendi `investigate_text`'i olan kartlarda —
+  her kartta olunca her şeyi soruşturan oyuncu 28 kartta azlediliyordu.
 - **Görünüm:** `renderKnotVisual()` (dealNext, flyOff, Padişah ziyaretinde
   sıfırlanır); `#card-image-knot` + `#card-knot-seam` absolute +
   pointer-events:none; birleşik kartta nefes animasyonu kapalı.
