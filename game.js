@@ -3686,6 +3686,7 @@ function dealNext() {
   if (isGameOver) return;
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
   _hideInvestigateBtn();   // özel kart tiplerinde önceki kartın soruşturma düğmesi kalmasın
+  _hideEasterChoices();
 
   // Item expiry: her kart açılışında sayacı azalt
   for (let i = 0; i < 3; i++) {
@@ -4257,6 +4258,67 @@ function showEasterCard(c) {
 
   easterBtn.onclick = doAction;
 
+  // İki seçenekli özel kart
+  _hideEasterChoices();
+  const _choices = (c.easter_type === "yanlis_idam" || c._restStatDrain) ? null : getEasterChoices(c);
+  if (_choices) {
+    easterBtn.classList.add("hidden");
+    let row = document.getElementById("easter-choice-row");
+    if (!row) {
+      row = document.createElement("div");
+      row.id = "easter-choice-row";
+      document.getElementById("card-bottom").appendChild(row);
+    }
+    row.classList.remove("hidden");
+    card.classList.add("has-easter-choices"); // sürükleme etiketlerinin boş alanı gizlensin
+    const isENc = window.LANG === 'en';
+    row.innerHTML = "";
+    _choices.forEach((ch, i) => {
+      const b = document.createElement("button");
+      b.className = "easter-choice " + (c.easter_type || "") + (i === 0 ? " left" : " right");
+      b.textContent = isENc ? ch.en : ch.tr;
+      b.onclick = () => {
+        if (fired) return; fired = true;
+        row.querySelectorAll("button").forEach(x => x.disabled = true);
+        if (window.playButtonTap) playButtonTap();
+        if (c.easter_type === "kedi"    && window.playCatMeow)          playCatMeow();
+        if (c.easter_type === "yanlis"  && window.playWhipCrack)        playWhipCrack();
+        if (c.easter_type === "kehanet" && window.playRunningFootsteps) playRunningFootsteps();
+        if (c.easter_type === "evliya"  && window.playWindGust)         playWindGust();
+        if (ch.keep && c.stat_effect) c.stat_effect();
+        if (ch.fx) applyEffects(ch.fx);
+        if (ch.run) ch.run();
+        if (ch.flag) activeFlags[ch.flag] = true;
+        if (ch.sched) {
+          const onceKey = "_easter_sched_" + ch.sched[0];
+          if (!activeFlags[onceKey] && allCards.some(x => x.id === ch.sched[0])) {
+            activeFlags[onceKey] = true;
+            scheduleConsequence(ch.sched[0], ch.sched[1]);
+            updateFateBar();
+          }
+        }
+        if (isGameOver) return;
+        if (isPargali) {
+          card.style.transition = "opacity 1.2s ease";
+          card.style.opacity = "0";
+          row.classList.add("hidden");
+          setTimeout(() => {
+            card.classList.remove("pargali-ghost");
+            card.style.opacity = "";
+            card.style.transition = "";
+            _hideEasterChoices();
+            advanceEasterCard(c);
+          }, 1250);
+          return;
+        }
+        card.classList.remove("no-swipe");
+        const delay = (c.easter_type === "yanlis" || c.easter_type === "kehanet") ? 400 : 150;
+        setTimeout(() => { _hideEasterChoices(); advanceEasterCard(c); }, delay);
+      };
+      row.appendChild(b);
+    });
+  }
+
   animateCardIn();
 }
 
@@ -4789,6 +4851,138 @@ function showEyaletEkrani() {
   });
 }
 
+// ── İki seçenekli özel kartlar (27 Eylül 2026) ─────────────────────────
+// Eskiden tek "DEVAM" düğmesiyle geçilen özel kartlara iki seçenek.
+// Kart tanımlarına dokunulmaz; seçenekler burada, kart türüne göre verilir.
+// Seçenek alanları: tr/en (etiket), keep (kartın orijinal stat_effect'i de
+// uygulansın), fx (applyEffects ile uygulanan stat etkisi), run (özel kod),
+// flag (activeFlags), sched: [sonuç kartı id, gecikme] (oyun başına bir kez).
+// Tek düğmeli kalanlar: yanlis_idam (3. Yanlış Adam), hekim dinlenme, yıl
+// özeti, divan sahnesi, eyalet ve şehzade ekranları (onların kendi ekranı var).
+function _easterChoice(tr, en, o) { return Object.assign({ tr: tr, en: en }, o || {}); }
+
+function _felaketDamage(ratioOthers, ratioHazine) {
+  // Zaman Yolcusu dinlendiyse bu felaketin etkisi yarıya iner (bir kez)
+  let k = 1;
+  if (activeFlags._zaman_uyari) {
+    k = 0.5; delete activeFlags._zaman_uyari;
+    showItemToast(window.LANG === 'en' ? "The Time Traveler's warning softened the blow." : "Zaman Yolcusu'nun uyarısı darbeyi hafifletti.");
+  }
+  for (const s of Object.keys(stats)) {
+    const r = (s === "hazine" ? ratioHazine : ratioOthers) * k;
+    const delta = -Math.round(stats[s] * r);
+    stats[s] = Math.max(5, stats[s] + delta);
+    showStatDelta(s, delta);
+  }
+  updateStatUI();
+}
+function _mucizeGain(ratioOthers, ratioHazine, ulemaBonus) {
+  for (const s of Object.keys(stats)) {
+    const r = s === "hazine" ? ratioHazine : ratioOthers;
+    const delta = Math.round(stats[s] * r) + (s === "ulema" ? ulemaBonus : 0);
+    stats[s] = Math.min(95, stats[s] + delta);
+    showStatDelta(s, delta);
+  }
+  updateStatUI();
+}
+
+function getEasterChoices(c) {
+  const t = c.easter_type, id = String(c.id || "");
+  const C = _easterChoice;
+  if (t === "kedi") return [
+    C("Kovun şu kediyi", "Shoo the cat", { keep: true, fx: { saray: 2 }, flag: "kedi_kovuldu", sched: ["kedi_sonuc_fareler", 20] }),
+    C("Divan'da minderi olsun", "Give it a Divan cushion", { keep: true, fx: { ulema: 2, saray: -1 }, flag: "kedi_sahiplenildi", sched: ["kedi_sonuc_ambar", 20] }),
+  ];
+  if (t === "yanlis") return [
+    C("Devrül karşımdan", "Out of my sight", {}),
+    C("Kim olduğunu soruşturun", "Find out who he is", { fx: { saray: -1 }, flag: "yanlis_sorgulandi", sched: ["yanlis_adam_casus", 10] }),
+  ];
+  if (t === "kehanet") return [
+    C("Yıkıl zındık!", "Begone, madman!", { fx: { ulema: 2 } }),
+    C("Kehaneti kayda geçirin", "Record the prophecy", { fx: { ulema: -2, saray: 1 }, flag: "kehanet_kaydedildi", sched: ["kehanet_turbe", 25] }),
+  ];
+  if (t === "evliya") return [
+    C("Eyvallah", "My regards", {}),
+    C("Seyahatini finanse edin", "Fund his journey", { fx: { hazine: -4, ulema: 2 }, flag: "evliya_finanse", sched: ["evliya_seyahatname", 25] }),
+  ];
+  if (t === "tarihsel" && id.startsWith("easter_barbaros_")) return [
+    C("Eyvallah Reis", "Well said, Admiral", {}),
+    C("Donanmaya ödenek ayırın", "Fund the fleet", { fx: { hazine: -5, "yeniçeri": 3 }, flag: "barbaros_odenek", sched: ["barbaros_preveze", 20] }),
+  ];
+  if (t === "tarihsel" && id.startsWith("easter_leonardo_")) return [
+    C("Ala Leo!", "Well done, Leo!", {}),
+    C("Haliç köprüsünü yaptırın", "Build the Golden Horn bridge", { fx: { hazine: -6, saray: 2 }, flag: "leonardo_kopru", sched: ["leonardo_kopru_sonuc", 30] }),
+  ];
+  if (t === "tarihsel" && id.startsWith("easter_halit_")) return [
+    C("Rolünüz muhteşemdi", "A magnificent role", { fx: { saray: 1 } }),
+    C("Bu dizi bitsin artık", "Let this series end", { fx: { ulema: 1 } }),
+  ];
+  if (t === "zaman") return [
+    C("Ne dersin zındık?", "What say you, madman?", {}),
+    C("Anlatsın, dinleyin", "Let him speak", { fx: { ulema: -2 }, run: () => {
+      activeFlags._zaman_uyari = true;
+      showItemToast(window.LANG === 'en' ? "He described the next disaster. You will be ready." : "Bir sonraki felaketi anlattı. Hazırlıklı olacaksınız.");
+    } }),
+  ];
+  if (t === "fisildayan") return [
+    C("Kulağınızı tıkayın", "Cover your ears", {}),
+    C("Fısıltıyı dinleyin", "Listen to the whisper", { run: () => {
+      const en = window.LANG === 'en';
+      if (typeof changeHealth === "function") changeHealth(-5);
+      if (hiddenTraitor && !traitorRevealed) {
+        const nm = en ? getCharacterDisplayName(hiddenTraitor, true) : getCharacterDisplayName(hiddenTraitor);
+        showItemToast(en ? `The whisper named someone: the ${nm}.` : `Fısıltı bir isim söyledi: ${nm}.`);
+      } else {
+        showItemToast(en ? "The whisper faded into the dark." : "Fısıltı karanlıkta kayboldu.");
+      }
+    } }),
+  ];
+  if (t === "felaket") return [
+    C("Kadere razı olun", "Accept your fate", { run: () => _felaketDamage(0.30, 0.30) }),
+    C("Hazineden yardım dağıtın", "Send aid from the treasury", { run: () => _felaketDamage(0.15, 0.40) }),
+  ];
+  if (t === "mucize") return [
+    C("Hazineye kaydedin", "Record it in the treasury", { run: () => _mucizeGain(0.30, 0.30, 0) }),
+    C("Şükür kurbanı dağıtın", "Give thanks offerings", { run: () => _mucizeGain(0.30, 0.10, 5) }),
+  ];
+  if (t === "pargali") return [
+    C("Ruhuna Fatiha okuyun", "Pray for his soul", { fx: { ulema: 3 } }),
+    C("Hayali kovun", "Banish the ghost", { fx: { saray: 2 } }),
+  ];
+  if (t === "golge") return [
+    C("Selefinizden ders alın", "Learn from your predecessor", { run: () => {
+      for (const s of Object.keys(stats)) { const d = stats[s] < 50 ? Math.min(5, 50 - stats[s]) : -Math.min(5, stats[s] - 50); if (d) { stats[s] += d; showStatDelta(s, d); } }
+      updateStatUI();
+    } }),
+    C("Geçmişi geride bırakın", "Leave the past behind", { fx: { saray: 3 } }),
+  ];
+  if (t === "miras") return [
+    C("Mirası kabul edin", "Accept the legacy", { keep: true }),
+    C("Halka dağıtın", "Share it with the people", { fx: { ulema: 4, saray: 2 }, run: () => {
+      localStorage.removeItem("sadrazam_miras_bar"); localStorage.removeItem("sadrazam_miras_label");
+    } }),
+  ];
+  if (t === "gizli_nitelik" && id.startsWith("gizli_halk_sevgisi_")) return [
+    C("Halkın sesi Divan'a", "Their voice to the Divan", { fx: { ulema: 3, saray: -2 } }),
+    C("Halktan gönüllü asker", "Raise volunteers", { fx: { "yeniçeri": 5 } }),
+  ];
+  if (t === "gizli_nitelik" && id.startsWith("gizli_casus_agi_")) return [
+    C("Ağı Sultan için kullanın", "Use it for the Sultan", { fx: { saray: 5 } }),
+    C("Ağı gizli tutun", "Keep the network hidden", { fx: { hazine: 3 } }),
+  ];
+  if (t === "sultan_favor") return [
+    C("Pekâlâ", "Very well", { keep: true }),
+    C("Haberciyi ödüllendirin", "Reward the messenger", { keep: true, fx: { hazine: -2, saray: 2 } }),
+  ];
+  return null;
+}
+
+function _hideEasterChoices() {
+  const row = document.getElementById("easter-choice-row");
+  if (row) { row.classList.add("hidden"); row.innerHTML = ""; }
+  card.classList.remove("has-easter-choices");
+}
+
 function advanceEasterCard(c) {
   card.classList.remove("pargali-ghost", "no-swipe");
   cardsPlayed++;
@@ -4836,6 +5030,7 @@ function tryPadisahZiyareti() {
 function showPadisahZiyareti() {
   renderKnotVisual(null); // dealNext'ten geçmiyor — önceki birleşik görünüm kalmasın
   _hideInvestigateBtn();
+  _hideEasterChoices();
   const _isENpv = window.LANG === 'en';
   const _pvPool = (_isENpv && window.EN_PADISAH_ZIYARET_TEXTS) ? window.EN_PADISAH_ZIYARET_TEXTS : PADISAH_ZIYARET_TEXTS;
   const data = _pvPool[Math.floor(Math.random() * _pvPool.length)];
@@ -6416,6 +6611,7 @@ function flyOff(dir) {
     cardImage.src = "";
     renderKnotVisual(null);
     _hideInvestigateBtn();
+    _hideEasterChoices();
     charName.textContent = "";
     cardText.textContent = "";
     choiceLeft.style.opacity = "0";

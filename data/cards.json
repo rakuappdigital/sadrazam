@@ -20806,6 +20806,321 @@
       "investigate_text_en": "",
       "speech_left_en": "Venice will not forget this, Pasha.",
       "speech_right_en": "The sea is ours, Pasha!"
+    },
+    {
+      "id": "kedi_sonuc_fareler",
+      "character": "hazine-katibi",
+      "character_name": "Hazine Kâtibi",
+      "faction": "saray",
+      "text": "Paşam, saray kedisini kovdurduğunuz günden beri ambara fareler dadandı. Zahirenin üçte biri gitti.",
+      "left_text": "Fare avcıları tutun",
+      "right_text": "Kediyi geri getirin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "kedi_sonuc_fareler_resolved"
+      ],
+      "right_flags_set": [
+        "kedi_sonuc_fareler_resolved"
+      ],
+      "required_flags": [
+        "kedi_kovuldu"
+      ],
+      "excluded_flags": [
+        "kedi_sonuc_fareler_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Masraflı ama çare bu.",
+      "speech_right": "Kedi de bir saray görevlisiymiş, Paşam.",
+      "character_name_en": "Treasury Scribe",
+      "text_en": "Pasha, since you had the palace cat chased off, rats have overrun the granary. A third of the grain is gone.",
+      "left_text_en": "Hire rat-catchers",
+      "right_text_en": "Bring the cat back",
+      "investigate_text_en": "",
+      "speech_left_en": "Costly, but it will work.",
+      "speech_right_en": "So the cat was a palace official after all, Pasha."
+    },
+    {
+      "id": "kedi_sonuc_ambar",
+      "character": "hazine-katibi",
+      "character_name": "Hazine Kâtibi",
+      "faction": "saray",
+      "text": "Paşam, Divan'da minderi olan kedi ambarın farelerini temizlemiş. Bu yıl zahire eksiksiz.",
+      "left_text": "Kediye bir kese ciğer",
+      "right_text": "Ambar kâtibini ödüllendirin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 4
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "left_flags_set": [
+        "kedi_sonuc_ambar_resolved"
+      ],
+      "right_flags_set": [
+        "kedi_sonuc_ambar_resolved"
+      ],
+      "required_flags": [
+        "kedi_sahiplenildi"
+      ],
+      "excluded_flags": [
+        "kedi_sonuc_ambar_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Divan'ın en sadık hizmetkârı!",
+      "speech_right": "Kâtip minnettar, Paşam.",
+      "character_name_en": "Treasury Scribe",
+      "text_en": "Pasha, the cat with a Divan cushion has cleared the granary of rats. Not a grain was lost this year.",
+      "left_text_en": "A purse of liver for the cat",
+      "right_text_en": "Reward the granary scribe",
+      "investigate_text_en": "",
+      "speech_left_en": "The Divan's most loyal servant!",
+      "speech_right_en": "The scribe is grateful, Pasha."
+    },
+    {
+      "id": "yanlis_adam_casus",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "Paşam, 'yanlış odaya girdim' diyen adamı soruşturduk. Venedik elçiliğinin kâtibi çıktı; Divan'ın kapılarını çiziyormuş.",
+      "left_text": "Zindana atın",
+      "right_text": "Sahte bilgiyle geri salın",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "left_flags_set": [
+        "yanlis_adam_casus_resolved"
+      ],
+      "right_flags_set": [
+        "yanlis_adam_casus_resolved"
+      ],
+      "required_flags": [
+        "yanlis_sorgulandi"
+      ],
+      "excluded_flags": [
+        "yanlis_adam_casus_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Bir kapı daha kapandı.",
+      "speech_right": "Venedik yanlış haritayla uğraşsın.",
+      "character_name_en": "Spymaster",
+      "text_en": "Pasha, we questioned the man who 'entered the wrong room'. He is a clerk of the Venetian embassy, sketching the Divan's doors.",
+      "left_text_en": "Throw him in the dungeon",
+      "right_text_en": "Release him with false papers",
+      "investigate_text_en": "",
+      "speech_left_en": "One more door closed.",
+      "speech_right_en": "Let Venice chase a false map."
+    },
+    {
+      "id": "kehanet_turbe",
+      "character": "30-halk-onderi",
+      "character_name": "Halk Önderi",
+      "faction": "halk",
+      "text": "Paşam, kayda geçirdiğiniz derviş kehaneti halk arasında yayıldı. Dervişe türbe yapılsın istiyorlar; Şeyhülislam karşı.",
+      "left_text": "Türbe yapılmasın",
+      "right_text": "Türbeyi yaptırın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -5,
+        "hazine": -4
+      },
+      "left_flags_set": [
+        "kehanet_turbe_resolved"
+      ],
+      "right_flags_set": [
+        "kehanet_turbe_resolved"
+      ],
+      "required_flags": [
+        "kehanet_kaydedildi"
+      ],
+      "excluded_flags": [
+        "kehanet_turbe_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "religious",
+      "speech_left": "Halk kırgın, Paşam.",
+      "speech_right": "Halk sizi unutmayacak!",
+      "character_name_en": "People's Leader",
+      "text_en": "Pasha, the dervish's prophecy you recorded has spread among the people. They want a shrine for him; the Şeyhülislam objects.",
+      "left_text_en": "No shrine",
+      "right_text_en": "Build the shrine",
+      "investigate_text_en": "",
+      "speech_left_en": "The people are hurt, Pasha.",
+      "speech_right_en": "The people will remember you!"
+    },
+    {
+      "id": "evliya_seyahatname",
+      "character": "evliya-celebi",
+      "character_name": "Evliya Çelebi",
+      "faction": "halk",
+      "text": "Paşam, finanse ettiğiniz seyahatten mektup yolladım: Rumeli'de bir sancakbeyi toplanan vergiyi kendine saklıyor.",
+      "left_text": "Sancakbeyini azledin",
+      "right_text": "Önce bir uyarı gönderin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "right_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "left_flags_set": [
+        "evliya_seyahatname_resolved"
+      ],
+      "right_flags_set": [
+        "evliya_seyahatname_resolved"
+      ],
+      "required_flags": [
+        "evliya_finanse"
+      ],
+      "excluded_flags": [
+        "evliya_seyahatname_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "political",
+      "speech_left": "Adalet yerini buldu.",
+      "speech_right": "Umarım ders alır, Paşam.",
+      "character_name_en": "Evliya Çelebi",
+      "text_en": "Pasha, a letter from the journey you funded: in Rumelia a governor keeps the collected taxes for himself.",
+      "left_text_en": "Dismiss the governor",
+      "right_text_en": "Send a warning first",
+      "investigate_text_en": "",
+      "speech_left_en": "Justice is served.",
+      "speech_right_en": "I hope he learns, Pasha."
+    },
+    {
+      "id": "barbaros_preveze",
+      "character": "6-kaptan-i-derya",
+      "character_name": "Kaptan-ı Derya",
+      "faction": "ordu",
+      "text": "Paşam, Barbaros'un tavsiyesiyle güçlenen donanma Preveze açıklarında Haçlı filosunu dağıttı! Ganimet ne olsun?",
+      "left_text": "Hazineye aktarın",
+      "right_text": "Denizcilere dağıtın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": 8
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 6,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "barbaros_preveze_resolved"
+      ],
+      "right_flags_set": [
+        "barbaros_preveze_resolved"
+      ],
+      "required_flags": [
+        "barbaros_odenek"
+      ],
+      "excluded_flags": [
+        "barbaros_preveze_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Hazine dolacak.",
+      "speech_right": "Denizciler size dua ediyor!",
+      "character_name_en": "Grand Admiral",
+      "text_en": "Pasha, the fleet strengthened on Barbarossa's advice has scattered the Crusader fleet off Preveza! What of the spoils?",
+      "left_text_en": "Send them to the treasury",
+      "right_text_en": "Share them with the sailors",
+      "investigate_text_en": "",
+      "speech_left_en": "The treasury will fill.",
+      "speech_right_en": "The sailors bless you!"
+    },
+    {
+      "id": "leonardo_kopru_sonuc",
+      "character": "13-buyuk_tuccar",
+      "character_name": "Büyük Tüccar",
+      "faction": "halk",
+      "text": "Paşam, Leonardo'nun Haliç köprüsü bitti; kervanlar Galata'ya artık bir saatte geçiyor. Geçişten vergi alınsın mı?",
+      "left_text": "Geçiş ücretsiz kalsın",
+      "right_text": "Geçiş vergisi koyun",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 8
+      },
+      "left_flags_set": [
+        "leonardo_kopru_sonuc_resolved"
+      ],
+      "right_flags_set": [
+        "leonardo_kopru_sonuc_resolved"
+      ],
+      "required_flags": [
+        "leonardo_kopru"
+      ],
+      "excluded_flags": [
+        "leonardo_kopru_sonuc_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Çarşı size müteşekkir.",
+      "speech_right": "Köprü kendini ödüyor.",
+      "character_name_en": "Great Merchant",
+      "text_en": "Pasha, Leonardo's Golden Horn bridge is finished; caravans now reach Galata in an hour. Shall we tax the crossing?",
+      "left_text_en": "Keep the crossing free",
+      "right_text_en": "Tax the crossing",
+      "investigate_text_en": "",
+      "speech_left_en": "The bazaar thanks you.",
+      "speech_right_en": "The bridge pays for itself."
     }
   ]
 }
