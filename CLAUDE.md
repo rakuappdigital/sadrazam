@@ -242,6 +242,30 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   olarak duruyor (dosya bir gün eksik olursa benzer portre).
 - Test: scratchpad `chars_test.js` (20 senaryo) + `ov_chars.js` (375x667 TR/EN).
 
+## 3d. Görsel paket (27 Eylül 2026)
+
+- **Mevsim atmosferi:** `SeasonFx` (game.js, mevsim sisteminin yanında).
+  `#season-fx` canvas'ı `#game`'in İLK çocuğu, `z-index:-1` → kart/barlar
+  her zaman üstte, dokunmayı engellemez. Kış kar / bahar lale / yaz toz zerresi
+  + huzme / sonbahar yaprak; mevsim değişince eskiler ~1 sn'de söner. Zamana
+  bağlı hareket (dt). Oyun ekranı gizliyken, `document.hidden`, `isGameOver`,
+  ayar kapalı (`sadrazam_season_fx='off'`, Ayarlar → Mevsim Efekti) ya da
+  "hareketi azalt" açıkken çizmez. `SeasonFx._state()` test için.
+- **Boş eşya kutuları:** `updateItemBar` boş kutuya `EMPTY_SLOT_GHOSTS`
+  eşyasının soluk silueti + "+" koyar (`.item-slot.empty.ghost`);
+  `activateItem` boş kutuda `showEmptySlotTip` (eşya bilgisi + Eşya Dükkânı
+  düğmesi) açar. Kutudaki eşya adı artık EN'de İngilizce.
+- **Vakayiname:** `chronicle` (kayıtla saklanır) `_recordChronicle` ile
+  decide içinde dolar; ölümde `renderEpilog` → `_chronicleHTML` en önemli 7
+  olayı parşömen sayfaya yazar (puan: birleşik 5, kriz/geri dönen sonuç 4,
+  sonuç doğuran karar/olay 3, iz bırakan karar 1; sığmayan grup saltanata
+  yayılır). Tarihçilerin Notu cümleleri sayfanın açılış/kapanışı.
+- **Yaşlanan portreler:** `CHARACTER_EVOLUTIONS` (sadece `_v2.jpg`'si OLAN
+  karakterler — dosyasız satır ekleme). `AGING_V2_YEAR = 10` (eskiden 50.
+  kart), `--age-f` ile yıllarla solma/sepya (durum filtrelerine eklenir),
+  ilk yaşlı gelişte `#card-image-age` ile genç→yaşlı geçiş (birleşik kartta yok).
+- Testler (scratchpad): `season_test`, `slot_test`, `vk_test`, `vk_pick`, `age_test`.
+
 ## 4. Kritik sabitler
 
 - `CARDS_PER_YEAR = 24` (satır ~6) — **çok önemli**, yeni bir "N kartta bir

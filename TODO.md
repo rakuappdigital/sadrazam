@@ -45,10 +45,13 @@ Ayrıntı: CLAUDE.md §3b, §3c, §5.
       StoreKit ürünüyle çalışıyor), sadece RC grafiklerinde düzgün görünsün diye.
 - [ ] Build öncesi gerçek cihaz/TestFlight: Başlangıç Kesesi fiyatı ₺14,99
       geliyor mu, satın alınca +30 akçe ve teklif kayboluyor mu.
-- [ ] Kullanıcı kararı bekleyen: görsel demolardan hangileri uygulanacak
-      (mevsimler A/B/C, mühür, eşya kutuları, vakayiname, yaşlanan portreler);
-      Venedik Balyosu portresi. ("İplik Takipçisi" başarımı → "Kararın
-      Yankısı" / "Echo of a Decision" oldu, oyunda "iplik" kalmadı.)
+- [x] Görsel demolar: mevsim (A, gerçekçi parçacıklar), eşya kutuları,
+      vakayiname, yaşlanan portreler uygulandı (27 Eylül 2026).
+- [ ] Mühür açılışı: kullanıcı seçecek (demo: claude.ai/artifact/UDw6nB52qiyMRZGtXmpXWR;
+      ferman rulosu "kapalı gelir, 1 sn bekler, yavaşça açılır" hâline getirildi).
+- [ ] Yaşlı portreler (`_v2`): Casuslar Başı, Şeyhülislam, Defterdar, Rakip
+      Vezir, Kaptan-ı Derya, Valide Sultan — kullanıcı üretecek; gelince
+      kırp/ölçekle + CHARACTER_EVOLUTIONS'a ekle.
 
 ## SIRADAKİ (sonraki session buradan başlar)
 

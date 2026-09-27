@@ -528,6 +528,114 @@ const SEASON_EFFECTS = {
   3: { military: 0.9, economic: 1.0, religious: 1.2, social: 1.1 },   // Sonbahar
 };
 
+// ── Mevsim atmosferi: gerçekçi parçacıklar (27 Eylül 2026) ─────────────
+// Oyun ekranının EN ARKASINDA (#season-fx, z-index:-1 → kart, barlar ve
+// metin her zaman üstte) üç derinlik katmanında parçacık: kışın kar, baharda
+// lale yaprağı, yazın güneş huzmesinde toz zerresi, sonbaharda yaprak.
+// Mevsim değişince eski parçacıklar doğal biçimde ekrandan çıkar, yerlerine
+// yenileri gelir. Hareket zamana bağlı (60/120 Hz aynı hız). Oyun ekranı
+// kapalıyken, uygulama arka plandayken ya da ayar kapalıyken çizmez.
+// Ayar: localStorage sadrazam_season_fx ('off' = kapalı). "Hareketi azalt"
+// sistem ayarı açıksa hiç çalışmaz.
+const SeasonFx = (() => {
+  const COUNT = [60, 46, 60, 46]; // kış, bahar, yaz, sonbahar
+  let cv = null, ctx = null, W = 0, H = 0, DPR = 1, parts = [], running = false, last = 0, t = 0, drawnSeason = -1;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const reduce = () => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  const enabled = () => { try { return localStorage.getItem('sadrazam_season_fx') !== 'off'; } catch (e) { return true; } };
+  const season = () => (typeof getCurrentSeason === 'function' ? getCurrentSeason() : 0);
+  function size() {
+    if (!cv) return;
+    const r = cv.getBoundingClientRect();
+    DPR = Math.min(1.5, window.devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * DPR)), h = Math.max(1, Math.round(r.height * DPR));
+    if (w !== W || h !== H) { W = cv.width = w; H = cv.height = h; }
+  }
+  function mk(init, s) {
+    const layer = Math.random() < .45 ? 0 : (Math.random() < .6 ? 1 : 2); // 0 uzak · 1 orta · 2 yakın
+    const k = [0.45, 0.75, 1.15][layer];
+    const p = { s, layer, k, al: 1, x: rnd(0, W), y: init ? rnd(0, H) : rnd(-40, -10) * DPR, rot: rnd(0, 6.28), vr: rnd(-.03, .03), ph: rnd(0, 6.28), seed: Math.random() };
+    if (s === 0) { p.r = rnd(1.2, 2.6) * k * DPR; p.vy = rnd(.35, .6) * k * DPR; }
+    else if (s === 1) { p.r = rnd(3.5, 5) * k * DPR; p.vy = rnd(.4, .7) * k * DPR; p.vr = rnd(-.04, .04); }
+    else if (s === 2) { p.r = rnd(.7, 1.6) * k * DPR; p.vy = -rnd(.05, .15) * k * DPR; if (!init) p.y = H + 10; }
+    else { p.r = rnd(4, 7) * k * DPR; p.vy = rnd(.55, .9) * k * DPR; p.vr = rnd(-.05, .05); }
+    return p;
+  }
+  function flake(p, a) {
+    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 1.8);
+    g.addColorStop(0, 'rgba(255,255,255,' + a + ')'); g.addColorStop(.5, 'rgba(235,240,255,' + a * .55 + ')'); g.addColorStop(1, 'rgba(235,240,255,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 1.8, 0, 6.3); ctx.fill();
+    if (p.layer === 2 && p.seed > .6) { // yakın katmanda kar kristali
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.strokeStyle = 'rgba(255,255,255,' + a * .8 + ')'; ctx.lineWidth = .6 * DPR;
+      for (let i = 0; i < 6; i++) { ctx.rotate(Math.PI / 3); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, p.r * 2.4); ctx.moveTo(0, p.r * 1.4); ctx.lineTo(p.r * .6, p.r * 1.9); ctx.moveTo(0, p.r * 1.4); ctx.lineTo(-p.r * .6, p.r * 1.9); ctx.stroke(); }
+      ctx.restore();
+    }
+  }
+  function petal(p, a) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.scale(Math.cos(p.ph) * .9 + .1, 1);
+    const g = ctx.createLinearGradient(0, -p.r, 0, p.r); g.addColorStop(0, 'rgba(236,120,140,' + a + ')'); g.addColorStop(1, 'rgba(178,34,64,' + a + ')');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, -p.r); ctx.bezierCurveTo(p.r * .9, -p.r * .6, p.r * .7, p.r * .8, 0, p.r); ctx.bezierCurveTo(-p.r * .7, p.r * .8, -p.r * .9, -p.r * .6, 0, -p.r); ctx.fill(); ctx.restore();
+  }
+  const LEAF = [[196, 110, 30], [160, 62, 22], [205, 150, 40], [120, 50, 20]];
+  function leaf(p, a) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.scale(Math.cos(p.ph) * .85 + .15, 1);
+    const c = LEAF[Math.floor(p.seed * 4)], r = p.r;
+    ctx.fillStyle = 'rgba(' + c + ',' + a + ')';
+    ctx.beginPath(); ctx.moveTo(0, -r);
+    ctx.lineTo(r * .35, -r * .45); ctx.lineTo(r * .95, -r * .55); ctx.lineTo(r * .55, -r * .05); ctx.lineTo(r * .8, r * .45); ctx.lineTo(r * .2, r * .3); ctx.lineTo(0, r);
+    ctx.lineTo(-r * .2, r * .3); ctx.lineTo(-r * .8, r * .45); ctx.lineTo(-r * .55, -r * .05); ctx.lineTo(-r * .95, -r * .55); ctx.lineTo(-r * .35, -r * .45); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(70,30,10,' + a * .6 + ')'; ctx.lineWidth = .7 * DPR; ctx.beginPath(); ctx.moveTo(0, -r * .8); ctx.lineTo(0, r * 1.25); ctx.stroke(); ctx.restore();
+  }
+  function mote(p, a) { ctx.fillStyle = 'rgba(255,226,140,' + a * (.4 + .6 * Math.abs(Math.sin(p.ph))) + ')'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.3); ctx.fill(); }
+  function visible() {
+    return enabled() && !reduce() && !document.hidden && typeof gameScreen !== 'undefined' && gameScreen && !gameScreen.classList.contains('hidden') && !isGameOver;
+  }
+  function frame(now) {
+    if (!running) return;
+    if (!visible()) { // görünmüyorsa çizme, seyrek kontrol et
+      if (ctx && drawnSeason !== -1) { ctx.clearRect(0, 0, W, H); drawnSeason = -1; }
+      last = 0; setTimeout(() => requestAnimationFrame(frame), 400); return;
+    }
+    size();
+    const dt = last ? Math.min(3, (now - last) / 16.667) : 1; last = now; t += dt * 16.667;
+    const s = season();
+    if (drawnSeason === -1 || parts.length === 0) { parts = []; for (let i = 0; i < COUNT[s]; i++) parts.push(mk(true, s)); }
+    else if (drawnSeason !== s) { // mevsim değişti: eskiler ~1 sn'de söner, yenileri her yerde yavaşça belirir
+      for (let i = 0; i < COUNT[s]; i++) { const n = mk(true, s); n.al = 0; parts.push(n); }
+    }
+    drawnSeason = s;
+    ctx.clearRect(0, 0, W, H);
+    if (s === 2) { // yaz: hafif güneş huzmesi
+      const gx = W * .65, g = ctx.createLinearGradient(gx, 0, gx - W * .3, H);
+      g.addColorStop(0, 'rgba(255,214,120,.10)'); g.addColorStop(1, 'rgba(255,214,120,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(gx - W * .05, 0); ctx.lineTo(gx + W * .12, 0); ctx.lineTo(gx - W * .1, H); ctx.lineTo(gx - W * .5, H); ctx.fill();
+    }
+    const wind = Math.sin(t * .0004) * .6 + Math.sin(t * .0011) * .3;
+    const night = gameScreen.classList.contains('night-mode') ? .7 : 1;
+    for (let i = 0; i < parts.length; i++) {
+      const p = parts[i];
+      p.ph += (.03 + p.seed * .02) * dt; p.rot += p.vr * dt;
+      p.x += (wind * p.k + Math.sin(p.ph) * .25 * p.k) * DPR * (p.s === 2 ? .3 : 1) * dt; p.y += p.vy * dt;
+      if (p.s !== s) p.al -= .018 * dt; else if (p.al < 1) p.al = Math.min(1, p.al + .012 * dt);
+      const a = [.35, .6, .9][p.layer] * night * Math.max(0, p.al);
+      if (p.s === 0) flake(p, a); else if (p.s === 1) petal(p, a); else if (p.s === 2) mote(p, a); else leaf(p, a);
+      if (p.y > H + 30 || p.y < -50 || p.x < -40 || p.x > W + 40) parts[i] = mk(false, s);
+    }
+    parts = parts.filter(p => p.s === s || p.al > 0);
+    while (parts.length < COUNT[s]) parts.push(mk(false, s));
+    parts.sort((a, b) => a.layer - b.layer);
+    requestAnimationFrame(frame);
+  }
+  function start() {
+    cv = document.getElementById('season-fx');
+    if (!cv || running) return;
+    ctx = cv.getContext('2d'); if (!ctx) return;
+    running = true; requestAnimationFrame(frame);
+  }
+  return { start, _state: () => ({ running, W, H, n: parts.length, season: drawnSeason, kinds: [...new Set(parts.map(p => p.s))] }) };
+})();
+setTimeout(() => SeasonFx.start(), 0);
+
 // ── Osmanlı Takvimi ───────────────────────────────────────────────
 const HICRI_MONTHS = [
   "Muharrem","Safer","Rebiülevvel","Rebiülahir",
@@ -1952,6 +2060,7 @@ let characterMemory = {};
 let activeArcs = {};
 let triggeredArcs = {};
 let decisionLog = [];           // Vezirlik Günlüğü — kayda değer kararların kronolojik listesi
+let chronicle = [];             // Vakayiname — ölüm ekranındaki tarih sayfası için önemli olaylar (kayıtla saklanır)
 let isPaywalled = false;        // ücretsiz deneme sınırına takılınca true olur, oyun durur
 let _paywallSoftOffer = false;  // ARTIK KULLANILMIYOR (geriye dönük uyumluluk için tutuluyor) — eskiden
                                  // her 3 yeniden başlatmada çıkan, "Oynamaya Devam Et" ile reddedilebilen
@@ -3056,6 +3165,7 @@ function startGame() {
   scheduledCards = [];
   _criticalShownCount = 0; _criticalLastAt = -999;
   _muneccimN = 0; _muneccimAt = -999;
+  _agedSeenThisGame = new Set();
   _hekimYesCount = 0; _knotIdsSeenThisGame = new Set(); _challengeRewarded = false;
   document.getElementById("challenge-list")?.remove();
   _lastDecision = null;
@@ -3089,6 +3199,7 @@ function startGame() {
   activeArcs = {};
   triggeredArcs = {};
   decisionLog = [];
+  chronicle = [];
   isPaywalled = false;
   _secondChanceUsedThisDeath = false;
   _secondChanceOfferedThisGame = false;
@@ -3509,6 +3620,7 @@ function saveGameState() {
       secondChanceOfferedThisGame: _secondChanceOfferedThisGame,
       receivedLetters,
       muneccimN: _muneccimN, muneccimAt: _muneccimAt,
+      chronicle,
       v: 3
     };
     localStorage.setItem('sadrazam_save', JSON.stringify(state));
@@ -3615,6 +3727,7 @@ function loadGameState(s) {
   _secondChanceOfferedThisGame = s.secondChanceOfferedThisGame || false;
   receivedLetters = s.receivedLetters || 0;
   _muneccimN = s.muneccimN || 0; _muneccimAt = s.muneccimAt ?? -999;
+  chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
   isGameOver = false;
   activeArcs = {};
   triggeredArcs = {};
@@ -4063,12 +4176,43 @@ let currentCard = null;
 // Karakter görsel versiyonu sistemi
 // MADDE 7: Belli karakterler yıllar içinde görsel değiştiriyor (v2 dosyası gerekir)
 // MADDE 8: Vatandaş (halk_temsilcisi) için farklı görseller rastgele seçilir
+// ── Yaşlanan portreler (27 Eylül 2026) ─────────────────────────────────
+// Listedeki karakterlerin portresi yıllar geçtikçe hafifçe solar/sepyaya
+// döner (1 → AGING_TINT_MAX_YEAR. yıl, CSS değişkeni --age-f, tehlike/bolluk
+// filtreleriyle birlikte çalışır); AGING_V2_YEAR. yıldan sonra ikinci
+// (yaşlı) portreye geçer. O oyunda yaşlı hâliyle ilk gelişinde genç portre
+// yaşlıya yumuşakça dönüşür (#card-image-age). Yeni karakter eklemek için
+// assets/characters/<anahtar>_v2.jpg dosyasını koyup buraya satır ekle —
+// dosyası olmayan satır EKLEME (portre boş kalır).
+const AGING_V2_YEAR = 10;
+const AGING_TINT_MAX_YEAR = 20;
 const CHARACTER_EVOLUTIONS = {
-  // 50+ kartta görsel değişiyor (assets/characters/9-cellat_v2.jpg gerekir)
-  "9-cellat":   { threshold: 50, version: "9-cellat_v2" },
-  // 50+ kartta görsel değişiyor (assets/characters/2-yeniceri_v2.jpg gerekir)
-  "2-yeniceri": { threshold: 50, version: "2-yeniceri_v2" },
+  "9-cellat":   { version: "9-cellat_v2" },
+  "2-yeniceri": { version: "2-yeniceri_v2" },
 };
+let _agedSeenThisGame = new Set();
+function _agingTint(key) {
+  if (!CHARACTER_EVOLUTIONS[key]) return "";
+  const t = Math.min(1, Math.max(0, (year - 1) / (AGING_TINT_MAX_YEAR - 1)));
+  return t > 0 ? `saturate(${(1 - t * .25).toFixed(3)}) sepia(${(t * .18).toFixed(3)})` : "";
+}
+function _hideAgeOverlay() {
+  const o = document.getElementById("card-image-age");
+  if (o) { o.classList.remove("visible", "fade"); o.removeAttribute("src"); }
+}
+// Yaşlı portre ilk kez gösterilirken: genç portre üstte başlar, yavaşça söner
+function _playAgingReveal(key, c) {
+  const o = document.getElementById("card-image-age");
+  if (!o || _agedSeenThisGame.has(key)) return;
+  _agedSeenThisGame.add(key);
+  const pre = new Image();
+  pre.onload = () => {
+    if (currentCard !== c) return;
+    o.src = pre.src; o.classList.remove("fade"); o.classList.add("visible");
+    requestAnimationFrame(() => setTimeout(() => { if (currentCard === c) o.classList.add("fade"); }, 700));
+  };
+  pre.src = "assets/characters/" + encodeURIComponent(key + ".jpg");
+}
 
 // Yeni karakterlerin portresi henüz eklenmediyse (dosya yoksa) benzer bir
 // portre gösterilir — görsel gelince kod değişmeden kendi portresi çıkar.
@@ -4140,11 +4284,9 @@ function getCharacterImageName(key) {
     return HALK_TEMSILCISI_VARIANTS[idx];
   }
 
-  // Karakter evrimi: yeterli kart oynanmışsa v2'yi dene
+  // Yaşlanan portre: AGING_V2_YEAR. yıldan sonra ikinci portre
   const evo = CHARACTER_EVOLUTIONS[key];
-  if (evo && cardsPlayed >= evo.threshold) {
-    return evo.version; // Dosya yoksa preload.onerror gizler, sorun yok
-  }
+  if (evo && year >= AGING_V2_YEAR) return evo.version;
 
   return key;
 }
@@ -4152,6 +4294,7 @@ function getCharacterImageName(key) {
 function dealNext() {
   if (isGameOver) return;
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
+  _hideAgeOverlay(); card.style.removeProperty("--age-f");
   _hideInvestigateBtn();   // özel kart tiplerinde önceki kartın soruşturma düğmesi kalmasın
   _hideEasterChoices();
   _hideCriticalOffer();
@@ -4258,6 +4401,9 @@ function dealNext() {
 
   const imgName = getCharacterImageName(key) + ".jpg";
   const imgPath = "assets/characters/" + encodeURIComponent(imgName);
+  const _tint = _agingTint(key);
+  if (_tint) card.style.setProperty("--age-f", _tint);
+  const _agedNow = !!CHARACTER_EVOLUTIONS[key] && imgName === CHARACTER_EVOLUTIONS[key].version + ".jpg";
 
   const _isEN = window.LANG === 'en';
 
@@ -4368,6 +4514,7 @@ function dealNext() {
   preload.onload = () => {
     cardImage.src = imgPath;
     cardImage.style.visibility = "";
+    if (_agedNow && currentCard === c && !c.knot_of) _playAgingReveal(key, c); // birleşik kartta iki portre zaten bölünmüş
   };
   preload.onerror = () => {
     // Portresi henüz eklenmemiş yeni karakter → benzer bir portre
@@ -6366,7 +6513,7 @@ function showEsyaReplaceConfirm(onConfirm) {
 function activateItem(slotIndex) {
   if (isGameOver) return;
   const itemId = playerItems[slotIndex];
-  if (!itemId) return;
+  if (!itemId) { showEmptySlotTip(slotIndex); return; }
   const item = ITEMS[itemId];
   Haptics.tap();
   showItemConfirm(slotIndex, item);
@@ -6470,6 +6617,33 @@ function consumeActiveItem() {
   updateItemBar();
 }
 
+// ── Boş eşya kutuları (27 Eylül 2026) ──────────────────────────────────
+// Boş kutu artık bomboş durmuyor: her kutuda Eşya Dükkânı'nda satılan farklı
+// bir eşyanın soluk silueti ve "+" var; dokununca o eşyanın ne yaptığı ve
+// nereden alındığı kısaca yazar, "Dükkânı aç" düğmesi dükkâna götürür.
+const EMPTY_SLOT_GHOSTS = ["sifa_otu", "yeniceri_nisan", "dervis_muska"];
+function showEmptySlotTip(slotIndex) {
+  const game = document.getElementById("game");
+  if (!game || isGameOver) return;
+  document.getElementById("empty-slot-tip")?.remove();
+  const en = window.LANG === 'en';
+  const id = EMPTY_SLOT_GHOSTS[slotIndex] || "sifa_otu";
+  const itm = ITEMS[id], e = (en && window.EN_ITEMS) ? window.EN_ITEMS[id] : null;
+  const name = e ? e.name : itm.name, desc = e ? e.desc : itm.desc;
+  const tip = document.createElement("div");
+  tip.id = "empty-slot-tip";
+  tip.innerHTML = `<div class="est-row"><img src="${itm.icon}" alt=""><div><b>${name}</b><div class="est-desc">${desc}.</div></div></div>
+    <div class="est-where">${en ? `Empty slot. Items are earned on rare cards or bought in the Item Shop for ${ITEM_AKCE_COST} akce.` : `Boş kutu. Eşyalar nadir kartlarla kazanılır ya da Eşya Dükkânı'ndan ${ITEM_AKCE_COST} akçeye alınır.`}</div>
+    <button class="est-shop" type="button">${en ? "OPEN ITEM SHOP" : "EŞYA DÜKKÂNINI AÇ"}</button>`;
+  game.appendChild(tip);
+  const close = () => { clearTimeout(tip._t); tip.remove(); document.removeEventListener("pointerdown", outside, true); };
+  const outside = (ev) => { if (!tip.contains(ev.target) && !ev.target.closest?.(".item-slot")) close(); };
+  tip.querySelector(".est-shop").onclick = () => { close(); showEsyaDukkani(); };
+  tip._t = setTimeout(close, 5000);
+  setTimeout(() => document.addEventListener("pointerdown", outside, true), 0);
+  if (typeof Haptics !== "undefined") Haptics.tap();
+}
+
 function updateItemBar() {
   for (let i = 0; i < 3; i++) {
     const slot = document.getElementById("item-slot-" + i);
@@ -6479,9 +6653,12 @@ function updateItemBar() {
     const name = slot.querySelector(".item-name");
     if (itemId && ITEMS[itemId]) {
       const itm = ITEMS[itemId];
-      icon.innerHTML = `<img src="${itm.icon}" alt="${itm.name}" onerror="this.parentElement.textContent='?'">`;
+      const _en = (window.LANG === 'en' && window.EN_ITEMS) ? window.EN_ITEMS[itemId] : null;
+      icon.innerHTML = `<img src="${itm.icon}" alt="${_en ? _en.name : itm.name}" onerror="this.parentElement.textContent='?'">`;
       icon.style.fontSize = "";
-      name.textContent = itm.name;
+      name.textContent = _en ? _en.name : itm.name;
+      slot.classList.remove("ghost");
+      slot.querySelector(".item-plus")?.remove();
       slot.style.borderColor = activeItemIndex === i ? (itm.color || "var(--gold)") : "";
       slot.classList.remove("empty");
       slot.classList.toggle("active", activeItemIndex === i);
@@ -6496,9 +6673,13 @@ function updateItemBar() {
         badge.remove();
       }
     } else {
-      icon.textContent = "";
+      // Boş kutu: dükkânda satılan bir eşyanın soluk silueti + "+" (27 Eylül 2026)
+      const ghostId = EMPTY_SLOT_GHOSTS[i];
+      icon.innerHTML = `<img src="${ITEMS[ghostId].icon}" alt="" aria-hidden="true">`;
       icon.style.fontSize = "";
       name.textContent = "";
+      if (!slot.querySelector(".item-plus")) { const pl = document.createElement("span"); pl.className = "item-plus"; pl.textContent = "+"; slot.appendChild(pl); }
+      slot.classList.add("ghost");
       slot.style.borderColor = "";
       slot.classList.add("empty");
       slot.classList.remove("active");
@@ -6850,6 +7031,7 @@ function decide(dir) {
     });
     if (decisionLog.length > 40) decisionLog.shift();
   }
+  _recordChronicle(currentCard, dir, newFlags);
 
   // Item grant — koşul kontrolü
   const grantKey = "grants_item_on_" + dir;
@@ -7596,6 +7778,8 @@ function triggerGameOver(reason) {
 
 function _actuallyTriggerGameOver(reason) {
   isGameOver = true;
+  // Açık kalmış oyun içi pencereler ölüm ekranının üstünde kalmasın
+  ["katib-overlay", "empty-slot-tip", "item-confirm-popup"].forEach(id => document.getElementById(id)?.remove());
   clearSave();
   stopAmbientMusic();
   Haptics.gameOver();
@@ -7895,6 +8079,63 @@ function getEpilogText() {
   return lines;
 }
 
+// ── Vakayiname (27 Eylül 2026) ───────────────────────────────────────
+// Oyun boyunca önemli olaylar kaydedilir (Hicri yıl + mevsim, TR/EN metin,
+// önem puanı); ölüm ekranında en önemli 7'si kronolojik sırayla bir Osmanlı
+// tarih kitabı sayfası olarak yazılır. Puan: birleşik olay 5, kriz ve geri
+// dönen sonuç 4, sonuç doğuran karar ve olay 3, iz bırakan karar 1.
+const CHRONICLE_MAX = 60, CHRONICLE_SHOW = 7;
+function _recordChronicle(c, dir, newFlags) {
+  if (!c || !dir || c.type === "easter" || c.type === "padisah_ziyaret") return;
+  const srcMap = _getConsequenceSources();
+  let k = null, sc = 0;
+  if (c.knot_of) { k = "knot"; sc = 5; }
+  else if (c.is_crisis) { k = "crisis"; sc = 4; }
+  else if (srcMap[c.id]) { k = "result"; sc = 4; }
+  else if (c["triggers_on_" + dir]) { k = "seed"; sc = 3; }
+  else if (c.is_event) { k = "event"; sc = 3; }
+  else if ((newFlags || []).some(f => !/_resolved$/.test(f))) { k = "mark"; sc = 1; }
+  if (!k) return;
+  const tr = c[dir + "_text"], en = c[dir + "_text_en"];
+  if (!tr) return;
+  chronicle.push({ hy: hicriYear, s: getCurrentSeason(), k, sc,
+    n: c.character_name || "", ne: c.character_name_en || c.character_name || "", t: tr, te: en || tr });
+  if (chronicle.length > CHRONICLE_MAX) { // en düşük puanlı en eskiyi at
+    let drop = 0; chronicle.forEach((e, i) => { if (e.sc < chronicle[drop].sc) drop = i; });
+    chronicle.splice(drop, 1);
+  }
+}
+function _chronicleHTML() {
+  const en = window.LANG === 'en';
+  const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  const seasons = en ? SEASONS_EN : SEASONS_TR;
+  // Puan sırasıyla doldur; sığmayan puan grubundan saltanat boyunca eşit
+  // aralıklarla seç (hep en yeniler seçilirse ilk yıllar sayfadan düşüyordu)
+  const all = chronicle.map((e, i) => ({ e, i }));
+  let pick = [];
+  for (const sc of [...new Set(all.map(x => x.e.sc))].sort((a, b) => b - a)) {
+    const tier = all.filter(x => x.e.sc === sc), room = CHRONICLE_SHOW - pick.length;
+    if (room <= 0) break;
+    if (tier.length <= room) { pick = pick.concat(tier); continue; }
+    for (let j = 0; j < room; j++) pick.push(tier[room === 1 ? 0 : Math.round(j * (tier.length - 1) / (room - 1))]);
+  }
+  pick.sort((a, b) => a.i - b.i);
+  const enS = (en && window.EN_SULTANS && selectedSultan) ? window.EN_SULTANS[selectedSultan.id] : null;
+  const sultanName = enS ? enS.name : (selectedSultan ? selectedSultan.name : "Sultan");
+  const start = (selectedSultan && SULTAN_HICRI_START[selectedSultan.id]) || hicriYear;
+  const epilog = getEpilogText();
+  const items = pick.length
+    ? pick.map(({ e }) => `<li class="vk-${e.k}"><span class="vk-yr">${e.hy} · ${seasons[e.s] ? seasons[e.s].toLocaleUpperCase(en ? 'en' : 'tr') : ""}</span><br>${e.k === "knot" ? "✦ " : ""}${esc(en ? e.ne : e.n)} · “${esc(en ? e.te : e.t)}”</li>`).join("")
+    : `<li class="vk-empty">${en ? "Nothing great enough to record was decided in so brief a vizierate." : "Bu kısa sadrazamlıkta kayda geçecek büyük bir karar alınamadı."}</li>`;
+  return `<div class="vk-title">${en ? "CHRONICLE" : "VAKAYİNAME"}</div>
+    <div class="vk-sub">${en ? `Grand Vizier under ${esc(sultanName)} · ${start}–${hicriYear} AH` : `${esc(sultanName)} devrinin sadrazamı · ${start}–${hicriYear} H.`}</div>
+    <div class="vk-orn">✦ ✦ ✦</div>
+    <p class="vk-intro">${esc(epilog[0] || "")}</p>
+    <ol class="vk-list">${items}</ol>
+    <div class="vk-end">${epilog.slice(1).map(l => `<p>${esc(l)}</p>`).join("")}</div>
+    <div class="vk-stamp"><b>${year}</b><span>${en ? (year === 1 ? "YEAR" : "YEARS") : "YIL"}</span></div>`;
+}
+
 function renderEpilog() {
   let section = document.getElementById("gameover-epilog");
   if (!section) {
@@ -7906,10 +8147,9 @@ function renderEpilog() {
       panel.insertBefore(section, restartBtn);
     }
   }
-  const isEN = window.LANG === 'en';
-  const title = isEN ? "HISTORIANS' NOTE" : "TARİHÇİLERİN NOTU";
-  const lines = getEpilogText();
-  section.innerHTML = `<div class="epilog-title">${title}</div>` + lines.map(l => `<p class="epilog-line">${l}</p>`).join("");
+  // Vakayiname sayfası (Tarihçilerin Notu cümleleri sayfanın açılışı ve kapanışı oldu)
+  section.className = "vakayiname";
+  section.innerHTML = _chronicleHTML();
 }
 
 function saveHighScore() {
@@ -8166,6 +8406,9 @@ function _settUpdateUI() {
   document.getElementById('sett-sfx-off').classList.toggle('active', window.sfxEnabled === false);
   document.getElementById('sett-lang-tr').classList.toggle('active', window.LANG !== 'en');
   document.getElementById('sett-lang-en').classList.toggle('active', window.LANG === 'en');
+  const _sfxOn = (() => { try { return localStorage.getItem('sadrazam_season_fx') !== 'off'; } catch (e) { return true; } })();
+  document.getElementById('sett-season-on').classList.toggle('active', _sfxOn);
+  document.getElementById('sett-season-off').classList.toggle('active', !_sfxOn);
   document.getElementById('sett-preview-on').classList.toggle('active', window.previewMode === true);
   document.getElementById('sett-preview-off').classList.toggle('active', window.previewMode !== true);
   const isEN = window.LANG === 'en';
@@ -8175,6 +8418,8 @@ function _settUpdateUI() {
   document.getElementById('sett-sfx-off').textContent = isEN ? 'Off' : 'Kapalı';
   document.getElementById('sett-preview-on').textContent  = isEN ? 'On'  : 'Açık';
   document.getElementById('sett-preview-off').textContent = isEN ? 'Off' : 'Kapalı';
+  document.getElementById('sett-season-on').textContent  = isEN ? 'On'  : 'Açık';
+  document.getElementById('sett-season-off').textContent = isEN ? 'Off' : 'Kapalı';
 }
 
 function showSettingsOverlay() {
@@ -8190,6 +8435,8 @@ document.getElementById('sett-mus-on').addEventListener('click',  () => { window
 document.getElementById('sett-mus-off').addEventListener('click', () => { window.musicEnabled = false; localStorage.setItem('sadrazam_music','off'); stopAllMusic();  _settUpdateUI(); });
 document.getElementById('sett-sfx-on').addEventListener('click',  () => { window.sfxEnabled = true;  localStorage.setItem('sadrazam_sfx','on');  _settUpdateUI(); });
 document.getElementById('sett-sfx-off').addEventListener('click', () => { window.sfxEnabled = false; localStorage.setItem('sadrazam_sfx','off'); _settUpdateUI(); });
+document.getElementById('sett-season-on').addEventListener('click',  () => { try { localStorage.setItem('sadrazam_season_fx','on'); } catch (e) {} _settUpdateUI(); });
+document.getElementById('sett-season-off').addEventListener('click', () => { try { localStorage.setItem('sadrazam_season_fx','off'); } catch (e) {} _settUpdateUI(); });
 document.getElementById('sett-lang-tr').addEventListener('click', () => { setLang('tr'); _settUpdateUI(); window.applyI18nHTML && window.applyI18nHTML(); });
 document.getElementById('sett-lang-en').addEventListener('click', () => { setLang('en'); _settUpdateUI(); window.applyI18nHTML && window.applyI18nHTML(); });
 document.getElementById('sett-preview-on').addEventListener('click',  () => {
