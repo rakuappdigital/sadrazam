@@ -2736,6 +2736,14 @@ function showModeIntro(o) {
   el.querySelector(".mi-back").onclick = () => { close(); if (o.onCancel) o.onCancel(); };
 }
 
+document.getElementById("btn-pargali").addEventListener("click", () => {
+  if (window.playButtonTap) playButtonTap();
+  showPargaliLetter();
+});
+// Dosyanın tamamı yüklendikten sonra (PARGALI_* sabitleri aşağıda tanımlı —
+// burada doğrudan çağırmak TDZ hatasıyla betiğin geri kalanını durduruyordu)
+setTimeout(updatePargaliMenuButton, 0);
+
 document.getElementById("btn-challenge").addEventListener("click", () => {
   if (window.playButtonTap) playButtonTap();
   const isEN = window.LANG === 'en';
@@ -2926,6 +2934,7 @@ function startGame() {
     currentTitle = "SADRAZAM";
     pasaPromoted = true;
   }
+  _applyPargaliEndingAtStart(); // Pargalı'nın Sırrı çözüldüyse kalıcı başlangıç etkisi
 
   year = 1;
   cardsPlayed = 0;
@@ -4582,6 +4591,7 @@ function showEasterCard(c) {
         if (ch.run) ch.run();
         if (ch.flag) activeFlags[ch.flag] = true;
         _lastDecision = { tr: ch.tr, en: ch.en };
+        checkPargaliSecret();
         if (ch.sched) {
           const onceKey = "_easter_sched_" + ch.sched[0];
           if (!activeFlags[onceKey] && allCards.some(x => x.id === ch.sched[0])) {
@@ -5220,7 +5230,7 @@ function getEasterChoices(c) {
   ];
   if (t === "fisildayan") return [
     C("Kulağınızı tıkayın", "Cover your ears", {}),
-    C("Fısıltıyı dinleyin", "Listen to the whisper", { run: () => {
+    C("Fısıltıyı dinleyin", "Listen to the whisper", { flag: "_fisilti_dinlendi", run: () => {
       const en = window.LANG === 'en';
       if (typeof changeHealth === "function") changeHealth(-5);
       if (hiddenTraitor && !traitorRevealed) {
@@ -5240,9 +5250,17 @@ function getEasterChoices(c) {
     C("Şükür kurbanı dağıtın", "Give thanks offerings", { run: () => _mucizeGain(0.30, 0.10, 5) }),
   ];
   if (t === "pargali") return [
-    C("Ruhuna Fatiha okuyun", "Pray for his soul", { fx: { ulema: 3 } }),
+    C("Ruhuna Fatiha okuyun", "Pray for his soul", { fx: { ulema: 3 }, flag: "_pargali_fatiha" }),
     C("Hayali kovun", "Banish the ghost", { fx: { saray: 2 } }),
   ];
+  if (t === "pargali_final_secim") {
+    const finish = (e) => () => { localStorage.setItem(PARGALI_END_KEY, e); updatePargaliMenuButton();
+      showItemToast(window.LANG === 'en' ? "Pargalı's secret is solved." : "Pargalı'nın sırrı çözüldü."); };
+    return [
+      C("Mektubu yakın, sır bende kalsın", "Burn it, the secret stays with me", { fx: { saray: 3 }, run: finish("yak") }),
+      C("Mektubu Sultan'a götürün", "Take it to the Sultan", { fx: { ulema: 3 }, run: finish("sultan") }),
+    ];
+  }
   if (t === "golge") return [
     C("Selefinizden ders alın", "Learn from your predecessor", { run: () => {
       for (const s of Object.keys(stats)) { const d = stats[s] < 50 ? Math.min(5, 50 - stats[s]) : -Math.min(5, stats[s] - 50); if (d) { stats[s] += d; showStatDelta(s, d); } }
@@ -5357,6 +5375,110 @@ function maybeShowCriticalOffer() {
       if (b) { const nb = getAkceBalance(); b.innerHTML = (nb >= 1 ? (en ? "1 Akce" : "1 Akçe") : (en ? "Get Akce" : "Akçe Al")) + ` <span class="co-bal">(${nb})</span>`; }
     });
   };
+}
+
+// ── Pargalı'nın Sırrı — oyunlar arası nihai gizem (27 Eylül 2026) ────────
+// Pargalı İbrahim Paşa'nın halefine bıraktığı mektubun 7 sayfası farklı oyunlara
+// dağılmış. Her sayfa belirli bir davranışla bulunur (bir kez, kalıcı). Metin
+// BULUNMA SIRASINA göre verilir — hangi koşulla bulunursa bulunsun hikâye baştan
+// sona akar. 7. sayfadan sonra 3 kartlık final ve kalıcı bir seçim.
+const PARGALI_KEY = "sadrazam_pargali_pages";
+const PARGALI_END_KEY = "sadrazam_pargali_ending";
+const PARGALI_CONDITIONS = [
+  { id: "fatiha",  check: () => !!activeFlags._pargali_fatiha },
+  { id: "kanuni",  check: () => selectedSultan && selectedSultan.id === "kanuni" && year >= 3 },
+  { id: "valide",  check: () => ((characterMemory['5-valide-sultan'] || {}).right || 0) >= 3 },
+  { id: "cocuk",   check: () => !!activeFlags["çocuk_affedildi"] },
+  { id: "hain",    check: () => traitorInvestigated >= 2 },
+  { id: "fisilti", check: () => !!activeFlags._fisilti_dinlendi },
+];
+const PARGALI_PAGES = [
+  { tr: "Sen, benden sonra bu mührü taşıyan: bu satırları okuyorsan ben çoktan Topkapı'nın duvarlarına karışmışımdır. Dinle.",
+    en: "You who carry this seal after me: if you read these lines, I have long since become part of Topkapı's walls. Listen." },
+  { tr: "Süleyman'la aynı sofrada büyüdük. Bana kardeşim derdi. Kanunnameyi birlikte yazdık; her maddesinde benim de mürekkebim var.",
+    en: "Süleyman and I grew up at the same table. He called me brother. We wrote the law together; my ink is in every article." },
+  { tr: "Hürrem Sultan bana hiç düşman olmadı. Onun korktuğu ben değildim; benim bildiklerimdi.",
+    en: "Hürrem Sultan was never my enemy. It was not me she feared; it was what I knew." },
+  { tr: "Cellat o gece ağlıyordu. 'Paşam, elim gitmiyor' dedi. Ben ona 'Emir emirdir' dedim. Sen de bir gün aynı sözü duyacaksın.",
+    en: "The executioner wept that night. 'My Pasha, my hand will not move,' he said. I told him, 'An order is an order.' One day you will hear those words too." },
+  { tr: "Divan'da benden başka biri de Sultan'a yazıyordu. Mektuplarımı okuyan, sözlerimi çarpıtan. Adını hiç öğrenemedim; sen öğrenebilirsin.",
+    en: "Someone else in the Divan was writing to the Sultan. Reading my letters, twisting my words. I never learned the name; you still can." },
+  { tr: "Beni öldüren kılıç değildi; bir kez 'Serasker Sultan' diye imzalamamdı. Tahtın gölgesinde ikinci bir sultana yer yoktur. Bir kez yeter.",
+    en: "It was not the sword that killed me; it was signing once as 'Serasker Sultan'. There is no room for a second sultan in the shadow of the throne. Once is enough." },
+  { tr: "Son sayfa: Mühür, sahibini korumaz; onu tutsak eder. Bunu bilen sadrazam uzun yaşar. Bu gece rüyanda seni bekleyeceğim.",
+    en: "The last page: the seal does not protect its bearer; it imprisons him. The vizier who knows this lives long. Tonight I will wait for you in your dream." },
+];
+function getPargaliPages() { try { const a = JSON.parse(localStorage.getItem(PARGALI_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+function _savePargaliPages(a) { localStorage.setItem(PARGALI_KEY, JSON.stringify(a)); }
+function getPargaliEnding() { return localStorage.getItem(PARGALI_END_KEY) || ""; }
+let _pargaliQueuedThisCheck = false;
+
+function _makePargaliPageCard(n) {
+  const en = window.LANG === 'en';
+  const pg = PARGALI_PAGES[n - 1];
+  return { id: "pargali_sayfa_" + n, type: "easter", easter_type: "pargali_sayfa", character: "pargali-ibrahim",
+    character_name: en ? `Pargalı's Letter — Page ${n}/7` : `Pargalı'nın Mektubu — Sayfa ${n}/7`,
+    text: en ? pg.en : pg.tr, button: en ? "KEEP THE PAGE" : "SAYFAYI SAKLA", stat_effect: null };
+}
+function _pargaliFinaleCards() {
+  const en = window.LANG === 'en';
+  const base = { type: "easter", character: "pargali-ibrahim", character_name: en ? "Pargalı İbrahim Pasha" : "Pargalı İbrahim Paşa", stat_effect: null };
+  return [
+    { ...base, id: "pargali_final_1", easter_type: "pargali_final", button: en ? "..." : "...",
+      text: en ? "You gathered all seven pages. Now you know what you must know: Süleyman did not kill me. What killed me was forgetting that his mercy was a gift, not a right."
+               : "Yedi sayfayı topladın. Artık bilmen gerekeni biliyorsun: Beni Süleyman öldürmedi. Beni, onun merhametinin bir hak değil bir lütuf olduğunu unutmam öldürdü." },
+    { ...base, id: "pargali_final_2", easter_type: "pargali_final", button: en ? "I UNDERSTAND" : "ANLADIM",
+      text: en ? "Every night I kept the seal under my pillow. One morning I woke and understood: the seal was not carried by me; I was carried by the seal. Grand Vizier, which one are you?"
+               : "Mührü her gece yastığımın altına koyardım. Bir sabah uyandım ve anladım: mührü ben taşımıyordum, mühür beni taşıyordu. Sadrazam, sen hangisisin?" },
+    { ...base, id: "pargali_final_3", easter_type: "pargali_final_secim", button: "",
+      text: en ? "What will you do with my letter?" : "Mektubumu ne yapacaksın?" },
+  ];
+}
+
+// Her karardan / özel kart seçiminden sonra çağrılır; en fazla bir sayfa verir
+function checkPargaliSecret() {
+  if (isGameOver || isPaywalled) return;
+  if (getPargaliEnding()) return; // sır çözüldü
+  const pages = getPargaliPages();
+  if (pages.length >= 7) return;
+  if (forcedQueue.some(c => c && typeof c.id === "string" && c.id.startsWith("pargali_"))) return; // bekleyen sayfa varken yenisini ekleme
+  let foundId = null;
+  if (pages.length === 6) { if (year >= 7) foundId = "son_sayfa"; }
+  else { const c = PARGALI_CONDITIONS.find(k => !pages.includes(k.id) && (() => { try { return k.check(); } catch (e) { return false; } })()); if (c) foundId = c.id; }
+  if (!foundId) return;
+  pages.push(foundId); _savePargaliPages(pages);
+  forcedQueue.unshift(_makePargaliPageCard(pages.length));
+  if (pages.length === 7) forcedQueue.splice(1, 0, ..._pargaliFinaleCards());
+  updatePargaliMenuButton();
+}
+
+function _applyPargaliEndingAtStart() {
+  const e = getPargaliEnding();
+  if (e === "yak") { stats.saray = Math.min(95, (stats.saray ?? 50) + 5); }
+  if (e === "sultan") { sultanSabir = Math.min(95, sultanSabir + 10); }
+}
+
+function updatePargaliMenuButton() {
+  const b = document.getElementById("btn-pargali"); if (!b) return;
+  const n = getPargaliPages().length, en = window.LANG === 'en', done = !!getPargaliEnding();
+  b.classList.toggle("hidden", n === 0);
+  const lbl = b.querySelector(".pg-lbl");
+  if (lbl) lbl.textContent = en ? (done ? "PARGALI'S SECRET" : `PARGALI'S LETTER ${n}/7`) : (done ? "PARGALI'NIN SIRRI" : `PARGALI'NIN MEKTUBU ${n}/7`);
+}
+function showPargaliLetter() {
+  if (document.getElementById("pargali-letter-overlay")) return;
+  const en = window.LANG === 'en', n = getPargaliPages().length, ending = getPargaliEnding();
+  const el = document.createElement("div"); el.id = "pargali-letter-overlay";
+  const pages = PARGALI_PAGES.map((p, i) => i < n
+    ? `<div class="pl-page"><span class="pl-no">${i + 1}</span>${en ? p.en : p.tr}</div>`
+    : `<div class="pl-page missing"><span class="pl-no">${i + 1}</span>${en ? "A torn page. It must be somewhere in another reign…" : "Yırtık bir sayfa. Başka bir saltanatta bir yerde olmalı…"}</div>`).join("");
+  const end = ending ? `<div class="pl-end">${ending === "yak"
+      ? (en ? "You burned the letter. The secret rests with you — each new reign begins with the Divan's trust (+5 Palace)." : "Mektubu yaktın. Sır seninle kaldı — her yeni saltanat Divan'ın güveniyle başlar (+5 Saray).")
+      : (en ? "You took the letter to the Sultan. Each new reign begins with the Sultan's patience (+10)." : "Mektubu Sultan'a götürdün. Her yeni saltanat Sultan'ın sabrıyla başlar (+10).")}</div>` : "";
+  el.innerHTML = `<div id="pargali-letter"><div class="pl-title">${en ? "PARGALI'S LETTER" : "PARGALI'NIN MEKTUBU"}</div><div class="pl-sub">${n}/7</div>${pages}${end}<button class="pl-close">${en ? "Close" : "Kapat"}</button></div>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add("visible"));
+  el.querySelector(".pl-close").onclick = () => { el.classList.remove("visible"); setTimeout(() => el.remove(), 220); };
 }
 
 function _hideEasterChoices() {
@@ -6771,6 +6893,7 @@ function decide(dir) {
     tryPadisahZiyareti();
   tryHekimDinlenme();
   if (isChallengeMode) updateChallengeUI();
+  checkPargaliSecret();
   // Şehzade her yıl sonu güçlenir
   if (sultanSabir < 40) updateSehzadePower(8);
   else updateSehzadePower(3);

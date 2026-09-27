@@ -5047,3 +5047,18 @@ html, body {
 #challenge-list .cl-note { display: block; font-size: 11.5px; font-style: italic; color: var(--gold-dim); }
 #challenge-list .cl-reward { margin-top: 6px; font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1px; color: var(--gold); text-align: center; }
 #mode-intro-box .mi-body .gi { width: 14px; height: 14px; vertical-align: -2px; }
+
+/* ── Pargalı'nın Sırrı (27 Eylül 2026) ── */
+#btn-pargali.hidden { display: none; }
+#btn-pargali { color: #d8c08a; border-color: rgba(216,192,138,.45); }
+#pargali-letter-overlay { position: fixed; inset: 0; z-index: 900; display: flex; align-items: center; justify-content: center; padding: 18px; background: rgba(3,2,8,.82); opacity: 0; transition: opacity .22s; }
+#pargali-letter-overlay.visible { opacity: 1; }
+#pargali-letter { width: 100%; max-width: 360px; max-height: 86vh; overflow-y: auto; background: linear-gradient(180deg, #e3d4ad, #EBDFC2 10%, #EBDFC2 90%, #e3d4ad); color: #3B2A14; border-radius: 8px; padding: 18px 18px 10px; box-shadow: 0 18px 44px rgba(0,0,0,.7), inset 0 0 50px rgba(120,80,30,.25); }
+#pargali-letter .pl-title { font-family: 'Cinzel', serif; font-size: 17px; letter-spacing: 3px; color: #5a1010; text-align: center; }
+#pargali-letter .pl-sub { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; color: #7a4a10; text-align: center; margin: 2px 0 10px; }
+#pargali-letter .pl-page { font-family: 'IM Fell English', serif; font-style: italic; font-size: 14px; line-height: 1.5; padding: 8px 0 8px 26px; border-top: 1px solid rgba(90,16,16,.18); position: relative; }
+#pargali-letter .pl-page .pl-no { position: absolute; left: 0; top: 9px; font-family: 'Cinzel', serif; font-style: normal; font-size: 12px; color: #8e1b1b; }
+#pargali-letter .pl-page.missing { color: rgba(59,42,20,.4); }
+#pargali-letter .pl-end { margin-top: 8px; padding: 10px; border-radius: 6px; background: rgba(142,27,27,.1); font-family: 'IM Fell English', serif; font-size: 13.5px; line-height: 1.45; color: #5a1010; text-align: center; }
+#pargali-letter .pl-close { display: block; margin: 8px auto 0; background: none; border: 0; color: #7a4a10; font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
+#easter-action-btn.pargali_sayfa { border-color: rgba(216,192,138,.55); color: #d8c08a; background: rgba(216,192,138,.08); }
