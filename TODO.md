@@ -1,5 +1,34 @@
 # Sadrazam — TODO
 
+## SIRADAKİ SESSION — kullanıcının istediği 5 geliştirme (27 Eylül 2026)
+
+Kullanıcının kuralı: yaratıcı ol, en uygun ve hatasız eklenebilecek örnekleri
+seç; her eklemeyi TEST EDEREK, ADIM ADIM git (bu session'daki gibi: dal →
+adım → Puppeteer gerçek akış testi → commit → yüzde ile ilerleme raporu).
+"İplik" oyunda görünmeyen bir KAVRAM (kod: gecikmeli sonuç / knot) — oyunda
+bu kelime geçmez. Mimari: CLAUDE.md §3b.
+
+1. **Tek butonlu kartları iki seçenekli yap.** Önce tek butonla geçilen
+   kartların listesini çıkar (Padişah ziyareti, saraya giren kedi vb. — ipucu:
+   `type: "easter"` kartlar, `easter-action-btn`, `showEasterCard`,
+   `showPadisahZiyareti`, `advanceEasterCard`, chance kartları). Sonra HER
+   kart için kullanıcıyla konuş: iki seçeneğin metinleri, işleyiş mekaniği
+   önerisi, hem anlık stat etkisi hem gecikmeli sonuç (oyunun genel gidişatı)
+   etkisi. Liste onaylanmadan kod yazma.
+2. **Görsel iyileştirme fikirleri öner.** Kullanıcı beğendiklerini seçecek,
+   sonra web üzerinden (Artifact demo, oyuna uygulamadan) gösterilecek.
+3. **Reklam izlemeyi ve akçe satışını artıracak çok pratik öneriler.** Akıllıca
+   ve sürükleyici olmalı. (Mevcut: İkinci Şans 5/gün reklam veya 1 akçe, Eşya
+   Dükkanı 1 akçe, geçiş reklamı her 2. oyun başı, Reklamsız IAP, akçe paketleri
+   10/20/50/100. Önceki öneriler: memory project_sadrazam_kader_tezgahi.)
+4. **Yeni karakterler ve olaylar öner.** Oyunu zengin gösterecek, oyuna etki
+   edecek. Karakterler oyunda belli yerlerde, gecikmeli sonuçların yarattığı
+   belli sonuçlarda ortaya çıkacak. Sonra görsel PROMPTLARIYLA birlikte yaz
+   (kullanıcı görselleri üretecek), ardından oyuna eklenecek.
+5. **Rakip oyun analizi.** Benzer oyunlardan (Reigns serisi vb.) eksik
+   kaldığımız yerleri tespit et, iyileştirme öner; bize özgü güçlü yönleri de
+   geliştir/ekle.
+
 ## SIRADAKİ (sonraki session buradan başlar)
 
 **v1.4.1 / build 25** — 26 Eylül 2026'da ASC'ye yüklendi (Delivery UUID
@@ -19,20 +48,20 @@ sayfasında build 25'i seçip review'a gönderiyor.
       Reklamsız fiyatı (₺59,99) geliyor mu, satın alınca geçiş reklamı kesiliyor
       mu, "Geri Yükle" çalışıyor mu. `noads` IAP'ı sürüme eklendi mi kontrol et.
 
-## Tespit edilen hata (26 Eylül 2026, henüz düzeltilmedi)
+## Düğüm / gecikmeli sonuç sistemi — dalda HAZIR, main'e birleştirilmedi
 
-- **`game.js` `CHAIN_RULES` içindeki 7 gecikmeli sonucun HİÇBİRİ oyunda
-  tetiklenmiyor**: kuralların beklediği bayrakları (`yeni_kışla_reddedildi`,
-  `venedik_1_sinirlendi`, `defterdar_borc_alındı`, `casuslar_op_baslatildi`,
-  `veba_gormezden_gelindi_2`, `sehzade_affedildi`, `kaptan_filo_izni`)
-  `data/cards.json`'daki hiçbir kart set etmiyor (isimler uyuşmuyor; ör.
-  kartlarda `kışla_reddedildi` var). Ayrıca `venedik_geri_dondu` kartı hiç yok.
-  Düzeltme: bayrak adlarını kartlardakiyle eşleştir + eksik kartı yaz.
+Dal: `ozellik/dugum` (push edilmedi). Kullanıcı onayı bekleniyor: main'e
+birleştir → 2 kopya senkron → cap sync → simülatör smoke test → (istenirse) build.
+Ayrıntı: CLAUDE.md §3b. 99/99 regresyon testi geçti (26 Eylül 2026).
 
-## Düğüm mekaniği (kullanıcı demo gördü, içerik planı konuşuldu, henüz kodlanmadı)
+Bu dalda ayrıca düzeltilen mevcut hatalar: 7 ölü zincir kuralı, sonuç kartı
+çift/tekrar gelmesi, gizli hain oyunların 1/3'ünde bozuk, Şeyhülislam görsel
+dosya adı (iPhone'da boş portre riski), 'Hiç borçlanma' başarımı.
 
-Demo: https://claude.ai/artifact/NpiW7iiJccUHkoeTeJEVzw — yerel dal
-`onizleme/hatirlatma-satiri` (hatırlatma satırı denemesi, push edilmedi).
+Açık kalan (bu işten bağımsız, kullanıcıya bildirildi):
+- 375x667 (iPhone SE/8) ekranda stat çubukları ekran dışında (canlıda da var)
+- Gizli hain adaylarının 11/18'inin soruşturulabilir kartı yok (içerik eksiği)
+- Venedik Balyosu portresi farklı çerçeve/stil (birleşik kartta uyumsuz)
 
 ## Bu session'da yapılanlar (26 Eylül 2026)
 

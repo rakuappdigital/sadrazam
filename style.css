@@ -1199,13 +1199,15 @@ html, body {
 
 /* Soruşturma butonu */
 #investigate-btn {
+  /* Portrenin sol üst köşesi: kart metniyle hiç çakışmaz (eskiden bottom:60px
+     metnin üstüne biniyordu). Resim üstünde okunsun diye koyu zemin. */
   position: absolute;
-  bottom: 60px;
-  left: 14px;
-  background: rgba(201,162,39,0.1);
-  border: 1px solid var(--gold-dim);
-  color: var(--gold-dim);
-  font-size: 16px;
+  top: 10px;
+  left: 10px;
+  background: rgba(8,6,18,0.88);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font-size: 20px;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -2450,6 +2452,65 @@ html, body {
   filter: brightness(1.08) saturate(1.15);
 }
 #card-image.state-normal { filter: none; }
+
+/* ── Birleşik sonuç kartı (iki kararın sonucu aynı anda) ──────────────
+   #card-image-knot: ikinci portre; #card-image ile BİREBİR aynı kutuya oturur
+   (aynı genişlik/oran/max-height, #card'ın en üstünde), sağ-çapraz yarısı
+   görünür. Etkileşimsiz: position:absolute + pointer-events:none. */
+#card-image-knot {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  aspect-ratio: 3/4;
+  max-height: 46vh;
+  object-fit: cover;
+  object-position: top center;
+  display: none;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  clip-path: polygon(62% 0, 100% 0, 100% 100%, 38% 100%);
+  animation: breathe 4s ease-in-out infinite;
+}
+#card-image-knot.visible { display: block; }
+/* Birleşik kartta iki portre + altın çizgi tek parça dursun: "nefes" animasyonu
+   iki katmanda farklı fazda çalışıp yarıları ve çizgiyi kaydırıyordu. */
+#card.knot-card #card-image,
+#card.knot-card #card-image-knot { animation: none; transform: none; }
+#card.dragging #card-image-knot { animation: none; }
+#card-image.state-danger + #card-image-knot { filter: contrast(1.15) saturate(0.7) brightness(0.9); animation: breatheFast 2s ease-in-out infinite; }
+#card-image.state-excess + #card-image-knot { filter: contrast(1.1) saturate(1.3) brightness(1.05) sepia(0.15); }
+#card-image.state-blessed + #card-image-knot { filter: brightness(1.08) saturate(1.15); }
+#card-knot-seam {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  aspect-ratio: 3/4;
+  max-height: 46vh;
+  display: none;
+  pointer-events: none;
+  background: var(--gold-light);
+  clip-path: polygon(61.4% 0, 62.6% 0, 38.6% 100%, 37.4% 100%);
+  opacity: 0.9;
+}
+#card-knot-seam.visible { display: block; }
+#card-knot-kicker {
+  display: none;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--gold-light);
+  text-align: center;
+  margin-bottom: 2px;
+}
+#card-knot-kicker.visible { display: block; }
+#card.knot-card {
+  border-color: var(--gold-light);
+  box-shadow:
+    0 0 0 1px rgba(232,200,74,0.55),
+    0 8px 48px rgba(0,0,0,0.8),
+    0 0 36px rgba(201,162,39,0.22);
+}
 
 @keyframes breatheFast {
   0%, 100% { transform: scale(1.0); }
@@ -4754,3 +4815,30 @@ html, body {
 /* Stok emoji yerine geçen ince altın çizgi ikonlar — currentColor ile boyanır,
    1em ile eskiden emoji'nin oturduğu font-size bağlamına aynen uyar. */
 .gi { width: 1em; height: 1em; vertical-align: -0.15em; flex-shrink: 0; }
+
+/* Kısa ekranlar (iPhone SE 2/3, 8: 375x667; SE 1: 320x568) — kart görseli
+   46vh iken #game içeriği ekrandan ~50px taşıyor, ortalandığı için üstte stat
+   çubukları ve altta eşya çubuğu kesiliyordu. .letter-card kuralı daha özgül,
+   etkilenmez. */
+@media (max-height: 700px) {
+  #card-image, #card-image-knot, #card-knot-seam { max-height: 24vh; }
+  #dynamic-subtitle { display: none; }
+  /* Mektup kartının kendi (daha özgül) kuralı var — ayrıca küçült */
+  .letter-card #card-image { max-height: 14vh; }
+  .letter-card #card-text { max-height: 26vh; }
+}
+@media (max-height: 600px) {
+  #card-image, #card-image-knot, #card-knot-seam { max-height: 18vh; }
+  #fate-bar { min-height: 24px; }
+  #stats-bar { padding-top: 8px; }
+  #header-row { padding-top: 2px; padding-bottom: 4px; }
+  #card-area { padding-bottom: 8px; }
+  #item-bar { padding-top: 4px; padding-bottom: 6px; }
+  /* Birleşik kart zaten bölünmüş portre + altın çerçeveyle belli; üst satır sığmıyor */
+  #card-knot-kicker.visible { display: none; }
+}
+@media (max-height: 560px) {
+  #card-image, #card-image-knot, #card-knot-seam { max-height: 15vh; }
+  .letter-card #card-image { max-height: 10vh; }
+  .letter-card #card-text { max-height: 22vh; }
+}
