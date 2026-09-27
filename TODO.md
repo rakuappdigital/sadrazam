@@ -29,6 +29,16 @@ bu kelime geçmez. Mimari: CLAUDE.md §3b.
    kaldığımız yerleri tespit et, iyileştirme öner; bize özgü güçlü yönleri de
    geliştir/ekle.
 
+## Yeni karakter görselleri — kullanıcı üretecek (27 Eylül 2026)
+
+Görseller `~/Desktop/sadra/` klasörüne konacak. Gelince: 1280x1600 JPG'ye
+çevir (`sips`), `assets/characters/<ad>.jpg` olarak kopyala, www + ios senkron.
+Görsel gelene kadar `CHARACTER_IMAGE_FALLBACK` benzer portre gösteriyor.
+Dosya adları: `muneccimbasi.jpg`, `celali-reisi.jpg`, `surgun-genc.jpg`,
+`ceneviz-podestasi.jpg`, `hint-tabibi.jpg`. Promptlar: CLAUDE.md §3c'deki
+karakterler; ortak stil = mevcut portreler (lacivert arabesk çerçeve, altın iç
+çerçeve, kalın mürekkep çizgi, düz zengin renkler, belden yukarı, 4:5).
+
 ## SIRADAKİ (sonraki session buradan başlar)
 
 **v1.4.1 / build 25** — 26 Eylül 2026'da ASC'ye yüklendi (Delivery UUID

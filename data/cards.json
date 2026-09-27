@@ -3738,7 +3738,9 @@
         "ulema": 4,
         "hazine": -8
       },
-      "left_flags_set": [],
+      "left_flags_set": [
+        "kanal_yapılmadı"
+      ],
       "right_flags_set": [
         "kanal_açıldı"
       ],
@@ -16653,7 +16655,8 @@
         "cocuk_geri_donuyor_resolved"
       ],
       "right_flags_set": [
-        "cocuk_geri_donuyor_resolved"
+        "cocuk_geri_donuyor_resolved",
+        "genc_sadik"
       ],
       "required_flags": [
         "çocuk_affedildi"
@@ -18764,7 +18767,8 @@
         "hazine": -12
       },
       "left_flags_set": [
-        "borc_vadesi_geldi_resolved"
+        "borc_vadesi_geldi_resolved",
+        "ceneviz_borc_ertelendi"
       ],
       "right_flags_set": [
         "borc_vadesi_geldi_resolved"
@@ -19217,7 +19221,8 @@
         "su_salgin_riski_resolved"
       ],
       "right_flags_set": [
-        "su_salgin_riski_resolved"
+        "su_salgin_riski_resolved",
+        "su_yolu_yapildi"
       ],
       "required_flags": [
         "su_sorunu_birakildi"
@@ -19259,7 +19264,8 @@
         "hazine": -8
       },
       "left_flags_set": [
-        "koylu_topraktan_kacti_resolved"
+        "koylu_topraktan_kacti_resolved",
+        "celali_kivilcimi"
       ],
       "right_flags_set": [
         "koylu_topraktan_kacti_resolved"
@@ -19349,7 +19355,8 @@
         "hazine": -3
       },
       "left_flags_set": [
-        "aga_zulum_buyudu_resolved"
+        "aga_zulum_buyudu_resolved",
+        "celali_kivilcimi"
       ],
       "right_flags_set": [
         "aga_zulum_buyudu_resolved"
@@ -19442,7 +19449,8 @@
         "ilac_tartismasi_resolved"
       ],
       "right_flags_set": [
-        "ilac_tartismasi_resolved"
+        "ilac_tartismasi_resolved",
+        "hint_tabibi_davet"
       ],
       "required_flags": [
         "hint_ilaci_izinli"
@@ -20122,7 +20130,8 @@
         "hazine": 0
       },
       "left_flags_set": [
-        "dugum_iki_alacakli_resolved"
+        "dugum_iki_alacakli_resolved",
+        "ceneviz_borc_ertelendi"
       ],
       "right_flags_set": [
         "dugum_iki_alacakli_resolved"
@@ -20224,7 +20233,8 @@
         "hazine": -12
       },
       "left_flags_set": [
-        "dugum_koyler_bosaliyor_resolved"
+        "dugum_koyler_bosaliyor_resolved",
+        "celali_kivilcimi"
       ],
       "right_flags_set": [
         "dugum_koyler_bosaliyor_resolved"
@@ -21121,6 +21131,928 @@
       "investigate_text_en": "",
       "speech_left_en": "The bazaar thanks you.",
       "speech_right_en": "The bridge pays for itself."
+    },
+    {
+      "id": "muneccim_fal_1",
+      "character": "muneccimbasi",
+      "character_name": "Müneccimbaşı",
+      "faction": "din",
+      "text": "Paşam, yıldızlar kararlarınızın yankısını taşıyor. Göğe bakıp birini size söyleyebilirim. İlki benden, hediyem olsun.",
+      "left_text": "Yıldızlara inanmam",
+      "right_text": "Oku bakalım",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "muneccim_fal_1_resolved"
+      ],
+      "right_flags_set": [
+        "muneccim_fal_1_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "muneccim_fal_1_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "religious",
+      "speech_left": "Ulema da sizin gibi düşünüyor, Paşam.",
+      "speech_right": "Satürn, Mars'la karşılaşmış…",
+      "character_name_en": "Chief Astrologer",
+      "text_en": "Pasha, the stars carry the echoes of your decisions. I can read one of them for you. The first reading is my gift.",
+      "left_text_en": "I don't trust the stars",
+      "right_text_en": "Read it, then",
+      "investigate_text_en": "",
+      "speech_left_en": "The clergy thinks as you do, Pasha.",
+      "speech_right_en": "Saturn has met Mars…"
+    },
+    {
+      "id": "muneccim_fal_2",
+      "character": "muneccimbasi",
+      "character_name": "Müneccimbaşı",
+      "faction": "din",
+      "text": "Yine geldim Paşam. Gökte kararlarınızın izleri birikti. Ama bu kez yıldızlar bedava konuşmaz.",
+      "left_text": "Git başımdan",
+      "right_text": "Bak bakalım",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "muneccim_fal_2_resolved"
+      ],
+      "right_flags_set": [
+        "muneccim_fal_2_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "muneccim_fal_2_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "religious",
+      "speech_left": "Yıldızlar küsmez, Paşam. Beklerler.",
+      "speech_right": "Usturlabımı getireyim.",
+      "character_name_en": "Chief Astrologer",
+      "text_en": "I have returned, Pasha. The traces of your decisions gather in the sky. But this time the stars will not speak for free.",
+      "left_text_en": "Leave me be",
+      "right_text_en": "Look, then",
+      "investigate_text_en": "",
+      "speech_left_en": "The stars do not sulk, Pasha. They wait.",
+      "speech_right_en": "Let me fetch my astrolabe."
+    },
+    {
+      "id": "celali_1",
+      "character": "celali-reisi",
+      "character_name": "Celali Reisi",
+      "faction": "halk",
+      "text": "Ağaların zulmünden dağa çıkan köylüler bana katıldı, bin kılıcım var. Ya bana bir sancak verin ya da Anadolu yollarını keserim.",
+      "left_text": "Üzerine asker gönderin",
+      "right_text": "Pazarlığa oturun",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": -3,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "left_flags_set": [
+        "celali_sefer",
+        "celali_1_resolved"
+      ],
+      "right_flags_set": [
+        "celali_pazarlik",
+        "celali_1_resolved"
+      ],
+      "required_flags": [
+        "celali_kivilcimi"
+      ],
+      "excluded_flags": [
+        "celali_1_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "political",
+      "speech_left": "Dağlar bizi saklar, Paşam!",
+      "speech_right": "Akıllıca. Kan dökülmesin.",
+      "character_name_en": "Celali Chieftain",
+      "text_en": "The peasants who fled to the hills from the aghas' cruelty have joined me. I have a thousand swords. Grant me a sanjak, or I will cut Anatolia's roads.",
+      "left_text_en": "Send troops against him",
+      "right_text_en": "Sit down and bargain",
+      "investigate_text_en": "",
+      "speech_left_en": "The mountains will hide us, Pasha!",
+      "speech_right_en": "Wise. Let no blood be spilled.",
+      "triggers_on_left": "celali_2_sefer",
+      "triggers_on_right": "celali_2_pazarlik",
+      "trigger_delay": 10
+    },
+    {
+      "id": "celali_2_sefer",
+      "character": "11-sipahi_agasi",
+      "character_name": "Sipahi Ağası",
+      "faction": "ordu",
+      "text": "Paşam, Celali Reisi Bozok'ta kuşatıldı. Adamları köylerine dağılıyor; reis teslim olacak ama canının bağışlanmasını istiyor.",
+      "left_text": "İdam edilsin, ibret olsun",
+      "right_text": "Affedin, sancak verin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 6,
+        "ulema": -4,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": -4,
+        "ulema": 4,
+        "hazine": 3
+      },
+      "left_flags_set": [
+        "celali_2_sefer_resolved"
+      ],
+      "right_flags_set": [
+        "celali_sancakbeyi",
+        "celali_2_sefer_resolved"
+      ],
+      "required_flags": [
+        "celali_sefer"
+      ],
+      "excluded_flags": [
+        "celali_2_sefer_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "military",
+      "speech_left": "Başka asiler de görsün.",
+      "speech_right": "Karayazıcı'ya da sancak verilmişti.",
+      "character_name_en": "Cavalry Commander",
+      "text_en": "Pasha, the Celali chieftain is surrounded at Bozok. His men are scattering to their villages; he will surrender if his life is spared.",
+      "left_text_en": "Execute him as a lesson",
+      "right_text_en": "Pardon him, grant a sanjak",
+      "investigate_text_en": "",
+      "speech_left_en": "Let other rebels see it.",
+      "speech_right_en": "Karayazıcı was granted a sanjak too."
+    },
+    {
+      "id": "celali_2_pazarlik",
+      "character": "celali-reisi",
+      "character_name": "Celali Reisi",
+      "faction": "halk",
+      "text": "Şartım belli, Paşam: Bozok sancağı ve adamlarıma tımar. Verirseniz Anadolu yolları sizindir; vermezseniz dağlar benim.",
+      "left_text": "Asiyle pazarlık olmaz",
+      "right_text": "Sancağı verin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 2,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": -3,
+        "ulema": 3,
+        "hazine": 4
+      },
+      "left_flags_set": [
+        "celali_2_pazarlik_resolved"
+      ],
+      "right_flags_set": [
+        "celali_sancakbeyi",
+        "celali_2_pazarlik_resolved"
+      ],
+      "required_flags": [
+        "celali_pazarlik"
+      ],
+      "excluded_flags": [
+        "celali_2_pazarlik_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "political",
+      "speech_left": "O zaman kılıç konuşsun.",
+      "speech_right": "Sözüm söz, Paşam.",
+      "character_name_en": "Celali Chieftain",
+      "text_en": "My terms are clear, Pasha: the sanjak of Bozok and fiefs for my men. Grant them and Anatolia's roads are yours; refuse and the mountains are mine.",
+      "left_text_en": "No bargaining with rebels",
+      "right_text_en": "Grant the sanjak",
+      "investigate_text_en": "",
+      "speech_left_en": "Then let the sword speak.",
+      "speech_right_en": "My word is my bond, Pasha.",
+      "triggers_on_left": "celali_3_kusatma",
+      "trigger_delay": 8
+    },
+    {
+      "id": "celali_3_kusatma",
+      "character": "celali-reisi",
+      "character_name": "Celali Reisi",
+      "faction": "halk",
+      "text": "Reddettiniz, Paşam. Artık yirmi bin kişiyiz ve Ankara önlerindeyiz. Son sözüm: bana beylerbeyilik verin.",
+      "left_text": "Büyük sefer açın",
+      "right_text": "Beylerbeyiliği verin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 8,
+        "ulema": 0,
+        "hazine": -12
+      },
+      "right_effects": {
+        "saray": -8,
+        "yeniçeri": -6,
+        "ulema": 2,
+        "hazine": 5
+      },
+      "left_flags_set": [
+        "celali_3_kusatma_resolved"
+      ],
+      "right_flags_set": [
+        "celali_sancakbeyi",
+        "celali_3_kusatma_resolved"
+      ],
+      "required_flags": [
+        "celali_2_pazarlik_resolved"
+      ],
+      "excluded_flags": [
+        "celali_3_kusatma_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "political",
+      "speech_left": "Ankara düşmeden yetişin!",
+      "speech_right": "Devletin kapısı geniş imiş.",
+      "character_name_en": "Celali Chieftain",
+      "text_en": "You refused, Pasha. Now we are twenty thousand, before the walls of Ankara. My last word: make me a beylerbey.",
+      "left_text_en": "Launch a great campaign",
+      "right_text_en": "Grant the beylerbey title",
+      "investigate_text_en": "",
+      "speech_left_en": "Come before Ankara falls!",
+      "speech_right_en": "The state's door is wide after all."
+    },
+    {
+      "id": "celali_sancakbeyi_asker",
+      "character": "celali-reisi",
+      "character_name": "Celali Reisi",
+      "faction": "halk",
+      "text": "Paşam, eski bir asi olarak söz verdim: doğu seferine üç bin süvari gönderiyorum. Karşılığında adamlarıma tımar beratı istiyorum.",
+      "left_text": "Süvariye ihtiyacımız yok",
+      "right_text": "Beratları imzalayın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 8,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [
+        "celali_sancakbeyi_asker_resolved"
+      ],
+      "right_flags_set": [
+        "celali_sancakbeyi_asker_resolved"
+      ],
+      "required_flags": [
+        "celali_sancakbeyi"
+      ],
+      "excluded_flags": [
+        "celali_sancakbeyi_asker_resolved"
+      ],
+      "weight": 7,
+      "min_year": 2,
+      "category": "political",
+      "speech_left": "Unutmam bunu, Paşam.",
+      "speech_right": "Sancak size borçlu.",
+      "character_name_en": "Celali Chieftain",
+      "text_en": "Pasha, as a former rebel I gave my word: I am sending three thousand horsemen east. In return I ask for fief deeds for my men.",
+      "left_text_en": "We don't need horsemen",
+      "right_text_en": "Sign the deeds",
+      "investigate_text_en": "",
+      "speech_left_en": "I will not forget this, Pasha.",
+      "speech_right_en": "The sanjak is in your debt."
+    },
+    {
+      "id": "celali_sancakbeyi_hirs",
+      "character": "celali-reisi",
+      "character_name": "Celali Reisi",
+      "faction": "halk",
+      "text": "Sancağım dar geldi, Paşam. Komşu Sivas beyi köylüye zulmediyor; onun yerini de bana verin, düzeni ben kurayım.",
+      "left_text": "Haddini bil",
+      "right_text": "Sivas'ı da verin",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -6,
+        "yeniçeri": 3,
+        "ulema": 2,
+        "hazine": 5
+      },
+      "left_flags_set": [
+        "celali_sancakbeyi_hirs_resolved"
+      ],
+      "right_flags_set": [
+        "celali_sancakbeyi_hirs_resolved"
+      ],
+      "required_flags": [
+        "celali_sancakbeyi"
+      ],
+      "excluded_flags": [
+        "celali_sancakbeyi_hirs_resolved"
+      ],
+      "weight": 5,
+      "min_year": 3,
+      "category": "political",
+      "speech_left": "Dağ yolu hâlâ açık, Paşam…",
+      "speech_right": "İki sancak, tek sadakat.",
+      "character_name_en": "Celali Chieftain",
+      "text_en": "My sanjak has grown too small, Pasha. The neighbouring bey of Sivas oppresses the peasants; give me his seat too and I will keep order.",
+      "left_text_en": "Know your place",
+      "right_text_en": "Give him Sivas too",
+      "investigate_text_en": "",
+      "speech_left_en": "The mountain road is still open, Pasha…",
+      "speech_right_en": "Two sanjaks, one loyalty."
+    },
+    {
+      "id": "genc_ilk_haber",
+      "character": "surgun-genc",
+      "character_name": "Sürgünden Dönen Genç",
+      "faction": "saray",
+      "text": "Paşam, canımı size borçluyum. Çarşıda dilim, kulağım sizindir. İlk haberim: un fiyatını şişiren tüccarların gizli ambarını buldum.",
+      "left_text": "Bu işlere karışma",
+      "right_text": "Ambarı bastırın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": 6
+      },
+      "left_flags_set": [
+        "genc_ilk_haber_resolved"
+      ],
+      "right_flags_set": [
+        "genc_ilk_haber_resolved"
+      ],
+      "required_flags": [
+        "genc_sadik"
+      ],
+      "excluded_flags": [
+        "genc_ilk_haber_resolved"
+      ],
+      "weight": 10,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Nasıl isterseniz, Paşam.",
+      "speech_right": "Yolu ben gösteririm.",
+      "character_name_en": "The Returned Exile",
+      "text_en": "Pasha, I owe you my life. In the bazaar my tongue and ears are yours. My first news: I found the hidden granary of the merchants inflating flour prices.",
+      "left_text_en": "Stay out of this",
+      "right_text_en": "Raid the granary",
+      "investigate_text_en": "",
+      "speech_left_en": "As you wish, Pasha.",
+      "speech_right_en": "I will show the way."
+    },
+    {
+      "id": "genc_hain_ipucu",
+      "character": "surgun-genc",
+      "character_name": "Sürgünden Dönen Genç",
+      "faction": "saray",
+      "text": "Paşam, dün gece {HAIN} konağından gizlice bir haberci çıktı. Sabaha dek izledim; mühürsüz mektuplar taşıyordu. Kimseye söylemedim.",
+      "left_text": "Bir iftira olabilir",
+      "right_text": "İzlemeye devam et",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [
+        "genc_hain_ipucu_resolved"
+      ],
+      "right_flags_set": [
+        "genc_hain_ipucu_resolved"
+      ],
+      "required_flags": [
+        "genc_sadik"
+      ],
+      "excluded_flags": [
+        "genc_hain_ipucu_resolved"
+      ],
+      "weight": 12,
+      "min_year": 1,
+      "category": "intrigue",
+      "speech_left": "Siz bilirsiniz, Paşam.",
+      "speech_right": "Gölge gibi peşindeyim.",
+      "character_name_en": "The Returned Exile",
+      "text_en": "Pasha, last night a courier slipped out of the {HAIN}'s mansion. I followed him until dawn; he carried unsealed letters. I told no one.",
+      "left_text_en": "It may be slander",
+      "right_text_en": "Keep watching",
+      "investigate_text_en": "",
+      "speech_left_en": "You know best, Pasha.",
+      "speech_right_en": "I'll be on him like a shadow."
+    },
+    {
+      "id": "genc_yeniceri_uyari",
+      "character": "surgun-genc",
+      "character_name": "Sürgünden Dönen Genç",
+      "faction": "saray",
+      "text": "Paşam, kışlada kazan kaldırma konuşuluyor; henüz kimse bilmiyor. Bir hafta erken haber veriyorum, karar sizin.",
+      "left_text": "Ağaya haber verin, bastırsın",
+      "right_text": "Maaşları erken dağıtın",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 8,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "left_flags_set": [
+        "genc_yeniceri_uyari_resolved"
+      ],
+      "right_flags_set": [
+        "genc_yeniceri_uyari_resolved"
+      ],
+      "required_flags": [
+        "genc_sadik"
+      ],
+      "excluded_flags": [
+        "genc_yeniceri_uyari_resolved"
+      ],
+      "weight": 7,
+      "min_year": 2,
+      "category": "intrigue",
+      "speech_left": "İsimleri de getiririm.",
+      "speech_right": "Ocak sakinleşir, Paşam.",
+      "character_name_en": "The Returned Exile",
+      "text_en": "Pasha, there is talk of overturning the cauldrons in the barracks; no one knows yet. I bring word a week early. The choice is yours.",
+      "left_text_en": "Tell the Agha to crush it",
+      "right_text_en": "Pay the wages early",
+      "investigate_text_en": "",
+      "speech_left_en": "I can bring names too.",
+      "speech_right_en": "The corps will calm, Pasha."
+    },
+    {
+      "id": "podesta_1",
+      "character": "ceneviz-podestasi",
+      "character_name": "Ceneviz Podestası",
+      "faction": "dış",
+      "text": "Ben Galata'nın Podestası'yım, Paşam. Bankalarımız bir kez daha bekleyemez. Ya borç ya Galata'daki depolarınızın anahtarları.",
+      "left_text": "Depoları teslim edin",
+      "right_text": "Sakız gümrüğünü teklif edin",
+      "left_effects": {
+        "saray": -8,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": -6
+      },
+      "left_flags_set": [
+        "podesta_1_resolved"
+      ],
+      "right_flags_set": [
+        "podesta_1_resolved"
+      ],
+      "required_flags": [
+        "ceneviz_borc_ertelendi"
+      ],
+      "excluded_flags": [
+        "podesta_1_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Anahtarlar bende güvende.",
+      "speech_right": "Cenova bu teklifi sever.",
+      "character_name_en": "Genoese Podestà",
+      "text_en": "I am the Podestà of Galata, Pasha. Our banks cannot wait again. Either the debt, or the keys to your warehouses in Galata.",
+      "left_text_en": "Hand over the warehouses",
+      "right_text_en": "Offer the Chios customs",
+      "investigate_text_en": "",
+      "speech_left_en": "The keys are safe with me.",
+      "speech_right_en": "Genoa will like this offer.",
+      "triggers_on_left": "podesta_2_depolar",
+      "trigger_delay": 12
+    },
+    {
+      "id": "podesta_2_depolar",
+      "character": "ceneviz-podestasi",
+      "character_name": "Ceneviz Podestası",
+      "faction": "dış",
+      "text": "Depolarınız artık bizde, Paşam. Bir teklifim var: Ceneviz donanması Venedik'e karşı sizinle olsun; karşılığında Karadeniz'de serbest ticaret.",
+      "left_text": "Karadeniz Osmanlı gölüdür",
+      "right_text": "Anlaşmayı imzalayın",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 2,
+        "ulema": -3,
+        "hazine": 10
+      },
+      "left_flags_set": [
+        "podesta_2_depolar_resolved"
+      ],
+      "right_flags_set": [
+        "podesta_2_depolar_resolved"
+      ],
+      "required_flags": [
+        "podesta_1_resolved"
+      ],
+      "excluded_flags": [
+        "podesta_2_depolar_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "diplomatic",
+      "speech_left": "Pişman olursunuz, Paşam.",
+      "speech_right": "Venedik bunu duyunca çıldıracak.",
+      "character_name_en": "Genoese Podestà",
+      "text_en": "Your warehouses are ours now, Pasha. An offer: the Genoese fleet sides with you against Venice; in return, free trade on the Black Sea.",
+      "left_text_en": "The Black Sea is ours",
+      "right_text_en": "Sign the agreement",
+      "investigate_text_en": "",
+      "speech_left_en": "You will regret it, Pasha.",
+      "speech_right_en": "Venice will be furious."
+    },
+    {
+      "id": "hint_tabibi_gelis",
+      "character": "hint-tabibi",
+      "character_name": "Hint Tabibi",
+      "faction": "din",
+      "text": "Paşam, o ilacı Kalikut'tan ben getirdim. Saray hekimleri arasında bir yerim olursa gelecek salgınlarda size daha çok yardım ederim.",
+      "left_text": "Hekimbaşı yeter",
+      "right_text": "Saraya yerleşsin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -4,
+        "hazine": -3
+      },
+      "left_flags_set": [
+        "hint_tabibi_gelis_resolved"
+      ],
+      "right_flags_set": [
+        "hint_tabibi_saraya",
+        "hint_tabibi_gelis_resolved"
+      ],
+      "required_flags": [
+        "hint_tabibi_davet"
+      ],
+      "excluded_flags": [
+        "hint_tabibi_gelis_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Yolum uzun, Paşam. Giderim.",
+      "speech_right": "Hint'in ilmi emrinizde.",
+      "character_name_en": "Indian Physician",
+      "text_en": "Pasha, I brought that remedy from Calicut. If I have a place among the palace physicians, I can help you far more in future epidemics.",
+      "left_text_en": "The Chief Physician is enough",
+      "right_text_en": "Let him join the palace",
+      "investigate_text_en": "",
+      "speech_left_en": "My road is long, Pasha. I will go.",
+      "speech_right_en": "The science of Hind is at your service."
+    },
+    {
+      "id": "hint_tabibi_karantina",
+      "character": "hint-tabibi",
+      "character_name": "Hint Tabibi",
+      "faction": "din",
+      "text": "Paşam, karantinayı bana bırakın. Hastaları ayırır, sağlamları tütsüyle korurum; köyleri boşaltmadan salgın durur.",
+      "left_text": "Hekimbaşı yönetsin",
+      "right_text": "Yönetim ona geçsin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 2,
+        "ulema": -2,
+        "hazine": 4
+      },
+      "left_flags_set": [
+        "hint_tabibi_veba_bitti",
+        "hint_tabibi_karantina_resolved"
+      ],
+      "right_flags_set": [
+        "hint_tabibi_veba_bitti",
+        "hint_tabibi_karantina_resolved"
+      ],
+      "required_flags": [
+        "hint_tabibi_saraya",
+        "veba_önlemi"
+      ],
+      "excluded_flags": [
+        "hint_tabibi_karantina_resolved",
+        "hint_tabibi_veba_bitti"
+      ],
+      "weight": 12,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Hekimbaşı da iyi bir adam.",
+      "speech_right": "Tütsüler hazır, Paşam.",
+      "character_name_en": "Indian Physician",
+      "text_en": "Pasha, leave the quarantine to me. I will separate the sick and protect the healthy with smoke; the plague will stop without emptying villages.",
+      "left_text_en": "Let the Chief Physician lead",
+      "right_text_en": "Put him in charge",
+      "investigate_text_en": "",
+      "speech_left_en": "The Chief Physician is a good man too.",
+      "speech_right_en": "The incense is ready, Pasha."
+    },
+    {
+      "id": "hint_tabibi_sehir_vebasi",
+      "character": "hint-tabibi",
+      "character_name": "Hint Tabibi",
+      "faction": "din",
+      "text": "Paşam, şehirdeki vebaya Hint'te bildiğimiz bir yol var: hastaları surların dışında çadırlarda iyileştirelim, çarşı kapanmasın.",
+      "left_text": "Kapılar kapalı kalsın",
+      "right_text": "Çadırları kurun",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 6
+      },
+      "left_flags_set": [
+        "hint_tabibi_veba_bitti",
+        "hint_tabibi_sehir_vebasi_resolved"
+      ],
+      "right_flags_set": [
+        "hint_tabibi_veba_bitti",
+        "hint_tabibi_sehir_vebasi_resolved"
+      ],
+      "required_flags": [
+        "hint_tabibi_saraya",
+        "kriz_veba_karantina"
+      ],
+      "excluded_flags": [
+        "hint_tabibi_sehir_vebasi_resolved",
+        "hint_tabibi_veba_bitti"
+      ],
+      "weight": 12,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Bekleyen hastalar ölür, Paşam.",
+      "speech_right": "Çarşı da şehir de yaşar.",
+      "character_name_en": "Indian Physician",
+      "text_en": "Pasha, for the plague in the city we know a way in Hind: heal the sick in tents outside the walls, so the bazaar need not close.",
+      "left_text_en": "Keep the gates shut",
+      "right_text_en": "Raise the tents",
+      "investigate_text_en": "",
+      "speech_left_en": "The sick who wait will die, Pasha.",
+      "speech_right_en": "The bazaar and the city will live."
+    },
+    {
+      "id": "hint_tabibi_divan_salgini",
+      "character": "hint-tabibi",
+      "character_name": "Hint Tabibi",
+      "faction": "din",
+      "text": "Paşam, Divan kâtiplerindeki hastalığın ilacı bende. Karantinaya gerek yok; üç gün içinde hepsini masalarına döndürürüm.",
+      "left_text": "Karantina daha güvenli",
+      "right_text": "İlacı verin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 2
+      },
+      "left_flags_set": [
+        "hint_tabibi_divan_salgini_resolved"
+      ],
+      "right_flags_set": [
+        "hint_tabibi_divan_salgini_resolved"
+      ],
+      "required_flags": [
+        "hint_tabibi_saraya",
+        "saray_salgini_gormezden"
+      ],
+      "excluded_flags": [
+        "hint_tabibi_divan_salgini_resolved"
+      ],
+      "weight": 14,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Divan biraz yavaşlar.",
+      "speech_right": "Kâtipler size dua edecek.",
+      "character_name_en": "Indian Physician",
+      "text_en": "Pasha, I have the cure for the illness among the Divan scribes. No quarantine is needed; I'll have them back at their desks in three days.",
+      "left_text_en": "Quarantine is safer",
+      "right_text_en": "Give them the cure",
+      "investigate_text_en": "",
+      "speech_left_en": "The Divan will slow a little.",
+      "speech_right_en": "The scribes will bless you."
+    },
+    {
+      "id": "hint_tabibi_su",
+      "character": "hint-tabibi",
+      "character_name": "Hint Tabibi",
+      "faction": "din",
+      "text": "Paşam, kirli çeşmelerden içen mahallede suyu kaynatıp bakırla arıtmayı öğretelim. Ucuzdur, salgını önler.",
+      "left_text": "Halk kendi bilir",
+      "right_text": "Öğretin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -2
+      },
+      "left_flags_set": [
+        "hint_tabibi_su_resolved"
+      ],
+      "right_flags_set": [
+        "hint_tabibi_su_resolved"
+      ],
+      "required_flags": [
+        "hint_tabibi_saraya",
+        "su_sorunu_birakildi"
+      ],
+      "excluded_flags": [
+        "hint_tabibi_su_resolved"
+      ],
+      "weight": 12,
+      "min_year": 1,
+      "category": "social",
+      "speech_left": "Hastalık kapıyı çalar, Paşam.",
+      "speech_right": "Mahalle size minnettar.",
+      "character_name_en": "Indian Physician",
+      "text_en": "Pasha, in the district drinking from foul fountains, let us teach them to boil water and purify it with copper. It is cheap and stops disease.",
+      "left_text_en": "Let them manage",
+      "right_text_en": "Teach them",
+      "investigate_text_en": "",
+      "speech_left_en": "Disease will knock, Pasha.",
+      "speech_right_en": "The district is grateful."
+    },
+    {
+      "id": "buyuk_istanbul_yangini",
+      "character": "felaket-yangin",
+      "character_name": "Büyük İstanbul Yangını",
+      "faction": "halk",
+      "text": "Paşam, Cibali'de çıkan yangın rüzgârla yayılıyor! Göçle dolan mahallelerde ahşap evler bitişik, çeşmelerde su yok.",
+      "left_text": "Evleri yıktırın, ateş dursun",
+      "right_text": "Yeniçeriler söndürsün",
+      "left_effects": {
+        "saray": -6,
+        "yeniçeri": 2,
+        "ulema": -4,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": -10,
+        "ulema": 2,
+        "hazine": -6
+      },
+      "left_flags_set": [
+        "buyuk_istanbul_yangini_resolved"
+      ],
+      "right_flags_set": [
+        "buyuk_istanbul_yangini_resolved"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "buyuk_istanbul_yangini_resolved",
+        "su_yolu_yapildi"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "crisis",
+      "speech_left": "Evsiz kalanlar sizi unutmaz.",
+      "speech_right": "Kovalar elden ele!",
+      "character_name_en": "The Great Fire of Istanbul",
+      "text_en": "Pasha, a fire at Cibali is spreading on the wind! In the districts packed with migrants the wooden houses touch, and the fountains are dry.",
+      "left_text_en": "Pull down houses to stop it",
+      "right_text_en": "Send the Janissaries",
+      "investigate_text_en": "",
+      "speech_left_en": "The homeless will not forget.",
+      "speech_right_en": "Buckets, hand to hand!",
+      "triggers_on_left": "yangin_sonrasi",
+      "triggers_on_right": "yangin_sonrasi",
+      "trigger_delay": 6
+    },
+    {
+      "id": "yangin_sonrasi",
+      "character": "16-saray_agasi",
+      "character_name": "Saray Ağası",
+      "faction": "saray",
+      "text": "Paşam, küller soğudu. Mimarbaşı bundan böyle İstanbul'da kâgir ev ve yeni su yolu şart koşulmasını öneriyor. Pahalı ama bir dahakini önler.",
+      "left_text": "Halk evini kendi yapsın",
+      "right_text": "Kâgir ev ve su yolu",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 4
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 2,
+        "ulema": 4,
+        "hazine": -10
+      },
+      "left_flags_set": [
+        "yangin_sonrasi_resolved"
+      ],
+      "right_flags_set": [
+        "su_yolu_yapildi",
+        "yangin_sonrasi_resolved"
+      ],
+      "required_flags": [
+        "buyuk_istanbul_yangini_resolved"
+      ],
+      "excluded_flags": [
+        "yangin_sonrasi_resolved"
+      ],
+      "weight": 1,
+      "min_year": 1,
+      "category": "economic",
+      "speech_left": "Ahşap ucuzdur, Paşam…",
+      "speech_right": "İstanbul küllerinden kalkacak.",
+      "character_name_en": "Palace Steward",
+      "text_en": "Pasha, the ashes are cold. The Chief Architect proposes requiring stone houses and a new aqueduct in Istanbul. Costly, but it prevents the next one.",
+      "left_text_en": "Let people rebuild themselves",
+      "right_text_en": "Stone houses and aqueduct",
+      "investigate_text_en": "",
+      "speech_left_en": "Timber is cheap, Pasha…",
+      "speech_right_en": "Istanbul will rise from its ashes."
     }
   ]
 }

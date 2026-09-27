@@ -1665,6 +1665,21 @@ const CHAIN_RULES = [
   { flag: 'şehzade_tasfiye',          delay: 12, cardId: 'sehzade_avcisi_2',     once: true  },
   // (Casus operasyonu ve savaş zaferi zaten kartların triggers_on_* alanıyla
   //  zamanlanıyor — buradaki eski ölü kopyaları kaldırıldı.)
+  // Köylü zorla geri gönderildi / ağa zulmüne göz yumuldu → Celali Reisi dağa çıkar
+  { flag: 'celali_kivilcimi',         delay: 12, cardId: 'celali_1',             once: true  },
+  // Ceneviz borcu ertelendi → Galata Podestası depoların anahtarını ister
+  { flag: 'ceneviz_borc_ertelendi',   delay: 10, cardId: 'podesta_1',            once: true  },
+  // Hint ilacı fetvada savunuldu → ilacı getiren tabip saraya gelir
+  { flag: 'hint_tabibi_davet',        delay: 6,  cardId: 'hint_tabibi_gelis',    once: true  },
+];
+
+// Birden çok karara bağlı sonuçlar: "all" bayraklarının hepsi ve "any"
+// bayraklarından en az biri açıkken, bunlardan biri yeni açıldığında bir kez
+// zamanlanır (sıra fark etmez: önce göç, sonra su ya da tersi).
+const CHAIN_RULES_MULTI = [
+  // Göç kabul edildi + su işi bırakıldı → Büyük İstanbul Yangını
+  // (vakti gelmeden su yolu yaptırılırsa kartın excluded_flags'i onu önler)
+  { all: ['göç_dalgası'], any: ['kanal_yapılmadı', 'su_sorunu_birakildi'], delay: 14, cardId: 'buyuk_istanbul_yangini' },
 ];
 
 function checkChainTriggers(flagsSet) {
@@ -1678,6 +1693,14 @@ function checkChainTriggers(flagsSet) {
     if (alreadyScheduled) continue;
     if (rule.once) activeFlags[onceKey] = true;
     scheduleConsequence(rule.cardId, rule.delay, rule.altCardId);
+  }
+  for (const rule of CHAIN_RULES_MULTI) {
+    if (!flagsSet.some(f => rule.all.includes(f) || rule.any.includes(f))) continue;
+    if (!rule.all.every(f => activeFlags[f]) || !rule.any.some(f => activeFlags[f])) continue;
+    const onceKey = "_chain_fired_" + rule.cardId;
+    if (activeFlags[onceKey] || scheduledCards.some(sc => sc.cardId === rule.cardId)) continue;
+    activeFlags[onceKey] = true;
+    scheduleConsequence(rule.cardId, rule.delay);
   }
 }
 
@@ -2948,6 +2971,7 @@ function startGame() {
   forcedQueue = [];
   scheduledCards = [];
   _criticalShownCount = 0; _criticalLastAt = -999;
+  _muneccimN = 0; _muneccimAt = -999;
   _hekimYesCount = 0; _knotIdsSeenThisGame = new Set(); _challengeRewarded = false;
   document.getElementById("challenge-list")?.remove();
   _lastDecision = null;
@@ -3400,6 +3424,7 @@ function saveGameState() {
       hekimDinlenme20Shown: _hekimDinlenme20Shown,
       secondChanceOfferedThisGame: _secondChanceOfferedThisGame,
       receivedLetters,
+      muneccimN: _muneccimN, muneccimAt: _muneccimAt,
       v: 3
     };
     localStorage.setItem('sadrazam_save', JSON.stringify(state));
@@ -3505,6 +3530,7 @@ function loadGameState(s) {
   _hekimDinlenme20Shown = s.hekimDinlenme20Shown || false;
   _secondChanceOfferedThisGame = s.secondChanceOfferedThisGame || false;
   receivedLetters = s.receivedLetters || 0;
+  _muneccimN = s.muneccimN || 0; _muneccimAt = s.muneccimAt ?? -999;
   isGameOver = false;
   activeArcs = {};
   triggeredArcs = {};
@@ -3645,7 +3671,8 @@ function _katibAnalysis(sc) {
                  : { good: "Hayırlı görünüyor.", bad: "Tehlikeli görünüyor.", mixed: "Sonucu vereceğiniz karara bağlı." }[tone],
   };
 }
-function showKatibNotu(sc) {
+function showKatibNotu(sc, opts) {
+  opts = opts || {};
   if (document.getElementById("katib-overlay")) return;
   if (!scheduledCards.includes(sc)) return;
   const en = window.LANG === 'en';
@@ -3668,14 +3695,18 @@ function showKatibNotu(sc) {
         </div>`;
     } else {
       const bal = getAkceBalance();
-      body = `<div class="kn-lead">${en ? `The echo of one of your decisions arrives ${when}. The scribe knows which one.` : `Bir kararınızın yankısı ${when} gelecek. Kâtip hangisi olduğunu biliyor.`}</div>
+      const lead = opts.astrologer
+        ? (en ? `The stars show the echo of one of your decisions ${when}. The astrologer can read which one.` : `Yıldızlar bir kararınızın yankısını ${when} gösteriyor. Müneccimbaşı hangisi olduğunu okuyabilir.`)
+        : (en ? `The echo of one of your decisions arrives ${when}. The scribe knows which one.` : `Bir kararınızın yankısı ${when} gelecek. Kâtip hangisi olduğunu biliyor.`);
+      body = `<div class="kn-lead">${lead}</div>
         <div class="kn-btns">
           <button class="kn-ad">${en ? "Watch Ad" : "Reklam İzle"}</button>
           <button class="kn-akce">${bal >= 1 ? (en ? "1 Akce" : "1 Akçe") : (en ? "Get Akce" : "Akçe Al")} <span class="kn-bal">(${bal})</span></button>
         </div>
         <div class="kn-msg"></div>`;
     }
-    overlay.innerHTML = `<div id="katib-box"><div class="kn-title">${en ? "THE SCRIBE'S NOTE" : "KÂTİBİN NOTU"}</div>${body}<button class="kn-close">${en ? "Close" : "Kapat"}</button></div>`;
+    const title = opts.astrologer ? (en ? "THE CHIEF ASTROLOGER" : "MÜNECCİMBAŞI") : (en ? "THE SCRIBE'S NOTE" : "KÂTİBİN NOTU");
+    overlay.innerHTML = `<div id="katib-box"><div class="kn-title">${title}</div>${body}<button class="kn-close">${en ? "Close" : "Kapat"}</button></div>`;
     overlay.querySelector(".kn-close").onclick = close;
     if (sc.revealed) return;
     const msg = overlay.querySelector(".kn-msg");
@@ -3687,12 +3718,43 @@ function showKatibNotu(sc) {
     };
     overlay.querySelector(".kn-akce").onclick = () => {
       if (spendAkce(1)) { reveal(); return; }
-      close(); redirectToAkcePurchase(() => showKatibNotu(sc));
+      close(); redirectToAkcePurchase(() => showKatibNotu(sc, opts));
     };
   };
   render();
   document.body.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add("visible"));
+}
+
+// ── Müneccimbaşı (27 Eylül 2026) ───────────────────────────────────────
+// En az 2 sonuç beklerken (henüz okunmamış) gelir ve en yakın olanı okur.
+// Oyun başına en çok 2 kez: ilki bedava, ikincisi Kâtibin Notu gibi reklam
+// ya da 1 akçe. Sayaçlar kayıtla birlikte saklanır (muneccimN/At).
+const MUNECCIM_MIN_CARDS = 20, MUNECCIM_GAP = 30, MUNECCIM_MAX = 2, MUNECCIM_CHANCE = 0.35;
+let _muneccimN = 0, _muneccimAt = -999; // bu oyundaki ziyaret sayısı / son ziyaret kartı
+function _muneccimTargets() {
+  return scheduledCards.filter(sc => !sc.revealed && sc.src && sc.afterCardsPlayed - cardsPlayed >= 3)
+    .sort((a, b) => a.afterCardsPlayed - b.afterCardsPlayed);
+}
+function _maybeQueueMuneccim() {
+  const n = _muneccimN;
+  if (n >= MUNECCIM_MAX || cardsPlayed < MUNECCIM_MIN_CARDS) return;
+  if (cardsPlayed - _muneccimAt < MUNECCIM_GAP) return;
+  if (forcedQueue.length) return;
+  if (_muneccimTargets().length < 2) return;
+  if (Math.random() >= MUNECCIM_CHANCE) return;
+  const card = allCards.find(x => x.id === (n === 0 ? "muneccim_fal_1" : "muneccim_fal_2"));
+  if (!card) return;
+  _muneccimN = n + 1;
+  _muneccimAt = cardsPlayed;
+  forcedQueue.push(card);
+}
+function _muneccimRead(cardId, dir) {
+  if (dir !== "right") return;
+  const sc = _muneccimTargets()[0] || scheduledCards.find(x => !x.revealed && x.afterCardsPlayed > cardsPlayed);
+  if (!sc) return;
+  if (cardId === "muneccim_fal_1") { sc.revealed = true; updateFateBar(); } // ilki bedava
+  setTimeout(() => { if (!isGameOver && !isPaywalled && scheduledCards.includes(sc)) showKatibNotu(sc, { astrologer: true }); }, 450);
 }
 
 function showFateTooltip(chip) {
@@ -3826,6 +3888,8 @@ function getEligible() {
     // Zamanı gelince zaten gelecek bir sonuç, beklerken rastgele çekilmesin
     // (yoksa erken gelip hem zamanlamayı hem birleşik sonucu bozuyordu)
     if (scheduledCards.some(sc => sc.cardId === c.id)) return false;
+    // Hain ipucu sadece hain henüz açıklanmadıysa (60. kartta açıklanır)
+    if (c.id === "genc_hain_ipucu" && (!hiddenTraitor || traitorRevealed || cardsPlayed >= 55)) return false;
     // Faction baskı kartları sadece tetiklenince
     if (c.required_faction_pressure && !activeFlags["faction_pressure_" + c.required_faction_pressure]) return false;
     // weight:1 özel kartlar arc dışında çıkmasın
@@ -3921,6 +3985,26 @@ const CHARACTER_EVOLUTIONS = {
   // 50+ kartta görsel değişiyor (assets/characters/2-yeniceri_v2.jpg gerekir)
   "2-yeniceri": { threshold: 50, version: "2-yeniceri_v2" },
 };
+
+// Yeni karakterlerin portresi henüz eklenmediyse (dosya yoksa) benzer bir
+// portre gösterilir — görsel gelince kod değişmeden kendi portresi çıkar.
+const CHARACTER_IMAGE_FALLBACK = {
+  "muneccimbasi":      "31-dogu-alim",
+  "celali-reisi":      "18-yeniceri_isyancisi",
+  "surgun-genc":       "29-ajan",
+  "ceneviz-podestasi": "7-yabanci-elci",
+  "hint-tabibi":       "10-hekimbasi",
+};
+// <img> için: asıl dosya yüklenemezse bir kez yedeğe geçer, o da yoksa gizler
+function _setPortraitWithFallback(img, key, onFail) {
+  const fb = CHARACTER_IMAGE_FALLBACK[key];
+  img.onerror = () => {
+    if (fb && !img.dataset.fbTried) { img.dataset.fbTried = "1"; img.src = "assets/characters/" + encodeURIComponent(fb + ".jpg"); return; }
+    img.onerror = null; if (onFail) onFail();
+  };
+  delete img.dataset.fbTried;
+  img.src = "assets/characters/" + encodeURIComponent(key + ".jpg");
+}
 
 // Vatandaş için birden fazla görsel (2-3-4 eklenebilir)
 const HALK_TEMSILCISI_VARIANTS = [
@@ -4095,6 +4179,8 @@ function dealNext() {
 
   // Gizli hain hint
   let displayText = (_isEN && c.text_en) ? c.text_en : (c.text || "");
+  // Sürgünden Dönen Genç'in istihbaratı: gizli hainin adını verir
+  if (displayText.includes("{HAIN}")) displayText = displayText.split("{HAIN}").join(getCharacterDisplayName(hiddenTraitor, _isEN));
   if (key === hiddenTraitor && !traitorRevealed) {
     const mem = characterMemory[key] || {};
     const totalMem = (mem.left || 0) + (mem.right || 0);
@@ -4200,6 +4286,15 @@ function dealNext() {
     cardImage.style.visibility = "";
   };
   preload.onerror = () => {
+    // Portresi henüz eklenmemiş yeni karakter → benzer bir portre
+    const fb = CHARACTER_IMAGE_FALLBACK[key];
+    if (fb && !preload.dataset.fbTried) {
+      preload.dataset.fbTried = "1";
+      const fbPath = "assets/characters/" + encodeURIComponent(fb + ".jpg");
+      preload.onload = () => { if (currentCard === c) { cardImage.src = fbPath; cardImage.style.visibility = ""; } };
+      preload.src = fbPath;
+      return;
+    }
     cardImage.style.visibility = "hidden";
   };
   preload.src = imgPath;
@@ -5321,6 +5416,7 @@ function _applyCriticalHeal() {
 function maybeShowCriticalOffer() {
   if (isGameOver || isPaywalled || !currentCard) return;
   if (document.getElementById("critical-offer")) return;
+  if (document.getElementById("katib-overlay")) return; // Kâtip/Müneccim notu açıkken üst üste binmesin
   if (_criticalShownCount >= CRITICAL_MAX_PER_GAME) return;
   if (cardsPlayed - _criticalLastAt < CRITICAL_COOLDOWN) return;
   const low = Object.entries(stats).filter(([k, v]) => v <= CRITICAL_THRESHOLD).sort((a, b) => a[1] - b[1])[0];
@@ -6698,6 +6794,12 @@ function decide(dir) {
   applyEffects(currentCard[dir + "_effects"] || {});
   if (isGameOver) return;
 
+  // Yeni karakterlerin özel etkileri
+  if (currentCard.id === "genc_hain_ipucu" && dir === "right" && !traitorRevealed) {
+    traitorInvestigated = Math.max(traitorInvestigated, 2); // hain fark edilmiş sayılır
+  }
+  if (currentCard.id === "muneccim_fal_1" || currentCard.id === "muneccim_fal_2") _muneccimRead(currentCard.id, dir);
+
   // ── Achievement tracking ──────────────────────────────────────
   if (charKey) { seenCharacters.add(charKey); updateCrossGame({ seenCharactersEver: [charKey] }); }
   if (currentCard.type === 'chance') chanceCardsPlayed++;
@@ -6892,6 +6994,7 @@ function decide(dir) {
     // Padişah ziyareti: her ~45 kartta 1, yıl 3+
     tryPadisahZiyareti();
   tryHekimDinlenme();
+  _maybeQueueMuneccim(); // sonda: kuyruk boşsa gelir
   if (isChallengeMode) updateChallengeUI();
   checkPargaliSecret();
   // Şehzade her yıl sonu güçlenir
@@ -7421,8 +7524,7 @@ function _actuallyTriggerGameOver(reason) {
   const deathImg    = document.getElementById("death-char-img");
 
   if (cinematicEl && deathCharacterKey) {
-    deathImg.src = "assets/characters/" + encodeURIComponent(deathCharacterKey + ".jpg");
-    deathImg.onerror = () => { deathImg.src = ""; };
+    _setPortraitWithFallback(deathImg, deathCharacterKey, () => { deathImg.src = ""; });
     cinematicEl.classList.remove("hidden");
     setTimeout(() => {
       deathImg.style.transition = "opacity 1.5s ease";
@@ -8169,7 +8271,7 @@ function showKartKodeksi() {
     const imgPath = "assets/characters/" + encodeURIComponent(ch.key + ".jpg");
     return `<div class="kodeks-card ${isSeen ? '' : 'locked'}">
       ${isSeen
-        ? `<img src="${imgPath}" onerror="this.style.display='none'">`
+        ? `<img src="${imgPath}" onerror="${CHARACTER_IMAGE_FALLBACK[ch.key] ? `if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/characters/${CHARACTER_IMAGE_FALLBACK[ch.key]}.jpg'}else{this.style.display='none'}` : `this.style.display='none'`}">`
         : `<div class="kodeks-silhouette">?</div>`}
       <span class="kodeks-name">${name}</span>
     </div>`;
