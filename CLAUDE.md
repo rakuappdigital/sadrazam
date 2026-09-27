@@ -203,6 +203,43 @@ screenshot`) kontrol et. Archive ile üretilen `.app` **simülatörde çalışma
   için zamanlama + negatif taraf, kaydet/kapat/devam (eski kayıt biçimi dahil),
   birleşik kartlar uçtan uca, 375x667 TR/EN taşma, uzun doğal oyun.
 
+## 3c. Karar-sonucu karakterleri + Büyük İstanbul Yangını (27 Eylül 2026)
+
+Hepsi oyuncunun kararına bağlı gelir (rastgele değil). Kaynak bayraklar mevcut
+kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
+
+- **Celali Reisi** (`celali-reisi`): `celali_kivilcimi` ← köylüyü zorla geri
+  gönderme (`koylu_topraktan_kacti`/`dugum_koyler_bosaliyor` sol) ya da ağa
+  zulmüne göz yumma (`aga_zulum_buyudu` sol) → 12 kart → `celali_1` → sefer
+  (`celali_2_sefer`) / pazarlık (`celali_2_pazarlik` → ret: `celali_3_kusatma`).
+  Affedilirse `celali_sancakbeyi` → iki tekrar eden kart.
+- **Sürgünden Dönen Genç** (`surgun-genc`): `cocuk_geri_donuyor` sağ →
+  `genc_sadik` → 3 istihbarat kartı. `genc_hain_ipucu` metnindeki `{HAIN}`
+  dealNext'te gizli hainin adıyla değişir; "izle" → `traitorInvestigated ≥ 2`
+  (hain fark edilmiş sayılır). Hain açıklanınca/55. karttan sonra gelmez
+  (`getEligible` özel kuralı).
+- **Ceneviz Podestası** (`ceneviz-podestasi`): `ceneviz_borc_ertelendi` ←
+  `borc_vadesi_geldi` sol / `dugum_iki_alacakli` sol → 10 kart → `podesta_1`
+  → depolar verilirse 12 kart → `podesta_2_depolar`.
+- **Hint Tabibi** (`hint-tabibi`): `ilac_tartismasi` sağ → `hint_tabibi_davet`
+  → 6 kart → `hint_tabibi_gelis` → kabul: `hint_tabibi_saraya`. Salgın
+  bayrağı açıkken (veba_önlemi / kriz_veba_karantina / saray_salgini_gormezden
+  / su_sorunu_birakildi) daha iyi seçenekli tabip kartları.
+- **Müneccimbaşı** (`muneccimbasi`): kodla kuyruğa girer
+  (`_maybeQueueMuneccim`, decide sonunda). ≥2 okunmamış sonuç, 20. karttan
+  sonra, 30 kart ara, %35, oyun başına 2. İlki (`muneccim_fal_1`) en yakın
+  sonucu bedava açar; ikincisi Kâtibin Notu penceresini (başlık MÜNECCİMBAŞI)
+  reklam/1 akçe ile açar. Sayaçlar `_muneccimN/_muneccimAt` kayıtta.
+  **Not:** kayıt `activeFlags`'i sadece ANAHTAR listesi olarak saklar —
+  bayraklara sayı/değer yazma, yüklenince `true` olur.
+- **Büyük İstanbul Yangını** (`buyuk_istanbul_yangini`, portre
+  `felaket-yangin`): `CHAIN_RULES_MULTI` — `göç_dalgası` + (`kanal_yapılmadı`
+  ya da `su_sorunu_birakildi`), sıra fark etmez → 14 kart. Vakti gelmeden su
+  yolu yaptırılırsa (`su_yolu_yapildi`) çıkmaz. → 6 kart → `yangin_sonrasi`.
+- **Yedek portre:** `CHARACTER_IMAGE_FALLBACK` — yeni karakterin .jpg'si yoksa
+  benzer portre (kart, ölüm ekranı, Kodeks). Görsel eklenince kod değişmez.
+- Test: scratchpad `chars_test.js` (20 senaryo) + `ov_chars.js` (375x667 TR/EN).
+
 ## 4. Kritik sabitler
 
 - `CARDS_PER_YEAR = 24` (satır ~6) — **çok önemli**, yeni bir "N kartta bir
@@ -302,6 +339,17 @@ dışarıda bir görsel üretici gerekmiyor.
   Yükle" linki var (non-consumable için Apple şartı). Yetersiz akçe yüzünden
   `redirectToAkcePurchase()` ile gelindiyse `#akce-screen.from-need` sınıfı
   Reklamsız bölümünü gizler.
+- **Başlangıç Kesesi (27 Eylül 2026):** consumable
+  `com.rakuappdigital.sadrazam.akce30start` (ASC id `6816653153`, TR ₺14,99 /
+  ABD $1,49 baz, 175 ülke, READY_TO_SUBMIT — ilk kez eklendiği için bir
+  sonraki App Store sürümü incelemeye gönderilirken sürüme EKLENMELİ).
+  `AKCE_PACKS`'te `starter:true`, kredi yine `processAkceTransactions`.
+  5 oyun bittikten sonra ana menüye dönüşte (`restartGame` → 
+  `maybeShowStarterOffer`) BİR KEZ "Ferman Mührü" penceresi
+  (`showStarterOffer`); ürün mağazadan gelmediyse hak yanmaz, sonraki dönüşte.
+  Alınana kadar Market'te `#starter-pack-btn`. Alındı bilgisi
+  `sadrazam_starter_bought` (geri yüklemede işlem görülünce de set edilir).
+  Karşılaştırma fiyatı = 20'lik kese × 1,5 (kuruş cinsinden tam sayı).
 - **Promosyon kodu UI'ı:** Ayarlar'da "PROMOSYON KODU" butonu →
   `RC.presentCodeRedemptionSheet()` (Apple'ın NATİF kod giriş ekranı — kendi
   metin kutusu YAPMA, iOS'ta bu şekilde çalışmıyor; Apple'ın ASC'de ürettiğin

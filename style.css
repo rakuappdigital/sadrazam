@@ -3053,6 +3053,47 @@ html, body {
 }
 #easter-action-btn:active { background: rgba(201,162,39,0.2); transform: scale(0.97); }
 
+/* İki seçenekli özel kart (27 Eylül 2026) — mevcut tek düğmenin tonlarını kullanır */
+#easter-choice-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+#easter-choice-row.hidden { display: none; }
+#card.has-easter-choices #card-choices { display: none; }
+.easter-choice {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 11px 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s, transform 0.15s;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  background: rgba(201,162,39,0.08);
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+@media (max-width: 360px) {
+  .easter-choice { font-size: 9.5px; letter-spacing: 0.4px; padding: 9px 5px; }
+}
+.easter-choice:active { background: rgba(201,162,39,0.2); transform: scale(0.97); }
+.easter-choice:disabled { opacity: 0.55; cursor: default; }
+.easter-choice.yanlis   { border-color: rgba(180,60,60,0.5);  color: #e07070; background: rgba(180,60,60,0.08); }
+.easter-choice.kehanet  { border-color: rgba(140,80,200,0.5); color: #b080e0; background: rgba(140,80,200,0.08); }
+.easter-choice.pargali  { border-color: rgba(100,120,200,0.3); color: rgba(160,180,220,0.8); background: rgba(100,120,200,0.06); font-style: italic; }
+.easter-choice.evliya   { border-color: rgba(200,140,60,0.5); color: #d4a050; background: rgba(200,140,60,0.08); }
+.easter-choice.felaket  { border-color: rgba(180,40,40,0.5);  color: #cc5555; background: rgba(180,40,40,0.1); }
+.easter-choice.zaman    { border-color: rgba(60,120,220,0.5); color: #6090e0; background: rgba(60,120,220,0.08); }
+.easter-choice.mucize   { border-color: rgba(201,162,39,0.8); color: #f0d060; background: rgba(201,162,39,0.12); }
+
 /* Kedi butonu — daha yumuşak altın */
 #easter-action-btn.kedi { letter-spacing: 5px; font-size: 15px; }
 
@@ -4145,8 +4186,14 @@ html, body {
   margin-top: 4px;
 }
 #ghost-buttons-row .intro-btn.ghost {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   max-width: none;
+  /* 3 düğme (Market · Hediye · Ayarlar) satıra sığsın — 27 Eylül 2026 */
+  padding: 12px 4px;
+  letter-spacing: 1px;
+  font-size: 10.5px;
+  white-space: nowrap;
 }
 
 #settings-content {
@@ -4839,6 +4886,213 @@ html, body {
 }
 @media (max-height: 560px) {
   #card-image, #card-image-knot, #card-knot-seam { max-height: 15vh; }
+  #easter-choice-row { margin-top: 6px; }
+  .easter-choice { padding-top: 7px; padding-bottom: 7px; }
   .letter-card #card-image { max-height: 10vh; }
   .letter-card #card-text { max-height: 22vh; }
 }
+
+/* ── Günlük Divan Hediyesi (27 Eylül 2026) ── */
+#btn-daily-gift { position: relative; }
+#btn-daily-gift.ready { color: var(--gold-light); border-color: var(--gold); animation: dgPulse 2.4s ease-in-out infinite; }
+#btn-daily-gift.ready::after {
+  content: ''; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%;
+  background: #d8483c; box-shadow: 0 0 6px rgba(216,72,60,.8);
+}
+@keyframes dgPulse { 50% { box-shadow: 0 0 14px rgba(232,200,74,0.35); } }
+#daily-gift-overlay {
+  position: fixed; inset: 0; z-index: 900; display: flex; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(3,2,8,0.78); opacity: 0; transition: opacity .25s;
+}
+#daily-gift-overlay.visible { opacity: 1; }
+#daily-gift-box {
+  width: 100%; max-width: 340px; background: linear-gradient(180deg, #16112a, #0c0918);
+  border: 1.5px solid var(--gold); border-radius: 16px; padding: 22px 18px 16px; text-align: center;
+  box-shadow: 0 0 0 4px rgba(201,162,39,.1), 0 18px 44px rgba(0,0,0,.7);
+}
+.dg-title { font-family: 'Cinzel', serif; font-size: 18px; letter-spacing: 3px; color: var(--gold-light); }
+.dg-sub { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13.5px; line-height: 1.5; color: var(--text); opacity: .85; margin: 8px 0 14px; }
+.dg-seals { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 16px; }
+.dg-seal {
+  aspect-ratio: 1 / 1.25; border-radius: 8px; border: 1px solid rgba(201,162,39,.25); background: rgba(201,162,39,.04);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0;
+}
+.dg-seal .dg-amt { font-family: 'Cinzel', serif; font-weight: 700; font-size: 12px; color: rgba(201,162,39,.55); }
+.dg-seal .dg-day { font-family: 'Cinzel', serif; font-size: 7.5px; letter-spacing: .3px; color: rgba(201,162,39,.45); }
+.dg-seal.done { background: radial-gradient(circle at 38% 32%, #c4342b, #7a1712 75%); border-color: var(--gold-light); }
+.dg-seal.done .dg-amt, .dg-seal.done .dg-day { color: #F6DCA0; }
+.dg-seal.today { border-color: var(--gold-light); box-shadow: 0 0 12px rgba(232,200,74,.45); animation: dgPulse 1.8s ease-in-out infinite; }
+.dg-seal.today .dg-amt { color: var(--gold-light); }
+.dg-seal.last .dg-amt { font-size: 13px; }
+.dg-claim {
+  width: 100%; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 2px; border: 0; border-radius: 12px;
+  padding: 13px 10px; cursor: pointer; color: #1a1206; background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A);
+  box-shadow: 0 6px 18px rgba(201,162,39,.35), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.dg-claim:disabled { opacity: .55; cursor: default; }
+.dg-done { font-family: 'IM Fell English', serif; font-size: 14.5px; color: var(--gold); padding: 10px 0; }
+.dg-msg { min-height: 20px; margin-top: 8px; font-family: 'IM Fell English', serif; font-size: 13.5px; color: #e07070; }
+.dg-msg.ok { color: #7fd18b; }
+.dg-close { margin-top: 6px; background: none; border: 0; color: rgba(240,230,208,.55); font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
+@media (max-width: 360px) { .dg-seal .dg-day { font-size: 6.5px; } .dg-seal .dg-amt { font-size: 11px; } }
+
+/* ── Kritik An Teklifi (27 Eylül 2026) ── */
+#critical-offer {
+  position: fixed; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 130%); width: min(92vw, 380px); z-index: 700;
+  background: linear-gradient(180deg, rgba(34,10,12,.97), rgba(14,8,16,.97));
+  border: 1px solid rgba(216,72,60,.7); border-radius: 14px; padding: 12px 12px 10px;
+  box-shadow: 0 0 0 3px rgba(216,72,60,.12), 0 -6px 30px rgba(0,0,0,.6);
+  transition: transform .28s cubic-bezier(.2,.9,.3,1.1);
+}
+#critical-offer.visible { transform: translate(-50%, 0); }
+#critical-offer .co-x { position: absolute; top: 6px; right: 8px; background: none; border: 0; color: rgba(240,230,208,.5); font-size: 14px; cursor: pointer; padding: 4px 6px; }
+#critical-offer .co-head { display: flex; gap: 10px; align-items: center; padding-right: 18px; }
+#critical-offer .co-icon { width: 40px; height: 40px; flex: none; filter: drop-shadow(0 0 6px rgba(39,174,96,.6)); }
+#critical-offer .co-title { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 1.2px; color: #f08a7e; }
+#critical-offer .co-val { color: #ff5b4d; font-weight: 700; }
+#critical-offer .co-desc { font-family: 'IM Fell English', serif; font-size: 13px; line-height: 1.4; color: var(--text); opacity: .9; margin-top: 2px; }
+#critical-offer .co-btns { display: flex; gap: 8px; margin-top: 10px; }
+#critical-offer .co-btns button {
+  flex: 1; font-family: 'Cinzel', serif; font-weight: 600; font-size: 12px; letter-spacing: 1px; border-radius: 10px; padding: 11px 6px; cursor: pointer;
+}
+#critical-offer .co-ad { color: #1a1206; border: 0; background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A); box-shadow: 0 4px 12px rgba(201,162,39,.3); }
+#critical-offer .co-akce { color: var(--gold); background: rgba(201,162,39,.08); border: 1px solid var(--gold-dim); }
+#critical-offer .co-bal { opacity: .7; font-weight: 400; }
+#critical-offer .co-btns button:disabled { opacity: .5; cursor: default; }
+#critical-offer .co-msg { min-height: 0; font-family: 'IM Fell English', serif; font-size: 12.5px; color: #e07070; text-align: center; margin-top: 4px; }
+#critical-offer .co-msg:empty { display: none; }
+.stat.critical-focus .stat-track { animation: criticalPulse 1s ease-in-out infinite; }
+@keyframes criticalPulse { 50% { box-shadow: 0 0 0 2px rgba(216,72,60,.8), 0 0 12px rgba(216,72,60,.7); } }
+.item-slot.critical-hint, [id^="item-slot-"].critical-hint { animation: criticalHint .8s ease-in-out 4; }
+@keyframes criticalHint { 50% { box-shadow: 0 0 0 2px rgba(39,174,96,.9), 0 0 16px rgba(39,174,96,.6); } }
+
+/* ── Yarım kalan sonuçlar: İkinci Şans + ölüm ekranı (27 Eylül 2026) ── */
+.pending-cons {
+  margin: 12px 0 4px; padding: 10px 12px 8px; text-align: left;
+  border: 1px solid rgba(216,72,60,.35); border-radius: 10px; background: rgba(216,72,60,.06);
+}
+.pending-cons .pc-title { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2.5px; color: #e07a6e; margin-bottom: 6px; text-align: center; }
+.pending-cons ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.pending-cons li { font-family: 'IM Fell English', serif; font-style: italic; font-size: 12.5px; line-height: 1.4; color: rgba(240,230,208,.85); padding-left: 14px; position: relative; }
+.pending-cons li::before { content: '⧖'; position: absolute; left: 0; top: 0; font-style: normal; font-size: 10px; color: #e07a6e; }
+.pending-cons .pc-q { color: var(--gold-light); font-style: normal; }
+.pending-cons .pc-knot { color: var(--gold-light); }
+.pending-cons .pc-knot::before { content: '✦'; color: var(--gold-light); }
+.pending-cons .pc-more { opacity: .6; }
+#gameover-pending:empty { display: none; }
+#gameover-pending .pending-cons { max-width: 320px; margin-left: auto; margin-right: auto; }
+
+/* ── Kâtibin Notu (27 Eylül 2026) ── */
+.fate-thread.revealed { color: var(--gold-light); border-color: var(--gold); }
+.fate-thread.revealed::after { content: ' ✎'; font-size: 10px; }
+#katib-overlay { position: fixed; inset: 0; z-index: 900; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(3,2,8,.75); opacity: 0; transition: opacity .22s; }
+#katib-overlay.visible { opacity: 1; }
+#katib-box { width: 100%; max-width: 330px; background: linear-gradient(180deg, #16112a, #0c0918); border: 1.5px solid var(--gold); border-radius: 16px; padding: 20px 18px 12px; text-align: center; box-shadow: 0 0 0 4px rgba(201,162,39,.1), 0 18px 44px rgba(0,0,0,.7); }
+.kn-title { font-family: 'Cinzel', serif; font-size: 16px; letter-spacing: 3px; color: var(--gold-light); margin-bottom: 10px; }
+.kn-lead { font-family: 'IM Fell English', serif; font-style: italic; font-size: 14.5px; line-height: 1.5; color: var(--text); margin-bottom: 14px; }
+.kn-btns { display: flex; gap: 8px; }
+.kn-btns button { flex: 1; font-family: 'Cinzel', serif; font-weight: 600; font-size: 12px; letter-spacing: 1px; border-radius: 10px; padding: 12px 6px; cursor: pointer; }
+.kn-ad { color: #1a1206; border: 0; background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A); box-shadow: 0 4px 12px rgba(201,162,39,.3); }
+.kn-akce { color: var(--gold); background: rgba(201,162,39,.08); border: 1px solid var(--gold-dim); }
+.kn-bal { opacity: .7; font-weight: 400; }
+.kn-btns button:disabled { opacity: .5; cursor: default; }
+.kn-msg { min-height: 0; margin-top: 6px; font-family: 'IM Fell English', serif; font-size: 13px; color: #e07070; }
+.kn-msg:empty { display: none; }
+.kn-paper { background: linear-gradient(180deg, #e3d4ad, #EBDFC2 15%, #EBDFC2 85%, #e3d4ad); color: #3B2A14; border-radius: 6px; padding: 14px 14px 12px; text-align: left; box-shadow: inset 0 0 30px rgba(120,80,30,.25); animation: knInk .6s ease-out both; }
+@keyframes knInk { from { opacity: 0; transform: translateY(6px); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+.kn-src { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13.5px; color: #5a1010; margin-bottom: 8px; text-align: center; }
+.kn-line { font-family: 'IM Fell English', serif; font-size: 14px; line-height: 1.45; margin-bottom: 5px; }
+.kn-line b { font-weight: 700; }
+.kn-tone { margin-top: 8px; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px; text-align: center; padding: 6px; border-radius: 6px; }
+.kn-tone.good { color: #1f5c2a; background: rgba(39,120,60,.14); }
+.kn-tone.bad { color: #7a1712; background: rgba(142,27,27,.14); }
+.kn-tone.mixed { color: #6b4a10; background: rgba(160,110,20,.14); }
+.kn-close { margin-top: 8px; background: none; border: 0; color: rgba(240,230,208,.55); font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
+
+/* Tam Sürüm ekranı — kişisel bağlam (27 Eylül 2026) */
+#paywall-personal:empty { display: none; }
+.pending-cons.awaits { border-color: rgba(201,162,39,.45); background: rgba(201,162,39,.07); margin: 10px auto 6px; max-width: 320px; }
+.pending-cons.awaits .pc-title { color: var(--gold-light); }
+.pending-cons.awaits li::before { color: var(--gold); }
+
+/* ── Mod tanıtım penceresi (Meydan Okuma, Deneyimli Mod) — 27 Eylül 2026 ── */
+#mode-intro-overlay { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(3,2,8,.8); opacity: 0; transition: opacity .22s; }
+#mode-intro-overlay.visible { opacity: 1; }
+#mode-intro-box { width: 100%; max-width: 340px; max-height: 88vh; overflow-y: auto; background: linear-gradient(180deg, #16112a, #0c0918); border: 1.5px solid var(--gold); border-radius: 16px; padding: 20px 18px 12px; text-align: center; box-shadow: 0 0 0 4px rgba(201,162,39,.1), 0 18px 44px rgba(0,0,0,.7); }
+#mode-intro-box .mi-icon { color: var(--gold-light); font-size: 30px; line-height: 1; margin-bottom: 6px; }
+#mode-intro-box .mi-title { font-family: 'Cinzel', serif; font-size: 17px; letter-spacing: 3px; color: var(--gold-light); margin-bottom: 10px; }
+#mode-intro-box .mi-body { text-align: left; font-family: 'IM Fell English', serif; font-size: 14.5px; line-height: 1.5; color: var(--text); }
+#mode-intro-box .mi-body p { margin: 0 0 9px; }
+#mode-intro-box .mi-body b { color: var(--gold-light); font-weight: 600; }
+.mi-sample { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 4px 0 10px; padding: 10px; border: 1px dashed rgba(201,162,39,.35); border-radius: 10px; background: rgba(201,162,39,.05); }
+.mi-sample .mi-choice { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1px; color: #6fcf97; text-transform: uppercase; }
+.mi-sample .fx-chip img { width: 12px; height: 12px; }
+.mi-sample .fx-chip { font-size: 13px; margin: 0 3px; }
+#mode-intro-box .mi-go { width: 100%; margin-top: 4px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 1.5px; border: 0; border-radius: 12px; padding: 13px 10px; cursor: pointer; color: #1a1206; background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A); box-shadow: 0 6px 18px rgba(201,162,39,.35); }
+#mode-intro-box .mi-back { margin-top: 6px; background: none; border: 0; color: rgba(240,230,208,.55); font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
+
+/* Meydan Okuma rozeti ve listesi */
+.challenge-chip { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px; color: var(--gold); border: 1px solid var(--gold-dim); border-radius: 20px; padding: 2px 10px; cursor: pointer; background: rgba(201,162,39,.06); }
+.challenge-chip .gi { width: 12px; height: 12px; }
+.challenge-chip.complete { color: #1a1206; background: linear-gradient(180deg, #F2D56B, #C9A227); border-color: var(--gold-light); }
+#challenge-list { position: fixed; right: 12px; z-index: 650; width: min(84vw, 300px); background: rgba(12,9,24,.97); border: 1px solid var(--gold); border-radius: 12px; padding: 12px 12px 10px; box-shadow: 0 12px 30px rgba(0,0,0,.6); }
+#challenge-list .cl-title { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2.5px; color: var(--gold-light); margin-bottom: 8px; text-align: center; }
+#challenge-list .cl-item { display: flex; gap: 8px; align-items: flex-start; font-family: 'IM Fell English', serif; font-size: 13.5px; line-height: 1.35; color: var(--text); padding: 5px 0; border-top: 1px solid rgba(201,162,39,.12); }
+#challenge-list .cl-mark { font-family: 'Cinzel', serif; width: 14px; flex: none; color: var(--gold-dim); }
+#challenge-list .cl-item.done .cl-mark { color: #6fcf97; }
+#challenge-list .cl-item.done { color: #9ad8a7; }
+#challenge-list .cl-item.failed .cl-mark { color: #e07070; }
+#challenge-list .cl-item.failed { color: rgba(240,230,208,.45); text-decoration: line-through; }
+#challenge-list .cl-note { display: block; font-size: 11.5px; font-style: italic; color: var(--gold-dim); }
+#challenge-list .cl-reward { margin-top: 6px; font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1px; color: var(--gold); text-align: center; }
+#mode-intro-box .mi-body .gi { width: 14px; height: 14px; vertical-align: -2px; }
+
+/* ── Pargalı'nın Sırrı (27 Eylül 2026) ── */
+#btn-pargali.hidden { display: none; }
+#btn-pargali { color: #d8c08a; border-color: rgba(216,192,138,.45); }
+#pargali-letter-overlay { position: fixed; inset: 0; z-index: 900; display: flex; align-items: center; justify-content: center; padding: 18px; background: rgba(3,2,8,.82); opacity: 0; transition: opacity .22s; }
+#pargali-letter-overlay.visible { opacity: 1; }
+#pargali-letter { width: 100%; max-width: 360px; max-height: 86vh; overflow-y: auto; background: linear-gradient(180deg, #e3d4ad, #EBDFC2 10%, #EBDFC2 90%, #e3d4ad); color: #3B2A14; border-radius: 8px; padding: 18px 18px 10px; box-shadow: 0 18px 44px rgba(0,0,0,.7), inset 0 0 50px rgba(120,80,30,.25); }
+#pargali-letter .pl-title { font-family: 'Cinzel', serif; font-size: 17px; letter-spacing: 3px; color: #5a1010; text-align: center; }
+#pargali-letter .pl-sub { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; color: #7a4a10; text-align: center; margin: 2px 0 10px; }
+#pargali-letter .pl-page { font-family: 'IM Fell English', serif; font-style: italic; font-size: 14px; line-height: 1.5; padding: 8px 0 8px 26px; border-top: 1px solid rgba(90,16,16,.18); position: relative; }
+#pargali-letter .pl-page .pl-no { position: absolute; left: 0; top: 9px; font-family: 'Cinzel', serif; font-style: normal; font-size: 12px; color: #8e1b1b; }
+#pargali-letter .pl-page.missing { color: rgba(59,42,20,.4); }
+#pargali-letter .pl-end { margin-top: 8px; padding: 10px; border-radius: 6px; background: rgba(142,27,27,.1); font-family: 'IM Fell English', serif; font-size: 13.5px; line-height: 1.45; color: #5a1010; text-align: center; }
+#pargali-letter .pl-close { display: block; margin: 8px auto 0; background: none; border: 0; color: #7a4a10; font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
+#easter-action-btn.pargali_sayfa { border-color: rgba(216,192,138,.55); color: #d8c08a; background: rgba(216,192,138,.08); }
+
+/* ── Başlangıç Kesesi: Ferman Mührü (27 Eylül 2026) ───────────────────── */
+#starter-offer { position: fixed; inset: 0; z-index: 950; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(3,2,8,.72); opacity: 0; transition: opacity .25s; }
+#starter-offer.visible { opacity: 1; }
+#starter-offer .so-wrap { width: 100%; max-width: 300px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+#starter-offer.visible .so-wrap { animation: soUnroll .7s cubic-bezier(.3,1.2,.4,1) both; }
+@keyframes soUnroll { from { transform: scaleY(.1); opacity: 0; } to { transform: none; opacity: 1; } }
+#starter-offer .so-scroll { width: 100%; position: relative; text-align: center; color: #3B2A14; border-radius: 6px; padding: 18px 18px 14px; background: linear-gradient(180deg, #d9c89e, #EBDFC2 12%, #EBDFC2 88%, #d9c89e); box-shadow: 0 16px 40px rgba(0,0,0,.6); }
+#starter-offer .so-scroll::before, #starter-offer .so-scroll::after { content: ''; position: absolute; left: -8px; right: -8px; height: 14px; border-radius: 7px; background: linear-gradient(180deg, #8a5a22, #5d3a12); }
+#starter-offer .so-scroll::before { top: -7px; }
+#starter-offer .so-scroll::after { bottom: -7px; }
+#starter-offer .so-once { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: .22em; color: #8e1b1b; }
+#starter-offer .so-title { font-family: 'Cinzel', serif; font-weight: 700; font-size: 17px; letter-spacing: .16em; margin: 4px 0 2px; color: #5a1010; }
+#starter-offer .so-text { color: #3B2A14; opacity: 1; font-family: 'IM Fell English', serif; font-style: italic; font-size: 14px; line-height: 1.45; margin: 0 0 8px; }
+#starter-offer .so-seal { width: 124px; height: 124px; border-radius: 50%; margin: 6px auto 8px; position: relative; transform: rotate(-4deg); display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 36% 30%, #d8483c, #C4342B 30%, #7a1712 74%); border: 3px double var(--gold-light, #E8C84A); box-shadow: 0 0 28px rgba(179,39,31,.5), 0 10px 18px rgba(0,0,0,.5); }
+#starter-offer .so-seal::before { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(232,200,74,.55); border-radius: 50%; }
+#starter-offer .so-seal .n { font-family: 'Cinzel Decorative', serif; font-weight: 700; font-size: 34px; color: #F6DCA0; line-height: 1; text-shadow: 0 2px 0 #5a0f0f; }
+#starter-offer .so-seal .u { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: .2em; color: #F0CF8C; margin-top: 2px; }
+#starter-offer .so-seal .p { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; color: #E8C84A; margin-top: 6px; white-space: nowrap; }
+#starter-offer .so-cmp { color: #3B2A14; opacity: 1; font-family: 'IM Fell English', serif; font-size: 13.5px; margin: 0; }
+#starter-offer .so-strike { text-decoration: line-through; text-decoration-color: rgba(196,52,43,.9); text-decoration-thickness: 2px; color: #6e5a3c; }
+#starter-offer .so-buy { width: 100%; font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px; letter-spacing: .08em; border: 0; border-radius: 12px; padding: 13px 10px; cursor: pointer; color: #1a1206; background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A); box-shadow: 0 6px 18px rgba(201,162,39,.35), inset 0 1px 0 rgba(255,255,255,.5); margin-top: 6px; -webkit-tap-highlight-color: transparent; }
+#starter-offer .so-buy:disabled { opacity: .6; }
+#starter-offer .so-status { min-height: 16px; font-family: 'IM Fell English', serif; font-size: 14px; color: #F0E6D0; text-align: center; }
+#starter-offer .so-later { background: none; border: 0; color: #A99E86; font-family: 'IM Fell English', serif; font-size: 14px; cursor: pointer; padding: 6px 12px; }
+
+/* Market'teki Başlangıç Kesesi satırı */
+.akce-pack-btn.starter-pack { width: 100%; flex-direction: row; justify-content: flex-start; gap: 12px; padding: 12px 14px; margin-bottom: 10px; border-color: rgba(196,52,43,.55); background: linear-gradient(90deg, rgba(196,52,43,.12), rgba(201,162,39,.04)); }
+.akce-pack-btn.starter-pack.gone { display: none; }
+.akce-pack-btn.starter-pack .ferman { flex: 0 0 auto; margin: 0; }
+.akce-pack-btn.starter-pack .starter-info { flex: 1 1 auto; min-width: 0; text-align: left; display: flex; flex-direction: column; gap: 3px; }
+.akce-pack-btn.starter-pack .starter-name { font-family: 'Cinzel', serif; font-weight: 700; font-size: 12px; letter-spacing: .12em; color: var(--gold-light, #E8C84A); }
+.akce-pack-btn.starter-pack .starter-sub { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13px; color: rgba(240,230,208,.8); }
+.akce-pack-btn.starter-pack .price-in { flex: 0 0 auto; font-size: 13px; }

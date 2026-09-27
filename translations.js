@@ -370,6 +370,7 @@ window.UI_STRINGS = {
     // Ana menü butonları
     'btn.sadrazam_mode':    'SADRAZAM MODU',
     'btn.pasa_mode':        'PAŞALIK MODU',
+    'btn.challenge':        'MEYDAN OKUMA MODU',
     'btn.achievements':     'BAŞARIMLARIM',
     'btn.buy_coins':        'AKÇE AL',
     'btn.settings':         'AYARLAR',
@@ -415,6 +416,7 @@ window.UI_STRINGS = {
     'akce.buy':             'SATIN AL',
     'akce.close':           'Kapat',
     'btn.market':           'MARKET',
+    'btn.gift':             'HEDİYE',
     'market.title':         'MARKET',
     'market.noads_head':    'REKLAMSIZ',
     'market.noads_name':    'Reklamsız Oyna',
@@ -491,7 +493,7 @@ window.UI_STRINGS = {
     // Danışman max uyarısı
     'advisor.max_alert':    'En fazla 2 danışman seçebilirsiniz.',
     // Challenge modu
-    'btn.challenge':        '⚔ CHALLENGE',
+    'btn.challenge':        '⚔ MEYDAN OKUMA',
     'btn.howto':            '❔ NASIL OYNANIR',
     // Ayarlar
     'sett.title':           'AYARLAR',
@@ -559,6 +561,7 @@ window.UI_STRINGS = {
     // Main menu buttons
     'btn.sadrazam_mode':    'GRAND VIZIER MODE',
     'btn.pasa_mode':        'PASHA MODE',
+    'btn.challenge':        'CHALLENGE MODE',
     'btn.achievements':     'ACHIEVEMENTS',
     'btn.buy_coins':        'BUY COINS',
     'btn.settings':         'SETTINGS',
@@ -604,6 +607,7 @@ window.UI_STRINGS = {
     'akce.buy':             'PURCHASE',
     'akce.close':           'Close',
     'btn.market':           'MARKET',
+    'btn.gift':             'GIFT',
     'market.title':         'MARKET',
     'market.noads_head':    'AD-FREE',
     'market.noads_name':    'Play Ad-Free',
