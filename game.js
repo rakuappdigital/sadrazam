@@ -2613,15 +2613,16 @@ function confirmAdvisor() {
   _maybeShowInterstitialThenStartGame();
 }
 
-// "OYUNA BAŞLA" tuşuna her basıldığında sayılır, HER 2. basışta bir geçiş
+// "OYUNA BAŞLA" tuşuna her basıldığında sayılır, HER 3. basışta bir geçiş
 // reklamı gösterilir. Reklam gösterilemese/hiç yüklenmemiş olsa bile
 // InterstitialAds.show() her koşulda callback'i çağırır — oyun asla
 // reklama bağlı kalıp bloklanmaz. Market'ten "Reklamsız" alındıysa hiç gösterilmez.
+const INTERSTITIAL_EVERY_N_GAMES = 3; // 27 Eylül 2026: 2 → 3 (kullanıcı isteği)
 function _maybeShowInterstitialThenStartGame() {
   if (isAdFreeUnlocked()) { startGame(); return; }
   const n = parseInt(localStorage.getItem('sadrazam_start_count') || '0', 10) + 1;
   localStorage.setItem('sadrazam_start_count', String(n));
-  if (typeof InterstitialAds !== 'undefined' && n % 2 === 0) {
+  if (typeof InterstitialAds !== 'undefined' && n % INTERSTITIAL_EVERY_N_GAMES === 0) {
     InterstitialAds.show(startGame);
   } else {
     startGame();

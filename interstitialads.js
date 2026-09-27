@@ -5,7 +5,7 @@
 // çağrılmaz — rewardedads.js'teki aynı desen (bkz. o dosyadaki yorum).
 //
 // Ne zaman gösterilir: "Oyuna Başla" butonuna (confirmAdvisor(), game.js)
-// basıldığında, TEK YERDE sayılan bir sayaçla HER 2. seferde bir. Reklam
+// basıldığında, TEK YERDE sayılan bir sayaçla HER 3. seferde bir (game.js INTERSTITIAL_EVERY_N_GAMES). Reklam
 // başarısız olsa/hiç yüklenemese bile oyun ASLA bloklanmaz — show() her
 // koşulda onDone() çağırır.
 
