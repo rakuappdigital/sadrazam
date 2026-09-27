@@ -48,20 +48,22 @@ sayfasında build 25'i seçip review'a gönderiyor.
       Reklamsız fiyatı (₺59,99) geliyor mu, satın alınca geçiş reklamı kesiliyor
       mu, "Geri Yükle" çalışıyor mu. `noads` IAP'ı sürüme eklendi mi kontrol et.
 
-## Düğüm / gecikmeli sonuç sistemi — dalda HAZIR, main'e birleştirilmedi
+## Düğüm / gecikmeli sonuç sistemi — main'e birleştirildi (27 Eylül 2026), BUILD ALINMADI
 
-Dal: `ozellik/dugum` (push edilmedi). Kullanıcı onayı bekleniyor: main'e
-birleştir → 2 kopya senkron → cap sync → simülatör smoke test → (istenirse) build.
-Ayrıntı: CLAUDE.md §3b. 99/99 regresyon testi geçti (26 Eylül 2026).
+Kullanıcı: "main'e birleştir ama build alma". Sonraki App Store build'inde
+(1.4.1 incelemesi sonuçlandıktan sonra) bu değişiklikler de gidecek; build
+öncesi simülatörde kısa bir oyun + birleşik kart + soruşturma kontrolü yap.
+Ayrıntı: CLAUDE.md §3b.
 
-Bu dalda ayrıca düzeltilen mevcut hatalar: 7 ölü zincir kuralı, sonuç kartı
-çift/tekrar gelmesi, gizli hain oyunların 1/3'ünde bozuk, Şeyhülislam görsel
-dosya adı (iPhone'da boş portre riski), 'Hiç borçlanma' başarımı.
+Bu işte ayrıca düzeltilenler: 7 ölü zincir kuralı, sonuç kartı çift/tekrar
+gelmesi, gizli hain (1/3 oyunda bozuk anahtar + soruşturma düğmesi yoktu →
+ipucu sistemiyle geri geldi, tekrar-tıklama hilesi kapandı, İngilizce açıklama),
+'Hiç borçlanma' başarımı, küçük ekranlarda (375x667 / 320x568) stat ve eşya
+çubuklarının ekran dışında kalması, Şeyhülislam görseli (kökte büyük harf +
+uygulamada sıkıştırılmamış kopya).
 
-Açık kalan (bu işten bağımsız, kullanıcıya bildirildi):
-- 375x667 (iPhone SE/8) ekranda stat çubukları ekran dışında (canlıda da var)
-- Gizli hain adaylarının 11/18'inin soruşturulabilir kartı yok (içerik eksiği)
-- Venedik Balyosu portresi farklı çerçeve/stil (birleşik kartta uyumsuz)
+Açık kalan: Venedik Balyosu portresinin çerçevesi/stili diğerlerinden farklı
+(yeni görsel gerekir — kullanıcı üretirse değiştir).
 
 ## Bu session'da yapılanlar (26 Eylül 2026)
 
