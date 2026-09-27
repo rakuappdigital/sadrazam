@@ -29,6 +29,27 @@ bu kelime geçmez. Mimari: CLAUDE.md §3b.
    kaldığımız yerleri tespit et, iyileştirme öner; bize özgü güçlü yönleri de
    geliştir/ekle.
 
+## Büyük paket — main'e birleştirildi (27 Eylül 2026), BUILD ALINMADI
+
+Dal `ozellik/buyuk-paket`: iki seçenekli özel kartlar, geçiş reklamı 3 oyunda
+bir, Günlük Divan Hediyesi, Kritik An, ölüm ekranında yarım kalan sonuçlar,
+Kâtibin Notu, Tam Sürüm kişisel bağlam, Meydan Okuma + Deneyimli Mod,
+Pargalı'nın Sırrı, 5 yeni karakter + Büyük İstanbul Yangını, Başlangıç Kesesi.
+Ayrıntı: CLAUDE.md §3b, §3c, §5.
+
+- [ ] Sonraki App Store sürümünü incelemeye gönderirken **`akce30start` IAP'ını
+      sürüme ekle** (ASC'de READY_TO_SUBMIT, ilk kez gönderilecek). `noads` da
+      hâlâ READY_TO_SUBMIT ise onu da ekle.
+- [ ] (İsteğe bağlı) RevenueCat panelinde `akce30start`'ı Consumable ürün
+      olarak ekle — satın alma için şart değil (purchaseStoreProduct doğrudan
+      StoreKit ürünüyle çalışıyor), sadece RC grafiklerinde düzgün görünsün diye.
+- [ ] Build öncesi gerçek cihaz/TestFlight: Başlangıç Kesesi fiyatı ₺14,99
+      geliyor mu, satın alınca +30 akçe ve teklif kayboluyor mu.
+- [ ] Kullanıcı kararı bekleyen: görsel demolardan hangileri uygulanacak
+      (mevsimler A/B/C, mühür, eşya kutuları, vakayiname, yaşlanan portreler);
+      "İplik Takipçisi" başarımının adı ("iplik" kelimesi oyunda geçmesin
+      kuralı); Venedik Balyosu portresi.
+
 ## Yeni karakter görselleri — kullanıcı üretecek (27 Eylül 2026)
 
 Görseller `~/Desktop/sadra/` klasörüne konacak. Gelince: 1280x1600 JPG'ye
