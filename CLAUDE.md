@@ -484,6 +484,13 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
 
+- **v1.5.0 / build 26 (28 Eylül 2026'da yüklendi, Delivery UUID
+  `7ae8f5dc-3ef2-45c4-ad92-d786e75bf29a`)** — büyük paket + görsel paket +
+  mühür damgası + yaşlı portreler + kenar sekmeleri + görsel sıkıştırma + EN
+  eşya süresi hatası düzeltmesi. İncelemeye gönderirken **`akce30start` IAP'ı
+  sürüme eklenmeli** (ilk kez gönderiliyor). Kullanıcı sürüm notlarını ve
+  promosyon metnini kendisi girip gönderecek.
+
 - **v1.4.1/build 25 (26 Eylül 2026'da yüklendi, Delivery UUID
   `04631759-f487-44c9-8d66-b9e83f247f74`, ASC'de VALID)** — ödüllü reklam
   45sn hangGuard kök neden fix'i + canlıda sahte reklam kaldırıldı. Kullanıcı
