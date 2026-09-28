@@ -1826,6 +1826,7 @@ function scheduleConsequence(cardId, delay, altCardId) {
     cardId,
     afterCardsPlayed: cardsPlayed + delay,
     playsAtSchedule: playCounts[cardId] || 0,
+    at: cardsPlayed, // kararın verildiği an (sonuç kartındaki mühür şeridi: "N kart önce")
   };
   if (altCardId) sc.altCardId = altCardId;
   // Hangi karardan doğdu (ölüm/İkinci Şans ekranındaki "yarım kalan" listesi için)
@@ -3166,6 +3167,7 @@ function startGame() {
   _criticalShownCount = 0; _criticalLastAt = -999;
   _muneccimN = 0; _muneccimAt = -999;
   _agedSeenThisGame = new Set();
+  _stampMeta = new Map();
   _hekimYesCount = 0; _knotIdsSeenThisGame = new Set(); _challengeRewarded = false;
   document.getElementById("challenge-list")?.remove();
   _lastDecision = null;
@@ -4046,6 +4048,44 @@ function _consumeConsequence(c) {
   (c.excluded_flags || []).forEach(f => { if (sets.has(f)) activeFlags[f] = true; });
 }
 
+// ── Sonuç kartında mühür damgası (28 Eylül 2026) ─────────────────────
+// Gecikmeli bir sonuç kartı gelince kart her zamanki gibi gelir; ~0,5 sn
+// sonra portrenin köşesine balmumu mühür vurulur (halka + titreşim) ve
+// portrenin altındaki kırmızı şeritte hangi karardan, ne kadar önce geldiği
+// yazar. Birleşik kartta yok (kendi görünümü var). Oyuncu hiçbir şey yapmaz,
+// kart hemen kaydırılabilir.
+let _stampMeta = new Map(); // sonuç kartı nesnesi → { src, at }
+function _hideConsequenceStamp() {
+  ["card-stamp", "card-stamp-ring", "card-stamp-band"].forEach(id => document.getElementById(id)?.classList.remove("go"));
+  clearTimeout(card._stampT);
+}
+function _stampAgoText(n, en) {
+  if (n >= CARDS_PER_YEAR) { const y = Math.floor(n / CARDS_PER_YEAR); return en ? `${y} ${y === 1 ? "year" : "years"} ago` : `${y} yıl önce`; }
+  return en ? `${n} ${n === 1 ? "card" : "cards"} ago` : `${n} kart önce`;
+}
+function _playConsequenceStamp(c, meta) {
+  const seal = document.getElementById("card-stamp"), ring = document.getElementById("card-stamp-ring"), band = document.getElementById("card-stamp-band");
+  if (!seal || !ring || !band) return;
+  const en = window.LANG === 'en';
+  const src = meta && meta.src ? (en ? meta.src.en : meta.src.tr) : "";
+  const ago = (meta && typeof meta.at === "number") ? _stampAgoText(Math.max(1, cardsPlayed - meta.at), en) : "";
+  seal.querySelector("i").textContent = en ? "RESULT" : "SONUÇ";
+  const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  const agoHTML = ago ? ` <span class="csb-ago">· ${esc(ago)}</span>` : "";
+  band.innerHTML = src
+    ? (en ? `Your decision “${esc(src)}”${agoHTML}` : `“${esc(src)}” kararınız${agoHTML}`)
+    : esc(en ? "The result of a past decision" : "Geçmiş bir kararınızın sonucu");
+  card._stampT = setTimeout(() => {
+    if (currentCard !== c) return;
+    // Kısa portrede (küçük ekran) küçük mühür + sıkı şerit, üst üste binmesin
+    card.classList.toggle("stamp-compact", cardImage.offsetHeight < 190);
+    // Şerit portrenin alt kenarına oturur (portre yüksekliği ekrana göre değişir)
+    band.style.top = Math.max(0, cardImage.offsetTop + cardImage.offsetHeight - band.offsetHeight - 6) + "px";
+    seal.classList.add("go"); ring.classList.add("go"); band.classList.add("go");
+    setTimeout(() => { if (currentCard === c && typeof Haptics !== "undefined" && Haptics.tap) Haptics.tap(); }, 380);
+  }, 500);
+}
+
 function checkScheduledCards() {
   const due = scheduledCards.filter(sc => cardsPlayed >= sc.afterCardsPlayed);
   scheduledCards = scheduledCards.filter(sc => cardsPlayed < sc.afterCardsPlayed);
@@ -4069,6 +4109,7 @@ function checkScheduledCards() {
       forcedQueue.unshift(knot);
       return;
     }
+    _stampMeta.set(c, { src: sc.src, at: sc.at }); // gelince mühür damgası vurulsun
     forcedQueue.unshift(c);
   });
   updateFateBar();
@@ -4187,8 +4228,15 @@ let currentCard = null;
 const AGING_V2_YEAR = 10;
 const AGING_TINT_MAX_YEAR = 20;
 const CHARACTER_EVOLUTIONS = {
-  "9-cellat":   { version: "9-cellat_v2" },
-  "2-yeniceri": { version: "2-yeniceri_v2" },
+  "9-cellat":         { version: "9-cellat_v2" },
+  "2-yeniceri":       { version: "2-yeniceri_v2" },
+  // 28 Eylül 2026: kullanıcının ürettiği yaşlı portreler
+  "14-casuslar_basi": { version: "14-casuslar_basi_v2" },
+  "3-seyhulislam":    { version: "3-seyhulislam_v2" },
+  "4-defterdar":      { version: "4-defterdar_v2" },
+  "5-valide-sultan":  { version: "5-valide-sultan_v2" },
+  "6-kaptan-i-derya": { version: "6-kaptan-i-derya_v2" },
+  "8-rakip-vezir":    { version: "8-rakip-vezir_v2" },
 };
 let _agedSeenThisGame = new Set();
 function _agingTint(key) {
@@ -4295,6 +4343,7 @@ function dealNext() {
   if (isGameOver) return;
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
   _hideAgeOverlay(); card.style.removeProperty("--age-f");
+  _hideConsequenceStamp();
   _hideInvestigateBtn();   // özel kart tiplerinde önceki kartın soruşturma düğmesi kalmasın
   _hideEasterChoices();
   _hideCriticalOffer();
@@ -4506,6 +4555,8 @@ function dealNext() {
   setTimeout(maybeShowCriticalOffer, 650); // kart yerine oturduktan sonra
 
   renderKnotVisual(c);
+  const _stamp = _stampMeta.get(c);
+  if (_stamp) { _stampMeta.delete(c); if (!c.knot_of) _playConsequenceStamp(c, _stamp); }
 
   // Görseli yükle — hazır olunca göster, yoksa gizle (spinner çıkmasın)
   cardImage.removeAttribute("src");
