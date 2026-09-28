@@ -48,6 +48,11 @@ Ayrıntı: CLAUDE.md §3b, §3c, §5.
 - [x] Görsel demolar: mevsim (A, gerçekçi parçacıklar), eşya kutuları,
       vakayiname, yaşlanan portreler uygulandı (27 Eylül 2026).
 - [x] Mühür açılışı: kullanıcı "mühür damgası"nı seçti, uygulandı (28 Eylül 2026).
+- [x] 6 yaşlı portre eklendi (28 Eylül 2026).
+- [x] Karakter görselleri sıkıştırıldı: 83,6 MB → 30,8 MB (1080 px, q80).
+- [ ] Kaydırma ipuçları: kullanıcı seçecek (demo: claude.ai/artifact/VA4h3VU4ZDirKsbuh1bafY —
+      A kenar sekmeleri, B alt düğmeler (dokunarak da seçim), C köşe damgaları + göz kırpma).
+- [ ] İsteğe bağlı: müzik klasörü 23 MB (sıkıştırılabilir), danışman/ikon PNG'leri ~3,7 MB.
 - [ ] Yaşlı portreler (`_v2`): Casuslar Başı, Şeyhülislam, Defterdar, Rakip
       Vezir, Kaptan-ı Derya, Valide Sultan — kullanıcı üretecek; gelince
       kırp/ölçekle + CHARACTER_EVOLUTIONS'a ekle.
