@@ -4228,8 +4228,15 @@ let currentCard = null;
 const AGING_V2_YEAR = 10;
 const AGING_TINT_MAX_YEAR = 20;
 const CHARACTER_EVOLUTIONS = {
-  "9-cellat":   { version: "9-cellat_v2" },
-  "2-yeniceri": { version: "2-yeniceri_v2" },
+  "9-cellat":         { version: "9-cellat_v2" },
+  "2-yeniceri":       { version: "2-yeniceri_v2" },
+  // 28 Eylül 2026: kullanıcının ürettiği yaşlı portreler
+  "14-casuslar_basi": { version: "14-casuslar_basi_v2" },
+  "3-seyhulislam":    { version: "3-seyhulislam_v2" },
+  "4-defterdar":      { version: "4-defterdar_v2" },
+  "5-valide-sultan":  { version: "5-valide-sultan_v2" },
+  "6-kaptan-i-derya": { version: "6-kaptan-i-derya_v2" },
+  "8-rakip-vezir":    { version: "8-rakip-vezir_v2" },
 };
 let _agedSeenThisGame = new Set();
 function _agingTint(key) {
