@@ -460,6 +460,18 @@ dışarıda bir görsel üretici gerekmiyor.
 - Her testten sonra: `pkill -f "http.server <port>"`, scratchpad'deki geçici
   `.js`/`.png` dosyalarını sil.
 
+## 7b. Statik "tanımsız isim" denetimi (28 Eylül 2026)
+
+Sadece bir dil kolunda çalışan tanımsız değişkenler (ör. `LANG==='en' ?
+EN_ITEMS[expiredId]`) TR testlerinde HİÇ görünmez; 29 Haziran–28 Eylül arası
+İngilizce oyunda eşya süresi dolunca dealNext bu yüzden patlıyordu. Denetim:
+projedeki `node_modules/.bin/tsc` ile, scratchpad'e kopyalanan betikler
+(translations, sounds, haptics, gamecenter, rewardedads, interstitialads,
+game.js) üzerinde `allowJs+checkJs+noEmit`, `lib: es2020,dom`, `types: []`
+(Node tipleri parse hatası verir). Çıktıda TS2304/TS2552 ("Cannot find name")
+içinden `window.X =` ile tanımlananları ele → kalan her isim gerçek hatadır.
+TS2448/2451 (tanımlanmadan kullanım / yeniden tanım) da bakılmalı.
+
 ## 8. Genel kural
 
 Değişiklik sonrası HER ZAMAN: `node --check game.js` (syntax) → ilgili

@@ -4359,7 +4359,7 @@ function dealNext() {
         playerItemExpiry[i] = null;
         if (activeItemIndex === i) { activeItemIndex = null; pendingItemEffect = null; card.style.boxShadow = ""; }
         updateItemBar();
-        showItemExpiredToast(expiredId);
+        try { showItemExpiredToast(expiredId); } catch (e) { console.warn('expired toast', e); } // görsel uyarı kart akışını asla durdurmasın
       }
     }
   }
@@ -6748,7 +6748,9 @@ function showItemExpiredToast(itemId) {
   if (!itm) return;
   const toast = document.createElement("div");
   toast.className = "item-expired-toast";
-  const _expEN = (window.LANG === 'en' && window.EN_ITEMS) ? window.EN_ITEMS[expiredId] : null;
+  // (29 Haziran'dan beri burada tanımsız 'expiredId' vardı → İngilizce oyunda
+  // eşya süresi dolunca dealNext hata verip sıradaki kart gelmiyordu)
+  const _expEN = (window.LANG === 'en' && window.EN_ITEMS) ? window.EN_ITEMS[itemId] : null;
   const _expName = _expEN ? _expEN.name : itm.name;
   const _expiredLabel = window.LANG === 'en' ? 'Expired' : 'Tükendi';
   toast.innerHTML = `<img src="${itm.icon}" alt="${_expName}"><span>${_expiredLabel}</span>`;
