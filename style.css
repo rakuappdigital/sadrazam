@@ -5167,3 +5167,30 @@ html, body {
 #card.stamp-compact #card-stamp i { font-size: 5px; margin-top: 1px; }
 #card.stamp-compact #card-stamp::before { inset: 3px; }
 #card.stamp-compact #card-stamp-band { font-size: 10.5px; line-height: 1.25; padding: 3px 4%; }
+
+/* ── Kenar sekmeleri (28 Eylül 2026): sadece görüntü, dokunmayı almaz ── */
+.swipe-hint.side-tab { pointer-events: none; -webkit-user-select: none; user-select: none; opacity: 1; letter-spacing: 0;
+  flex: 0 0 24px; width: 24px; align-self: stretch; margin: 6% 0 10%; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; overflow: hidden;
+  transition: transform .15s ease, opacity .25s ease, box-shadow .15s ease, background .15s ease; }
+.swipe-hint.side-tab.l { background: linear-gradient(180deg, rgba(122,23,18,0), rgba(122,23,18,.55) 18%, rgba(122,23,18,.55) 82%, rgba(122,23,18,0)); border-left: 2px solid rgba(217,83,74,.75); }
+.swipe-hint.side-tab.r { background: linear-gradient(180deg, rgba(29,90,44,0), rgba(29,90,44,.55) 18%, rgba(29,90,44,.55) 82%, rgba(29,90,44,0)); border-right: 2px solid rgba(79,191,106,.75); }
+.side-tab .st-text { writing-mode: vertical-rl; font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-height: 72%; }
+.side-tab.l .st-text { transform: rotate(180deg); color: #ffd9d4; }
+.side-tab.r .st-text { color: #d7ffe0; }
+.side-tab .st-chev { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; line-height: 1; }
+.side-tab.l .st-chev { color: #ff8a80; animation: stChevL 1.6s ease-in-out infinite; }
+.side-tab.r .st-chev { color: #8af0a0; animation: stChevR 1.6s ease-in-out infinite; }
+@keyframes stChevL { 0%, 100% { transform: translateX(0); opacity: .6; } 50% { transform: translateX(-3px); opacity: 1; } }
+@keyframes stChevR { 0%, 100% { transform: translateX(0); opacity: .6; } 50% { transform: translateX(3px); opacity: 1; } }
+.swipe-hint.side-tab.hot { transform: scaleX(1.25); box-shadow: 0 0 18px rgba(255,255,255,.12); }
+.swipe-hint.side-tab.l.hot { background: linear-gradient(180deg, rgba(160,30,24,0), rgba(160,30,24,.85) 18%, rgba(160,30,24,.85) 82%, rgba(160,30,24,0)); }
+.swipe-hint.side-tab.r.hot { background: linear-gradient(180deg, rgba(34,120,58,0), rgba(34,120,58,.85) 18%, rgba(34,120,58,.85) 82%, rgba(34,120,58,0)); }
+.swipe-hint.side-tab.dim { opacity: .35; }
+#card-area.tabs-off .swipe-hint.side-tab { opacity: 0; }
+@media (max-width: 360px) { .swipe-hint.side-tab { flex-basis: 20px; width: 20px; } .side-tab .st-text { font-size: 9px; } }
+@media (prefers-reduced-motion: reduce) { .side-tab .st-chev { animation: none; } }
+/* Kart boyutu eskisiyle aynı kalsın: eski "← Hayır / Evet →" yazıları ~45px genişlikteydi */
+.swipe-hint.side-tab.l { margin-right: 21px; }
+.swipe-hint.side-tab.r { margin-left: 21px; }
+@media (max-width: 360px) { .swipe-hint.side-tab.l { margin-right: 25px; } .swipe-hint.side-tab.r { margin-left: 25px; } }
