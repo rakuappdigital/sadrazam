@@ -264,7 +264,14 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   karakterler — dosyasız satır ekleme). `AGING_V2_YEAR = 10` (eskiden 50.
   kart), `--age-f` ile yıllarla solma/sepya (durum filtrelerine eklenir),
   ilk yaşlı gelişte `#card-image-age` ile genç→yaşlı geçiş (birleşik kartta yok).
-- Testler (scratchpad): `season_test`, `slot_test`, `vk_test`, `vk_pick`, `age_test`.
+- **Sonuç kartında mühür damgası (28 Eylül 2026, kullanıcı seçimi):**
+  `checkScheduledCards` normal sonuç kartını `_stampMeta`'ya yazar
+  (`{src, at}`; `at` = kararın `cardsPlayed`'i, `scheduleConsequence`'ta),
+  dealNext `renderKnotVisual`'dan sonra `_playConsequenceStamp`: 0,5 sn sonra
+  `#card-stamp` (SONUÇ/RESULT) + `#card-stamp-ring` + `#card-stamp-band`
+  ("“karar” kararınız · N kart/yıl önce"). Birleşik kartta yok. Portre <190px
+  ise `#card.stamp-compact`. Kayıttan dönülünce sıradaki karta damga çıkmaz.
+- Testler (scratchpad): `season_test`, `slot_test`, `vk_test`, `vk_pick`, `age_test`, `stamp_test`.
 
 ## 4. Kritik sabitler
 
