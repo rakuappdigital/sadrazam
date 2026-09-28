@@ -4344,6 +4344,7 @@ function dealNext() {
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
   _hideAgeOverlay(); card.style.removeProperty("--age-f");
   _hideConsequenceStamp();
+  _setSideTabs(null); // özel (butonlu) kartlarda kenar sekmeleri gizli
   _hideInvestigateBtn();   // özel kart tiplerinde önceki kartın soruşturma düğmesi kalmasın
   _hideEasterChoices();
   _hideCriticalOffer();
@@ -4534,6 +4535,7 @@ function dealNext() {
   cardText.textContent = displayText;
   const _leftTxt  = (_isEN && c.left_text_en)  ? c.left_text_en  : (c.left_text  || (_isEN ? "No"  : "Hayır"));
   const _rightTxt = (_isEN && c.right_text_en) ? c.right_text_en : (c.right_text || (_isEN ? "Yes" : "Evet"));
+  _setSideTabs(_leftTxt, _rightTxt);
   if (window.previewMode && c.left_effects && c.right_effects) {
     choiceLeft.innerHTML  = _leftTxt  + getEffectPreviewHTML(c.left_effects);
     choiceRight.innerHTML = _rightTxt + getEffectPreviewHTML(c.right_effects);
@@ -7411,6 +7413,7 @@ function onMove(x) {
     _haptThresholdFired = false;
   }
 
+  _sideTabsDrag(dx);
   if (dx < -15) {
     overlayL.style.opacity = String(progress * 0.6);
     overlayR.style.opacity = "0";
@@ -7546,6 +7549,7 @@ function flyOff(dir) {
     choiceRight.style.opacity = "0";
     overlayL.style.opacity = "0";
     overlayR.style.opacity = "0";
+    _sideTabsDrag(0);
     isAnimating = false;
     decide(dir);
   }, 300);
@@ -7559,6 +7563,28 @@ function snapBack() {
   card.style.transform = "translateX(0) rotate(0deg)";
   overlayL.style.opacity = overlayR.style.opacity = "0";
   choiceLeft.style.opacity = choiceRight.style.opacity = "0";
+  _sideTabsDrag(0);
+}
+
+// ── Kenar sekmeleri (28 Eylül 2026) ──────────────────────────────────
+// Kartın iki yanındaki eski soluk "← Hayır / Evet →" yazıları yerine kırmızı/
+// yeşil dikey sekmeler: içinde kartın gerçek seçenek metni + kıpırdayan oklar.
+// SADECE GÖRÜNTÜ — pointer-events:none; kaydırma/dokunma yine kartın kendisinde.
+// Sürükledikçe o taraf parlar, öbürü söner. Butonlu özel kartlarda gizli.
+function _setSideTabs(leftTxt, rightTxt) {
+  const area = document.getElementById("card-area");
+  const l = document.querySelector("#swipe-hint-left .st-text"), r = document.querySelector("#swipe-hint-right .st-text");
+  if (!area || !l || !r) return;
+  if (leftTxt == null) { area.classList.add("tabs-off"); _sideTabsDrag(0); return; }
+  l.textContent = leftTxt; r.textContent = rightTxt;
+  area.classList.remove("tabs-off");
+  _sideTabsDrag(0);
+}
+function _sideTabsDrag(dx) {
+  const L = document.getElementById("swipe-hint-left"), R = document.getElementById("swipe-hint-right");
+  if (!L || !R) return;
+  L.classList.toggle("hot", dx < -25); R.classList.toggle("hot", dx > 25);
+  L.classList.toggle("dim", dx > 25);  R.classList.toggle("dim", dx < -25);
 }
 
 // Mouse

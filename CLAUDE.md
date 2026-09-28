@@ -271,7 +271,18 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   `#card-stamp` (SONUÇ/RESULT) + `#card-stamp-ring` + `#card-stamp-band`
   ("“karar” kararınız · N kart/yıl önce"). Birleşik kartta yok. Portre <190px
   ise `#card.stamp-compact`. Kayıttan dönülünce sıradaki karta damga çıkmaz.
-- Testler (scratchpad): `season_test`, `slot_test`, `vk_test`, `vk_pick`, `age_test`, `stamp_test`.
+- **Kenar sekmeleri (28 Eylül 2026):** `#swipe-hint-left/right` artık
+  `.side-tab` (kırmızı/yeşil dikey sekme, içinde kartın seçenek metni + ok).
+  SADECE GÖRÜNTÜ: `pointer-events:none` — kaydırma kartta. `_setSideTabs`
+  (dealNext; özel butonlu kartlarda `#card-area.tabs-off`), `_sideTabsDrag`
+  (onMove/snapBack/flyOff). Kart genişliği eskisiyle aynı kalsın diye
+  sekmelerin kart tarafında 21px (≤360px ekranda 25px) boşluk var.
+- **Görsel boyutları (28 Eylül 2026):** karakterler 1080 px (yatay 1440)
+  JPEG q80; danışmanlar 192 px, eşya ikonları 384 px PNG (saydam). Yeni
+  görsel eklerken aynı boyutlara getir. Kullanılmayan dosyalar paket dışında
+  `design-sources/` (icon-1024/512/192, intro-bg, 4 font). assets 113→56 MB.
+  Müzik zaten 64 kbps MP3 — yeniden sıkıştırma kalite bozar, dokunulmadı.
+- Testler (scratchpad): `season_test`, `slot_test`, `vk_test`, `vk_pick`, `age_test`, `stamp_test`, `tabs_test`.
 
 ## 4. Kritik sabitler
 
