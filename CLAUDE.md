@@ -497,7 +497,7 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
 
-- **v1.5.0 / build 27 (29 Eylül 2026)** — build 26 + ses efektleri
+- **v1.5.0 / build 27 (29 Eylül 2026, yüklendi, Delivery UUID `01f48819-af94-4b28-b3d0-e25f15a96fb5`)** — build 26 + ses efektleri
   kapalıyken ilk kaydırmada donma düzeltmesi (§9). İncelemeye **build 27**
   seçilmeli, 26 değil.
 
