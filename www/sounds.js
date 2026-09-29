@@ -493,6 +493,26 @@
     });
   };
 
+  // Ses efektleri kapalıyken (Ayarlar → Ses Efekti: KAPALI) ya da cihaz
+  // AudioContext açamadığında ctx() null döner. Yukarıdaki fonksiyonların çoğu
+  // bunu kontrol etmiyordu → null.createOscillator hatası flyOff/dealNext'i
+  // yarıda kesiyor, kart ekranda asılı kalıp oyun donuyordu (1.2.0–1.5.0, 29
+  // Eylül 2026'da bulundu). Hepsi burada tek noktadan korunur: ses kapalıysa
+  // sessizce çıkar, ses kodunda ne hata olursa olsun oyun akışını kesemez.
+  // YENİ bir window.playXxx eklersen bu listeye de ekle.
+  ['playCardDraw', 'playSwipeRight', 'playSwipeLeft', 'playYearAdvance',
+   'playDangerPulse', 'playGameOver', 'playAchievement', 'playNightCard',
+   'playEvent_veba', 'playEvent_savas', 'playEvent_hasat', 'playTraitorReveal',
+   'playCinematicDeath', 'playLetterArrival', 'playCatMeow', 'playWhipCrack',
+   'playRunningFootsteps', 'playWindGust', 'playPargaliSad', 'playButtonTap',
+   'playSelectConfirm'].forEach(name => {
+    const play = window[name];
+    window[name] = function() {
+      if (!ctx()) return;
+      try { play.apply(this, arguments); } catch (e) { console.warn('[sounds] ' + name, e); }
+    };
+  });
+
   // Danger pulse management
   let _dangerInterval = null;
 

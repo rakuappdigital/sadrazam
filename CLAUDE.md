@@ -460,6 +460,19 @@ dışarıda bir görsel üretici gerekmiyor.
 - Her testten sonra: `pkill -f "http.server <port>"`, scratchpad'deki geçici
   `.js`/`.png` dosyalarını sil.
 
+## 7a. Ayar kombinasyonu testi — ZORUNLU (29 Eylül 2026)
+
+Testler hep varsayılan ayarlarla (ses AÇIK, TR) koşulduğu için "Ses Efekti:
+KAPALI" iken ilk kaydırmada oyunun donması 1.2.0'dan 1.5.0'a kadar hiç
+yakalanmadı (bkz. §9, 29 Eylül). Oynanışa dokunan her değişiklikten ve HER
+build'den önce ilk-kart + uzun oyun testi şu kombinasyonlarla koşulur:
+`sadrazam_sfx` on/off, `sadrazam_music` on/off, TR/EN, sola/sağa. Ayrıca
+Chrome'a ek olarak **WebKit** (Playwright `webkit` — iPhone/Mac uygulamasının
+motoru) ile de koşulur. Ölçüt: `pageerror` sıfır, `cardsPlayed` artıyor,
+`isAnimating` false'a dönüyor. Betikler scratchpad'te: `freeze_test.js`
+(ilk kart, gerçek touch), `long_test.js` (100 kart; mektup/şans parası/eyalet/
+kâtip notu/padişah dahil), `webkit_test.js`.
+
 ## 7b. Statik "tanımsız isim" denetimi (28 Eylül 2026)
 
 Sadece bir dil kolunda çalışan tanımsız değişkenler (ör. `LANG==='en' ?
@@ -483,6 +496,10 @@ kısa bir onay iste (zaten sık talep ediliyorsa tekrar sorma, ama versiyon
 numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
+
+- **v1.5.0 / build 27 (29 Eylül 2026)** — build 26 + ses efektleri
+  kapalıyken ilk kaydırmada donma düzeltmesi (§9). İncelemeye **build 27**
+  seçilmeli, 26 değil.
 
 - **v1.5.0 / build 26 (28 Eylül 2026'da yüklendi, Delivery UUID
   `7ae8f5dc-3ef2-45c4-ad92-d786e75bf29a`)** — büyük paket + görsel paket +
@@ -528,6 +545,28 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 Her önemli düzeltme/özellik burada kısa bir kayıt olarak tutulur — "ne
 bozulmuştu, neden, nasıl düzeltildi" hızlıca hatırlanabilsin diye. Bir konu
 tekrar gündeme gelirse önce burayı tara.
+
+### 29 Eylül 2026 — Ses efektleri kapalıyken ilk kaydırmada oyun donuyordu (1.5.0, build 27)
+
+**Belirti (iPhone + Mac, App Store sürümü):** oyun açılınca ilk kart sağa/sola
+atılırken yarı yolda asılı kalıyor, bir daha hiçbir şey kaydırılamıyor.
+
+**Kök neden:** `sounds.js`'teki `ctx()` ses efektleri kapalıyken (ya da
+AudioContext açılamazsa) `null` döner; 21 `play*` fonksiyonunun 19'u bunu
+kontrol etmeden `c.createOscillator()` çağırıyordu → TypeError. `flyOff`'ta
+bu çağrı `isAnimating = true`'dan SONRA, kartı fırlatan satırlardan ÖNCE →
+kart parmağın bıraktığı yerde kalıyor, `isAnimating` sonsuza dek true, her
+yeni dokunuş `onStart`'ta reddediliyor. Aynı hata `dealNext`'teki
+`playCardDraw` ve şans kartı parasında da vardı. 1 Eylül (1.2.0) beri kodda.
+
+**Kanıt:** Chrome + WebKit'te build 25 (`7b310a3`) ve 1.5.0 kodu, ses
+kapalı → `DONDU` (kart -200px/-14°, `isAnimating:true`, videodakiyle aynı);
+ses açık → çalışıyor.
+
+**Fix:** `sounds.js` sonunda tüm `play*` fonksiyonları tek noktadan sarıldı
+(ctx null → sessiz çık, iç hata → yakala). `flyOff`'ta ses/haptik ayrıca
+try/catch içinde. **Yeni bir `window.playXxx` eklersen o listeye ekle.**
+Test: §7a; ses kapalı/açık 100 kart, 5 yıl, 0 hata; WebKit'te de geçti.
 
 ### 26 Eylül 2026 — Ödüllü reklam ödülü HÂLÂ verilmiyordu (yayındaki 1.3.9 = 1.4.0/build 23 binary'si) — GERÇEK kök neden
 

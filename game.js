@@ -7530,8 +7530,13 @@ function flyOff(dir) {
   const bubble = document.getElementById("speech-bubble");
   if (bubble) bubble.style.opacity = "0";
   isAnimating = true;
-  if (dir === "right") { Haptics.swipeRight(); if (window.playSwipeRight) playSwipeRight(); }
-  else                 { Haptics.swipeLeft();  if (window.playSwipeLeft)  playSwipeLeft();  }
+  // Ses/haptik asla kaydırmayı kesemez: burada bir hata fırlarsa isAnimating
+  // true kalır, kart yarı yolda asılı kalır ve oyun donar (ses efektleri
+  // kapalıyken 1.2.0–1.5.0 arası tam olarak bu oluyordu — bkz. sounds.js sonu).
+  try {
+    if (dir === "right") { Haptics.swipeRight(); if (window.playSwipeRight) playSwipeRight(); }
+    else                 { Haptics.swipeLeft();  if (window.playSwipeLeft)  playSwipeLeft();  }
+  } catch (e) { console.warn('[flyOff] ses/haptik', e); }
   const tx = dir === "left" ? -680 : 680;
   card.style.transition = "transform 0.28s ease-in, opacity 0.22s ease-in";
   card.style.transform = `translateX(${tx}px) rotate(${dir === "left" ? -22 : 22}deg)`;
