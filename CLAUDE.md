@@ -510,7 +510,7 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
 
-- **v1.5.0 / build 28 (29 Eylül 2026)** — build 27 + Hoşgeldin Kesesi (Tam
+- **v1.5.0 / build 28 (29 Eylül 2026, yüklendi, Delivery UUID `3ec279aa-a04e-4eea-8a74-03a1ed6e13ce`)** — build 27 + Hoşgeldin Kesesi (Tam
   Sürüm + 30 akçe, ₺39,99) + İkinci Şans 2 akçe. İncelemeye **build 28**
   seçilmeli; sürüme **`welcome` ve `noads` IAP'ları eklenmeli** (`noads`
   1.4.x'te eklenmediği için hiç onaylanmadı → yayındaki 1.4.1'de Reklamsız
