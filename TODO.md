@@ -1,35 +1,84 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — v1.5.0 / build 26 (28 Eylül 2026)
+## SIRADAKİ — v1.5.0 / build 28 (29 Eylül 2026) ← BURADAN DEVAM
 
-**Durum:** ASC'ye yüklendi (Delivery UUID `7ae8f5dc-3ef2-45c4-ad92-d786e75bf29a`),
-işlendi (VALID), 1.5.0 sürüm sayfasına BAĞLANDI, şifreleme uyumluluğu "hayır"
-işaretlendi. Build commit'i `129687e` (main'deki her şeyi içeriyor — 21 özellik
-tek tek doğrulandı). İncelemeye gönderimi kullanıcı yapacak.
+**Durum:** Build 28 ASC'ye yüklendi (Delivery UUID
+`3ec279aa-a04e-4eea-8a74-03a1ed6e13ce`, commit `b9977ab`). Sürüm numarası
+1.5.0 aynı; build 26 ve 27 de ASC'de ama **incelemeye build 28 gidecek**.
+İncelemeye gönderimi kullanıcı yapacak. Build 28 = build 26 + aşağıdaki
+"29 Eylül değişiklikleri".
+
+### 29 Eylül değişiklikleri (build 27 + 28, hepsi test edildi)
+- **KRİTİK HATA DÜZELTİLDİ — ses efektleri kapalıyken oyun donuyordu**
+  (build 27). Ayarlar'da Ses Efekti KAPALI iken ilk kart kaydırılınca kart yarı
+  yolda asılı kalıyor, oyun kilitleniyordu (iPhone + Mac, App Store sürümü).
+  Kök neden: `sounds.js`'te `ctx()` ses kapalıyken `null` dönüyor, `play*`
+  fonksiyonları kontrol etmeden `c.createOscillator()` çağırıyordu →
+  `flyOff`'ta `isAnimating` sonsuza dek `true` kalıyordu. Aynı hata ilk kartın
+  çekilişinde ve şans kartı parasında da vardı. **1.2.0'dan (1 Eylül) beri
+  vardı**, testler hep ses AÇIK yapıldığı için yakalanmadı. Fix: tüm `play*`
+  fonksiyonları tek noktadan korunuyor + `flyOff`'ta ses/haptik try/catch.
+  Ayrıntı CLAUDE.md §9 (29 Eylül). **Yeni kural (CLAUDE.md §7a):** her
+  build öncesi testler ses/müzik kapalı, TR/EN, Chrome + WebKit ile de koşulur.
+- **İkinci Şans artık 2 akçe** (eskiden 1). Sadece `SECOND_CHANCE_AKCE_COST`
+  değişti. Kural aynı: reklam hakkı varsa ya da bakiye ≥ 2 ise teklif çıkar;
+  bakiye yetmezse akçe düğmesi Market'e götürür, akçe alınınca kurtarılır.
+  Kâtibin Notu, Şifa Otu, eşyalar 1 akçe kaldı.
+- **Hoşgeldin Kesesi (eski Başlangıç Kesesi): Tam Sürüm + 30 akçe, ₺39,99.**
+  Yeni NON-CONSUMABLE ürün `com.rakuappdigital.sadrazam.welcome` (ASC id
+  `6817474580`, taban ülke TUR ₺39,99, 175 ülke, TR/EN açıklama + inceleme
+  görüntüsü yüklü, READY_TO_SUBMIT). Tek seferlik: alınınca pencere ve
+  Market satırı kaybolur; geri yüklenebilir; Tam Sürüm sahibine gösterilmez.
+  5. oyundan sonra ana menüde bir kez pencere, "Daha sonra" denirse Market'te
+  kalır. Karşılaştırma: ~~₺59,98~~ %33 indirimli. Önizleme:
+  https://claude.ai/artifact/18om2hXfuTVQUPXTWfeF1p
+  Eski consumable `akce30start` (Başlangıç Kesesi, ₺14,99, id `6816653153`)
+  artık KULLANILMIYOR (hiç onaylanmadı; kalıcı Tam Sürüm tüketilebilir ürünle
+  verilemez).
+- **Tespit: yayındaki 1.4.1'de Reklamsız fiyatı boş, "ürün bulunamadı"
+  diyor.** Sebep RevenueCat değil: `noads` ürünü hiç incelemeye
+  gönderilmemiş (READY_TO_SUBMIT), Apple onaysız ürünü yayındaki uygulamaya
+  vermiyor. 1.5.0 ile birlikte gönderilince düzelir.
+- Testler: `shop_test.js` 44 senaryo (satın alma/iptal/hata/Market/geri
+  yükleme/paywall/İkinci Şans 1-2-3 akçe) WebKit + Chrome, TR/EN; ses
+  kapalı/açık ilk kart + 100 kartlık oyun 4 kombinasyon; 320×568'e kadar
+  pencere yerleşimi. Hepsi geçti, JS hatası sıfır.
 
 ### Göndermeden önce (kullanıcı)
-- [ ] Sürüm notları (What's New) TR/EN ve promosyon metni TR/EN girilecek —
-      metinler aşağıda "1.5.0 metinleri" başlığında.
-- [ ] Sürüm sayfasındaki Uygulama İçi Satın Almalar bölümüne **`akce30start`
-      (Başlangıç Kesesi)** ve **`noads` (Reklamsız)** eklenecek — ikisi de
-      READY_TO_SUBMIT, ilk kez gönderiliyor; eklenmezse satın alınamaz.
-- [ ] (İsteğe bağlı) RevenueCat panelinde `akce30start`'ı Consumable ürün olarak
-      ekle — satın alma için şart değil, sadece RC raporlarında görünsün diye.
+- [ ] 1.5.0 sürüm sayfasında **build 28**'i seç (26/27 değil).
+- [ ] Uygulama İçi Satın Almalar bölümüne **`welcome` (Hoşgeldin Kesesi)** ve
+      **`noads` (Reklamsız)** eklenecek. **`akce30start` EKLENMEYECEK.**
+- [ ] Sürüm notları ve promosyon metni TR/EN — aşağıda "1.5.0 metinleri"
+      (29 Eylül'de Hoşgeldin Kesesi ve ses düzeltmesine göre güncellendi).
+- [x] RevenueCat'e ürünler import edildi (kullanıcı, 29 Eylül). Onaydan sonra
+      RC'de de approved görünecekler. Kod, RC entitlement'ına bağlı olmasa da
+      Hoşgeldin Kesesi'ni Tam Sürüm sayar (satın alınmış ürün listesinden).
+- [ ] (İsteğe bağlı) ASC'den eski `akce30start` ürününü silmek — kullanıcı
+      isterse (hiç onaylanmadığı için güvenli).
 
 ### İnceleme / yayın sonrası kontrol
 - [ ] Review sonucu (reddedilirse gerekçeyi oku, ASC API ile durum kontrolü).
+- [ ] **TestFlight'ta (sandbox) Hoşgeldin Kesesi:** fiyat ₺39,99 geliyor mu,
+      satın alınca Tam Sürüm açılıyor + 30 akçe geliyor mu, pencere/Market
+      satırı kayboluyor mu, uygulamayı silip "Satın Almaları Geri Yükle" ile
+      Tam Sürüm geri geliyor mu. (Bilgisayarda sahte mağazayla test edildi,
+      gerçek ödeme akışı sadece cihazda denenebilir.)
+- [ ] **Ses efektleri KAPALI iken** ilk kartı kaydır → donmamalı (build 27+).
+- [ ] İkinci Şans: 2 akçeyle kurtarma, 1 akçede Market'e yönlendirme.
+- [ ] Reklamsız (`noads`): fiyat ₺59,99, satın alınca geçiş reklamı kesiliyor
+      mu, "Geri Yükle" çalışıyor mu.
 - [ ] Gerçek cihazda reklamlar: İkinci Şans reklamı sonuna kadar izle → ödül +
-      sayaç 5/5 → 4/5; geçiş reklamı artık **her 3.** "OYUNA BAŞLA"da. Yeni
-      reklamlı noktalar: Günlük Divan Hediyesi, Kâtibin Notu / Müneccimbaşı,
-      Kritik An — hepsinde reklam sonrası ödül geliyor mu?
-- [ ] Başlangıç Kesesi: 5. oyun bitince ana menüde bir kez çıkıyor mu, fiyat
-      ₺14,99 geliyor mu, satın alınca +30 akçe ve teklif kayboluyor mu, Market'te
-      satır görünüyor mu.
-- [ ] Reklamsız (`noads`) — hiç TestFlight doğrulaması yapılmadı: fiyat ₺59,99,
-      satın alınca geçiş reklamı kesiliyor mu, "Geri Yükle" çalışıyor mu.
+      sayaç 5/5 → 4/5; geçiş reklamı **her 3.** "OYUNA BAŞLA"da. Günlük Divan
+      Hediyesi, Kâtibin Notu / Müneccimbaşı, Kritik An — reklam sonrası ödül.
 - [ ] Yayından 1 gün sonra AdMob panelinde gösterim ve gelir.
 - [ ] Performans: mevsim parçacıkları eski cihazda akıcı mı (gerekirse
       Ayarlar → Mevsim Efekti kapatılabiliyor).
+
+### Açık fikir (karar bekliyor, yapılmadı)
+- [ ] Reklam hakkı bitmiş + bakiyesi 2'den az oyuncuya İkinci Şans teklifi
+      hiç çıkmıyor (kural değişmedi, eskiden 0 akçede de böyleydi). İstenirse:
+      teklif yine gösterilir, akçe düğmesi Market'e götürür → satış fırsatı.
+      Kullanıcı onayı olmadan yapılmayacak; yapılırsa yeni build gerekir.
 
 ### 1.5.0'da ne var (1.4.1'den bu yana, hepsi test edildi)
 **Mekanik / içerik**
@@ -44,8 +93,8 @@ tek tek doğrulandı). İncelemeye gönderimi kullanıcı yapacak.
 - Gizli hain soruşturması ipucu sistemiyle geri geldi.
 **Monetizasyon**
 - Günlük Divan Hediyesi (reklam → akçe, 7 gün serisi), Kritik An teklifi,
-  Kâtibin Notu (reklam/1 akçe), Başlangıç Kesesi (30 akçe ₺14,99, 5. oyundan
-  sonra bir kez), Tam Sürüm ekranında kişisel bağlam, ölüm/İkinci Şans
+  Kâtibin Notu (reklam/1 akçe), Hoşgeldin Kesesi (Tam Sürüm + 30 akçe ₺39,99,
+  5. oyundan sonra bir kez; 29 Eylül), İkinci Şans 2 akçe (29 Eylül), Tam Sürüm ekranında kişisel bağlam, ölüm/İkinci Şans
   ekranında "yarım kalan sonuçlar", geçiş reklamı 2 → 3 oyunda bir.
 **Görsel**
 - Mevsim atmosferi (kartın arkasında kar/lale/toz zerresi/yaprak, Ayarlar'dan
@@ -57,6 +106,8 @@ tek tek doğrulandı). İncelemeye gönderimi kullanıcı yapacak.
 - Görseller sıkıştırıldı, kullanılmayanlar paket dışına alındı: assets
   113 MB → 56 MB (görsel ortalaması 796 KB → 300 KB), IPA 94 MB (CLAUDE.md §3d).
 **Hata düzeltmeleri**
+- Ses efektleri kapalıyken ilk kaydırmada oyun donuyordu (1.2.0'dan beri) —
+  düzeltildi (29 Eylül, build 27).
 - İngilizce oyunda eşya süresi dolunca oyun takılıyordu (29 Haziran'dan beri,
   tanımsız `expiredId`) — düzeltildi.
 - EN'de eşya adı ve "Sıhhat" etiketi Türkçe kalıyordu; TR menüde Meydan Okuma
@@ -83,10 +134,10 @@ Divan'da büyük güncelleme!
 • Pargalı'nın Sırrı: Oyunlar boyunca yedi sayfalık gizemli bir mektubun izini sürün.
 • Meydan Okuma Modu ve Deneyimli Mod: Hedeflerle oynayın, kararların etkisini önceden görün.
 • Kâtibin Notu: Bekleyen bir sonucun ne getireceğini önceden öğrenin.
-• Günlük Divan Hediyesi, Kritik An yardımı ve Başlangıç Kesesi.
+• Günlük Divan Hediyesi, Kritik An yardımı ve Hoşgeldin Kesesi (Tam Sürüm + 30 akçe).
 • Özel kartlarda artık iki seçenek var.
 • Yeni görünüm: Mevsimlere göre kar, lale ve yaprak yağan atmosfer; ölüm ekranında saltanatınızın vakayinamesi; yıllar geçtikçe yaşlanan portreler; kartın iki yanında seçenekleri gösteren işaretler.
-• Uygulama boyutu yarıya indi, performans iyileştirildi, çeşitli hatalar düzeltildi.
+• Uygulama boyutu yarıya indi, performans iyileştirildi, çeşitli hatalar düzeltildi. Ses efektleri kapalıyken oyunun donması giderildi.
 
 **What's New — EN**
 A major update to the Divan!
@@ -96,10 +147,10 @@ A major update to the Divan!
 • Pargalı's Secret: Follow a mysterious seven-page letter across your reigns.
 • Challenge Mode and Experienced Mode: Play with goals and see the effects of your choices in advance.
 • The Scribe's Note: Learn what a pending consequence will bring before it arrives.
-• Daily Divan Gift, Critical Moment help and the Starter Pouch.
+• Daily Divan Gift, Critical Moment help and the Welcome Pouch (Full Version + 30 akce).
 • Special cards now offer two choices.
 • A new look: seasonal snow, tulip petals and falling leaves; a chronicle of your reign on the game over screen; portraits that age over the years; side markers that show each card's choices.
-• The app is now half the size, with better performance and various bug fixes.
+• The app is now half the size, with better performance and various bug fixes. Fixed a freeze when sound effects were turned off.
 
 **Promosyon — TR:** Kararlarınız geri dönüyor! 5 yeni karakter, Büyük İstanbul Yangını, Pargalı'nın Sırrı ve yaşlanan portreler. Divan'da ne kadar ayakta kalabilirsiniz?
 **Promosyon — EN:** Your decisions come back to haunt you! 5 new characters, the Great Fire of Istanbul, Pargalı's Secret and aging portraits. How long can you survive the Divan?
