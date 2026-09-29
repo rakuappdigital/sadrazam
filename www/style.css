@@ -5081,6 +5081,10 @@ html, body {
 #starter-offer .so-seal .n { font-family: 'Cinzel Decorative', serif; font-weight: 700; font-size: 34px; color: #F6DCA0; line-height: 1; text-shadow: 0 2px 0 #5a0f0f; }
 #starter-offer .so-seal .u { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: .2em; color: #F0CF8C; margin-top: 2px; }
 #starter-offer .so-seal .p { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; color: #E8C84A; margin-top: 6px; white-space: nowrap; }
+#starter-offer .so-seal .plus { font-family: 'Cinzel', serif; font-weight: 700; font-size: 9.5px; letter-spacing: .08em; color: #E8C84A; margin-top: 7px; white-space: nowrap; }
+#starter-offer .so-list { list-style: none; margin: 2px 0 8px; padding: 0; font-family: 'IM Fell English', serif; font-size: 14px; line-height: 1.5; color: #3B2A14; }
+#starter-offer .so-list li::before { content: '✦ '; color: #8e1b1b; }
+#starter-offer .so-list b { font-family: 'Cinzel', serif; font-size: 12.5px; letter-spacing: .04em; color: #5a1010; }
 #starter-offer .so-cmp { color: #3B2A14; opacity: 1; font-family: 'IM Fell English', serif; font-size: 13.5px; margin: 0; }
 #starter-offer .so-strike { text-decoration: line-through; text-decoration-color: rgba(196,52,43,.9); text-decoration-thickness: 2px; color: #6e5a3c; }
 #starter-offer .so-buy { width: 100%; font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px; letter-spacing: .08em; border: 0; border-radius: 12px; padding: 13px 10px; cursor: pointer; color: #1a1206; background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A); box-shadow: 0 6px 18px rgba(201,162,39,.35), inset 0 1px 0 rgba(255,255,255,.5); margin-top: 6px; -webkit-tap-highlight-color: transparent; }

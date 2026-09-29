@@ -16,17 +16,19 @@ const DECLINED_YEAR_LIMIT = 2;
 
 // ── Akçe & İkinci Şans ─────────────────────────────────────────────
 const SECOND_CHANCE_DAILY_AD_LIMIT = 5;
-const SECOND_CHANCE_AKCE_COST = 1;
+const SECOND_CHANCE_AKCE_COST = 2;
+// Hoşgeldin Kesesi (29 Eylül 2026): Tam Sürüm + 30 akçe, tek seferlik, ₺39,99.
+// NON-CONSUMABLE (geri yüklenebilir): Tam Sürüm'ü kalıcı açtığı için tüketilebilir
+// olamaz. Eski tüketilebilir akce30start (hiç yayına çıkmadı) artık kullanılmıyor.
+const STARTER_PRODUCT_ID = "com.rakuappdigital.sadrazam.welcome";
 const AKCE_PACKS = [
   { amount: 10,  productId: "com.rakuappdigital.sadrazam.akce10" },
   { amount: 20,  productId: "com.rakuappdigital.sadrazam.akce20" },
   { amount: 50,  productId: "com.rakuappdigital.sadrazam.akce50" },
   { amount: 100, productId: "com.rakuappdigital.sadrazam.akce100" },
-  // Başlangıç Kesesi: tek seferlik, yarı fiyatına 30 akçe (27 Eylül 2026)
-  { amount: 30,  productId: "com.rakuappdigital.sadrazam.akce30start", starter: true },
+  { amount: 30,  productId: STARTER_PRODUCT_ID, starter: true },
 ];
-const STARTER_PRODUCT_ID = "com.rakuappdigital.sadrazam.akce30start";
-const AKCE_FALLBACK_PRICES = { 10: "₺9,99", 20: "₺19,99", 50: "₺39,99", 100: "₺59,99", 30: "₺14,99" }; // FREEMIUM_ENABLED=false test modunda
+const AKCE_FALLBACK_PRICES = { 10: "₺9,99", 20: "₺19,99", 50: "₺39,99", 100: "₺59,99", 30: "₺39,99" }; // FREEMIUM_ENABLED=false test modunda
 // Reklamsız: tek seferlik (non-consumable) satın alma, geçiş reklamlarını kalıcı kapatır.
 // İkinci Şans'taki ödüllü reklam isteğe bağlı olduğu için etkilenmez.
 const NOADS_PRODUCT_ID = "com.rakuappdigital.sadrazam.noads";
@@ -2305,7 +2307,10 @@ function _setFullVersionUnlocked(unlocked) {
   localStorage.setItem('sadrazam_full_unlocked', unlocked ? '1' : '0');
 }
 function _applyCustomerInfo(customerInfo) {
-  const active = !!customerInfo?.entitlements?.active?.[REVENUECAT_ENTITLEMENT_ID];
+  // Hoşgeldin Kesesi de Tam Sürüm'ü açar — RevenueCat entitlement'ına bağlanmasa
+  // bile satın alınmış ürün listesinden okunur (Reklamsız ile aynı yöntem).
+  const active = !!customerInfo?.entitlements?.active?.[REVENUECAT_ENTITLEMENT_ID]
+    || _customerOwnsProduct(customerInfo, STARTER_PRODUCT_ID);
   _setFullVersionUnlocked(active);
   _applyNoAdsFromCustomerInfo(customerInfo);
   return active;
@@ -2321,14 +2326,14 @@ function _setAdFreeUnlocked(unlocked) {
   localStorage.setItem('sadrazam_noads', unlocked ? '1' : '0');
   updateNoAdsUI();
 }
-function _customerOwnsNoAds(customerInfo) {
+function _customerOwnsProduct(customerInfo, productId) {
   if (!customerInfo) return false;
-  if ((customerInfo.allPurchasedProductIdentifiers || []).includes(NOADS_PRODUCT_ID)) return true;
-  return (customerInfo.nonSubscriptionTransactions || []).some(tx => tx?.productIdentifier === NOADS_PRODUCT_ID);
+  if ((customerInfo.allPurchasedProductIdentifiers || []).includes(productId)) return true;
+  return (customerInfo.nonSubscriptionTransactions || []).some(tx => tx?.productIdentifier === productId);
 }
 function _applyNoAdsFromCustomerInfo(customerInfo) {
   if (!customerInfo) return;
-  _setAdFreeUnlocked(_customerOwnsNoAds(customerInfo));
+  _setAdFreeUnlocked(_customerOwnsProduct(customerInfo, NOADS_PRODUCT_ID));
 }
 
 async function initRevenueCat() {
@@ -2388,10 +2393,11 @@ async function initAkceProduct() {
   }
 }
 
-// ── Başlangıç Kesesi (27 Eylül 2026) ─────────────────────────────────
+// ── Hoşgeldin Kesesi (27 Eylül 2026, 29 Eylül'de Tam Sürüm + 30 akçe oldu) ──
 // 5. oyun bittikten sonra ana menüye dönülünce BİR KEZ "Ferman Mührü"
 // penceresiyle teklif edilir (ürün o an mağazadan gelmediyse sonraki dönüşte).
-// Satın alınana kadar Market'te Akçe Keseleri'nin üstünde durur.
+// Satın alınana kadar Market'te Akçe Keseleri'nin üstünde durur. Tam Sürüm'e
+// zaten sahip olana gösterilmez (aynı şeyi iki kez satmayalım).
 const STARTER_BOUGHT_KEY = "sadrazam_starter_bought";
 const STARTER_SEEN_KEY = "sadrazam_starter_offer_seen";
 const STARTER_AFTER_GAMES = 5;
@@ -2402,18 +2408,34 @@ function _markStarterBought() {
 }
 // Teklif gösterilebilir mi: ürün mağazadan geldiyse (ya da test modunda sabit fiyatla)
 function _starterAvailable() {
-  if (!AKCE_SYSTEM_ENABLED || isStarterBought()) return false;
+  if (!AKCE_SYSTEM_ENABLED || isStarterBought() || isFullVersionUnlocked()) return false;
   return !!_akceProducts[STARTER_PRODUCT_ID] || !FREEMIUM_ENABLED;
 }
 function _starterPrice() { return _akceProducts[STARTER_PRODUCT_ID]?.priceString || AKCE_FALLBACK_PRICES[30]; }
-// Karşılaştırma: aynı 30 akçenin 20'lik keseyle normal fiyatı (20'lik × 1,5;
-// ₺19,99 → ₺29,99). Mağazanın kendi para birimiyle; hesaplanamazsa gösterilmez.
-function _starterNormalPrice() {
+// Karşılaştırma: ayrı ayrı alınsa tutacağı fiyat = Tam Sürüm + 30 akçe (20'lik
+// kese × 1,5). Kuruş cinsinden, mağazanın kendi para birimiyle; üç fiyattan
+// biri eksikse ya da para birimleri farklıysa gösterilmez.
+function _starterNormalCents() {
   const p = _akceProducts[STARTER_PRODUCT_ID], p20 = _akceProducts["com.rakuappdigital.sadrazam.akce20"];
-  if (p && p20 && typeof p20.price === "number" && p20.currencyCode) {
-    try { return new Intl.NumberFormat(window.LANG === 'en' ? 'en-US' : 'tr-TR', { style: 'currency', currency: p20.currencyCode }).format(Math.round(Math.round(p20.price * 100) * 1.5) / 100); } catch (e) {}
+  const full = _rcOfferingPackage?.product;
+  if (!p || !p20 || !full) return null;
+  if (typeof p.price !== "number" || typeof p20.price !== "number" || typeof full.price !== "number") return null;
+  if (!p.currencyCode || p.currencyCode !== p20.currencyCode || p.currencyCode !== full.currencyCode) return null;
+  return { normal: Math.round(full.price * 100) + Math.round(Math.round(p20.price * 100) * 1.5), now: Math.round(p.price * 100), currency: p.currencyCode };
+}
+function _starterNormalPrice() {
+  const c = _starterNormalCents();
+  if (c) {
+    try { return new Intl.NumberFormat(window.LANG === 'en' ? 'en-US' : 'tr-TR', { style: 'currency', currency: c.currency }).format(c.normal / 100); } catch (e) {}
+    return "";
   }
-  return p ? "" : "₺29,99";
+  return FREEMIUM_ENABLED ? "" : "₺59,98"; // test modu: ₺29,99 + ₺29,99
+}
+// İndirim yüzdesi (ör. 33); hesaplanamazsa 0
+function _starterDiscountPct() {
+  const c = _starterNormalCents();
+  if (!c) return FREEMIUM_ENABLED ? 0 : 33;
+  return c.normal > c.now ? Math.round((1 - c.now / c.normal) * 100) : 0;
 }
 function updateStarterUI() {
   const btn = document.getElementById("starter-pack-btn");
@@ -2421,8 +2443,8 @@ function updateStarterUI() {
   const en = window.LANG === 'en';
   btn.classList.toggle("gone", !_starterAvailable());
   const n = btn.querySelector(".starter-name"), sub = btn.querySelector(".starter-sub");
-  if (n) n.textContent = en ? "STARTER POUCH" : "BAŞLANGIÇ KESESİ";
-  if (sub) sub.textContent = en ? "One time only · half price" : "Tek seferlik · yarı fiyatına";
+  if (n) n.textContent = en ? "WELCOME POUCH" : "HOŞGELDİN KESESİ";
+  if (sub) sub.textContent = en ? "Full Version + 30 akce · one time" : "Tam Sürüm + 30 akçe · tek seferlik";
 }
 function maybeShowStarterOffer() {
   if (document.getElementById("starter-offer")) return;
@@ -2436,16 +2458,21 @@ function maybeShowStarterOffer() {
 }
 function showStarterOffer() {
   const en = window.LANG === 'en';
-  const price = _starterPrice(), normal = _starterNormalPrice();
+  const price = _starterPrice(), normal = _starterNormalPrice(), pct = _starterDiscountPct();
+  const cmpTail = pct ? (en ? `${pct}% off` : `%${pct} indirimli`) : (en ? "one time only" : "bir defaya mahsus");
   const ov = document.createElement("div");
   ov.id = "starter-offer";
   ov.innerHTML = `<div class="so-wrap">
       <div class="so-scroll">
         <div class="so-once">${en ? "A ONE-TIME DECREE" : "TEK SEFERLİK FERMAN"}</div>
-        <div class="so-title">${en ? "STARTER POUCH" : "BAŞLANGIÇ KESESİ"}</div>
-        <p class="so-text">${en ? "For the Grand Vizier newly come to the Divan, a pouch is granted from the treasury, once and only once." : "Divan'a yeni adım atan sadrazama, hazineden bir defaya mahsus kese çıkarılmıştır."}</p>
-        <div class="so-seal"><div class="n">30</div><div class="u">${en ? "AKCE" : "AKÇE"}</div><div class="p">${price}</div></div>
-        <p class="so-cmp">${normal ? `<span class="so-strike">${normal}</span> · ` : ""}${en ? "half price" : "yarı fiyatına"}</p>
+        <div class="so-title">${en ? "WELCOME POUCH" : "HOŞGELDİN KESESİ"}</div>
+        <p class="so-text">${en ? "For the Grand Vizier newly come to the Divan: every year of the reign is opened, and a pouch is granted from the treasury." : "Divan'a yeni adım atan sadrazama: saltanatın bütün yılları açılır, hazineden de bir kese çıkarılır."}</p>
+        <div class="so-seal"><div class="n">30</div><div class="u">${en ? "AKCE" : "AKÇE"}</div><div class="plus">+ ${en ? "FULL VERSION" : "TAM SÜRÜM"}</div></div>
+        <ul class="so-list">
+          <li>${en ? "<b>Full Version</b> · no year limit" : "<b>Tam Sürüm</b> · yıl sınırı yok"}</li>
+          <li>${en ? "<b>30 akce</b> · for Second Chances" : "<b>30 akçe</b> · İkinci Şans için"}</li>
+        </ul>
+        <p class="so-cmp">${normal ? `<span class="so-strike">${normal}</span> · ` : ""}${cmpTail}</p>
       </div>
       <button class="so-buy" type="button">${en ? "ACCEPT THE SEAL" : "MÜHRÜ KABUL ET"} · ${price}</button>
       <div class="so-status" aria-live="polite"></div>
@@ -2548,8 +2575,15 @@ async function purchaseAkcePack(amount, statusEl) {
     // görürse (her zaman görür) akçe iki kez eklenmez.
     processAkceTransactions(result?.customerInfo);
     if (window.playSelectConfirm) playSelectConfirm();
-    if (pack.starter) _markStarterBought(); // customerInfo gecikse bile teklif bir daha çıkmasın
-    if (status) status.textContent = isEN ? `+${amount} akce added!` : `+${amount} akçe eklendi!`;
+    if (pack.starter) {
+      _markStarterBought(); // customerInfo gecikse bile teklif bir daha çıkmasın
+      // Hoşgeldin Kesesi Tam Sürüm'ü de açar — customerInfo gecikse bile hemen
+      _applyCustomerInfo(result?.customerInfo);
+      _setFullVersionUnlocked(true);
+    }
+    if (status) status.textContent = pack.starter
+      ? (isEN ? `Full Version unlocked, +${amount} akce added!` : `Tam Sürüm açıldı, +${amount} akçe eklendi!`)
+      : (isEN ? `+${amount} akce added!` : `+${amount} akçe eklendi!`);
     // Başka bir ekrandan (İkinci Şans, Eşya Dükkanı, vs.) yönlendirildiysek,
     // kısa bir onay anından sonra otomatik olarak oraya geri dön
     if (_akceReturnCallback && !statusEl) {
@@ -6440,7 +6474,7 @@ function showItemInfoPopup(itemId) {
 }
 
 // ── Eşya Dükkanı — nadir kartlarla kazanılan eşyaları akçeyle doğrudan satın al ──
-const ITEM_AKCE_COST = 1; // İkinci Şans ile aynı fiyat: 1 akçe = 1 anlamlı kurtarma
+const ITEM_AKCE_COST = 1; // 1 akçe = 1 anlamlı kurtarma (İkinci Şans 29 Eylül 2026’dan beri 2 akçe)
 // Bilinçli olarak dükkanda satılmayan eşyalar — bu ikisi sadece nadir kartlarla
 // kazanılabilir kalsın diye (altın_muhur = hazine cezası bloğu, sultan_ferman =
 // saray cezası bloğu), akçeyle garantiye bağlanamaz.

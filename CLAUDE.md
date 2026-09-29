@@ -383,17 +383,30 @@ dışarıda bir görsel üretici gerekmiyor.
   Yükle" linki var (non-consumable için Apple şartı). Yetersiz akçe yüzünden
   `redirectToAkcePurchase()` ile gelindiyse `#akce-screen.from-need` sınıfı
   Reklamsız bölümünü gizler.
-- **Başlangıç Kesesi (27 Eylül 2026):** consumable
-  `com.rakuappdigital.sadrazam.akce30start` (ASC id `6816653153`, TR ₺14,99 /
-  ABD $1,49 baz, 175 ülke, READY_TO_SUBMIT — ilk kez eklendiği için bir
-  sonraki App Store sürümü incelemeye gönderilirken sürüme EKLENMELİ).
-  `AKCE_PACKS`'te `starter:true`, kredi yine `processAkceTransactions`.
-  5 oyun bittikten sonra ana menüye dönüşte (`restartGame` → 
-  `maybeShowStarterOffer`) BİR KEZ "Ferman Mührü" penceresi
-  (`showStarterOffer`); ürün mağazadan gelmediyse hak yanmaz, sonraki dönüşte.
-  Alınana kadar Market'te `#starter-pack-btn`. Alındı bilgisi
-  `sadrazam_starter_bought` (geri yüklemede işlem görülünce de set edilir).
-  Karşılaştırma fiyatı = 20'lik kese × 1,5 (kuruş cinsinden tam sayı).
+- **Hoşgeldin Kesesi (29 Eylül 2026; eski adı Başlangıç Kesesi):** Tam Sürüm
+  + 30 akçe, tek seferlik. **NON-CONSUMABLE**
+  `com.rakuappdigital.sadrazam.welcome` (ASC id `6817474580`, taban ülke TUR
+  ₺39,99, 175 ülke, READY_TO_SUBMIT — 1.5.0 incelemeye gönderilirken sürüme
+  EKLENMELİ). Tam Sürüm'ü kalıcı açtığı için tüketilebilir OLAMAZ (geri
+  yükleme getirmez, Apple 3.1.1 reddi). Eski consumable `akce30start` (id
+  `6816653153`, hiç onaylanmadı) kodda KULLANILMIYOR, sürüme eklenmemeli.
+  Tam Sürüm: `_applyCustomerInfo` = `full_version` entitlement **VEYA**
+  `_customerOwnsProduct(info, STARTER_PRODUCT_ID)` (Reklamsız ile aynı yöntem,
+  RevenueCat'te entitlement'a bağlı olmasa da çalışır); satın alınınca
+  `purchaseAkcePack` hemen `_setFullVersionUnlocked(true)`. 30 akçe yine
+  `processAkceTransactions` (AKCE_PACKS'te `starter:true`, transactionId ile
+  tekil; yeniden kurulumda geri yükleme 30 akçeyi tekrar verir — akçe de
+  yerel olduğu için bilinçli). Tam Sürüm sahibine gösterilmez
+  (`_starterAvailable`). 5 oyun bittikten sonra ana menüye dönüşte
+  (`restartGame` → `maybeShowStarterOffer`) BİR KEZ "Ferman Mührü" penceresi
+  (`showStarterOffer`); ürün mağazadan gelmediyse (ör. henüz onaylanmadıysa)
+  hak yanmaz, pencere de Market satırı da gizli kalır. Karşılaştırma fiyatı =
+  Tam Sürüm + 20'lik kese × 1,5 (kuruş, aynı para birimi şartı) → ~~₺59,98~~
+  %33. Test: scratchpad `shop_test.js` (44 senaryo, sahte RevenueCat, WebKit
+  + Chrome, TR/EN).
+- **İkinci Şans akçe bedeli (29 Eylül 2026): 2 akçe** (`SECOND_CHANCE_AKCE_COST`).
+  Teklifin gösterilmesi (reklam hakkı yoksa bakiye ≥ 2), düğme metni ve
+  harcama aynı sabiti kullanır. Kâtibin Notu, Şifa Otu, eşyalar 1 akçe kaldı.
 - **Promosyon kodu UI'ı:** Ayarlar'da "PROMOSYON KODU" butonu →
   `RC.presentCodeRedemptionSheet()` (Apple'ın NATİF kod giriş ekranı — kendi
   metin kutusu YAPMA, iOS'ta bu şekilde çalışmıyor; Apple'ın ASC'de ürettiğin
@@ -497,6 +510,12 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
 
+- **v1.5.0 / build 28 (29 Eylül 2026)** — build 27 + Hoşgeldin Kesesi (Tam
+  Sürüm + 30 akçe, ₺39,99) + İkinci Şans 2 akçe. İncelemeye **build 28**
+  seçilmeli; sürüme **`welcome` ve `noads` IAP'ları eklenmeli** (`noads`
+  1.4.x'te eklenmediği için hiç onaylanmadı → yayındaki 1.4.1'de Reklamsız
+  fiyatı boş, "ürün bulunamadı"). `akce30start` EKLENMEMELİ.
+
 - **v1.5.0 / build 27 (29 Eylül 2026, yüklendi, Delivery UUID `01f48819-af94-4b28-b3d0-e25f15a96fb5`)** — build 26 + ses efektleri
   kapalıyken ilk kaydırmada donma düzeltmesi (§9). İncelemeye **build 27**
   seçilmeli, 26 değil.
@@ -504,8 +523,8 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 - **v1.5.0 / build 26 (28 Eylül 2026'da yüklendi, Delivery UUID
   `7ae8f5dc-3ef2-45c4-ad92-d786e75bf29a`)** — büyük paket + görsel paket +
   mühür damgası + yaşlı portreler + kenar sekmeleri + görsel sıkıştırma + EN
-  eşya süresi hatası düzeltmesi. İncelemeye gönderirken **`akce30start` IAP'ı
-  sürüme eklenmeli** (ilk kez gönderiliyor). Kullanıcı sürüm notlarını ve
+  eşya süresi hatası düzeltmesi. (akce30start notu geçersiz — bkz.
+  build 28.) Kullanıcı sürüm notlarını ve
   promosyon metnini kendisi girip gönderecek.
 
 - **v1.4.1/build 25 (26 Eylül 2026'da yüklendi, Delivery UUID
