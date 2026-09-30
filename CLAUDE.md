@@ -510,6 +510,13 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
 
+- **v1.5.0 / build 29 (30 Eylül 2026, yüklendi, Delivery UUID `583a6571-7d53-4aa3-8f1d-ced35cc921c8`)** — build 28 + ATT düzeltmesi
+  (App Store 2.1 reddi: iOS/iPadOS 27'de ATT penceresi görünmedi). İzin artık
+  uygulama görünür + 2,5 sn sonra, AdMob başlatılmadan ÖNCE soruluyor
+  (`rewardedads.js` `_requestATT`). İncelemeye **build 29** seçilmeli; Notes
+  alanına fiziksel cihaz ekran kaydı (temiz kurulum → ATT penceresi → akış)
+  eklenmeli. build 28 notlarındaki IAP maddeleri (welcome + noads) hâlâ geçerli.
+
 - **v1.5.0 / build 28 (29 Eylül 2026, yüklendi, Delivery UUID `3ec279aa-a04e-4eea-8a74-03a1ed6e13ce`)** — build 27 + Hoşgeldin Kesesi (Tam
   Sürüm + 30 akçe, ₺39,99) + İkinci Şans 2 akçe. İncelemeye **build 28**
   seçilmeli; sürüme **`welcome` ve `noads` IAP'ları eklenmeli** (`noads`
