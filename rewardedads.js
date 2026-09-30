@@ -19,6 +19,39 @@ const RewardedAds = (() => {
   let _adLoaded = false;  // gerçek bir reklam yüklendi ve gösterilmeyi bekliyor
   let _loading = false;   // prepareRewardVideoAd() hâlâ devam ediyor
 
+  // App Store reddi (30 Eylül 2026, 1.5.0 build 28, iOS/iPadOS 27): ATT
+  // penceresi incelemede hiç görünmedi. OLASI NEDEN (iOS 27'de doğrulanamadı):
+  // izin, script yüklenir yüklenmez (uygulama henüz "active" olmadan, açılış
+  // ekranı sürerken) isteniyordu — iOS bu durumda pencere göstermeden sessizce
+  // "notDetermined" döner. Ayrıca AdMob SDK'sı izinden ÖNCE başlatılıyordu.
+  // Şimdi: uygulama görünür + açılış ekranı bittikten sonra sorulur; hâlâ
+  // "notDetermined" ise (istek yutulduysa) birkaç kez daha denenir. Hiç
+  // cevap alınamazsa AdMob yine başlar ama IDFA'sız (izin yok = takip yok).
+  const ATT_DELAY_MS = 2500;   // AppDelegate'teki 2 sn'lik Raku açılış ekranı + pay
+  const ATT_MAX_TRIES = 4;
+
+  const _attStatus = () =>
+    _cap.trackingAuthorizationStatus().then((r) => r?.status).catch(() => null);
+
+  const _whenVisible = (delay) => new Promise((resolve) => {
+    const go = () => setTimeout(resolve, delay);
+    if (document.visibilityState === "visible") return go();
+    const onVis = () => {
+      if (document.visibilityState !== "visible") return;
+      document.removeEventListener("visibilitychange", onVis);
+      go();
+    };
+    document.addEventListener("visibilitychange", onVis);
+  });
+
+  const _requestATT = async () => {
+    for (let i = 0; i < ATT_MAX_TRIES; i++) {
+      if ((await _attStatus()) !== "notDetermined") return;
+      await _whenVisible(ATT_DELAY_MS);
+      await _cap.requestTrackingAuthorization().catch(() => {});
+    }
+  };
+
   const init = () => {
     if (!_cap) return; // ID'ler girilmeden veya web/tarayıcıda hiç başlatılmaz
 
@@ -36,10 +69,11 @@ const RewardedAds = (() => {
       setTimeout(prepare, 30000);
     });
 
-    // ATT cevabından sonra reklam istenir (IDFA'lı istek = daha yüksek gelir).
-    // interstitialads.js de aynı promise'i bekler (bkz. window.__admobReady).
-    window.__admobReady = _cap.initialize()
-      .then(() => _cap.requestTrackingAuthorization().catch(() => {})); // iOS 14+ ATT izni
+    // ATT izni AdMob başlatılmadan ÖNCE sorulur; reklam istekleri ATT
+    // cevabından sonra yapılır. interstitialads.js de aynı promise'i bekler
+    // (bkz. window.__admobReady).
+    window.__admobReady = _requestATT()
+      .then(() => _cap.initialize());
     window.__admobReady
       .then(() => { _ready = true; prepare(); })
       .catch((e) => console.warn('AdMob init hatası:', e));
