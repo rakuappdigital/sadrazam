@@ -8,11 +8,15 @@ const SEASON_CARDS   = 8;        // 8 kartta 1 mevsim değişimi
 const PASSIVE_HAZINE_DRAIN = 2;  // yıl başına hazine drain (değişmedi)
 
 // ── Freemium: Ücretsiz Deneme Sınırı ──────────────────────────────
-const FREE_YEAR_LIMIT = 3; // ilk 3 yıl sınırsız tekrar oynanır ücretsiz
-// Tam Sürüm paywall'ı İLK KEZ reddedilince devreye girer: artık paywall hiç çıkmaz,
-// bunun yerine her oyun 2. yılın sonunda "ölümle" biter — sınırsız 3-yıllık tekrar
-// oynama döngüsü kapanır. sadrazam_paywall_declined localStorage'da kalıcıdır.
-const DECLINED_YEAR_LIMIT = 2;
+// (3 Ekim 2026) Ücretsiz sürümde her saltanat en fazla 2 yıl sürer. Tam Sürüm ekranı
+// İLK KEZ ya 2. yılın sonunda ya da 2 oyun bittikten sonraki oyun başında çıkar
+// (hangisi önce olursa). Reddedilirse (kalıcı sadrazam_paywall_declined) oyuncu
+// oynamaya devam eder; her saltanat 2. yılın sonunda bir uyarı penceresiyle biter
+// (showFreeLimitPopup). Eskiden reddeden oyuncu HİÇ oynayamıyordu (her başlangıçta
+// kapatılamaz paywall) — metin "2 yıl oynayabilirsin" dese de.
+const FREE_YEAR_LIMIT = 2;
+const DECLINED_YEAR_LIMIT = FREE_YEAR_LIMIT;
+const FREE_GAMES_BEFORE_PAYWALL = 2;
 
 // ── Akçe & İkinci Şans ─────────────────────────────────────────────
 const SECOND_CHANCE_DAILY_AD_LIMIT = 5;
@@ -2696,7 +2700,9 @@ function showPaywallScreen(fromMenu = false) {
   const quitBtn = document.getElementById('paywall-quit-btn');
   if (quitBtn) {
     const isEN = window.LANG === 'en';
-    quitBtn.textContent = fromMenu ? (isEN ? 'Close' : 'Kapat') : (isEN ? 'Return to Main Menu' : 'Ana Menüye Dön');
+    quitBtn.textContent = fromMenu ? (isEN ? 'Close' : 'Kapat')
+      : _paywallAtGameStart ? (isEN ? 'Continue Free (2 years)' : 'Ücretsiz Devam Et (2 yıl)')
+      : (isEN ? 'End This Reign' : 'Saltanatı Bitir');
   }
   // Demo modunda (gerçek RevenueCat bağlanmadan önce) sıfırlama linki göster
   const resetBtn = document.getElementById('paywall-demo-reset');
@@ -2843,8 +2849,8 @@ function showPaywallDeclinedNotice(onDone) {
       <div id="paywall-declined-title">${isEN ? 'A SHORTER REIGN' : 'DAHA KISA BİR SALTANAT'}</div>
       <div id="paywall-declined-divider"></div>
       <div id="paywall-declined-text">${isEN
-        ? "Being Grand Vizier isn't free. Without the Full Version, your future reigns will now end after 2 years."
-        : "Tam sürümü satın almadığınızda yalnızca 2 yıl sadrazamlık görevini yapabilirsiniz. Bundan sonraki tüm saltanatların 2. yılın sonunda sona erecek."}</div>
+        ? "You can keep playing for free, but in the free version every reign ends at the close of its 2nd year. The Full Version removes the limit — you can unlock it any time from the main menu."
+        : "Ücretsiz oynamaya devam edebilirsiniz; ancak ücretsiz sürümde her saltanat 2. yılın sonunda biter. Tam Sürüm bu sınırı kaldırır — ana menüden istediğiniz zaman açabilirsiniz."}</div>
       <button id="paywall-declined-btn">${isEN ? 'I UNDERSTAND' : 'ANLADIM'}</button>
     </div>`;
   document.body.appendChild(overlay);
@@ -2882,18 +2888,54 @@ document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
     hidePaywallScreen();
     return;
   }
-  // Yıl sınırından tetiklendi ve satın almadan çıkıyor — 3 yıl hakkı bitti
   hidePaywallScreen();
-  if (localStorage.getItem('sadrazam_paywall_declined') !== '1') {
-    // İLK reddediş — kalıcı flag'i işaretle, bilgilendirme göster, sonra menüye dön
-    localStorage.setItem('sadrazam_paywall_declined', '1');
-    showPaywallDeclinedNotice(() => {
-      showFreeVersionEndTransition(_quitAfterPaywall);
-    });
-  } else {
-    showFreeVersionEndTransition(_quitAfterPaywall);
+  const firstDecline = localStorage.getItem('sadrazam_paywall_declined') !== '1';
+  if (firstDecline) localStorage.setItem('sadrazam_paywall_declined', '1');
+  if (_paywallAtGameStart) {
+    // Oyun başında reddedildi — oyun 2 yıllık ücretsiz saltanat olarak başlar
+    _paywallAtGameStart = false;
+    isPaywalled = false;
+    const go = () => { if (!isGameOver) { saveGameState(); dealNext(); } };
+    if (firstDecline) showPaywallDeclinedNotice(go); else go();
+    return;
   }
+  // 2. yıl sınırında reddedildi — saltanat burada biter (ölüm ekranı + Vakayiname)
+  const end = () => { isPaywalled = false; _endFreeReign(); };
+  if (firstDecline) showPaywallDeclinedNotice(end); else end();
 });
+
+function _endFreeReign() {
+  const isEN = window.LANG === 'en';
+  _actuallyTriggerGameOver(isEN
+    ? "Your two-year term in the free version has ended. The seal returns to the Sultan — until the Full Version."
+    : "Ücretsiz sürümdeki iki yıllık görev süreniz doldu. Mühür, Tam Sürüm'e kadar Sultan'a geri döndü.", "free_limit");
+}
+
+// Reddetmiş oyuncu 2. yılın sonuna gelince: kısa uyarı + Tam Sürüm / Saltanatı Bitir
+function showFreeLimitPopup() {
+  const isEN = window.LANG === 'en';
+  document.getElementById('free-limit-overlay')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'free-limit-overlay';
+  overlay.className = 'paywall-declined-overlay';
+  overlay.innerHTML = `
+    <div id="paywall-declined-box">
+      <div id="paywall-declined-ornament">${GAME_ICONS.loyalty_low}</div>
+      <div id="paywall-declined-title">${isEN ? 'YOUR TERM HAS ENDED' : 'GÖREV SÜRENİZ DOLDU'}</div>
+      <div id="paywall-declined-divider"></div>
+      <div id="paywall-declined-text">${isEN
+        ? "In the free version a reign lasts at most 2 years. Unlock the Full Version to stay in the Divan, see where your decisions lead and rule for as long as you can survive."
+        : "Ücretsiz sürümde bir saltanat en fazla 2 yıl sürer. Divan'da kalmak, kararlarınızın nereye varacağını görmek ve ayakta kalabildiğiniz sürece hüküm sürmek için Tam Sürüm'ü açın."}</div>
+      ${_pendingConsequencesHTML(2)}
+      <button id="free-limit-full-btn" class="free-limit-primary">${isEN ? 'UNLOCK FULL VERSION' : 'TAM SÜRÜMÜ AÇ'}</button>
+      <button id="free-limit-end-btn" class="free-limit-secondary">${isEN ? 'End This Reign' : 'Saltanatı Bitir'}</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('visible'));
+  const close = (cb) => { overlay.style.transition = 'opacity 0.3s ease'; overlay.style.opacity = '0'; setTimeout(() => { overlay.remove(); cb(); }, 300); };
+  document.getElementById('free-limit-full-btn').onclick = () => close(() => showPaywallScreen(false));
+  document.getElementById('free-limit-end-btn').onclick = () => close(() => { isPaywalled = false; _endFreeReign(); });
+}
 
 let _fullVersionBtnFired = false;
 function _onFullVersionBtnTap(e) {
@@ -3323,21 +3365,13 @@ function startGame() {
 
   if (isChallengeMode) buildChallengePanel();
 
-  // Paywall zaten bir kez kalıcı olarak reddedilmişse artık ücretsiz oynanış
-  // hakkı kalmadı — HER yeni oyun denemesi doğrudan satın alma ekranına gider.
-  // Henüz reddedilmediyse: 3 yeniden başlatmada bir (yani 3 yılı bitirmeden
-  // art arda 2 kez game over olunca, 3. denemeyi oynayamadan) KESİN paywall
-  // gösterilir — "kapat, oynamaya devam et" diye bir seçenek yok, bu tam bir
-  // satın alma zorunluluğu bypass'ıydı.
+  // Tam Sürüm ekranı hiç reddedilmediyse ve 2 oyun bittiyse, 3. oyun başlamadan
+  // bir kez gösterilir. Reddedilirse oyun 2 yıllık ücretsiz saltanat olarak başlar.
   _paywallAtGameStart = false;
-  if (FREEMIUM_ENABLED && !isFullVersionUnlocked()) {
-    if (localStorage.getItem('sadrazam_paywall_declined') === '1') {
-      _paywallAtGameStart = true;
-    } else {
-      const restartCount = (parseInt(localStorage.getItem('sadrazam_restart_count') || '0', 10)) + 1;
-      localStorage.setItem('sadrazam_restart_count', String(restartCount));
-      if (restartCount % 3 === 0) _paywallAtGameStart = true;
-    }
+  if (FREEMIUM_ENABLED && !isFullVersionUnlocked()
+      && localStorage.getItem('sadrazam_paywall_declined') !== '1'
+      && parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10) >= FREE_GAMES_BEFORE_PAYWALL) {
+    _paywallAtGameStart = true;
   }
 
   if (!localStorage.getItem('sadrazam_tutorial_done')) {
@@ -7674,10 +7708,8 @@ function advanceYear() {
   if (FREEMIUM_ENABLED && !isFullVersionUnlocked()
       && localStorage.getItem('sadrazam_paywall_declined') === '1'
       && (year + 1) > DECLINED_YEAR_LIMIT) {
-    const isEN = window.LANG === 'en';
-    _actuallyTriggerGameOver(isEN
-      ? "Being Grand Vizier isn't free — without the Full Version, no reign can outlast 2 years."
-      : "Sadrazamlık parasız olmaz — Tam Sürüm alınmadığı sürece bu saltanat 2 yılı geçemez.", "free_limit");
+    isPaywalled = true;
+    showFreeLimitPopup();
     return;
   }
   if (FREEMIUM_ENABLED && !isPaywalled && (year + 1) > FREE_YEAR_LIMIT && !isFullVersionUnlocked()) {
@@ -7686,7 +7718,6 @@ function advanceYear() {
     return;
   }
   year++;
-  if (year === FREE_YEAR_LIMIT) localStorage.setItem('sadrazam_restart_count', '0');
   Haptics.yearAdvance();
   if (window.playYearAdvance) playYearAdvance();
 

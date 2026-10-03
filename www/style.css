@@ -489,12 +489,12 @@ html, body {
 .second-chance-btn:active { background: rgba(201,162,39,0.22); }
 
 /* Tam Sürüm paywall'ı ilk kez reddedilince çıkan bilgilendirme */
-#paywall-declined-overlay {
+#paywall-declined-overlay, #free-limit-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.85);
   z-index: 260; display: flex; align-items: center; justify-content: center;
   opacity: 0; transition: opacity 0.3s ease;
 }
-#paywall-declined-overlay.visible { opacity: 1; }
+#paywall-declined-overlay.visible, #free-limit-overlay.visible { opacity: 1; }
 #paywall-declined-box {
   background: linear-gradient(160deg, rgba(20,12,4,0.98), rgba(10,6,2,0.99));
   border: 1px solid rgba(201,162,39,0.35); border-radius: 16px;
@@ -521,6 +521,20 @@ html, body {
   -webkit-tap-highlight-color: transparent; transition: background 0.2s;
 }
 #paywall-declined-btn:active { background: rgba(201,162,39,0.22); }
+/* 2. yıl sonu uyarısı (reddetmiş oyuncu) — 3 Ekim 2026 */
+#free-limit-overlay #paywall-declined-box { gap: 10px; }
+#free-limit-overlay .pending-cons { width: 100%; text-align: left; }
+.free-limit-primary {
+  width: 100%; padding: 14px; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700;
+  letter-spacing: 1.5px; color: #1a1006; background: linear-gradient(180deg, #e2c25a, #b8901f);
+  border: 1px solid #e2c25a; border-radius: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  animation: paywallPulse 2.4s ease-in-out infinite;
+}
+.free-limit-secondary {
+  width: 100%; padding: 10px; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.2px;
+  color: rgba(255,255,255,0.55); background: transparent; border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
 .second-chance-btn:disabled { opacity: 0.35; pointer-events: none; }
 .second-chance-btn.ghost {
   color: rgba(255,255,255,0.5); background: transparent; border-color: rgba(255,255,255,0.15);
