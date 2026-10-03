@@ -1547,7 +1547,7 @@ html, body {
 }
 .market-section-head::after { background: linear-gradient(90deg, rgba(201,162,39,0.4), transparent); }
 
-#noads-card {
+#noads-card, #bundle-card {
   width: 100%;
   display: flex; align-items: center; gap: 12px;
   padding: 14px 12px 14px 14px;
@@ -1559,7 +1559,7 @@ html, body {
   box-shadow: 0 0 22px rgba(201,162,39,0.10), inset 0 1px 0 rgba(232,200,74,0.12);
   text-align: left;
 }
-#noads-emblem {
+#noads-emblem, #bundle-emblem {
   flex-shrink: 0;
   width: 46px; height: 46px;
   border-radius: 50%;
@@ -1569,9 +1569,9 @@ html, body {
   color: var(--gold-light);
   box-shadow: 0 0 14px rgba(179,39,31,0.4);
 }
-#noads-emblem svg { width: 26px; height: 26px; }
-#noads-info { flex: 1; min-width: 0; }
-#noads-name {
+#noads-emblem svg, #bundle-emblem svg { width: 26px; height: 26px; }
+#noads-info, #bundle-info { flex: 1; min-width: 0; }
+#noads-name, #bundle-name {
   font-family: 'Cinzel', serif;
   font-weight: 600;
   font-size: 13.5px;
@@ -1579,13 +1579,13 @@ html, body {
   color: var(--gold-light);
   margin-bottom: 3px;
 }
-#noads-desc {
+#noads-desc, #bundle-desc {
   font-family: 'IM Fell English', serif;
   font-size: 12.5px;
   line-height: 1.35;
   color: rgba(240,230,208,0.78);
 }
-#noads-buy-btn {
+#noads-buy-btn, #bundle-buy-btn {
   flex-shrink: 0;
   min-width: 78px;
   padding: 10px 12px;
@@ -1604,7 +1604,13 @@ html, body {
   touch-action: manipulation;
   transition: transform 0.12s;
 }
-#noads-buy-btn:active { transform: scale(0.95); }
+#noads-buy-btn:active, #bundle-buy-btn:active { transform: scale(0.95); }
+/* Tam Sürüm + Reklamsız paketi (3 Ekim 2026) */
+#market-bundle.gone { display: none; }
+#bundle-card { border-color: var(--gold-light); box-shadow: 0 0 26px rgba(232,200,74,0.22), inset 0 1px 0 rgba(232,200,74,0.18); }
+#bundle-compare { margin-top: 4px; font-family: 'Cinzel', serif; font-size: 11px; display: flex; gap: 6px; align-items: center; }
+#bundle-compare s { color: rgba(240,230,208,0.5); }
+#bundle-compare em { font-style: normal; font-size: 9.5px; color: #7fd197; border: 1px solid rgba(63,157,93,0.8); border-radius: 3px; padding: 0 4px; }
 #noads-card.owned { border-color: rgba(201,162,39,0.3); box-shadow: none; }
 #noads-card.owned #noads-buy-btn {
   background: transparent;
@@ -1625,7 +1631,7 @@ html, body {
   margin-top: 7px;
 }
 /* Yetersiz akçe yüzünden başka bir ekrandan gelindiyse sadece akçe keseleri görünsün */
-#akce-screen.from-need #market-noads { display: none; }
+#akce-screen.from-need #market-noads, #akce-screen.from-need #market-bundle { display: none; }
 
 /* ── Ferman Mührü — fiyat/miktar gösterimi (Akçe + Tam Sürüm ortak) ── */
 .pack-caption {

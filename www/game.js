@@ -36,6 +36,10 @@ const AKCE_FALLBACK_PRICES = { 10: "₺9,99", 20: "₺19,99", 50: "₺39,99", 10
 // Reklamsız: tek seferlik (non-consumable) satın alma, geçiş reklamlarını kalıcı kapatır.
 // İkinci Şans'taki ödüllü reklam isteğe bağlı olduğu için etkilenmez.
 const NOADS_PRODUCT_ID = "com.rakuappdigital.sadrazam.noads";
+// Tam Sürüm + Reklamsız paketi (3 Ekim 2026): NON-CONSUMABLE, ₺69,99. Sahiplik
+// Hoşgeldin Kesesi gibi satın alınmış ürün listesinden okunur, iki kilidi birden açar.
+const BUNDLE_PRODUCT_ID = "com.rakuappdigital.sadrazam.fullnoads";
+const BUNDLE_FALLBACK_PRICE = "₺69,99";
 const NOADS_FALLBACK_PRICE = "₺59,99";
 // Akçe simgesi — emoji yerine tema rengini (currentColor) alan tek SVG, her yerde tutarlı görünsün
 const AKCE_COIN_SVG = '<svg class="akce-coin-svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12" r="5.5" stroke="currentColor" stroke-width="1"/><path d="M12 8.3v7.4M9.8 10l2.2-1.7 2.2 1.7M9.8 14l2.2 1.7 2.2-1.7" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"/></svg>';
@@ -2317,7 +2321,8 @@ function _applyCustomerInfo(customerInfo) {
   // Hoşgeldin Kesesi de Tam Sürüm'ü açar — RevenueCat entitlement'ına bağlanmasa
   // bile satın alınmış ürün listesinden okunur (Reklamsız ile aynı yöntem).
   const active = !!customerInfo?.entitlements?.active?.[REVENUECAT_ENTITLEMENT_ID]
-    || _customerOwnsProduct(customerInfo, STARTER_PRODUCT_ID);
+    || _customerOwnsProduct(customerInfo, STARTER_PRODUCT_ID)
+    || _customerOwnsProduct(customerInfo, BUNDLE_PRODUCT_ID);
   _setFullVersionUnlocked(active);
   _applyNoAdsFromCustomerInfo(customerInfo);
   return active;
@@ -2332,6 +2337,7 @@ function isAdFreeUnlocked() {
 function _setAdFreeUnlocked(unlocked) {
   localStorage.setItem('sadrazam_noads', unlocked ? '1' : '0');
   updateNoAdsUI();
+  if (typeof updateBundleUI === 'function') updateBundleUI();
 }
 function _customerOwnsProduct(customerInfo, productId) {
   if (!customerInfo) return false;
@@ -2340,7 +2346,8 @@ function _customerOwnsProduct(customerInfo, productId) {
 }
 function _applyNoAdsFromCustomerInfo(customerInfo) {
   if (!customerInfo) return;
-  _setAdFreeUnlocked(_customerOwnsProduct(customerInfo, NOADS_PRODUCT_ID));
+  _setAdFreeUnlocked(_customerOwnsProduct(customerInfo, NOADS_PRODUCT_ID)
+    || _customerOwnsProduct(customerInfo, BUNDLE_PRODUCT_ID));
 }
 
 async function initRevenueCat() {
@@ -2379,21 +2386,25 @@ const AKCE_SYSTEM_ENABLED = true;
 
 let _akceProducts = {}; // productId -> RevenueCat StoreProduct (consumable, entitlement'a bağlı değil)
 let _noadsProduct = null; // Reklamsız StoreProduct (non-consumable)
+let _bundleProduct = null; // Tam Sürüm + Reklamsız StoreProduct (non-consumable)
 
 async function initAkceProduct() {
   if (!AKCE_SYSTEM_ENABLED) return;
   const RC = window.RevenueCatPurchases;
   if (!RC || !_rcReady) return;
   try {
-    const { products } = await RC.getProducts({ productIdentifiers: [...AKCE_PACKS.map(p => p.productId), NOADS_PRODUCT_ID] });
+    const { products } = await RC.getProducts({ productIdentifiers: [...AKCE_PACKS.map(p => p.productId), NOADS_PRODUCT_ID, BUNDLE_PRODUCT_ID] });
     _akceProducts = {};
     _noadsProduct = null;
+    _bundleProduct = null;
     (products || []).forEach(p => {
       if (p.identifier === NOADS_PRODUCT_ID) _noadsProduct = p;
+      else if (p.identifier === BUNDLE_PRODUCT_ID) _bundleProduct = p;
       else _akceProducts[p.identifier] = p;
     });
     updateAkcePriceUI();
     updateNoAdsUI();
+    updateBundleUI();
     updateStarterUI();
   } catch (e) {
     console.warn('Akçe ürünleri alınamadı:', e);
@@ -2433,7 +2444,7 @@ function _starterNormalCents() {
 function _starterNormalPrice() {
   const c = _starterNormalCents();
   if (c) {
-    try { return new Intl.NumberFormat(window.LANG === 'en' ? 'en-US' : 'tr-TR', { style: 'currency', currency: c.currency }).format(c.normal / 100); } catch (e) {}
+    try { return new Intl.NumberFormat(window.LANG === 'en' ? 'en-US' : 'tr-TR', { style: 'currency', currency: c.currency, currencyDisplay: 'narrowSymbol' }).format(c.normal / 100); } catch (e) {}
     return "";
   }
   return FREEMIUM_ENABLED ? "" : "₺59,98"; // test modu: ₺29,99 + ₺29,99
@@ -2533,6 +2544,71 @@ function updateNoAdsUI() {
   }
 }
 
+// ── Tam Sürüm + Reklamsız paketi ──
+// Sadece ikisine de sahip olmayana gösterilir (birine sahip olana aynı şeyi iki kez
+// satmayalım). Ürün mağazadan gelmediyse (henüz onaylanmadıysa) gizli kalır.
+function _bundleAvailable() {
+  if (!AKCE_SYSTEM_ENABLED || isFullVersionUnlocked() || isAdFreeUnlocked()) return false;
+  return !!_bundleProduct || !FREEMIUM_ENABLED;
+}
+// Karşılaştırma: Tam Sürüm + Reklamsız ayrı ayrı (aynı para birimiyle); yoksa boş
+function _bundleCompare() {
+  const b = _bundleProduct, full = _rcOfferingPackage?.product, na = _noadsProduct;
+  if (!b || !full || !na) return FREEMIUM_ENABLED ? null : { normal: "₺89,98", pct: 22 };
+  if (typeof b.price !== "number" || typeof full.price !== "number" || typeof na.price !== "number") return null;
+  if (!b.currencyCode || b.currencyCode !== full.currencyCode || b.currencyCode !== na.currencyCode) return null;
+  const normal = Math.round(full.price * 100) + Math.round(na.price * 100), now = Math.round(b.price * 100);
+  if (normal <= now) return null;
+  let txt = "";
+  try { txt = new Intl.NumberFormat(window.LANG === 'en' ? 'en-US' : 'tr-TR', { style: 'currency', currency: b.currencyCode, currencyDisplay: 'narrowSymbol' }).format(normal / 100); } catch (e) { return null; }
+  return { normal: txt, pct: Math.round((1 - now / normal) * 100) };
+}
+function updateBundleUI() {
+  const sec = document.getElementById('market-bundle');
+  if (!sec) return;
+  const show = _bundleAvailable();
+  sec.classList.toggle('gone', !show);
+  if (!show) return;
+  const priceEl = document.getElementById('bundle-price');
+  if (priceEl) priceEl.textContent = _bundleProduct?.priceString || (!FREEMIUM_ENABLED ? BUNDLE_FALLBACK_PRICE : '…');
+  const cmp = _bundleCompare(), cmpEl = document.getElementById('bundle-compare');
+  if (cmpEl) cmpEl.innerHTML = cmp ? `<s>${cmp.normal}</s> <em>${window.LANG === 'en' ? `${cmp.pct}% off` : `%${cmp.pct}`}</em>` : '';
+}
+async function purchaseBundle() {
+  if (isFullVersionUnlocked() && isAdFreeUnlocked()) return;
+  const RC = window.RevenueCatPurchases;
+  const status = document.getElementById('akce-status');
+  const isEN = window.LANG === 'en';
+  if (!_rcReady || !RC) {
+    if (status) status.textContent = isEN ? 'Purchases are not available right now.' : 'Satın alma şu an kullanılamıyor.';
+    return;
+  }
+  if (!_bundleProduct) {
+    if (status) status.textContent = isEN ? 'No product found. Try again shortly.' : 'Ürün bulunamadı, birazdan tekrar dene.';
+    initAkceProduct();
+    return;
+  }
+  if (status) status.textContent = isEN ? 'Processing…' : 'İşleniyor…';
+  try {
+    const result = await RC.purchaseStoreProduct({ product: _bundleProduct });
+    // Satın alma döndüyse iki kilit de açık — customerInfo gecikse bile
+    _applyCustomerInfo(result?.customerInfo);
+    _setFullVersionUnlocked(true);
+    _setAdFreeUnlocked(true);
+    processAkceTransactions(result?.customerInfo);
+    updateBundleUI();
+    updateStarterUI();
+    if (window.playSelectConfirm) playSelectConfirm();
+    if (status) status.textContent = isEN ? 'Full Version unlocked, ads removed!' : 'Tam Sürüm açıldı, reklamlar kaldırıldı!';
+  } catch (e) {
+    if (e?.userCancelled) {
+      if (status) status.textContent = '';
+    } else if (status) {
+      status.textContent = isEN ? 'Purchase failed. Please try again.' : 'Satın alma başarısız oldu, tekrar dene.';
+    }
+  }
+}
+
 function showAkceScreen() {
   const scr = document.getElementById('akce-screen');
   scr?.classList.add('visible');
@@ -2543,6 +2619,7 @@ function showAkceScreen() {
   updateAkceUI();
   updateAkcePriceUI();
   updateNoAdsUI();
+  updateBundleUI();
   updateStarterUI();
   const status = document.getElementById('akce-status');
   if (status) status.textContent = '';
@@ -2665,6 +2742,7 @@ document.querySelectorAll('.akce-pack-btn').forEach(btn => {
 });
 document.getElementById('akce-close-btn')?.addEventListener('click', hideAkceScreen);
 document.getElementById('noads-buy-btn')?.addEventListener('click', purchaseNoAds);
+document.getElementById('bundle-buy-btn')?.addEventListener('click', purchaseBundle);
 document.getElementById('market-restore-btn')?.addEventListener('click', restoreMarketPurchases);
 
 function updatePaywallPriceUI() {
