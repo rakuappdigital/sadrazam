@@ -4775,6 +4775,7 @@ function dealNext() {
 
   animateCardIn();
   setTimeout(() => { if (currentCard === c) _maybeStartFuse(c); }, 450); // kart yerine oturduktan sonra
+  if (c._sefer) _showSeferMap(c._sefer);
   updateDynamicSubtitle();
 }
 
@@ -6626,6 +6627,47 @@ function _showTimedTip() {
   setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 500); }, 2600);
 }
 
+// ── Sefer: harita oku (3 Ekim 2026) ──
+// Savaş sonucu kartı gelince önce imparatorluk haritasında İstanbul'dan batıdaki
+// prensliğe bir ok çizilir, varınca ZAFER / HEZİMET damgası basılır. Sonucu zar
+// (rollSavasSonucu) zaten belirledi; bu sadece gösterim. Dokununca ya da 3 sn sonra kapanır.
+function _showSeferMap(result) {
+  document.getElementById("sefer-overlay")?.remove();
+  const en = window.LANG === 'en', win = result === "win";
+  const ov = document.createElement("div");
+  ov.id = "sefer-overlay";
+  ov.innerHTML = `
+    <div class="sf-frame">
+      <div class="sf-map" style="background-image:url('assets/characters/harita-overlay.jpg')"></div>
+      <svg class="sf-svg" viewBox="0 0 100 142" preserveAspectRatio="none" aria-hidden="true">
+        <path class="sf-path" d="M48.4 54 C 40 45, 27 44, 18 48.5" pathLength="100"/>
+        <circle class="sf-city" cx="48.4" cy="54" r="1.6"/>
+        <path class="sf-head" d="M0 0 L-3.2 -1.8 L-3.2 1.8 Z"/>
+      </svg>
+      <div class="sf-label">${en ? "CAMPAIGN · THE WESTERN PRINCIPALITY" : "SEFER · BATIDAKİ PRENSLİK"}</div>
+      <div class="sf-stamp ${win ? "win" : "loss"}">${win ? (en ? "VICTORY" : "ZAFER") : (en ? "DEFEAT" : "HEZİMET")}</div>
+    </div>`;
+  document.body.appendChild(ov);
+  try { if (window.playEvent_savas) playEvent_savas(); } catch (e) {}
+  const path = ov.querySelector(".sf-path"), head = ov.querySelector(".sf-head");
+  const t0 = performance.now(), DUR = 1500;
+  const step = (now) => {
+    if (!ov.isConnected) return;
+    const p = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - p, 3);
+    path.style.strokeDashoffset = String(100 - 100 * e);
+    try {
+      const L = path.getTotalLength(), a = path.getPointAtLength(L * e), b = path.getPointAtLength(Math.max(0, L * e - 0.6));
+      head.setAttribute("transform", `translate(${a.x} ${a.y}) rotate(${Math.atan2(a.y - b.y, a.x - b.x) * 180 / Math.PI})`);
+    } catch (err) {}
+    if (p < 1) requestAnimationFrame(step);
+    else { ov.querySelector(".sf-stamp").classList.add("on"); try { win ? Haptics.statPositive() : Haptics.statNegative(); } catch (err) {} }
+  };
+  requestAnimationFrame(() => { ov.classList.add("on"); requestAnimationFrame(step); });
+  const close = () => { if (!ov.isConnected) return; ov.classList.remove("on"); setTimeout(() => ov.remove(), 350); };
+  ov.addEventListener("click", close);
+  setTimeout(close, 3200);
+}
+
 function hasAdvisor(id) {
   return selectedAdvisors.some(a => a.id === id);
 }
@@ -7603,7 +7645,7 @@ function decide(dir) {
       _savasSonucSchedule = null;
       const won = rollSavasSonucu();
       const sonucCard = allCards.find(x => x.id === (won ? 'savaş_zafer' : 'savaş_yenilgi'));
-      if (sonucCard) forcedQueue.push(sonucCard);
+      if (sonucCard) forcedQueue.push({ ...sonucCard, _sefer: won ? "win" : "loss" }); // kart gelince harita oku oynar
     }
     // Eyalet Divanı Uzun Vadeli Hafıza: ihmal edilen eyalet çok sonra isyan eder
     if (_eyaletIsyanSchedule.length) {
