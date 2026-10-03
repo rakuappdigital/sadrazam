@@ -1560,14 +1560,8 @@ html, body {
   text-align: left;
 }
 #noads-emblem, #bundle-emblem {
-  flex-shrink: 0;
-  width: 46px; height: 46px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(circle at 38% 32%, #c4342b, #7a1712 72%);
-  border: 2px double var(--gold-light);
+  flex-shrink: 0; margin: 0;
   color: var(--gold-light);
-  box-shadow: 0 0 14px rgba(179,39,31,0.4);
 }
 #noads-emblem svg, #bundle-emblem svg { width: 26px; height: 26px; }
 #noads-info, #bundle-info { flex: 1; min-width: 0; }
@@ -5294,3 +5288,32 @@ html, body {
 #sefer-overlay .sf-stamp.on { opacity: 1; transform: translate(-50%,-50%) rotate(-12deg) scale(1); }
 #sefer-overlay .sf-stamp.win { color: #E8C84A; border-color: #E8C84A; }
 #sefer-overlay .sf-stamp.loss { color: #ff6b55; border-color: #ff6b55; }
+
+/* ── Ortak satın alma mühürü + yeni paywall (3 Ekim 2026) ──
+   Bütün satın alma yüzeyleri aynı kırmızı mühürü (.ferman) kullanır: akçe keseleri,
+   Hoşgeldin Kesesi, Reklamsız, paket, paywall seçenekleri, 2. yıl penceresi. */
+.ferman.ferman-sm { width: 52px; height: 52px; border-width: 2px; box-shadow: 0 0 14px rgba(179,39,31,0.4), 0 4px 10px rgba(0,0,0,0.5); }
+.ferman.ferman-sm::before { inset: 4px; }
+.ferman.ferman-sm svg, .ferman.ferman-tile svg { width: 26px; height: 26px; color: var(--gold-light); position: relative; }
+.ferman.ferman-tile { width: 64px; height: 64px; border-width: 2px; }
+.ferman.ferman-tile::before { inset: 5px; }
+.ferman.ferman-tile svg { width: 30px; height: 30px; }
+#paywall-kicker { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 4px; color: rgba(240,230,208,0.55); }
+#paywall-values { width: 100%; display: grid; gap: 9px; text-align: left; margin: 6px 0 4px; }
+.pwv { display: flex; gap: 11px; align-items: flex-start; }
+.pwv-ic { flex: 0 0 26px; height: 26px; color: var(--gold); margin-top: 1px; }
+.pwv-ic svg { width: 26px; height: 26px; }
+.pwv b { display: block; font-family: 'Cinzel', serif; font-weight: 600; font-size: 12px; letter-spacing: 0.6px; color: var(--gold-light); }
+.pwv small { display: block; font-family: 'IM Fell English', serif; font-size: 13px; line-height: 1.35; color: rgba(240,230,208,0.78); }
+#paywall-tiles { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 4px; }
+#paywall-tiles.single { grid-template-columns: minmax(0, 220px); justify-content: center; }
+.pw-tile { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 8px 12px; border-radius: 14px; cursor: pointer;
+  border: 1px solid rgba(201,162,39,0.35); background: rgba(201,162,39,0.04); color: inherit; font: inherit; -webkit-tap-highlight-color: transparent; transition: border-color .2s, background .2s, box-shadow .2s, transform .12s; }
+.pw-tile:active { transform: scale(0.97); }
+.pw-tile.sel { border-color: var(--gold-light); background: rgba(201,162,39,0.13); box-shadow: 0 0 22px rgba(232,200,74,0.25); }
+.pw-badge { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 1.2px; color: #1a1006; background: linear-gradient(180deg, #E8C84A, #B38D1C); border-radius: 4px; padding: 3px 7px; }
+.pw-t-name { font-family: 'Cinzel', serif; font-weight: 600; font-size: 11.5px; letter-spacing: 0.8px; color: var(--text); }
+.pw-t-price { font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: var(--gold-light); min-height: 22px; }
+.pw-t-cmp { font-family: 'IM Fell English', serif; font-size: 12px; color: rgba(240,230,208,0.5); min-height: 15px; }
+#free-limit-overlay #paywall-declined-ornament .ferman { margin: 0 auto; }
+#paywall-panel #paywall-buy-btn { color: #1a1006; font-weight: 700; background: linear-gradient(180deg, #E8C84A, #B38D1C); border-color: #E8C84A; box-shadow: 0 6px 20px rgba(201,162,39,0.3); letter-spacing: 1.5px; }

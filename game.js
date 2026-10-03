@@ -2574,10 +2574,10 @@ function updateBundleUI() {
   const cmp = _bundleCompare(), cmpEl = document.getElementById('bundle-compare');
   if (cmpEl) cmpEl.innerHTML = cmp ? `<s>${cmp.normal}</s> <em>${window.LANG === 'en' ? `${cmp.pct}% off` : `%${cmp.pct}`}</em>` : '';
 }
-async function purchaseBundle() {
+async function purchaseBundle(statusEl) {
   if (isFullVersionUnlocked() && isAdFreeUnlocked()) return;
   const RC = window.RevenueCatPurchases;
-  const status = document.getElementById('akce-status');
+  const status = statusEl || document.getElementById('akce-status');
   const isEN = window.LANG === 'en';
   if (!_rcReady || !RC) {
     if (status) status.textContent = isEN ? 'Purchases are not available right now.' : 'Satın alma şu an kullanılamıyor.';
@@ -2600,6 +2600,7 @@ async function purchaseBundle() {
     updateStarterUI();
     if (window.playSelectConfirm) playSelectConfirm();
     if (status) status.textContent = isEN ? 'Full Version unlocked, ads removed!' : 'Tam Sürüm açıldı, reklamlar kaldırıldı!';
+    return true;
   } catch (e) {
     if (e?.userCancelled) {
       if (status) status.textContent = '';
@@ -2742,7 +2743,7 @@ document.querySelectorAll('.akce-pack-btn').forEach(btn => {
 });
 document.getElementById('akce-close-btn')?.addEventListener('click', hideAkceScreen);
 document.getElementById('noads-buy-btn')?.addEventListener('click', purchaseNoAds);
-document.getElementById('bundle-buy-btn')?.addEventListener('click', purchaseBundle);
+document.getElementById('bundle-buy-btn')?.addEventListener('click', () => purchaseBundle());
 document.getElementById('market-restore-btn')?.addEventListener('click', restoreMarketPurchases);
 
 function updatePaywallPriceUI() {
@@ -2758,14 +2759,62 @@ function updatePaywallPriceUI() {
     const isEN = window.LANG === 'en';
     el.textContent = isEN ? '$2.99' : '₺29,99';
   } else {
-    el.textContent = '';
+    el.textContent = '…';
   }
+  _updatePaywallTiles();
+}
+
+// Yeni paywall (3 Ekim 2026): iki seçenek, ortak kırmızı mühür (.ferman). Paket sadece
+// mağazadan geldiyse ve oyuncu hiçbirine sahip değilse görünür; seçili olan satın alınır.
+let _pwSel = 'bundle';
+function _updatePaywallTiles() {
+  const tb = document.getElementById('pw-tile-bundle'), tf = document.getElementById('pw-tile-full');
+  if (!tb || !tf) return;
+  const showB = _bundleAvailable();
+  tb.style.display = showB ? '' : 'none';
+  document.getElementById('paywall-tiles')?.classList.toggle('single', !showB);
+  if (!showB) _pwSel = 'full';
+  const bp = document.getElementById('paywall-bundle-price');
+  if (bp) bp.textContent = _bundleProduct?.priceString || (!FREEMIUM_ENABLED ? BUNDLE_FALLBACK_PRICE : '…');
+  const cmp = _bundleCompare(), bc = document.getElementById('paywall-bundle-cmp');
+  if (bc) bc.innerHTML = cmp ? `<s>${cmp.normal}</s>` : '&nbsp;';
+  [tf, tb].forEach(t => { const on = t.dataset.p === _pwSel; t.classList.toggle('sel', on); t.setAttribute('aria-pressed', String(on)); });
+  const btn = document.getElementById('paywall-buy-btn'), en = window.LANG === 'en';
+  if (btn) {
+    const price = (_pwSel === 'bundle' ? document.getElementById('paywall-bundle-price') : document.getElementById('paywall-price'))?.textContent || '';
+    const name = _pwSel === 'bundle' ? (en ? 'GET FULL + AD-FREE' : 'TAM + REKLAMSIZ AL') : (en ? 'UNLOCK FULL VERSION' : 'TAM SÜRÜMÜ AÇ');
+    btn.textContent = price && price !== '…' ? `${name} · ${price}` : name;
+  }
+}
+document.querySelectorAll('.pw-tile').forEach(t => t.addEventListener('click', () => { _pwSel = t.dataset.p; _updatePaywallTiles(); }));
+async function _paywallBuy() {
+  if (_pwSel === 'bundle' && _bundleAvailable()) {
+    const ok = await purchaseBundle(document.getElementById('paywall-status'));
+    if (ok && isFullVersionUnlocked()) unlockFullVersion();
+    return;
+  }
+  purchaseFullVersion();
 }
 
 let _paywallFromMenu = false; // giriş ekranındaki "Tam Sürümü Aç" butonundan mı açıldı?
 
+const PAYWALL_COPY = {
+  limit: { tr: ["MÜHÜR HÂLÂ SENDE", "Sultan seni azletmedi; yalnızca ücretsiz sürümün iki yılı doldu. Saltanatını kaldığın yerden sürdür."],
+           en: ["THE SEAL IS STILL YOURS", "The Sultan has not dismissed you; only the free version's two years are over. Continue your reign where you left off."] },
+  start: { tr: ["DİVAN SENİ BEKLİYOR", "Ücretsiz sürümde her saltanat 2 yıl sürer. Tam Sürüm'le sınır kalkar, Divan'da istediğin kadar kalırsın."],
+           en: ["THE DIVAN AWAITS YOU", "In the free version every reign lasts 2 years. The Full Version removes the limit; stay in the Divan as long as you can."] },
+  menu:  { tr: ["DİVAN SENİ BEKLİYOR", "Sınırsız saltanat, yıl yıl fermanlar. Tek seferlik ödeme, abonelik yok."],
+           en: ["THE DIVAN AWAITS YOU", "An unlimited reign, a decree every year. One-time payment, no subscription."] },
+};
 function showPaywallScreen(fromMenu = false) {
   _paywallFromMenu = fromMenu;
+  {
+    const en = window.LANG === 'en', ctx = fromMenu ? 'menu' : (_paywallAtGameStart ? 'start' : 'limit');
+    const [ttl, txt] = PAYWALL_COPY[ctx][en ? 'en' : 'tr'];
+    const te = document.getElementById('paywall-title'), xe = document.getElementById('paywall-text'), ke = document.getElementById('paywall-kicker');
+    if (te) te.textContent = ttl; if (xe) xe.textContent = txt; if (ke) ke.textContent = en ? 'FULL VERSION' : 'TAM SÜRÜM';
+    _pwSel = 'bundle';
+  }
   const scr = document.getElementById('paywall-screen');
   if (scr) scr.classList.add('visible');
   scr?.classList.toggle('from-menu', fromMenu);
@@ -2810,7 +2859,7 @@ function _renderPaywallPersonal(fromMenu) {
   const ids = scheduledCards.map(x => x.cardId);
   let knot = '';
   outer: for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) if (_findKnotCard(ids[i], ids[j])) { knot = `<li class="pc-knot">${en ? "Two of your decisions are about to meet." : "İki kararınız birleşmek üzere."}</li>`; break outer; }
-  box.innerHTML = `<div class="pending-cons awaits"><div class="pc-title">${en ? "WHAT AWAITS YOU" : "SİZİ BEKLEYENLER"}</div><ul>${lines}${knot}</ul></div>`;
+  box.innerHTML = `<div class="pending-cons awaits"><div class="pc-title">${en ? "YOUR REIGN IS UNFINISHED" : "SALTANATINIZ YARIM KALDI"}</div><ul>${lines}${knot}</ul></div>`;
 }
 
 function hidePaywallScreen() {
@@ -2907,7 +2956,7 @@ async function restoreFullVersion() {
   }
 }
 
-document.getElementById('paywall-buy-btn')?.addEventListener('click', purchaseFullVersion);
+document.getElementById('paywall-buy-btn')?.addEventListener('click', _paywallBuy);
 document.getElementById('paywall-restore-btn')?.addEventListener('click', restoreFullVersion);
 function _quitAfterPaywall() {
   isPaywalled = false;
@@ -3015,7 +3064,7 @@ function showFreeLimitPopup() {
   overlay.className = 'paywall-declined-overlay';
   overlay.innerHTML = `
     <div id="paywall-declined-box">
-      <div id="paywall-declined-ornament">${GAME_ICONS.loyalty_low}</div>
+      <div id="paywall-declined-ornament"><div class="ferman ferman-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 17.5h16M5 17.5 4 9l5 3.5L12 6l3 6.5L20 9l-1 8.5"/></svg></div></div>
       <div id="paywall-declined-title">${isEN ? 'YOUR TERM HAS ENDED' : 'GÖREV SÜRENİZ DOLDU'}</div>
       <div id="paywall-declined-divider"></div>
       <div id="paywall-declined-text">${isEN

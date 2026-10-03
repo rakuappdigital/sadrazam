@@ -389,6 +389,10 @@ window.UI_STRINGS = {
     'btn.back':             '← GERİ',
     // Paywall
     'paywall.title':        'SADRAZAMLIK PARASIZ OLMAZ',
+    'paywall.v1t': 'SINIRSIZ SALTANAT', 'paywall.v1d': 'Ayakta kalabildiğin sürece hüküm sür; 2. yıldan sonrası seni bekliyor.',
+    'paywall.v2t': 'PADİŞAH FERMANLARI', 'paywall.v2d': "Her yıl yeni bir ferman; yerine getirdikçe Vezirler Defteri'ne mühür.",
+    'paywall.v3t': 'TÜM ZORLUKLAR VE BAŞARIMLAR', 'paywall.v3d': "Acemi'den Kadim Vezir'e; bütün başarımlar açık.",
+    'paywall.tile_full': 'TAM SÜRÜM', 'paywall.tile_bundle': 'TAM + REKLAMSIZ', 'paywall.once': 'tek seferlik',
     'paywall.text':         "Tarihte de böyleydi zaten. Divan'ın geri kalanı Tam Sürüm'de seni bekliyor:",
     'paywall.col_free':     'ÜCRETSİZ',
     'paywall.col_full':     'TAM SÜRÜM',
@@ -584,6 +588,10 @@ window.UI_STRINGS = {
     'btn.back':             '← BACK',
     // Paywall
     'paywall.title':        "GRAND VIZIERS AREN'T FREE",
+    'paywall.v1t': 'UNLIMITED REIGN', 'paywall.v1d': 'Rule for as long as you can survive; the events after year 2 await you.',
+    'paywall.v2t': "THE SULTAN'S DECREES", 'paywall.v2d': "A new decree every year; each one fulfilled earns a seal in the Viziers' Ledger.",
+    'paywall.v3t': 'ALL DIFFICULTIES AND ACHIEVEMENTS', 'paywall.v3d': 'From Novice to Ancient Vizier; every achievement unlocked.',
+    'paywall.tile_full': 'FULL VERSION', 'paywall.tile_bundle': 'FULL + AD-FREE', 'paywall.once': 'one-time',
     'paywall.text':         "Historically speaking, they never were. The rest of the Divan awaits in the Full Version:",
     'paywall.col_free':     'FREE',
     'paywall.col_full':     'FULL VERSION',
