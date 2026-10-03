@@ -863,7 +863,7 @@ const ACHIEVEMENTS = [
   { id: "kanuni_ten",     tier:"gold",   icon:GAME_ICONS.kanuni_ten, name:"Kanunî'nin Mirası",    desc:"Kanuni ile 10 yıl hayatta kal.",              check: s => s.sultanId==="kanuni" && s.year>=10 },
   { id: "yavuz_eight",    tier:"gold",   icon:GAME_ICONS.yavuz_eight, name:"Yavuz'a Layık",        desc:"Yavuz ile 8 yıl hayatta kal.",               check: s => s.sultanId==="yavuz" && s.year>=8 },
   { id: "murad_treasure", tier:"gold",   icon:GAME_ICONS.murad_treasure, name:"Murad'ın Serveti",     desc:"III. Murad ile hazineyi 80+'a çıkar.",       check: s => s.sultanId==="murad3" && s.maxHazine>=80 },
-  { id: "all_deaths",     tier:"gold",   icon:GAME_ICONS.all_deaths, name:"Her Şeyi Gördüm",      desc:"8 farklı ölüm sebebini yaşa.",               check: s => (s.deathsSeen||[]).length >= 6 },
+  { id: "all_deaths",     tier:"gold",   icon:GAME_ICONS.all_deaths, name:"Her Şeyi Gördüm",      desc:"8 farklı ölüm sebebini yaşa.",               check: s => (s.deathCauses||[]).length >= 8 },
   { id: "curse_master",   tier:"gold",   icon:GAME_ICONS.curse_master, name:"Lanet Ustası",          desc:"Toplamda 3 kez lanet tetikle.",               check: s => s.totalCurses >= 3 },
   { id: "chance_streak",  tier:"gold",   icon:GAME_ICONS.chance_streak, name:"Şans Tanrısı",          desc:"Arka arkaya 3 şans kartı kazan.",             check: s => s.chanceStreak >= 3 },
   { id: "no_curse",       tier:"silver", icon:GAME_ICONS.no_curse, name:"Lanet Yok",            desc:"Bir oyunu lanet tetiklemeden bitir.",         check: s => !s.cursedEver },
@@ -871,15 +871,15 @@ const ACHIEVEMENTS = [
 
   // ── PLATİN ──
   { id: "legend",         tier:"platinum", icon:GAME_ICONS.legend, name:"Efsane Sadrazam",     desc:"20 yıl hayatta kal.",                         check: s => s.year >= 20 },
-  { id: "all_chars",      tier:"platinum", icon:GAME_ICONS.all_chars, name:"Osmanlı Ansiklopedisi",desc:"Tek oyunda tüm 26 karakteri gör.",           check: s => (s.seenCharacters||new Set()).size >= 26 },
+  { id: "all_chars",      tier:"platinum", icon:GAME_ICONS.all_chars, name:"Osmanlı Ansiklopedisi",desc:"Tek oyunda 26 farklı karakter gör.",          check: s => (s.seenCharacters||new Set()).size >= 26 },
   { id: "no_low_stat",    tier:"platinum", icon:GAME_ICONS.no_low_stat, name:"Sıfır Kriz",          desc:"Hiçbir stat 15'in altına inmeden 10 yıl.",   check: s => s.year>=10 && s.minAnyStat>=15 },
   { id: "pasa_mode",      tier:"platinum", icon:GAME_ICONS.pasa_mode, name:"Paşadan Sultana",     desc:"Paşalık modunda Sadrazam ol ve 5 yıl devam et.", check: s => s.isPasaMode && s.pasaPromoted && s.year>=8 },
   { id: "item_collector", tier:"platinum", icon:GAME_ICONS.item_collector, name:"Koleksiyoncu",        desc:"Tek oyunda 5 farklı item topla.",             check: s => s.uniqueItemsCollected >= 5 },
-  { id: "gizli_ustat",   tier:"platinum", icon:GAME_ICONS.gizli_ustat, name:"Gizli Üstat",          desc:"Tek oyunda 3 gizli görevi tamamla.",          check: s => s.allMissionsCompleted },
+  { id: "gizli_ustat",   tier:"platinum", icon:GAME_ICONS.gizli_ustat, name:"Gizli Üstat",          desc:"Tek oyunda 3 sır ortaya çıkar: Halkın Sevgisi, Casus Ağı, gizli hain, aynı gün dönen iki karar.", check: s => (s.secretsRevealed||0) >= 3 },
 
   // ── GİZLİ ──
   { id: "rival_five",     tier:"secret",   icon:GAME_ICONS.rival_five, name:"Rakibin Rakibi",     desc:"Rakip Vezir ile 5 kez yüzleş.",              check: s => (s.characterMemory?.["8-rakip-vezir"]?.left||0)+(s.characterMemory?.["8-rakip-vezir"]?.right||0) >= 5 },
-  { id: "zimmet",         tier:"secret",   icon:GAME_ICONS.zimmet, name:"Zimmet Şüphelisi",    desc:"Zimmet suçuyla öl.",                          check: s => s.deathReason?.includes("zimmet") },
+  { id: "zimmet",         tier:"secret",   icon:GAME_ICONS.zimmet, name:"Zimmet Şüphelisi",    desc:"Zimmet suçuyla öl.",                          check: s => s.deathCause === "hazine_100" },
   { id: "valide_loyal",   tier:"secret",   icon:GAME_ICONS.valide_loyal, name:"Valide'nin Gözdesi",  desc:"Tek oyunda Valide Sultan'ın tüm isteklerini kabul et.", check: s => (s.characterMemory?.["5-valide-sultan"]?.left||0)===0 && (s.characterMemory?.["5-valide-sultan"]?.right||0)>=3 },
   { id: "diplomat",       tier:"secret",   icon:GAME_ICONS.diplomat, name:"Zekice Elçi",         desc:"Yabancı Elçi ile 4+ kez müzakere yap.",      check: s => (s.characterMemory?.["7-yabanci-elci"]?.left||0)+(s.characterMemory?.["7-yabanci-elci"]?.right||0) >= 4 },
   { id: "deli_dervis_right", tier:"secret", icon:GAME_ICONS.deli_dervis_right, name:"Kehanet Tuttu",      desc:"Deli Derviş'i 2 kez ziyaret et.",            check: s => (s.characterMemory?.["25-deli_dervis"]?.left||0)+(s.characterMemory?.["25-deli_dervis"]?.right||0) >= 2 },
@@ -2123,6 +2123,9 @@ let factionPressureSent = { saray: false, ordu: false, din: false, halk: false }
 let hicriYear = 927;
 let hicriMonth = 0; // 0-11
 let deathCharacterKey = null;
+// Ölüm sebebi anahtarı (başarımlar için): "<stat>_0|100", "saglik", "azil", "sultan_guc",
+// "padisah_red", "sehzade", "yanlis_oda", "free_limit". Metin rastgele olduğu için metinden sayılmaz.
+let _deathCause = null;
 let isInvestigating = false;
 let originalCardText = "";
 let dangerPulseActive = false;
@@ -5261,7 +5264,7 @@ function showSehzadeMeydan(c) {
       const isEN2 = window.LANG === 'en';
       triggerGameOver(isEN2
         ? "The Prince's gambit succeeded. You were removed from power."
-        : "Şehzadenin hamlesi tuttu. İktidardan uzaklaştırıldınız.");
+        : "Şehzadenin hamlesi tuttu. İktidardan uzaklaştırıldınız.", "sehzade");
     }
   });
 }
@@ -5920,7 +5923,7 @@ function triggerYanlisIdam() {
   setTimeout(() => {
     bloodEl.remove();
     deathCharacterKey = "easter-yanlis";
-    triggerGameOver("O 'yanlış oda' hikayesi sona erdi. Kimliğini öğrendiler — ve seni de.");
+    triggerGameOver("O 'yanlış oda' hikayesi sona erdi. Kimliğini öğrendiler — ve seni de.", "yanlis_oda");
   }, 2200);
 }
 
@@ -6314,7 +6317,7 @@ function changeHealth(delta) {
     const isEN = window.LANG === 'en';
     triggerGameOver(isEN
       ? "Your body could bear no more. You died of exhaustion."
-      : "Bedeniniz artık dayanamadı. Yorgunluktan hayatını kaybettiniz.");
+      : "Bedeniniz artık dayanamadı. Yorgunluktan hayatını kaybettiniz.", "saglik");
   }
 }
 
@@ -6855,7 +6858,7 @@ let _sultanWarningShown = false; // Çok güçlenince uyarı mektubu
 function checkSultanSabir() {
   if (isGameOver) return;
   if (sultanSabir <= 0) {
-    triggerGameOver("Sultan seni azletti. Hac yolculuğuna — sürgün olarak — gönderildin.");
+    triggerGameOver("Sultan seni azletti. Hac yolculuğuna — sürgün olarak — gönderildin.", "azil");
   } else if (sultanSabir >= 85 && !_sultanWarningShown) {
     _sultanWarningShown = true;
     showGucUyarisi();
@@ -6919,7 +6922,7 @@ function triggerSultanGucOlumu() {
           eyeEl.remove();
           showHangingAnimation(() => {
             _sultanGucCinematicActive = false;
-            triggerGameOver("Sarayın en güçlü sadrazamıydın. Bu yüzden urganı iki cellat getirdi.");
+            triggerGameOver("Sarayın en güçlü sadrazamıydın. Bu yüzden urganı iki cellat getirdi.", "sultan_guc");
           });
         }, 500);
       }
@@ -6979,8 +6982,8 @@ function showHangingAnimation(onDone) {
 function checkGameOver() {
   if (isGameOver) return false;
   for (const stat of Object.keys(stats)) {
-    if (stats[stat] <= 0)   { triggerGameOver(getRichDeathText(DEATH_TABLE[stat]?.[0]   || "Oyun bitti.", stat, 0));   return true; }
-    if (stats[stat] >= 100) { triggerGameOver(getRichDeathText(DEATH_TABLE[stat]?.[100] || "Oyun bitti.", stat, 100)); return true; }
+    if (stats[stat] <= 0)   { triggerGameOver(getRichDeathText(DEATH_TABLE[stat]?.[0]   || "Oyun bitti.", stat, 0), (stat === "yeniçeri" ? "yeniceri" : stat) + "_0");   return true; }
+    if (stats[stat] >= 100) { triggerGameOver(getRichDeathText(DEATH_TABLE[stat]?.[100] || "Oyun bitti.", stat, 100), (stat === "yeniçeri" ? "yeniceri" : stat) + "_100"); return true; }
   }
   return false;
 }
@@ -7046,7 +7049,7 @@ function decide(dir) {
       triggerSultanRage(rageOvl, () => {
         rageOvl.remove();
         showExecutionAnimation(() => {
-          triggerGameOver("Sen bana nasıl karşı gelirsin BRE DEYYUS! — Son sözlerin bunlar oldu.");
+          triggerGameOver("Sen bana nasıl karşı gelirsin BRE DEYYUS! — Son sözlerin bunlar oldu.", "padisah_red");
         });
       });
     }
@@ -7674,7 +7677,7 @@ function advanceYear() {
     const isEN = window.LANG === 'en';
     _actuallyTriggerGameOver(isEN
       ? "Being Grand Vizier isn't free — without the Full Version, no reign can outlast 2 years."
-      : "Sadrazamlık parasız olmaz — Tam Sürüm alınmadığı sürece bu saltanat 2 yılı geçemez.");
+      : "Sadrazamlık parasız olmaz — Tam Sürüm alınmadığı sürece bu saltanat 2 yılı geçemez.", "free_limit");
     return;
   }
   if (FREEMIUM_ENABLED && !isPaywalled && (year + 1) > FREE_YEAR_LIMIT && !isFullVersionUnlocked()) {
@@ -7874,8 +7877,9 @@ function checkRelationshipEffects() {
 }
 
 // ── Game Over ─────────────────────────────────────────────────────
-function triggerGameOver(reason) {
+function triggerGameOver(reason, cause) {
   if (isGameOver) return;
+  _deathCause = cause || null;
   _hideCriticalOffer(); // İkinci Şans / ölüm ekranının üstünde kalmasın
   // İkinci Şans ekranı gösterilirken de oyunu HEMEN "bitmiş" say — decide()/dealNext()/
   // checkGameOver() hepsi isGameOver'a bakıp durur. Bu satır olmadan teklif ekranı açıkken
@@ -7894,8 +7898,9 @@ function triggerGameOver(reason) {
   _actuallyTriggerGameOver(reason);
 }
 
-function _actuallyTriggerGameOver(reason) {
+function _actuallyTriggerGameOver(reason, cause) {
   isGameOver = true;
+  if (cause) _deathCause = cause;
   // Açık kalmış oyun içi pencereler ölüm ekranının üstünde kalmasın
   ["katib-overlay", "empty-slot-tip", "item-confirm-popup"].forEach(id => document.getElementById(id)?.remove());
   clearSave();
@@ -8014,6 +8019,24 @@ function getDynamicDeathTitle(reason) {
 }
 
 // ── Başarımlar ────────────────────────────────────────────────────
+// Eski kayıtlar ölüm METNİNİ saklıyordu (deathsSeen) — sebebe çevir ki ilerleme kaybolmasın.
+function _deathCausesFromCrossGame(cg) {
+  if (Array.isArray(cg.deathCauses)) return cg.deathCauses;
+  const out = new Set();
+  const pools = [DEATH_TEXTS, window.EN_DEATH_TEXTS || {}];
+  const special = [["Bedeniniz", "saglik"], ["Your body", "saglik"], ["Sultan seni azletti", "azil"],
+    ["urganı iki cellat", "sultan_guc"], ["BRE DEYYUS", "padisah_red"], ["Şehzadenin hamlesi", "sehzade"],
+    ["Prince's gambit", "sehzade"], ["yanlış oda", "yanlis_oda"]];
+  (cg.deathsSeen || []).forEach(t => {
+    if (typeof t !== "string") return;
+    for (const pool of pools) for (const [k, arr] of Object.entries(pool)) {
+      if ((arr || []).some(x => t.startsWith(x))) out.add(k);
+    }
+    for (const [needle, k] of special) if (t.includes(needle)) out.add(k);
+  });
+  return [...out];
+}
+
 function buildAchievementState(deathReason) {
   const cg = getCrossGameData();
   return {
@@ -8022,8 +8045,11 @@ function buildAchievementState(deathReason) {
     chanceStreak, chainsCompleted, warVictory, itemsUsed, uniqueItemsCollected,
     minHazine, maxSaray, maxHazine, minAnyStat, characterMemory,
     deathReason: deathReason || "",
+    deathCause: _deathCause,
+    secretsRevealed: [_halkSevgisiShownThisGame, _casusAgiShownThisGame, traitorInvestigated >= 2, _knotIdsSeenThisGame.size > 0].filter(Boolean).length,
     // Cross-game
     deathsSeen: [...new Set([...(cg.deathsSeen||[]), ...(deathReason?[deathReason]:[])])],
+    deathCauses: [...new Set([..._deathCausesFromCrossGame(cg), ...(_deathCause && _deathCause !== "free_limit" ? [_deathCause] : [])])],
     totalCurses: (cg.totalCurses||0) + (cursedEver?1:0),
   };
 }
@@ -8033,6 +8059,7 @@ function checkAchievements(deathReason) {
   // Cross-game güncelle
   updateCrossGame({
     deathsSeen: state.deathsSeen,
+    deathCauses: state.deathCauses,
     totalCurses: cursedEver ? 1 : 0,
   });
 
