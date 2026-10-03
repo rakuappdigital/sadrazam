@@ -3340,6 +3340,7 @@ function startGame() {
   scheduledCards = [];
   _criticalShownCount = 0; _criticalLastAt = -999;
   _muneccimN = 0; _muneccimAt = -999;
+  _timedUsedYear = 0;
   _agedSeenThisGame = new Set();
   _stampMeta = new Map();
   _hekimYesCount = 0; _knotIdsSeenThisGame = new Set(); _challengeRewarded = false;
@@ -3789,6 +3790,7 @@ function saveGameState() {
       secondChanceOfferedThisGame: _secondChanceOfferedThisGame,
       receivedLetters,
       muneccimN: _muneccimN, muneccimAt: _muneccimAt,
+      timedUsedYear: _timedUsedYear,
       chronicle,
       v: 3
     };
@@ -3896,6 +3898,7 @@ function loadGameState(s) {
   _secondChanceOfferedThisGame = s.secondChanceOfferedThisGame || false;
   receivedLetters = s.receivedLetters || 0;
   _muneccimN = s.muneccimN || 0; _muneccimAt = s.muneccimAt ?? -999;
+  _timedUsedYear = s.timedUsedYear || 0;
   chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
   isGameOver = false;
   activeArcs = {};
@@ -4513,6 +4516,7 @@ function dealNext() {
   // yıldı, 3. yılda kaydedilmiş oyun) ve gözden kaçan her yolu yakalar.
   if (_freeYearLimitReached()) { _enforceFreeYearLimit(); return; }
   _effectShimmer(null);
+  _stopFuse();
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
   _hideAgeOverlay(); card.style.removeProperty("--age-f");
   _hideConsequenceStamp();
@@ -4770,6 +4774,7 @@ function dealNext() {
   if (c.is_crisis) Haptics.crisisCard();
 
   animateCardIn();
+  setTimeout(() => { if (currentCard === c) _maybeStartFuse(c); }, 450); // kart yerine oturduktan sonra
   updateDynamicSubtitle();
 }
 
@@ -6528,6 +6533,99 @@ function _effectShimmer(side) {
   }
 }
 
+// ── Zamanlı kriz kartı / fitil (3 Ekim 2026) ──
+// Kriz kartlarından biri (yılda en fazla 1) süreli gelir: kartın çerçevesi fitil gibi
+// yanarak kısalır. Süre dolarsa "KARARSIZ" mührü basılır, kart sola gider ama sol
+// seçeneğin bayrak/zincirleri DEĞİL, iki seçeneğin olumsuzlarının yarısı işler.
+// Uygulama arka plandayken ya da bir pencere açıkken süre durur. Ayarlar: Normal/Yavaş/Kapalı.
+const TIMED_BASE_MS = 8000;
+const TIMED_DIFF = { kolay: 1.5, normal: 1, zor: 0.75, zor_asc1: 0.75 };
+let _timedUsedYear = 0;
+let _fuse = null; // { card, total, left, last, raf, svg }
+function _timedSetting() { try { return localStorage.getItem('sadrazam_timed') || 'normal'; } catch (e) { return 'normal'; } }
+function _isCrisisCard(c) { return !!c && !c.type && c.character !== "1-sultan" && !c.knot_of && (c.is_crisis || c.category === "crisis"); }
+function _timeoutEffects(c) {
+  const out = {}; let any = false;
+  ["saray", "yeniçeri", "ulema", "hazine"].forEach(k => {
+    const v = Math.round((Math.min(0, (c.left_effects || {})[k] || 0) + Math.min(0, (c.right_effects || {})[k] || 0)) / 2);
+    if (v) { out[k] = v; any = true; }
+  });
+  if (!any) out.saray = -4; // iki seçenek de bedelsizse kararsızlığın bedeli Saray'dan
+  return out;
+}
+function _fusePaused() {
+  if (document.hidden) return true;
+  if (_settOv && _settOv.style.display === 'flex') return true;
+  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay");
+}
+function _maybeStartFuse(c) {
+  _stopFuse();
+  const mode = _timedSetting();
+  if (mode === 'off' || !_isCrisisCard(c) || _timedUsedYear === year || isGameOver) return;
+  _timedUsedYear = year;
+  const total = TIMED_BASE_MS * (TIMED_DIFF[difficultyId] || 1) * (mode === 'slow' ? 1.5 : 1);
+  const r = card.getBoundingClientRect();
+  const w = Math.max(10, card.offsetWidth || r.width), h = Math.max(10, card.offsetHeight || r.height);
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.id = "card-fuse"; svg.setAttribute("viewBox", `0 0 ${w} ${h}`); svg.setAttribute("aria-hidden", "true");
+  svg.innerHTML = `<rect x="2" y="2" width="${w - 4}" height="${h - 4}" rx="11" fill="none" class="fz-rope"/><rect x="2" y="2" width="${w - 4}" height="${h - 4}" rx="11" fill="none" class="fz-burn"/><circle r="5" class="fz-spark"/><circle r="11" class="fz-glow"/>`;
+  card.appendChild(svg);
+  const burn = svg.querySelector(".fz-burn"); let len = 0;
+  try { len = burn.getTotalLength(); } catch (e) { len = 2 * (w + h); }
+  burn.style.strokeDasharray = len; burn.style.strokeDashoffset = 0;
+  _fuse = { card: c, total, left: total, last: performance.now(), raf: 0, svg, burn, len };
+  card.classList.add("fuse-on");
+  try { if (localStorage.getItem('sadrazam_timed_seen') !== '1') { localStorage.setItem('sadrazam_timed_seen', '1'); _showTimedTip(); } } catch (e) {}
+  try { Haptics.crisisCard(); } catch (e) {}
+  const tick = (now) => {
+    if (!_fuse || currentCard !== _fuse.card || isGameOver) { _stopFuse(); return; }
+    const dt = now - _fuse.last; _fuse.last = now;
+    if (!_fusePaused() && !isAnimating) _fuse.left -= dt;
+    const p = Math.max(0, Math.min(1, 1 - _fuse.left / _fuse.total));
+    _fuse.burn.style.strokeDashoffset = String(-_fuse.len * p);
+    try {
+      const pt = _fuse.burn.getPointAtLength(_fuse.len * p);
+      ["fz-spark", "fz-glow"].forEach(cl => { const e = _fuse.svg.querySelector("." + cl); e.setAttribute("cx", pt.x); e.setAttribute("cy", pt.y); });
+    } catch (e) {}
+    card.classList.toggle("fuse-late", _fuse.left < 3000);
+    if (_fuse.left <= 0) { _fuseTimeout(); return; }
+    _fuse.raf = requestAnimationFrame(tick);
+  };
+  _fuse.raf = requestAnimationFrame(tick);
+}
+function _stopFuse() {
+  if (_fuse) cancelAnimationFrame(_fuse.raf);
+  _fuse = null;
+  document.getElementById("card-fuse")?.remove();
+  card.classList.remove("fuse-on", "fuse-late");
+}
+function _fuseTimeout() {
+  const c = _fuse && _fuse.card;
+  _stopFuse();
+  if (!c || currentCard !== c || isGameOver || isAnimating) return;
+  if (isDragging) { isDragging = false; card.classList.remove("dragging"); }
+  const en = window.LANG === 'en';
+  const st = document.createElement("div");
+  st.id = "fuse-stamp"; st.textContent = en ? "UNDECIDED" : "KARARSIZ";
+  card.appendChild(st);
+  requestAnimationFrame(() => st.classList.add("on"));
+  try { Haptics.statNegative(); } catch (e) {}
+  // Kararsızlık: sol seçenek gibi uçar ama hiçbir bayrak/zincir/eşya tetiklemez
+  currentCard = { ...c, _timeout: true,
+    left_effects: _timeoutEffects(c), left_flags_set: [], triggers_on_left: null, triggers_arc_on_left: null, grants_item_on_left: null,
+    left_text: "Kararsız kaldınız", left_text_en: "You hesitated" };
+  setTimeout(() => { st.remove(); if (!isGameOver && currentCard && currentCard._timeout) flyOff("left"); }, 900);
+}
+function _showTimedTip() {
+  const en = window.LANG === 'en';
+  const t = document.createElement("div");
+  t.id = "timed-tip";
+  t.textContent = en ? "Crisis! Decide before the fuse burns out." : "Kriz! Fitil bitmeden karar ver.";
+  document.getElementById("game")?.appendChild(t);
+  requestAnimationFrame(() => t.classList.add("on"));
+  setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 500); }, 2600);
+}
+
 function hasAdvisor(id) {
   return selectedAdvisors.some(a => a.id === id);
 }
@@ -7271,8 +7369,8 @@ function decide(dir) {
     if (titleLabel) titleLabel.textContent = currentTitle;
   }
 
-  // Lanet kontrolü
-  checkCurse(dir);
+  // Lanet kontrolü (süresi dolan kriz kartı bir "yön" seçimi sayılmaz)
+  if (!currentCard._timeout) checkCurse(dir);
 
   // Savaş sonucu: sabit gecikme/her zaman zafer yerine — 2-10 kart arası rastgele
   // gecikme, sonuç (zafer/yenilgi) o anki askeri güce (Ordu statı + donanma müttefikliği) bağlı.
@@ -7759,6 +7857,7 @@ function flyOff(dir) {
   if (isGameOver || card.classList.contains('no-swipe')) { snapBack(); return; }
   showCardTrail(dir);
   _effectShimmer(null);
+  _stopFuse();
   const bubble = document.getElementById("speech-bubble");
   if (bubble) bubble.style.opacity = "0";
   isAnimating = true;
@@ -8094,6 +8193,7 @@ function triggerGameOver(reason, cause) {
 let _execPlayedFor = null; // aynı ölüm için kılıç sahnesi iki kez oynamasın
 function _actuallyTriggerGameOver(reason, cause) {
   isGameOver = true;
+  _stopFuse();
   if (cause) _deathCause = cause;
   // İdam Fermanı (Saray 0): kesinleşen ölümde kılıç sahnesi. Padişah ziyareti
   // reddi 3. yıldan önce gelmediği için ücretsiz oyuncu bu sahneyi hiç görmüyordu.
@@ -8766,6 +8866,11 @@ function _settUpdateUI() {
   document.getElementById('sett-preview-off').textContent = isEN ? 'Off' : 'Kapalı';
   document.getElementById('sett-season-on').textContent  = isEN ? 'On'  : 'Açık';
   document.getElementById('sett-season-off').textContent = isEN ? 'Off' : 'Kapalı';
+  const _tm = _timedSetting();
+  [['normal', 'Normal', 'Normal'], ['slow', 'Yavaş', 'Slow'], ['off', 'Kapalı', 'Off']].forEach(([k, tr, enL]) => {
+    const b = document.getElementById('sett-timed-' + k);
+    if (b) { b.classList.toggle('active', _tm === k); b.textContent = isEN ? enL : tr; }
+  });
 }
 
 function showSettingsOverlay() {
@@ -8783,6 +8888,7 @@ document.getElementById('sett-sfx-on').addEventListener('click',  () => { window
 document.getElementById('sett-sfx-off').addEventListener('click', () => { window.sfxEnabled = false; localStorage.setItem('sadrazam_sfx','off'); _settUpdateUI(); });
 document.getElementById('sett-season-on').addEventListener('click',  () => { try { localStorage.setItem('sadrazam_season_fx','on'); } catch (e) {} _settUpdateUI(); });
 document.getElementById('sett-season-off').addEventListener('click', () => { try { localStorage.setItem('sadrazam_season_fx','off'); } catch (e) {} _settUpdateUI(); });
+['normal', 'slow', 'off'].forEach(k => document.getElementById('sett-timed-' + k)?.addEventListener('click', () => { try { localStorage.setItem('sadrazam_timed', k); } catch (e) {} if (k === 'off') _stopFuse(); _settUpdateUI(); }));
 document.getElementById('sett-lang-tr').addEventListener('click', () => { setLang('tr'); _settUpdateUI(); window.applyI18nHTML && window.applyI18nHTML(); });
 document.getElementById('sett-lang-en').addEventListener('click', () => { setLang('en'); _settUpdateUI(); window.applyI18nHTML && window.applyI18nHTML(); });
 document.getElementById('sett-preview-on').addEventListener('click',  () => {
