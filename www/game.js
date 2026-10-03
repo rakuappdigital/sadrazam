@@ -2845,6 +2845,11 @@ async function unlockFullVersion() {
     return;
   }
   if (_paywallFromMenu) return; // menüden açıldıysa devam edecek bir oyun yok
+  if (_paywallFromGuard) { // yıl zaten ilerlemişti (eski kayıt) — sadece devam et
+    _paywallFromGuard = false;
+    if (!isGameOver) { saveGameState(); dealNext(); }
+    return;
+  }
   advanceYear();
   if (!isGameOver && !isPaywalled) { saveGameState(); dealNext(); }
 }
@@ -2981,6 +2986,18 @@ document.getElementById('paywall-quit-btn')?.addEventListener('click', () => {
   const end = () => { isPaywalled = false; _endFreeReign(); };
   if (firstDecline) showPaywallDeclinedNotice(end); else end();
 });
+
+function _freeYearLimitReached() {
+  return FREEMIUM_ENABLED && !isFullVersionUnlocked() && year > FREE_YEAR_LIMIT;
+}
+let _paywallFromGuard = false; // dealNext kilidi tetikledi: satın alınırsa yıl ilerletilmez
+function _enforceFreeYearLimit() {
+  if (isPaywalled) return;
+  isPaywalled = true;
+  _paywallFromGuard = true;
+  if (localStorage.getItem('sadrazam_paywall_declined') === '1') showFreeLimitPopup();
+  else showPaywallScreen(false);
+}
 
 function _endFreeReign() {
   const isEN = window.LANG === 'en';
@@ -3446,6 +3463,7 @@ function startGame() {
   // Tam Sürüm ekranı hiç reddedilmediyse ve 2 oyun bittiyse, 3. oyun başlamadan
   // bir kez gösterilir. Reddedilirse oyun 2 yıllık ücretsiz saltanat olarak başlar.
   _paywallAtGameStart = false;
+  _paywallFromGuard = false;
   if (FREEMIUM_ENABLED && !isFullVersionUnlocked()
       && localStorage.getItem('sadrazam_paywall_declined') !== '1'
       && parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10) >= FREE_GAMES_BEFORE_PAYWALL) {
@@ -4490,6 +4508,10 @@ function getCharacterImageName(key) {
 
 function dealNext() {
   if (isGameOver) return;
+  // Değişmez kural: Tam Sürüm yoksa 3. yıl ASLA oynanmaz. advanceYear zaten
+  // 2. yıl sonunda durduruyor; bu ikinci kilit eski kayıtları (1.5.0'da sınır 3
+  // yıldı, 3. yılda kaydedilmiş oyun) ve gözden kaçan her yolu yakalar.
+  if (_freeYearLimitReached()) { _enforceFreeYearLimit(); return; }
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
   _hideAgeOverlay(); card.style.removeProperty("--age-f");
   _hideConsequenceStamp();
