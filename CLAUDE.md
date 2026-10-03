@@ -289,16 +289,15 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
 - `CARDS_PER_YEAR = 24` (satır ~6) — **çok önemli**, yeni bir "N kartta bir
   gelsin" eşiği yazarken bunu referans al, yoksa özel kartlar 1. yıla sıkışır
   (mektup zamanlamasında tam bu hata oldu, düzeltildi — bkz. `_mektup*Threshold`).
-- `FREE_YEAR_LIMIT = 3` — ücretsiz sürüm yıl sınırı (paywall burada tetiklenir).
-- `DECLINED_YEAR_LIMIT = 2` — paywall bir kez reddedilince (kalıcı
-  `sadrazam_paywall_declined` flag), sonraki TÜM oyunlar bu yılda **kesin**
-  ölümle biter (`_actuallyTriggerGameOver` çağrılır, `triggerGameOver` DEĞİL —
-  aksi halde İkinci Şans reklam/akçe ile bu sınır bedavaya atlatılabiliyordu,
-  gerçek bug'dı, düzeltildi).
-- Restart-count paywall: her 3 yeniden başlatmada bir (`sadrazam_restart_count
-  % 3 === 0`), Tam Sürüm yoksa VE daha önce hiç reddedilmediyse, oyun
-  başlamadan **kesin/reddedilemez** paywall gösterilir (`_paywallAtGameStart`).
-  Eskiden "Oynamaya Devam Et" ile bedavaya geçilebilen bir tuzaktı, düzeltildi.
+- **Ücretsiz sürüm (3 Ekim 2026'dan beri):** `FREE_YEAR_LIMIT = 2`. Tam Sürüm ekranı
+  İLK KEZ ya 2. yılın sonunda (`advanceYear`) ya da 2 oyun bittikten sonraki oyun
+  başında (`FREE_GAMES_BEFORE_PAYWALL`, `_paywallAtGameStart`) çıkar. Reddedilirse
+  kalıcı `sadrazam_paywall_declined`; oyuncu OYNAMAYA DEVAM EDER, her saltanat 2.
+  yılın sonunda `showFreeLimitPopup` ("Görev Süreniz Doldu": Tam Sürüm / Saltanatı
+  Bitir) ile biter → `_endFreeReign` (ölüm sebebi `free_limit`). Eski "3 yeniden
+  başlatmada bir kesin paywall" kaldırıldı. **Eskiden reddeden oyuncu hiç
+  oynayamıyordu** (her başlangıçta kapatılamaz paywall) — tekrar o hale getirme.
+  Test: scratchpad `flow_test.js` (36 senaryo).
 - Sıhhat (18 Eylül 2026'dan beri): artık tek yönlü değil, `governanceHealthDelta()`
   ile kart başına 4 ana gücün (saray/yeniçeri/ulema/hazine) merkeze (50) olan
   uzaklığına bağlı — hepsi 35-65 arası (±15) ise kart başına **+1**, 25-75
@@ -404,6 +403,20 @@ dışarıda bir görsel üretici gerekmiyor.
   Tam Sürüm + 20'lik kese × 1,5 (kuruş, aynı para birimi şartı) → ~~₺59,98~~
   %33. Test: scratchpad `shop_test.js` (44 senaryo, sahte RevenueCat, WebKit
   + Chrome, TR/EN).
+- **Tam Sürüm + Reklamsız paketi (3 Ekim 2026):** NON-CONSUMABLE
+  `com.rakuappdigital.sadrazam.fullnoads` (ASC id `6818863680`, TUR ₺69,99, 175
+  ülke, READY_TO_SUBMIT — bir sonraki sürüm incelemeye giderken EKLENMELİ,
+  RevenueCat'e import edilmeli). `_applyCustomerInfo` ve
+  `_applyNoAdsFromCustomerInfo` sahipliği ürün listesinden okur, iki kilidi açar.
+  Market'te `#market-bundle` sadece ikisine de sahip olmayana (`_bundleAvailable`),
+  karşılaştırma fiyatı `_bundleCompare`. Test: scratchpad `bundle_test.js` (sahte
+  RevenueCat: `window.Capacitor` ve `RevenueCatPurchases` `defineProperty` +
+  `Object.freeze` ile kilitlenmeli, yoksa oyunun paketi taklidi ezer).
+- **Ölüm sebebi anahtarı (3 Ekim 2026):** `triggerGameOver(reason, cause)` →
+  `_deathCause` ("saray_0", "yeniceri_100", "saglik", "azil", "sultan_guc",
+  "padisah_red", "sehzade", "yanlis_oda", "free_limit"). Başarımlar metinden değil
+  bundan sayılır (`deathCauses` crossgame, eski metin kayıtları
+  `_deathCausesFromCrossGame` ile çevrilir). Yeni ölüm eklersen anahtar ver.
 - **İkinci Şans akçe bedeli (29 Eylül 2026): 2 akçe** (`SECOND_CHANCE_AKCE_COST`).
   Teklifin gösterilmesi (reklam hakkı yoksa bakiye ≥ 2), düğme metni ve
   harcama aynı sabiti kullanır. Kâtibin Notu, Şifa Otu, eşyalar 1 akçe kaldı.

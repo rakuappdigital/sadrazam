@@ -1,5 +1,17 @@
 # Sadrazam — TODO
 
+## SIRADAKİ — 3 Ekim 2026 oturumu ← BURADAN DEVAM
+
+1.5.0 YAYINDA (READY_FOR_SALE). Bu oturumda main'e girenler (BUILD ALINMADI):
+- `3c351d6` başarım düzeltmeleri (ölüm sebebi anahtarı, Gizli Üstat, Zimmet EN'de alınamıyordu, açıklamalar)
+- `92a11a4` ücretsiz akış: reddeden oyuncu hiç oynayamıyordu → 2 yıllık saltanat + "Görev Süreniz Doldu" penceresi
+- `b26b840` Tam Sürüm + Reklamsız paketi Market'te; ASC'de `fullnoads` (id 6818863680) READY_TO_SUBMIT
+  → kullanıcı: RevenueCat'e import + sonraki sürüme ekleme
+
+Tasarım önerileri (19 bölüm, seçim bekliyor): https://claude.ai/artifact/WcWZgcg5QXLWLSWZ2vU9Ht
+Kullanıcı seçimleri gelince sırayla uygulanacak. Kör kararlar (52 kart) dengelemesi
+kurallar onaylanınca yapılacak. Ölüm sahnesi görselleri kullanıcıdan (prompt'lar sayfada).
+
 ## SIRADAKİ — v1.5.0 / build 28 (29 Eylül 2026) ← BURADAN DEVAM
 
 **Durum:** Build 28 ASC'ye yüklendi (Delivery UUID
