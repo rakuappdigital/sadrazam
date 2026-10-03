@@ -4512,6 +4512,7 @@ function dealNext() {
   // 2. yıl sonunda durduruyor; bu ikinci kilit eski kayıtları (1.5.0'da sınır 3
   // yıldı, 3. yılda kaydedilmiş oyun) ve gözden kaçan her yolu yakalar.
   if (_freeYearLimitReached()) { _enforceFreeYearLimit(); return; }
+  _effectShimmer(null);
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
   _hideAgeOverlay(); card.style.removeProperty("--age-f");
   _hideConsequenceStamp();
@@ -6469,6 +6470,7 @@ function updateStatUI() {
     else                 fill.className = "stat-fill";
     if (val <= 15 || val >= 80) anyDanger = true;
   }
+  _updateCrisisPulse();
   updateHealthUI();
 
   // Danger pulse
@@ -6481,6 +6483,49 @@ function updateStatUI() {
     if (window.stopDangerPulse) stopDangerPulse();
   }
   updatePortraitExpression();
+}
+
+// ── Kriz nabzı (3 Ekim 2026) ──
+// Bir güç ≤15 ya da ≥85 olunca ekran kenarlarında kızıl, kalp ritminde nabız ve o
+// barda titreme. Sadece görüntü: #crisis-vignette pointer-events:none, #game içinde
+// (oyun ekranı gizlenince o da gizlenir). Hareketi azalt açıkken CSS animasyonu durur.
+const CRISIS_LOW = 15, CRISIS_HIGH = 85;
+function _updateCrisisPulse() {
+  const game = document.getElementById("game");
+  if (!game) return;
+  let v = document.getElementById("crisis-vignette");
+  if (!v) { v = document.createElement("div"); v.id = "crisis-vignette"; v.setAttribute("aria-hidden", "true"); game.appendChild(v); }
+  const map = { saray: "saray", "yeniçeri": "yeniceri", ulema: "ulema", hazine: "hazine" };
+  let n = 0;
+  for (const [key, id] of Object.entries(map)) {
+    const crit = !isGameOver && (stats[key] <= CRISIS_LOW || stats[key] >= CRISIS_HIGH);
+    if (crit) n++;
+    document.querySelector(`.stat[data-stat="${id}"] .stat-track`)?.classList.toggle("crisis-shake", crit);
+  }
+  game.classList.toggle("crisis-on", n > 0);
+  game.classList.toggle("crisis-2", n > 1);
+}
+
+// ── Titreyen etki bölgesi (3 Ekim 2026) ──
+// Kart sürüklenirken, o seçeneğin dokunacağı barlarda bir ışık bandı titrer: genişlik
+// etkinin büyüklüğü, konum barın şimdiki değeri. Artı mı eksi mi GÖSTERMEZ.
+// Sadece normal karar kartlarında; Deneyimli Mod açıkken (sayılar zaten görünür) yok.
+function _effectShimmer(side) {
+  const map = { saray: "saray", "yeniçeri": "yeniceri", ulema: "ulema", hazine: "hazine" };
+  const fx = (side && currentCard && !currentCard.type && currentCard.character !== "1-sultan" && !window.previewMode)
+    ? (currentCard[side + "_effects"] || null) : null;
+  for (const [key, id] of Object.entries(map)) {
+    const track = document.querySelector(`.stat[data-stat="${id}"] .stat-track`);
+    if (!track) continue;
+    let sh = track.querySelector(".stat-shim");
+    const v = fx ? Math.abs(fx[key] || 0) : 0;
+    if (!v) { if (sh) sh.classList.remove("on"); continue; }
+    if (!sh) { sh = document.createElement("span"); sh.className = "stat-shim"; track.appendChild(sh); }
+    const w = Math.max(8, Math.min(32, v * 2.2)), cur = Math.max(0, Math.min(100, stats[key] ?? 50));
+    sh.style.width = w + "%";
+    sh.style.left = Math.max(0, Math.min(100 - w, cur - w / 2)) + "%";
+    sh.classList.add("on");
+  }
 }
 
 function hasAdvisor(id) {
@@ -7126,6 +7171,7 @@ function checkGameOver() {
 function checkCurse(dir) {
   if (lastDir === dir) {
     consecutiveSameDir++;
+    if (consecutiveSameDir === 2) _showCurseWhisper();
     if (consecutiveSameDir >= 3) {
       consecutiveSameDir = 0;
       triggerCurse();
@@ -7134,6 +7180,19 @@ function checkCurse(dir) {
     consecutiveSameDir = 1;
   }
   lastDir = dir;
+}
+
+// Lanet kuralı artık sürpriz değil: 2. aynı yönde kaydırmada soluk bir uyarı (3 Ekim 2026)
+function _showCurseWhisper() {
+  const game = document.getElementById("game");
+  if (!game || isGameOver) return;
+  let w = document.getElementById("curse-whisper");
+  if (!w) { w = document.createElement("div"); w.id = "curse-whisper"; w.setAttribute("aria-live", "polite"); game.appendChild(w); }
+  w.textContent = window.LANG === 'en'
+    ? "The Divan whispers: always the same way, and the balance breaks…"
+    : "Divan fısıldıyor: hep aynı yön, denge bozulur…";
+  w.classList.remove("on"); void w.offsetWidth; w.classList.add("on");
+  clearTimeout(w._t); w._t = setTimeout(() => w.classList.remove("on"), 2600);
 }
 
 function triggerCurse() {
@@ -7587,6 +7646,7 @@ function onMove(x) {
   }
 
   _sideTabsDrag(dx);
+  _effectShimmer(dx < -20 ? "left" : dx > 20 ? "right" : null);
   if (dx < -15) {
     overlayL.style.opacity = String(progress * 0.6);
     overlayR.style.opacity = "0";
@@ -7698,6 +7758,7 @@ function flyOff(dir) {
   // edip öyleyse swipe'ı iptal edip kartı geri sek (snapBack).
   if (isGameOver || card.classList.contains('no-swipe')) { snapBack(); return; }
   showCardTrail(dir);
+  _effectShimmer(null);
   const bubble = document.getElementById("speech-bubble");
   if (bubble) bubble.style.opacity = "0";
   isAnimating = true;
@@ -7739,6 +7800,7 @@ function snapBack() {
   Haptics.snapBack();
   card.style.transition = "transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s";
   card.style.transform = "translateX(0) rotate(0deg)";
+  _effectShimmer(null);
   overlayL.style.opacity = overlayR.style.opacity = "0";
   choiceLeft.style.opacity = choiceRight.style.opacity = "0";
   _sideTabsDrag(0);
@@ -8029,9 +8091,17 @@ function triggerGameOver(reason, cause) {
   _actuallyTriggerGameOver(reason);
 }
 
+let _execPlayedFor = null; // aynı ölüm için kılıç sahnesi iki kez oynamasın
 function _actuallyTriggerGameOver(reason, cause) {
   isGameOver = true;
   if (cause) _deathCause = cause;
+  // İdam Fermanı (Saray 0): kesinleşen ölümde kılıç sahnesi. Padişah ziyareti
+  // reddi 3. yıldan önce gelmediği için ücretsiz oyuncu bu sahneyi hiç görmüyordu.
+  if (_deathCause === "saray_0" && _execPlayedFor !== reason) {
+    _execPlayedFor = reason;
+    try { showExecutionAnimation(() => _actuallyTriggerGameOver(reason, cause)); return; }
+    catch (e) { console.warn('[exec]', e); }
+  }
   // Açık kalmış oyun içi pencereler ölüm ekranının üstünde kalmasın
   ["katib-overlay", "empty-slot-tip", "item-confirm-popup"].forEach(id => document.getElementById(id)?.remove());
   clearSave();
