@@ -2610,6 +2610,51 @@ async function purchaseBundle(statusEl) {
   }
 }
 
+// ── Market: Eşyalar (3 Ekim 2026) ──
+// Oyun dışında 1 akçeyle alınır, "sandık"ta bekler (en fazla 3), bir sonraki saltanatın
+// başında boş kutulara kalıcı olarak (kullanılana kadar) konur.
+const ITEM_STASH_KEY = "sadrazam_item_stash";
+const ITEM_STASH_MAX = 3;
+function _getStash() { try { const a = JSON.parse(localStorage.getItem(ITEM_STASH_KEY) || "[]"); return Array.isArray(a) ? a.filter(id => ITEMS[id]) : []; } catch (e) { return []; } }
+function _setStash(a) { try { localStorage.setItem(ITEM_STASH_KEY, JSON.stringify(a.slice(0, ITEM_STASH_MAX))); } catch (e) {} }
+function _applyStashToSlots() {
+  const st = _getStash(); if (!st.length) return 0;
+  let n = 0;
+  while (st.length && playerItems.indexOf(null) !== -1) {
+    const slot = playerItems.indexOf(null), id = st.shift();
+    playerItems[slot] = id; playerItemExpiry[slot] = null; uniqueItemsCollected.add(id); n++;
+  }
+  _setStash(st);
+  if (n) updateItemBar();
+  return n;
+}
+function renderMarketItems() {
+  const box = document.getElementById("market-items-list"), info = document.getElementById("market-items-stash");
+  if (!box) return;
+  const en = window.LANG === 'en', stash = _getStash(), full = stash.length >= ITEM_STASH_MAX;
+  if (info) info.textContent = en
+    ? `In your chest: ${stash.length}/${ITEM_STASH_MAX} · placed in your slots when your next reign begins, kept until used`
+    : `Sandığında: ${stash.length}/${ITEM_STASH_MAX} · bir sonraki saltanatın başında kutularına konur, kullanana kadar kalır`;
+  box.innerHTML = Object.keys(ITEMS).filter(id => !ESYA_DUKKANI_EXCLUDED.includes(id)).map(id => {
+    const itm = ITEMS[id], e = (en && window.EN_ITEMS) ? window.EN_ITEMS[id] : null;
+    const owned = stash.filter(x => x === id).length;
+    return `<div class="mi-row"><img class="mi-icon" src="${itm.icon}" alt=""><div class="mi-info"><div class="mi-name">${e ? e.name : itm.name}${owned ? ` <span class="mi-own">×${owned}</span>` : ""}</div><div class="mi-desc">${e ? e.desc : itm.desc}</div></div><button type="button" class="mi-buy" data-id="${id}" ${full ? "disabled" : ""}>${full ? (en ? "FULL" : "DOLU") : `${ITEM_AKCE_COST} ${AKCE_COIN_SVG}`}</button></div>`;
+  }).join("");
+  box.querySelectorAll(".mi-buy").forEach(b => b.onclick = () => {
+    const status = document.getElementById("akce-status");
+    if (_getStash().length >= ITEM_STASH_MAX) return;
+    if (!spendAkce(ITEM_AKCE_COST)) {
+      if (status) status.textContent = en ? "Not enough akce. Pouches are below." : "Akçe yetmiyor. Keseler aşağıda.";
+      document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    const st = _getStash(); st.push(b.dataset.id); _setStash(st);
+    if (window.playSelectConfirm) playSelectConfirm();
+    if (status) status.textContent = en ? "Added to your chest." : "Sandığına eklendi.";
+    updateAkceUI(); renderMarketItems();
+  });
+}
+
 function showAkceScreen() {
   const scr = document.getElementById('akce-screen');
   scr?.classList.add('visible');
@@ -2622,6 +2667,7 @@ function showAkceScreen() {
   updateNoAdsUI();
   updateBundleUI();
   updateStarterUI();
+  renderMarketItems();
   const status = document.getElementById('akce-status');
   if (status) status.textContent = '';
 }
@@ -3387,7 +3433,7 @@ function startGame() {
   playCounts = {};
   forcedQueue = [];
   scheduledCards = [];
-  _criticalShownCount = 0; _criticalLastAt = -999;
+  _criticalShownCount = 0; _criticalLastAt = -999; _criticalYear = 0;
   _muneccimN = 0; _muneccimAt = -999;
   _timedUsedYear = 0;
   _agedSeenThisGame = new Set();
@@ -3514,6 +3560,8 @@ function startGame() {
   // bir kez gösterilir. Reddedilirse oyun 2 yıllık ücretsiz saltanat olarak başlar.
   _paywallAtGameStart = false;
   _paywallFromGuard = false;
+  // Market'te alınıp sandıkta bekleyen eşyalar boş kutulara (kalıcı) — 3 Ekim 2026
+  try { _applyStashToSlots(); } catch (e) { console.warn('[stash]', e); }
   if (FREEMIUM_ENABLED && !isFullVersionUnlocked()
       && localStorage.getItem('sadrazam_paywall_declined') !== '1'
       && parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10) >= FREE_GAMES_BEFORE_PAYWALL) {
@@ -5901,9 +5949,11 @@ function getEasterChoices(c) {
 // anında uygulanır. Kartı kapatmaz; kart kaydırılınca panel kapanır.
 // Sınırlar: en az CRITICAL_COOLDOWN kartta bir, oyun başına CRITICAL_MAX_PER_GAME.
 // Çantada zaten Şifa Otu varsa teklif yok — o eşya parlatılır.
-const CRITICAL_THRESHOLD = 15;
-const CRITICAL_COOLDOWN = 20;
-const CRITICAL_MAX_PER_GAME = 2;
+// 3 Ekim 2026: eşik 15 → 20, oyun başına 2 → YILDA 2, ara 20 → 12 kart.
+const CRITICAL_THRESHOLD = 20;
+const CRITICAL_COOLDOWN = 12;
+const CRITICAL_MAX_PER_YEAR = 2;
+let _criticalYear = 0;
 let _criticalShownCount = 0;
 let _criticalLastAt = -999;
 const _STAT_NAMES = { saray: ["Saray", "Palace"], "yeniçeri": ["Ordu", "Army"], ulema: ["Ulema", "Clergy"], hazine: ["Hazine", "Treasury"] };
@@ -5928,7 +5978,8 @@ function maybeShowCriticalOffer() {
   if (isGameOver || isPaywalled || !currentCard) return;
   if (document.getElementById("critical-offer")) return;
   if (document.getElementById("katib-overlay")) return; // Kâtip/Müneccim notu açıkken üst üste binmesin
-  if (_criticalShownCount >= CRITICAL_MAX_PER_GAME) return;
+  if (_criticalYear !== year) { _criticalYear = year; _criticalShownCount = 0; }
+  if (_criticalShownCount >= CRITICAL_MAX_PER_YEAR) return;
   if (cardsPlayed - _criticalLastAt < CRITICAL_COOLDOWN) return;
   const low = Object.entries(stats).filter(([k, v]) => v <= CRITICAL_THRESHOLD).sort((a, b) => a[1] - b[1])[0];
   if (!low) return;
@@ -6756,13 +6807,15 @@ function showStatDelta(statKey, delta) {
   setTimeout(() => d.remove(), 1300);
 }
 
-function gainItem(itemId) {
+// persistent: akçeyle SATIN ALINAN eşya kullanılana kadar kalır (eskiden kazanılan
+// eşyalar gibi 3 kartta tükeniyordu — oyuncu parasını verip kullanamadan kaybediyordu).
+function gainItem(itemId, persistent) {
   if (!ITEMS[itemId]) return;
   uniqueItemsCollected.add(itemId);
   const emptySlot = playerItems.indexOf(null);
   const slot = emptySlot === -1 ? 0 : emptySlot;
   playerItems[slot] = itemId;
-  playerItemExpiry[slot] = 3; // 3 kart sonra tükenir
+  playerItemExpiry[slot] = persistent ? null : 3; // kazanılan eşya 3 kart sonra tükenir
   updateItemBar();
   showItemUnlockAnimation(itemId);
 }
@@ -6906,7 +6959,7 @@ function showEsyaDukkani() {
           redirectToAkcePurchase(() => showEsyaDukkani());
           return;
         }
-        gainItem(id);
+        gainItem(id, true);
         if (window.playSelectConfirm) playSelectConfirm();
         closeEsyaDukkani();
       };
