@@ -5480,3 +5480,29 @@ html, body {
 .df-stat { font-family: 'Cinzel', serif; font-size: 10.5px; color: #5a3a10; }
 .df-close { width: 100%; max-width: 280px; padding: 11px; border-radius: 6px; border: 1px solid rgba(232,200,74,0.5); background: rgba(201,162,39,0.1); color: #e8c84a; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .df-left.flip-l, .df-left.flip-r { animation: none; } }
+
+/* ── Ölüm sahnesi (4 Ekim 2026) ── */
+#death-scene { position: fixed; inset: 0; z-index: 300; background: #000; overflow: hidden; opacity: 0; transition: opacity 0.6s ease; cursor: pointer; }
+#death-scene.on { opacity: 1; }
+#death-scene.out { opacity: 0; transition: opacity 0.45s ease; }
+#death-scene .ds-img { position: absolute; inset: 0; background-size: cover; background-position: center 30%; transform: scale(1.16) translateY(14px); }
+#death-scene.on .ds-img { animation: dsKB 8s cubic-bezier(.25,.1,.25,1) forwards; }
+@keyframes dsKB { from { transform: scale(1.16) translateY(14px); } to { transform: scale(1.02) translateY(0); } }
+#death-scene .ds-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 18%, rgba(0,0,0,0) 40%, rgba(4,3,8,.82) 64%, rgba(4,3,8,.97) 82%); }
+#death-scene .ds-vig { position: absolute; inset: 0; box-shadow: inset 0 0 90px 24px rgba(0,0,0,.55); }
+#death-scene .ds-txt { position: absolute; left: 24px; right: 24px; bottom: calc(env(safe-area-inset-bottom, 0px) + 78px); display: grid; gap: 11px; text-align: center; max-width: 520px; margin: 0 auto; }
+#death-scene .ds-kick { font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 4px; color: rgba(239,224,187,.6); opacity: 0; }
+#death-scene .ds-title { font-family: 'Cinzel Decorative', serif; font-size: 30px; line-height: 1.12; color: #efe0bb; text-shadow: 0 2px 14px rgba(0,0,0,.9); opacity: 0; transform: translateY(8px); }
+#death-scene .ds-rule { width: 60px; height: 1px; background: rgba(232,200,74,.6); margin: 0 auto; opacity: 0; }
+#death-scene .ds-text { font-family: 'IM Fell English', serif; font-style: italic; font-size: 17px; line-height: 1.45; color: #ece2cc; opacity: 0; }
+#death-scene .ds-yr { font-family: 'Cinzel', serif; font-size: 11.5px; letter-spacing: 2px; color: rgba(232,200,74,.8); opacity: 0; }
+#death-scene .ds-tap { position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom, 0px) + 28px); text-align: center; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px; color: rgba(239,224,187,.45); opacity: 0; }
+#death-scene.on .ds-kick { animation: dsFade .8s .6s forwards; }
+#death-scene.on .ds-title { animation: dsRise 1s 1.1s forwards; }
+#death-scene.on .ds-rule { animation: dsFade .8s 1.7s forwards; }
+#death-scene.on .ds-text { animation: dsFade 1.2s 2.1s forwards; }
+#death-scene.on .ds-yr { animation: dsFade 1s 3s forwards; }
+#death-scene.on .ds-tap { animation: dsFade 1s 4.4s forwards; }
+@keyframes dsFade { to { opacity: 1; } }
+@keyframes dsRise { to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { #death-scene.on .ds-img { animation: none; transform: none; } #death-scene.on * { animation-duration: .01ms !important; animation-delay: 0s !important; } }

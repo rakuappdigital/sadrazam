@@ -8956,26 +8956,47 @@ function _actuallyTriggerGameOver(reason, cause) {
   // Sinematik ölüm
   if (window.playCinematicDeath) playCinematicDeath();
 
-  const cinematicEl = document.getElementById("cinematic-death");
-  const deathImg    = document.getElementById("death-char-img");
-
-  if (cinematicEl && deathCharacterKey) {
-    _setPortraitWithFallback(deathImg, deathCharacterKey, () => { deathImg.src = ""; });
-    cinematicEl.classList.remove("hidden");
-    setTimeout(() => {
-      deathImg.style.transition = "opacity 1.5s ease";
-      deathImg.style.opacity = "0";
-    }, 600);
-    setTimeout(() => {
-      cinematicEl.classList.add("hidden");
-      deathImg.style.opacity = "";
-      deathImg.style.transition = "";
-      showGameOver(reason);
-    }, 2200);
-  } else {
-    setTimeout(() => showGameOver(reason), 600);
-  }
+  // Ölüm sahnesi (4 Ekim 2026): HER ölüm tam ekran sahneyle biter. Eski portre
+  // sinematiği (son kartın büyüyüp solması) kullanıcı isteğiyle kaldırıldı; görsel bir
+  // sebepten yüklenemezse doğrudan ölüm ekranına geçilir.
+  _playDeathScene(reason, _deathCause, () => showGameOver(reason), () => setTimeout(() => showGameOver(reason), 400));
 }
+
+// ── Ölüm sahnesi (4 Ekim 2026) ──
+// Kullanıcının ürettiği çerçevesiz, sinematik görseller (assets/deaths/death-<sebep>.jpg).
+// Resim 8 sn'de yaklaşır; başlık, ölüm metni ve tarih alttan belirir; dokununca ölüm ekranı.
+const DEATH_SCENE_KEYS = ["saray_0", "saray_100", "yeniceri_0", "yeniceri_100", "ulema_0", "ulema_100", "hazine_0", "hazine_100",
+  "saglik", "azil", "sultan_guc", "padisah_red", "sehzade", "free_limit"];
+// Kendi görseli olmayan sebepler: en yakın sahne (başlık kendi adıyla kalır)
+const DEATH_SCENE_ALIAS = { yanlis_oda: "sultan_guc" };
+function _deathSceneImage(key) { return DEATH_SCENE_KEYS.includes(key) ? key : (DEATH_SCENE_ALIAS[key] || "saray_0"); }
+function _playDeathScene(reason, key, onDone, onFail) {
+  const pre = new Image();
+  let started = false;
+  const failT = setTimeout(() => { if (!started) { started = true; onFail(); } }, 2500);
+  pre.onerror = () => { if (started) return; started = true; clearTimeout(failT); onFail(); };
+  pre.onload = () => {
+    if (started) return; started = true; clearTimeout(failT);
+    const en = window.LANG === 'en';
+    const title = (DEATH_TITLES[key] || ["", ""])[en ? 1 : 0];
+    const months = (en && window.EN_HICRI_MONTHS) ? window.EN_HICRI_MONTHS : HICRI_MONTHS;
+    const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+    const ov = document.createElement("div");
+    ov.id = "death-scene";
+    ov.innerHTML = `<div class="ds-img" style="background-image:url('${pre.src}')"></div><div class="ds-shade"></div><div class="ds-vig"></div>
+      <div class="ds-txt"><div class="ds-kick">${en ? "THE END OF A REIGN" : "SALTANATIN SONU"}</div><div class="ds-title">${esc(title)}</div><div class="ds-rule"></div>
+      <div class="ds-text">${esc(reason)}</div><div class="ds-yr">${en ? `${year} ${year === 1 ? "YEAR" : "YEARS"}` : `${year} YIL`} · ${esc(String(months[hicriMonth % 12]).toLocaleUpperCase(en ? 'en' : 'tr'))} ${hicriYear}</div></div>
+      <div class="ds-tap">${en ? "TAP TO CONTINUE" : "DEVAM ETMEK İÇİN DOKUN"}</div>`;
+    document.body.appendChild(ov);
+    requestAnimationFrame(() => ov.classList.add("on"));
+    let done = false;
+    const finish = () => { if (done) return; done = true; ov.classList.add("out"); setTimeout(() => ov.remove(), 450); onDone(); };
+    setTimeout(() => ov.addEventListener("click", finish), 1200); // kazara dokunuşla atlanmasın
+    setTimeout(finish, 14000); // dokunulmazsa kendiliğinden
+  };
+  pre.src = "assets/deaths/death-" + _deathSceneImage(key) + ".jpg";
+}
+
 
 function showGameOver(reason) {
   if (window.playGameOver) playGameOver();
