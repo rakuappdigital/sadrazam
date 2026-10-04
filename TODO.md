@@ -1,16 +1,24 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 3 Ekim 2026 oturumu ← BURADAN DEVAM
+## SIRADAKİ — 4 Ekim 2026 ← BURADAN DEVAM
 
-1.5.0 YAYINDA (READY_FOR_SALE). Bu oturumda main'e girenler (BUILD ALINMADI):
-- `3c351d6` başarım düzeltmeleri (ölüm sebebi anahtarı, Gizli Üstat, Zimmet EN'de alınamıyordu, açıklamalar)
-- `92a11a4` ücretsiz akış: reddeden oyuncu hiç oynayamıyordu → 2 yıllık saltanat + "Görev Süreniz Doldu" penceresi
-- `b26b840` Tam Sürüm + Reklamsız paketi Market'te; ASC'de `fullnoads` (id 6818863680) READY_TO_SUBMIT
-  → kullanıcı: RevenueCat'e import + sonraki sürüme ekleme
+1.5.0 YAYINDA. main'de BUILD ALINMAMIŞ çok şey var (1.5.1 adayı): başarım düzeltmeleri,
+ücretsiz 2 yıl akışı + 3. yıl kilidi, Tam+Reklamsız paketi, yeni paywall + ortak mühür,
+kriz nabzı, etki bölgesi, lanet uyarısı, idam sahnesi, zamanlı kriz kartı, sefer oku,
+Market Eşyalar, Padişah Fermanı, Ana Kadro, Divan Oturumu, Vezirler Defteri (CLAUDE.md §3e).
 
-Tasarım önerileri (19 bölüm, seçim bekliyor): https://claude.ai/artifact/WcWZgcg5QXLWLSWZ2vU9Ht
-Kullanıcı seçimleri gelince sırayla uygulanacak. Kör kararlar (52 kart) dengelemesi
-kurallar onaylanınca yapılacak. Ölüm sahnesi görselleri kullanıcıdan (prompt'lar sayfada).
+Kullanıcıdan beklenen:
+- Tasarım sayfası 2. tur seçimleri: https://claude.ai/artifact/WcWZgcg5QXLWLSWZ2vU9Ht
+  (A mühür varyantı, C Yaşayan Divan 1/2/3, D Sonlar yapısı onayı, E kişisel mühür)
+- Görseller: ~/Desktop/olumler (13 ölüm sahnesi), ~/Desktop/yeni (10 karakter). Gelince
+  1080x1440 JPEG → assets/characters, ölüm sahnelerini _actuallyTriggerGameOver'daki
+  sinematiğe bağla (yoksa mevcut portre davranışı sürer).
+- RevenueCat'e `fullnoads` import + sürüme ekleme. ASC inceleme görüntüsü eski Market
+  amblemiyle (yıldız) yüklendi; istenirse yenisiyle değiştir.
+
+Sırada (onay gelince): Sonlar (3 duraklı yollar + Nişan + Emekliliğini İste), göreve başlama
+sahnesi, yıl geçişi sahnesi, kişisel mühür + kozmetikler, 52 boş kararın dengelenmesi
+(200'er oyun önce/sonra simülasyon), dönem kartları (Lale Devri ilk).
 
 ## SIRADAKİ — v1.5.0 / build 28 (29 Eylül 2026) ← BURADAN DEVAM
 

@@ -284,6 +284,45 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   Müzik zaten 64 kbps MP3 — yeniden sıkıştırma kalite bozar, dokunulmadı.
 - Testler (scratchpad): `season_test`, `slot_test`, `vk_test`, `vk_pick`, `age_test`, `stamp_test`, `tabs_test`.
 
+## 3e. 3–4 Ekim 2026 sistemleri (hepsi game.js, `hasAdvisor` fonksiyonunun hemen üstünde modüller)
+
+- **Kriz nabzı** `_updateCrisisPulse` (updateStatUI içinde): güç ≤15/≥85 → `#game.crisis-on`,
+  `#crisis-vignette` (pointer-events:none), `.stat-track.crisis-shake`.
+- **Titreyen etki bölgesi** `_effectShimmer(side)`: onMove'da |dx|>20; snapBack/flyOff/dealNext'te
+  kapanır. Sadece normal karar kartı; Deneyimli Mod açıksa yok.
+- **Lanet uyarısı** `_showCurseWhisper` (checkCurse, 2. aynı yön). `_timeout`/`_noCurse` kartları
+  lanete sayılmaz.
+- **İdam sahnesi**: `_actuallyTriggerGameOver` saray_0'da önce `showExecutionAnimation`.
+- **Zamanlı kriz kartı** `_maybeStartFuse` / `_stopFuse` / `_fuseTimeout`: kaydırılabilir kriz
+  kartı (is_crisis ya da category crisis, 1-sultan DEĞİL), yılda 1 (`_timedUsedYear`, kayıtta).
+  Süre dolunca kart kopyası `_timeout:true` + `_timeoutEffects` ile sola uçar, bayrak/zincir yok.
+  `_fusePaused` listesine yeni modal eklersen ekle. Ayar `sadrazam_timed` normal/slow/off.
+- **Sefer oku** `_showSeferMap`: savaş sonuç kartı forcedQueue'ya `{..., _sefer}` kopyası olarak girer.
+- **3. yıl kilidi**: dealNext başında `_freeYearLimitReached()` → `_enforceFreeYearLimit()`
+  (`_paywallFromGuard` → satın alınınca yıl ilerletilmez).
+- **Paywall**: `PAYWALL_COPY` (limit/start/menu), `_updatePaywallTiles`, `_pwSel`, `_paywallBuy`;
+  iki seçenek ortak `.ferman` mühürüyle. Bütün satın alma yüzeyleri `.ferman` (ferman-sm/-tile).
+- **Market Eşyalar**: `renderMarketItems`, sandık `sadrazam_item_stash` (≤3), startGame'de
+  `_applyStashToSlots` (expiry null). `gainItem(id, persistent)` — akçeyle alınan kalıcı.
+  Kritik An: eşik 20, yılda 2 (`_criticalYear`).
+- **Padişah Fermanı**: `_ferman`, `_fermanNew` (dealNext'te yoksa), `_fermanTrack` (decide),
+  `_fermanCloseYear` (advanceYear'ın İLK satırı, paywall'dan önce), `_fermanEnqueue`/kuyruk,
+  `#ferman-overlay` z 270, rozet `#ferman-chip` (#dynamic-subtitle'ı gizler). Kişi talepleri
+  "geri çevirme" biçiminde. Gazap kartı `_getGazapCard` (1-sultan → Sultan penceresi).
+- **Vezirler Defteri**: localStorage `sadrazam_defter` {seals, fermans, claimed, pages, deaths};
+  `_defterGet` HER alanı döndürmeli (claimed eksikken ihsan her ölümde tekrar veriliyordu).
+  `_defterRecordReign` showGameOver'da; `showDefter`. Her 5 mühürde 3 akçe (`_defterClaimIhsan`).
+- **Ana Kadro**: `CAST` (6 karakter), `relPoints` (−6..6, kayıtta), `relLevel`, `_relAdjustEffects`
+  (decide'da applyEffects'ten önce), `_relOnDecision`, `_relTryRescue` (checkGameOver,
+  checkSultanSabir), `_relDueKomplo` (decide enjeksiyon bloğu), `_renderCardRel` (#card-rel),
+  `showDivanHalkasi` (oyun menüsü). İlk kademe değişiminde tek seferlik açıklama `sadrazam_rel_tip`.
+- **Divan Oturumu**: `DIVAN_ISSUES` (8), `_maybeQueueDivan` (yılın 12. kartı, `type:"divan"`),
+  `showDivanOturumu` → sentetik kart `_divan/_noCurse` ile `decide("right")`. Kimlik
+  **`#divan-oturumu`** — `#divan-overlay` 5./10. yıl "Divan Sahnesi"nin, KARIŞTIRMA.
+- Testler (scratchpad, `pw.js` sessiz Playwright sarmalayıcısı ile — testlerde ses ÇIKMAZ):
+  ach/flow/guard/fx/fuse/sefer/bundle/pw_new/items/ferman/kadro/defter_test.js.
+- Masaüstü: `~/Desktop/olumler/PROMPTLAR.txt` (death-<anahtar>), `~/Desktop/yeni/PROMPTLAR.txt`.
+
 ## 4. Kritik sabitler
 
 - `CARDS_PER_YEAR = 24` (satır ~6) — **çok önemli**, yeni bir "N kartta bir
