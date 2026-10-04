@@ -3879,15 +3879,19 @@ const FADE_MS   = 1500;   // Kategori geçiş süresi (ms)
 const FADE_END  = 3.0;    // Parça bitmeden kaç saniye önce fade-out başlar
 
 // ── Playlist tanımları ────────────────────────────────────────────
-const _MENU_TRACKS = [
+const _MENU_TRACKS = [   // yalnızca menüde çalar
   'assets/music/menu.mp3',
-  'assets/music/menu1.mp3'
+  'assets/music/menu1.mp3',
+  'assets/music/menu5.mp3',
+  'assets/music/menu6.mp3'
 ];
-const _GAME_TRACKS = [
+const _GAME_TRACKS = [   // yalnızca oyun içinde çalar
   'assets/music/oyunici.mp3',
   'assets/music/oyun1.mp3',
   'assets/music/oyun2.mp3',
-  'assets/music/oyun3.mp3'
+  'assets/music/oyun3.mp3',
+  'assets/music/oyun5.mp3',
+  'assets/music/oyun6.mp3'
 ];
 
 // Her kategori için durum nesnesi
