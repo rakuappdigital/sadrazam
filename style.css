@@ -5583,3 +5583,44 @@ html, body {
 .vakayiname .vk-stamps { display: flex; align-items: center; justify-content: center; gap: 14px; }
 .vakayiname .vk-stamps .vk-stamp { margin: 10px 0 0; }
 .vakayiname .vk-pseal svg { width: 62px; height: 62px; margin-top: 8px; transform: rotate(8deg); filter: drop-shadow(0 2px 3px rgba(60,20,5,.4)); }
+
+/* ── Sonlar ve Nişanlar (4 Ekim 2026) ── */
+.end-toast { top: calc(env(safe-area-inset-top, 0px) + 92px); padding: 7px 14px; }
+.end-toast b { color: var(--gold-light); font-size: 11px; letter-spacing: .4px; }
+#ending-overlay { position: fixed; inset: 0; z-index: 285; display: flex; align-items: center; justify-content: center; padding: 18px; opacity: 0; transition: opacity .5s;
+  background: radial-gradient(ellipse at 50% 35%, #3c2c0c, #050408 70%), #050408; }
+#ending-overlay.on { opacity: 1; }
+#ending-overlay .en-img { position: absolute; inset: 0; background-size: cover; background-position: center 30%; opacity: 0; transition: opacity 1s; }
+#ending-overlay.has-img .en-img { opacity: 1; animation: dsKB 9s cubic-bezier(.25,.1,.25,1) forwards; }
+#ending-overlay .en-shade { position: absolute; inset: 0; opacity: 0; background: linear-gradient(180deg, rgba(0,0,0,.2), rgba(4,3,8,.5) 40%, rgba(4,3,8,.94) 70%); }
+#ending-overlay.has-img .en-shade { opacity: 1; }
+.en-box { position: relative; width: min(92vw, 380px); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+#ending-overlay.has-img .en-box { margin-top: auto; }
+.en-k { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 4px; color: rgba(240,230,208,.6); }
+.en-medal { width: 76px; height: 82px; filter: drop-shadow(0 4px 10px rgba(232,200,74,.35)); }
+.en-title { font-family: 'Cinzel Decorative', serif; font-size: 27px; line-height: 1.12; color: var(--gold-light); }
+.en-text { margin: 0; font-family: 'IM Fell English', serif; font-style: italic; font-size: 16px; line-height: 1.45; color: #efe0bb; }
+.en-gain { font-family: 'IM Fell English', serif; font-size: 13.5px; line-height: 1.45; color: var(--text); border: 1px solid var(--gold-dim); border-radius: 8px; padding: 10px 12px; background: rgba(201,162,39,.08); }
+.en-gain b { display: block; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px; color: var(--gold-light); margin-bottom: 3px; }
+.en-ret { font-family: 'IM Fell English', serif; font-size: 13px; color: #7fd197; }
+.en-btn { width: 100%; padding: 13px; border-radius: 6px; border: 1px solid #E8C84A; background: linear-gradient(180deg, #E8C84A, #B38D1C); color: #1a1006; font-family: 'Cinzel', serif; font-weight: 700; font-size: 12px; letter-spacing: 2px; cursor: pointer; }
+.miras-list { width: 100%; display: grid; gap: 8px; }
+.miras-opt { display: flex; flex-direction: column; gap: 2px; text-align: left; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--gold-dim); background: rgba(201,162,39,.06); color: var(--text); cursor: pointer; font: inherit; }
+.miras-opt b { font-family: 'Cinzel', serif; font-size: 12.5px; color: var(--gold-light); }
+.miras-opt span { font-family: 'IM Fell English', serif; font-size: 13px; color: rgba(240,230,208,.8); }
+.miras-none { background: none; border: 0; color: rgba(240,230,208,.6); font-family: 'IM Fell English', serif; font-size: 14px; text-decoration: underline; cursor: pointer; padding: 6px; }
+.df-paths { margin-top: 6px; font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1.5px; color: #6B1A1A; background: rgba(107,26,26,.08); border: 1px solid rgba(107,26,26,.4); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.ky-box { max-height: 88vh; overflow-y: auto; }
+.ky-list { width: 100%; display: grid; gap: 10px; text-align: left; }
+.ky-row { border: 1px solid rgba(201,162,39,.25); border-radius: 10px; padding: 9px 11px; }
+.ky-row.done { border-color: var(--gold-light); background: rgba(201,162,39,.08); }
+.ky-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ky-h b { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold-light); }
+.ky-h em { font-style: normal; font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 1.5px; color: #7fd197; }
+.ky-row ol { list-style: none; margin: 6px 0 4px; padding: 0; display: grid; gap: 3px; }
+.ky-row li { display: flex; gap: 8px; font-family: 'IM Fell English', serif; font-size: 13px; line-height: 1.3; color: rgba(240,230,208,.7); }
+.ky-row li i { font-style: normal; font-family: 'Cinzel', serif; font-size: 10px; min-width: 18px; color: var(--gold); }
+.ky-row li.ok { color: var(--text); } .ky-row li.ok i { color: #7fd197; }
+.ky-n { font-family: 'IM Fell English', serif; font-style: italic; font-size: 12.5px; color: rgba(232,200,74,.8); }
+.ky-ret { font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: .5px; color: var(--gold); }
+.kn-free { display: block; width: 100%; margin: 8px 0 4px; padding: 10px; border-radius: 6px; border: 1px solid #7a2a12; background: rgba(122,42,18,.12); color: #7a2a12; font-family: 'Cinzel', serif; font-size: 11.5px; letter-spacing: 1px; cursor: pointer; }

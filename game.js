@@ -3528,6 +3528,7 @@ function startGame() {
   _ferman = null; _fermanStreak = 0; _fermanQueue = []; _fermanShowing = false; _fermanDoneThisGame = 0; _fermanTotalThisGame = 0;
   document.getElementById("ferman-chip")?.remove();
   relPoints = {}; _relRescued = {}; _relKomploAt = {}; _relKomploDone = {}; _divanYear = 0; _divanUsed = [];
+  _endState = _endFresh();
   _agedSeenThisGame = new Set();
   _stampMeta = new Map();
   _hekimYesCount = 0; _knotIdsSeenThisGame = new Set(); _challengeRewarded = false;
@@ -3661,7 +3662,7 @@ function startGame() {
   }
 
   // Göreve başlama (mühür teslimi) sahnesinden sonra ilk kart (4 Ekim 2026)
-  const begin = () => _playCulus(() => { if (!isGameOver) dealNext(); });
+  const begin = () => _playCulus(() => _pickMiras(() => { if (!isGameOver) dealNext(); }));
   if (!localStorage.getItem('sadrazam_tutorial_done')) {
     showTutorial(() => {
       if (_paywallAtGameStart) { isPaywalled = true; showPaywallScreen(false); }
@@ -4065,6 +4066,7 @@ function saveGameState() {
       timedUsedYear: _timedUsedYear,
       ferman: _ferman, fermanStreak: _fermanStreak, fermanDone: _fermanDoneThisGame, fermanTotal: _fermanTotalThisGame,
       relPoints, relRescued: _relRescued, relKomploAt: _relKomploAt, relKomploDone: _relKomploDone, divanYear: _divanYear, divanUsed: _divanUsed,
+      endState: _endState,
       chronicle,
       v: 3
     };
@@ -4178,6 +4180,7 @@ function loadGameState(s) {
   setTimeout(_renderFermanChip, 0);
   relPoints = s.relPoints || {}; _relRescued = s.relRescued || {}; _relKomploAt = s.relKomploAt || {}; _relKomploDone = s.relKomploDone || {};
   _divanYear = s.divanYear || 0; _divanUsed = s.divanUsed || [];
+  _endState = s.endState ? { ..._endFresh(), ...s.endState } : _endFresh();
   chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
   isGameOver = false;
   activeArcs = {};
@@ -4346,7 +4349,9 @@ function showKatibNotu(sc, opts) {
       const lead = opts.astrologer
         ? (en ? `The stars show the echo of one of your decisions ${when}. The astrologer can read which one.` : `Yıldızlar bir kararınızın yankısını ${when} gösteriyor. Müneccimbaşı hangisi olduğunu okuyabilir.`)
         : (en ? `The echo of one of your decisions arrives ${when}. The scribe knows which one.` : `Bir kararınızın yankısı ${when} gelecek. Kâtip hangisi olduğunu biliyor.`);
+      const free = _nisan("pargali") && _endState && !_endState.katibFree;
       body = `<div class="kn-lead">${lead}</div>
+        ${free ? `<button class="kn-free">${en ? "Letter Seal · free" : "Mektup Mührü · bedava"}</button>` : ""}
         <div class="kn-btns">
           <button class="kn-ad">${en ? "Watch Ad" : "Reklam İzle"}</button>
           <button class="kn-akce">${bal >= 1 ? (en ? "1 Akce" : "1 Akçe") : (en ? "Get Akce" : "Akçe Al")} <span class="kn-bal">(${bal})</span></button>
@@ -4360,6 +4365,8 @@ function showKatibNotu(sc, opts) {
     const msg = overlay.querySelector(".kn-msg");
     const lock = (on) => overlay.querySelectorAll(".kn-btns button").forEach(b => b.disabled = on);
     const reveal = () => { if (!scheduledCards.includes(sc)) { close(); return; } sc.revealed = true; if (typeof saveGameState === "function" && !isGameOver) saveGameState(); updateFateBar(); render(); };
+    const fb = overlay.querySelector(".kn-free");
+    if (fb) fb.onclick = () => { _endState.katibFree = true; reveal(); };
     overlay.querySelector(".kn-ad").onclick = () => {
       lock(true); msg.textContent = "";
       RewardedAds.show(() => { if (document.body.contains(overlay)) reveal(); }, () => { lock(false); msg.textContent = en ? "The ad could not be shown." : "Reklam gösterilemedi."; });
@@ -4568,6 +4575,7 @@ function getEligible() {
   const knotPull = _knotPullSources();
   return allCards.filter(c => {
     if (c.is_pasa_terfi && (!isPasaMode || pasaPromoted)) return false;
+    if (c.character === "8-rakip-vezir" && _nisan("rakip") === 1) return false; // Boş Koltuk
     if (c.is_event) return false;
     if (c.arc_id) return false;
     if (c.is_traitor_reveal) return false;
@@ -4599,6 +4607,7 @@ function getEligible() {
     // Çekim sadece bu oyunda henüz hiç çıkmamış kaynak karta: oyuncu kartı
     // görüp diğer seçeneği seçtiyse aynı kart arka arkaya geri gelmesin
     if (times === 0 && knotPull.has(c.id)) w = w * KNOT_PULL_BOOST;
+    if (c.character === "8-rakip-vezir" && _nisan("rakip") === 0.5) w = Math.max(1, Math.round(w / 2)); // Boş Koltuk (Miras)
     if (w !== (c.weight || 10)) return { ...c, weight: w };
     return c;
   });
@@ -5674,11 +5683,13 @@ function showSehzadeMeydan(c) {
   };
 
   document.getElementById('sm-btn-a').onclick = () => close(() => {
+    if (_endState) _endState.sehzadeOk = true;
     updateSehzadePower(-40);
     stats.saray = Math.max(5, (stats.saray || 50) - 20);
     updateStatUI();
   });
   document.getElementById('sm-btn-b').onclick = () => close(() => {
+    if (_endState) _endState.sehzadeOk = true;
     updateSehzadePower(-60);
     stats["yeniçeri"] = Math.max(5, (stats["yeniçeri"] || 50) - 20);
     stats.hazine = Math.max(5, (stats.hazine || 50) - 15);
@@ -5686,6 +5697,7 @@ function showSehzadeMeydan(c) {
   });
   document.getElementById('sm-btn-c').onclick = () => close(() => {
     if (Math.random() < 0.5) {
+      if (_endState) _endState.sehzadeOk = true;
       updateSehzadePower(-100);
       stats.saray = Math.min(95, (stats.saray || 50) + 15);
       updateStatUI();
@@ -7066,6 +7078,7 @@ function _fermanCloseYear() {
   const ok = _ferman.demands.every(_fermanDemandOk);
   const en = window.LANG === 'en';
   _fermanTotalThisGame++;
+  if (_endState) _endState.lastF.push(ok);
   let reward = "";
   if (ok) {
     _fermanStreak = 0;
@@ -7098,7 +7111,9 @@ function _fermanNext() {
   if (!item) { _fermanShowing = false; return; }
   if (item.kind === "new" && (!_ferman || isGameOver)) { _fermanNext(); return; }
   _fermanShowing = true;
-  _showFermanOverlay(item, () => { _fermanShowing = false; setTimeout(_fermanNext, 250); });
+  const after = () => { _fermanShowing = false; setTimeout(_fermanNext, 250); };
+  if (item.kind === "ending") { _showEndingOverlay(item.id, after); return; }
+  _showFermanOverlay(item, after);
 }
 const _TUGRA_SVG = `<svg class="fm-tugra" viewBox="0 0 98 62" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linecap="round"><path d="M58 58V8" stroke-width="2.4"/><path d="M66 58V4" stroke-width="2.4"/><path d="M74 58V10" stroke-width="2.4"/><path d="M58 18c10-4 14 4 16-4" stroke-width="1.4"/><path d="M50 50C20 58 4 40 18 28c12-10 34 2 28 16-6 12-32 6-24-8" stroke-width="2"/><path d="M48 46c-18 6-30-6-20-12 8-4 18 4 12 10" stroke-width="1.5"/><path d="M40 58h52c4 0 4-6-2-6" stroke-width="2"/><path d="M80 52c4-10 10-8 12-2" stroke-width="1.4"/></g><circle cx="84" cy="34" r="2" fill="currentColor"/></svg>`;
 function _waxSeal(kind) {
@@ -7185,7 +7200,7 @@ function _renderFermanChip() {
 
 // ── Vezirler Defteri: kalıcı kayıt (Defter ekranı ayrı) ──
 const DEFTER_KEY = "sadrazam_defter";
-function _defterGet() { try { const d = JSON.parse(localStorage.getItem(DEFTER_KEY) || "{}"); return { seals: d.seals || 0, fermans: d.fermans || 0, claimed: d.claimed || 0, pages: Array.isArray(d.pages) ? d.pages : [], deaths: Array.isArray(d.deaths) ? d.deaths : [] }; } catch (e) { return { seals: 0, fermans: 0, claimed: 0, pages: [], deaths: [] }; } }
+function _defterGet() { try { const d = JSON.parse(localStorage.getItem(DEFTER_KEY) || "{}"); const end = d.end && typeof d.end === "object" ? d.end : {}; return { seals: d.seals || 0, fermans: d.fermans || 0, claimed: d.claimed || 0, pages: Array.isArray(d.pages) ? d.pages : [], deaths: Array.isArray(d.deaths) ? d.deaths : [], end: { p: end.p || {}, done: Array.isArray(end.done) ? end.done : [], wars: end.wars || 0, dvSeyh: end.dvSeyh || 0, retired: end.retired || 0 } }; } catch (e) { return { seals: 0, fermans: 0, claimed: 0, pages: [], deaths: [], end: { p: {}, done: [], wars: 0, dvSeyh: 0, retired: 0 } }; } }
 function _defterSet(d) { try { localStorage.setItem(DEFTER_KEY, JSON.stringify(d)); } catch (e) {} }
 function _defterAddFerman() { const d = _defterGet(); d.fermans++; d.seals++; _defterSet(d); _fermanDoneThisGame++; return d.fermans; }
 let _fermanDoneThisGame = 0, _fermanTotalThisGame = 0;
@@ -7443,6 +7458,7 @@ function showDivanOturumu(c) {
     } else {
       const s = issue.seats[choice];
       issue.seats.forEach((o, j) => relChange(o[0], j === choice ? 2 : -2));
+      if (s[0] === "3-seyhulislam") { const d = _defterGet(); d.end.dvSeyh++; _defterSet(d); }
       synth = { id: c.id, _divan: true, _noCurse: true, character: s[0], character_name: CAST[s[0]].tr, character_name_en: CAST[s[0]].en,
         right_text: s[1], right_text_en: s[2], right_effects: { ...s[3] }, right_flags_set: [] };
     }
@@ -7467,6 +7483,7 @@ const DEATH_TITLES = {
   azil: ["Hac Yolu Sürgünü", "Exile on the Pilgrim Road"], sultan_guc: ["İki Cellat", "Two Executioners"],
   padisah_red: ["Sultan'ın Gazabı", "The Sultan's Wrath"], sehzade: ["Şehzadenin Hamlesi", "The Prince's Gambit"],
   yanlis_oda: ["Yanlış Oda", "The Wrong Room"], free_limit: ["Mühür Geri Döndü", "The Seal Returned"],
+  emeklilik: ["Onurlu Veda", "An Honourable Farewell"],
 };
 let _defterSealsThisGame = 0, _defterIhsanThisGame = 0;
 function _defterRecordReign() {
@@ -7530,7 +7547,7 @@ function showDefter(startPage) {
       <div class="df-spread">
         <div class="df-page df-left"><div class="df-pagein">${pageHTML()}</div>
           ${d.pages.length > 1 ? `<div class="df-nav"><button type="button" class="df-prev" aria-label="${en ? "Older" : "Önceki"}">‹</button><span>${idx + 1} / ${d.pages.length}</span><button type="button" class="df-next-btn" aria-label="${en ? "Newer" : "Sonraki"}">›</button></div>` : ""}</div>
-        <div class="df-page df-right">${trackHTML()}${_getSeal() ? `<div class="df-pseal">${_personalSealSVG(_getSeal())}</div>` : ""}</div>
+        <div class="df-page df-right">${trackHTML()}<button type="button" class="df-paths">${en ? "PATHS OF FATE" : "KADER YOLLARI"} · ${d.end.done.length}/${ENDINGS.length}</button>${_getSeal() ? `<div class="df-pseal">${_personalSealSVG(_getSeal())}</div>` : ""}</div>
       </div>
       <button type="button" class="df-close">${en ? "CLOSE" : "KAPAT"}</button>
     </div>`;
@@ -7545,6 +7562,181 @@ function showDefter(startPage) {
   ov.querySelector(".df-prev")?.addEventListener("click", () => flip(1));
   ov.querySelector(".df-next-btn")?.addEventListener("click", () => flip(-1));
   ov.querySelector(".df-close").onclick = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 300); };
+  ov.querySelector(".df-paths").onclick = () => showKaderYollari();
+}
+
+// ── Sonlar ve Nişanlar (4 Ekim 2026, kullanıcı onayı D) ─────────────────────
+// Her son 3 duraklı bir yol: I ve II herhangi bir saltanatta tamamlanır ve Defter'e
+// KALICI işlenir; III tek ve uzun bir saltanatta (12+, Kanun 15+, Pargalı 10+ yıl) yıl
+// sonunda bakılır. Son gelince oyun BİTMEZ: sahne + Nişan (o saltanatta hemen işler),
+// Defter'e +2 mühür. Sonraki saltanatların başında kazanılmış nişanlardan biri "Miras"
+// olarak seçilir (yarı güç). Ömür boyu 3 son + 20. yıl → menüde "Emekliliğini İste".
+const ENDINGS = [
+  { id: "amire", tr: "Hazine-i Amire", en: "The Imperial Treasury", minY: 12,
+    st: [["Defterdar ile Müttefik ol.", "Become allies with the Treasurer."], ["Hazine yıl boyu 80'in üstünde dursun.", "Keep the Treasury above 80 for a whole year."], ["12. yıl · Defterdar Can Dostu · yıl sonunda Hazine ≥ 60", "Year 12 · the Treasurer a sworn friend · Treasury ≥ 60 at year's end"]],
+    text: ["Defterdar'ın defterinde ilk kez kırmızı mürekkep kalmadı. Ceneviz bankerleri artık senden borç istiyor.", "For the first time there is no red ink left in the Treasurer's ledger. The Genoese bankers now ask you for loans."],
+    nisan: ["Altın Akış", "Golden Flow"], nd: ["Her yıl başında Hazine +6", "Treasury +6 at the start of every year"] },
+  { id: "fetih", tr: "Fetihname", en: "The Book of Conquest", minY: 12,
+    st: [["Ömür boyu 2 sefer zaferi.", "Win 2 campaigns across your reigns."], ["Yeniçeri Ağası ile Can Dostu ol.", "Become sworn friends with the Janissary Commander."], ["12. yıl · son 3 fermanın hepsi yerine gelmiş · Ordu ≥ 60", "Year 12 · your last 3 decrees fulfilled · Army ≥ 60"]],
+    text: ["Sancakların Belgrad'dan Bağdat'a kadar dalgalanıyor. Ocak, adını kazanların başında anıyor.", "Your banners fly from Belgrade to Baghdad. The corps speaks your name around its cauldrons."],
+    nisan: ["Fetih Kılıcı", "Sword of Conquest"], nd: ["Ordu'ya gelen olumsuz etkiler −%20", "Negative effects on the Army −20%"] },
+  { id: "kanun", tr: "Kanun-ı Divan", en: "The Law of the Divan", minY: 15,
+    st: [["Bir Huzur Yılı yaşa (dört güç de yıl boyu 35–65).", "Live a Year of Peace (all four powers 35–65 all year)."], ["Ömür boyu 10 ferman yerine getir.", "Fulfil 10 decrees across your reigns."], ["15. yıl · son 3 yılın hepsi Huzur Yılı", "Year 15 · each of the last 3 years a Year of Peace"]],
+    text: ["On beş yıldır Divan'da tek bir kılıç çekilmedi. Kadılar kararlarını senin kanunnamene bakarak veriyor.", "For fifteen years no sword has been drawn in the Divan. The judges rule by your book of law."],
+    nisan: ["Adaletname", "Writ of Justice"], nd: ["Her yıl başında Sultan sabrı +5", "Sultan's patience +5 at the start of every year"] },
+  { id: "fetva", tr: "Fetva Kalkanı", en: "The Fatwa Shield", minY: 12,
+    st: [["Şeyhülislam ile Müttefik ol.", "Become allies with the Şeyhülislam."], ["Divan Oturumu'nda Şeyhülislam'ı ömür boyu 3 kez destekle.", "Back the Şeyhülislam 3 times in Divan sessions across your reigns."], ["12. yıl · Şeyhülislam Can Dostu · Ulema ≥ 60", "Year 12 · the Şeyhülislam a sworn friend · Ulema ≥ 60"]],
+    text: ["Şeyhülislam cuma hutbesinde adını duaya kattı. Medreselerde artık senin vakfiyelerin okunuyor.", "The Şeyhülislam added your name to the Friday prayer. Your endowment deeds are now read in the madrasas."],
+    nisan: ["Şeyhülislam'ın Duası", "The Şeyhülislam's Prayer"], nd: ["Ulema ölümünden bir kez kurtulursun", "Saves you once from an Ulema death"] },
+  { id: "valide", tr: "Valide'nin Gölgesi", en: "The Valide's Shadow", minY: 12,
+    st: [["Tek saltanatta 4 Sultan mektubunun hepsini al.", "Receive all 4 of the Sultan's letters in one reign."], ["Valide Sultan ile Can Dostu ol.", "Become sworn friends with the Valide Sultan."], ["12. yıl · Şehzade'nin meydan okumasını atlatmış ol", "Year 12 · having survived the Prince's challenge"]],
+    text: ["Valide Sultan seni harem kapısında karşıladı: \"Oğlumun tahtı senin omzunda durdu.\"", "The Valide Sultan met you at the harem gate: \"My son's throne has rested on your shoulders.\""],
+    nisan: ["Harem Kapısı", "The Harem Gate"], nd: ["Saray'a gelen olumlu etkiler +%15", "Positive effects on the Palace +15%"] },
+  { id: "rakip", tr: "Rakibin Düşüşü", en: "The Rival's Fall", minY: 12,
+    st: [["Gizli haini bul.", "Uncover the hidden traitor."], ["Rakip Vezir'in devrilme zincirini tamamla.", "Complete the Rival Vizier's downfall chain."], ["12. yıl · Rakip Vezir'in komplosunu atlatmış ol", "Year 12 · having survived the Rival Vizier's plot"]],
+    text: ["Rakip Vezir'in koltuğu boş. Divan'da artık kimse senin sözünün üstüne söz söylemiyor.", "The Rival Vizier's seat is empty. No one in the Divan speaks over your word any more."],
+    nisan: ["Boş Koltuk", "The Empty Seat"], nd: ["Rakip Vezir kartları gelmez", "The Rival Vizier's cards no longer come"] },
+  { id: "pargali", tr: "Pargalı'nın İzinde", en: "In Pargalı's Footsteps", minY: 10, secret: true,
+    st: [["Pargalı'nın Sırrı'nın 7 sayfasını topla.", "Collect all 7 pages of Pargalı's Secret."], ["Sırrın sonunu seç.", "Choose how the secret ends."], ["10. yıl · Casuslar Başı ile Müttefik", "Year 10 · allies with the Spymaster"]],
+    text: ["Pargalı'nın son mektubu yerine ulaştı. Onun göremediğini sen gördün: mührü taşıyan elin kime ait olduğunu.", "Pargalı's last letter reached its destination. You saw what he never did: whose hand truly carries the seal."],
+    nisan: ["Mektup Mührü", "The Letter Seal"], nd: ["Kâtibin Notu saltanat başına bir kez bedava", "One free Scribe's Note per reign"] },
+];
+const ENDING_RETIRE_ENDS = 3, ENDING_RETIRE_YEAR = 20;
+let _endState = null;
+function _endFresh() { return { yMin: { ...stats }, yMax: { ...stats }, huzur: 0, lastF: [], sehzadeOk: false, nisan: [], miras: null, katibFree: false, ulemaSaved: false }; }
+function _endP(d, id) { d.end.p[id] = d.end.p[id] || [false, false]; return d.end.p[id]; }
+function _endTrack() { // decide() sonunda: yılın en düşük/en yüksek değerleri
+  if (!_endState) return;
+  for (const k of Object.keys(stats)) { _endState.yMin[k] = Math.min(_endState.yMin[k] ?? stats[k], stats[k]); _endState.yMax[k] = Math.max(_endState.yMax[k] ?? stats[k], stats[k]); }
+}
+function _endStationDone(id, idx) {
+  const d = _defterGet(), p = _endP(d, id);
+  if (p[idx] || d.end.done.includes(id)) return;
+  p[idx] = true; _defterSet(d);
+  const e = ENDINGS.find(x => x.id === id), en = window.LANG === 'en';
+  _showEndToast(en ? `Path of ${e.en} · Station ${idx ? "II" : "I"} complete` : `${e.tr} yolu · Durak ${idx ? "II" : "I"} tamam`);
+}
+function _showEndToast(txt) {
+  const game = document.getElementById("game"); if (!game) return;
+  const t = document.createElement("div"); t.className = "rel-toast end-toast"; t.innerHTML = `<span class="rt-txt"><b>✦ ${txt}</b></span>`;
+  game.appendChild(t); requestAnimationFrame(() => t.classList.add("on"));
+  setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, 2800);
+}
+// advanceYear(): ferman değerlendirmesinden hemen sonra, paywall kontrollerinden ÖNCE
+function _endYearClose() {
+  if (!_endState || isGameOver) return;
+  const y = year, S = _endState, d0 = _defterGet();
+  const huzur = Object.keys(stats).every(k => S.yMin[k] >= 35 && S.yMax[k] <= 65);
+  S.huzur = huzur ? S.huzur + 1 : 0;
+  const lv = (k) => relLevel(k);
+  const s1 = { amire: lv("4-defterdar") >= 2, fetih: d0.end.wars >= 2, kanun: huzur, fetva: lv("3-seyhulislam") >= 2, valide: receivedLetters >= 4, rakip: traitorInvestigated >= 2, pargali: getPargaliPages().length >= 7 };
+  const s2 = { amire: S.yMin.hazine >= 80, fetih: lv("2-yeniceri") >= 3, kanun: d0.fermans >= 10, fetva: d0.end.dvSeyh >= 3, valide: lv("5-valide-sultan") >= 3, rakip: false, pargali: !!getPargaliEnding() };
+  const last3 = S.lastF.slice(-3);
+  const s3 = { amire: lv("4-defterdar") >= 3 && stats.hazine >= 60, fetih: last3.length === 3 && last3.every(Boolean) && stats["yeniçeri"] >= 60,
+    kanun: S.huzur >= 3, fetva: lv("3-seyhulislam") >= 3 && stats.ulema >= 60, valide: S.sehzadeOk, rakip: !!_relKomploDone["8-rakip-vezir"], pargali: lv("14-casuslar_basi") >= 2 };
+  for (const e of ENDINGS) {
+    if (s1[e.id]) _endStationDone(e.id, 0);
+    if (s2[e.id]) _endStationDone(e.id, 1);
+    const d = _defterGet(), p = _endP(d, e.id);
+    if (!d.end.done.includes(e.id) && p[0] && p[1] && y >= e.minY && s3[e.id]) _endReach(e);
+  }
+  S.yMin = { ...stats }; S.yMax = { ...stats };
+}
+function _endReach(e) {
+  const d = _defterGet();
+  d.end.done.push(e.id); d.seals += 2; _defterSet(d); _defterClaimIhsan();
+  if (!_endState.nisan.includes(e.id)) _endState.nisan.push(e.id);
+  _fermanEnqueue({ kind: "ending", id: e.id });
+}
+// Nişan gücü: bu saltanatta kazanıldıysa 1, Miras olarak seçildiyse 0.5
+function _nisan(id) { if (!_endState) return 0; if (_endState.nisan.includes(id)) return 1; return _endState.miras === id ? 0.5 : 0; }
+function _nisanAdjustEffects(fx) {
+  const f = _nisan("fetih"), v = _nisan("valide");
+  if (!f && !v) return fx;
+  const out = { ...fx };
+  if (f && typeof out["yeniçeri"] === "number" && out["yeniçeri"] < 0) out["yeniçeri"] = Math.round(out["yeniçeri"] * (1 - 0.2 * f));
+  if (v && typeof out.saray === "number" && out.saray > 0) out.saray = Math.round(out.saray * (1 + 0.15 * v));
+  return out;
+}
+function _nisanYearStart() { // advanceYear(), year++ sonrası
+  const a = _nisan("amire"); if (a) stats.hazine = Math.min(100, stats.hazine + Math.round(6 * a));
+  const k = _nisan("kanun"); if (k) sultanSabir = Math.min(100, sultanSabir + Math.round(5 * k));
+}
+function _nisanUlemaRescue() { // checkGameOver: Ulema 0'da bir kez
+  if (!_nisan("fetva") || _endState.ulemaSaved) return false;
+  _endState.ulemaSaved = true; stats.ulema = _nisan("fetva") === 1 ? 30 : 20; updateStatUI();
+  _showEndToast(window.LANG === 'en' ? "The Şeyhülislam's Prayer saved you" : "Şeyhülislam'ın Duası seni kurtardı");
+  return true;
+}
+function _showEndingOverlay(id, done) {
+  const e = ENDINGS.find(x => x.id === id); if (!e) { done(); return; }
+  const en = window.LANG === 'en', d = _defterGet(), n = d.end.done.length;
+  const ov = document.createElement("div");
+  ov.id = "ending-overlay";
+  ov.innerHTML = `<div class="en-img"></div><div class="en-shade"></div>
+    <div class="en-box"><div class="en-k">${en ? `AN ENDING · ${n}/${ENDINGS.length}` : `BİR SON · ${n}/${ENDINGS.length}`}</div>
+      <svg class="en-medal" viewBox="0 0 70 76" aria-hidden="true"><path d="M22 2h26l-6 20H28z" fill="#6B1A1A" stroke="#e8c84a"/><circle cx="35" cy="46" r="25" fill="#2b1c0b" stroke="#e8c84a" stroke-width="2"/><circle cx="35" cy="46" r="19" fill="none" stroke="#e8c84a" stroke-dasharray="2 2"/><path d="M35 31l4 9.5 10 .4-8 6.3 2.8 9.8-8.8-5.8-8.8 5.8 2.8-9.8-8-6.3 10-.4z" fill="#e8c84a"/></svg>
+      <div class="en-title">${en ? e.en : e.tr}</div><p class="en-text">${e.text[en ? 1 : 0]}</p>
+      <div class="en-gain"><b>${en ? "ORDER" : "NİŞAN"} · ${e.nisan[en ? 1 : 0].toLocaleUpperCase(en ? 'en' : 'tr')}</b>${e.nd[en ? 1 : 0]}. ${en ? "Active for the rest of this reign; recorded in the Ledger as an Inheritance for future reigns (+2 seals)." : "Bu saltanatın geri kalanında işler; Defter'e Miras olarak işlendi (+2 mühür)."}</div>
+      ${n >= ENDING_RETIRE_ENDS ? `<div class="en-ret">${en ? `You have met ${n} endings. Reach year ${ENDING_RETIRE_YEAR} and you may ask to retire from the menu.` : `${n} son gördün. ${ENDING_RETIRE_YEAR}. yıla ulaşınca menüden emekliliğini isteyebilirsin.`}</div>` : ""}
+      <button type="button" class="en-btn">${en ? "THE REIGN CONTINUES" : "SALTANAT DEVAM EDİYOR"}</button></div>`;
+  document.body.appendChild(ov);
+  const pre = new Image(); pre.onload = () => { ov.querySelector(".en-img").style.backgroundImage = `url('${pre.src}')`; ov.classList.add("has-img"); }; pre.src = `assets/endings/end-${id}.jpg`;
+  requestAnimationFrame(() => ov.classList.add("on"));
+  try { Haptics.achievement(); if (window.playAchievement) playAchievement(); } catch (err) {}
+  ov.querySelector(".en-btn").onclick = () => { ov.classList.remove("on"); setTimeout(() => { ov.remove(); done(); }, 400); };
+}
+// Yeni saltanat başında Miras seçimi (kazanılmış son varsa)
+function _pickMiras(next) {
+  const d = _defterGet();
+  if (!d.end.done.length || !_endState) { next(); return; }
+  const en = window.LANG === 'en';
+  const ov = document.createElement("div"); ov.className = "info-panel-overlay"; ov.id = "miras-overlay";
+  const half = (s) => s.replace(/\+6/, "+3").replace(/\+5/, "+3").replace(/−%20/, "−%10").replace(/−20%/, "−10%").replace(/\+%15/, "+%8").replace(/\+15%/, "+8%");
+  ov.innerHTML = `<div class="ip-box"><div class="ip-title">${en ? "INHERITANCE" : "MİRAS"}</div><div class="ip-div"></div>
+    <p>${en ? "Choose one Order your predecessors earned. It works at half strength in this reign." : "Seleflerinin kazandığı nişanlardan birini seç. Bu saltanatta yarı güçle işler."}</p>
+    <div class="miras-list">${d.end.done.map(id => { const e = ENDINGS.find(x => x.id === id); return e ? `<button type="button" class="miras-opt" data-id="${id}"><b>${e.nisan[en ? 1 : 0]}</b><span>${half(e.nd[en ? 1 : 0])}${id === "fetva" ? (en ? " (Ulema returns to 20)" : " (Ulema 20'ye döner)") : ""}</span></button>` : ""; }).join("")}</div>
+    <button type="button" class="miras-none">${en ? "Begin without an inheritance" : "Mirassız başla"}</button></div>`;
+  document.body.appendChild(ov); requestAnimationFrame(() => ov.classList.add("on"));
+  const finish = (id) => { _endState.miras = id; ov.classList.remove("on"); setTimeout(() => { ov.remove(); next(); }, 300); };
+  ov.querySelectorAll(".miras-opt").forEach(b => b.onclick = () => finish(b.dataset.id));
+  ov.querySelector(".miras-none").onclick = () => finish(null);
+}
+// Defter → Kader Yolları
+function showKaderYollari() {
+  const en = window.LANG === 'en', d = _defterGet();
+  const ov = document.createElement("div"); ov.className = "info-panel-overlay";
+  const rows = ENDINGS.map(e => {
+    const p = d.end.p[e.id] || [false, false], done = d.end.done.includes(e.id);
+    const hidden = e.secret && !p[0] && !done;
+    const st = e.st.map((s, i) => { const ok = done || (i < 2 && p[i]); return `<li class="${ok ? "ok" : ""}"><i>${ok ? "✓" : ["I", "II", "III"][i]}</i>${hidden && i > 0 ? "???" : s[en ? 1 : 0]}</li>`; }).join("");
+    return `<div class="ky-row ${done ? "done" : ""}"><div class="ky-h"><b>${hidden ? "???" : (en ? e.en : e.tr)}</b>${done ? `<em>${en ? "REACHED" : "ULAŞILDI"}</em>` : ""}</div><ol>${st}</ol><div class="ky-n">${en ? "Order" : "Nişan"}: ${hidden ? "???" : `${e.nisan[en ? 1 : 0]} · ${e.nd[en ? 1 : 0]}`}</div></div>`;
+  }).join("");
+  ov.innerHTML = `<div class="ip-box ky-box"><div class="ip-title">${en ? "PATHS OF FATE" : "KADER YOLLARI"}</div><div class="ip-div"></div>
+    <p class="dh-note">${en ? "Stations I and II can be completed in any reign and are kept forever. Station III needs one long reign." : "I. ve II. duraklar herhangi bir saltanatta tamamlanır ve hep kalır. III. durak tek, uzun bir saltanat ister."}</p>
+    <div class="ky-list">${rows}</div>
+    <div class="ky-ret">${en ? `Grand ending · Ask to Retire: ${d.end.done.length}/${ENDING_RETIRE_ENDS} endings and a reign reaching year ${ENDING_RETIRE_YEAR}.` : `Büyük son · Emekliliğini İste: ${d.end.done.length}/${ENDING_RETIRE_ENDS} son ve ${ENDING_RETIRE_YEAR}. yıla ulaşan bir saltanat.`}</div>
+    <button type="button">${en ? "CLOSE" : "KAPAT"}</button></div>`;
+  document.body.appendChild(ov); requestAnimationFrame(() => ov.classList.add("on"));
+  ov.querySelector(".ip-box > button").onclick = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 300); };
+}
+function _canRetire() { return !isGameOver && year >= ENDING_RETIRE_YEAR && _defterGet().end.done.length >= ENDING_RETIRE_ENDS; }
+function askRetirement() {
+  const en = window.LANG === 'en';
+  const ov = document.createElement("div"); ov.className = "info-panel-overlay";
+  ov.innerHTML = `<div class="ip-box"><div class="ip-title">${en ? "ASK TO RETIRE" : "EMEKLİLİĞİNİ İSTE"}</div><div class="ip-div"></div>
+    <p>${en ? "You will hand the seal back to the Sultan with honour. This reign ends here, not in death: a golden page in the Ledger and 5 seals." : "Mührü Sultan'a onurla geri vereceksin. Bu saltanat ölümle değil, burada biter: Defter'e altın sayfa ve 5 mühür."}</p>
+    <button type="button" class="se-save">${en ? "HAND BACK THE SEAL" : "MÜHRÜ TESLİM ET"}</button><button type="button" class="miras-none">${en ? "Not yet" : "Henüz değil"}</button></div>`;
+  document.body.appendChild(ov); requestAnimationFrame(() => ov.classList.add("on"));
+  const close = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 300); };
+  ov.querySelector(".miras-none").onclick = close;
+  ov.querySelector(".se-save").onclick = () => {
+    close();
+    const d = _defterGet(); d.end.retired = (d.end.retired || 0) + 1; d.seals += 5; _defterSet(d); _defterClaimIhsan();
+    isGameOver = false;
+    _actuallyTriggerGameOver(en ? "The Sultan called you before him and took back the seal with his own hand: \"You have served this state enough.\" You grew old in a waterside mansion, looking out over the Bosphorus."
+      : "Sultan seni huzuruna çağırdı ve mührü kendi eliyle geri aldı: \"Bu devlete yetecek kadar hizmet ettin.\" Boğaz'a bakan bir yalıda yaşlandın.", "emeklilik");
+  };
 }
 
 function hasAdvisor(id) {
@@ -8183,6 +8375,7 @@ function showHangingAnimation(onDone) {
 function checkGameOver() {
   if (isGameOver) return false;
   for (const stat of Object.keys(stats)) {
+    if (stats[stat] <= 0 && stat === "ulema" && _nisanUlemaRescue()) return false;
     if (stats[stat] <= 0 && _relTryRescue(stat, 0)) return false;
     if (stats[stat] >= 100 && _relTryRescue(stat, 100)) return false;
     if (stats[stat] <= 0)   { triggerGameOver(getRichDeathText(DEATH_TABLE[stat]?.[0]   || "Oyun bitti.", stat, 0), (stat === "yeniçeri" ? "yeniceri" : stat) + "_0");   return true; }
@@ -8366,10 +8559,13 @@ function decide(dir) {
     }
   }
 
-  applyEffects(_relAdjustEffects(currentCard, currentCard[dir + "_effects"] || {}));
+  applyEffects(_nisanAdjustEffects(_relAdjustEffects(currentCard, currentCard[dir + "_effects"] || {})));
   if (isGameOver) return;
   _relOnDecision(currentCard, dir);
   _fermanTrack();
+  _endTrack();
+  if (currentCard.id === "savaş_zafer") { const d = _defterGet(); d.end.wars++; _defterSet(d); }
+  if (currentCard.id === "rakip_devrilme_3") _endStationDone("rakip", 1);
 
   // Yeni karakterlerin özel etkileri
   if (currentCard.id === "genc_hain_ipucu" && dir === "right" && !traitorRevealed) {
@@ -8894,6 +9090,7 @@ window.addEventListener("touchend",  () => onEnd());
 // ── Yıl Geçişi ───────────────────────────────────────────────────
 function advanceYear() {
   _fermanCloseYear(); // biten yılın fermanı — paywall/sınır kontrollerinden önce
+  _endYearClose();    // kader yolu durakları + son kontrolü (aynı sebeple önce)
   // Paywall daha önce reddedildiyse: bir daha hiç paywall çıkmaz — bunun yerine
   // her oyun 2. yılın sonunda "ölümle" biter (Tam Sürüm alınana kadar kalıcı).
   // Bu ölüm kesin olmalı: normal triggerGameOver() İkinci Şans (reklam/akçe) teklifi
@@ -8917,6 +9114,7 @@ function advanceYear() {
   if (hasAdvisor("piri_reis")) {
     stats.hazine = Math.min(100, stats.hazine + 8);
   }
+  _nisanYearStart(); // Altın Akış / Adaletname
 
   const _diffMod = getDifficultyMod();
   stats.hazine = Math.max(0, stats.hazine - Math.round(PASSIVE_HAZINE_DRAIN * _diffMod.drain));
@@ -9156,7 +9354,7 @@ function _actuallyTriggerGameOver(reason, cause) {
 const DEATH_SCENE_KEYS = ["saray_0", "saray_100", "yeniceri_0", "yeniceri_100", "ulema_0", "ulema_100", "hazine_0", "hazine_100",
   "saglik", "azil", "sultan_guc", "padisah_red", "sehzade", "free_limit"];
 // Kendi görseli olmayan sebepler: en yakın sahne (başlık kendi adıyla kalır)
-const DEATH_SCENE_ALIAS = { yanlis_oda: "sultan_guc" };
+const DEATH_SCENE_ALIAS = { yanlis_oda: "sultan_guc", emeklilik: "free_limit" };
 function _deathSceneImage(key) { return DEATH_SCENE_KEYS.includes(key) ? key : (DEATH_SCENE_ALIAS[key] || "saray_0"); }
 function _playDeathScene(reason, key, onDone, onFail) {
   const pre = new Image();
@@ -9269,6 +9467,7 @@ function showGameOver(reason) {
 
 function getDynamicDeathTitle(reason) {
   const isEN = window.LANG === 'en';
+  if (_deathCause === "emeklilik") return isEN ? "AN HONOURABLE FAREWELL" : "ONURLU VEDA";
   if (reason.includes("idam"))                                    return isEN ? "EXECUTION ORDER ARRIVED"              : "İDAM FERMANI GELDİ";
   if (reason.includes("cellat"))                                  return isEN ? "MIDNIGHT'S END"                       : "GECE YARISI SONU";
   if (reason.includes("isyan") || reason.includes("Yeniçeri"))    return isEN ? "THE THRONE HAS FALLEN"                : "TAHT DEVRİLDİ";
@@ -10049,6 +10248,7 @@ function showGameMenu() {
     <div id="game-menu-box">
       <div id="game-menu-title">${isENMenu ? "PAUSED" : "DURAKLAT"}</div>
       <div id="game-menu-divider"></div>
+      ${_canRetire() ? `<button class="game-menu-option" id="gm-retire">${isENMenu ? "ASK TO RETIRE" : "EMEKLİLİĞİNİ İSTE"}</button>` : ""}
       <button class="game-menu-option secondary" id="gm-halka">${isENMenu ? "DIVAN CIRCLE" : "DİVAN HALKASI"}</button>
       <button class="game-menu-option secondary" id="gm-journal">${isENMenu ? "VIZIER'S JOURNAL" : "VEZİRLİK GÜNLÜĞÜ"}</button>
       <button class="game-menu-option secondary" id="gm-harita">${isENMenu ? "IMPERIAL MAP" : "İMPARATORLUK HARİTASI"}</button>
@@ -10060,6 +10260,7 @@ function showGameMenu() {
   document.body.appendChild(overlay);
 
   document.getElementById("gm-halka").addEventListener("click", () => { overlay.remove(); showDivanHalkasi(); });
+  document.getElementById("gm-retire")?.addEventListener("click", () => { overlay.remove(); askRetirement(); });
   document.getElementById("gm-journal").addEventListener("click", () => { overlay.remove(); showVezirlikGunlugu(); });
   document.getElementById("gm-harita").addEventListener("click",  () => { overlay.remove(); showHaritaOverlay(); });
   document.getElementById("gm-kodeks").addEventListener("click",  () => { overlay.remove(); showKartKodeksi(); });
