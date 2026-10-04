@@ -1625,7 +1625,7 @@ html, body {
   margin-top: 7px;
 }
 /* Yetersiz akçe yüzünden başka bir ekrandan gelindiyse sadece akçe keseleri görünsün */
-#akce-screen.from-need #market-noads, #akce-screen.from-need #market-bundle, #akce-screen.from-need #market-items { display: none; }
+#akce-screen.from-need #market-noads, #akce-screen.from-need #market-bundle, #akce-screen.from-need #market-items, #akce-screen.from-need #market-cosmetic { display: none; }
 
 /* ── Ferman Mührü — fiyat/miktar gösterimi (Akçe + Tam Sürüm ortak) ── */
 .pack-caption {
@@ -5553,3 +5553,33 @@ html, body {
 #divan-bg[data-mode="tense"] { opacity: .52; }
 #divan-bg[data-mode="crisis"] { opacity: .42; }
 #game.night-mode #divan-bg { opacity: .4; }
+
+/* ── Kişisel Mühür (4 Ekim 2026) ── */
+#market-cosmetic-list { width: 100%; }
+.mc-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(201,162,39,0.4); background: rgba(201,162,39,0.06); text-align: left; }
+.mc-prev svg { width: 54px; height: 54px; display: block; filter: drop-shadow(0 3px 4px rgba(0,0,0,.5)); }
+.mc-info { flex: 1; min-width: 0; }
+.mc-name { font-family: 'Cinzel', serif; font-weight: 600; font-size: 12.5px; color: var(--gold-light); }
+.mc-desc { font-family: 'IM Fell English', serif; font-size: 12.5px; line-height: 1.3; color: rgba(240,230,208,0.75); }
+.se-box { gap: 8px; }
+.se-prev svg { width: 150px; height: 150px; display: block; margin: 0 auto; filter: drop-shadow(0 6px 8px rgba(0,0,0,.6)); }
+.se-lbl { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2px; color: rgba(240,230,208,.55); margin-top: 4px; }
+.se-txt { width: 110px; text-align: center; font-family: 'Cinzel Decorative', serif; font-size: 24px; padding: 6px 10px; background: rgba(255,255,255,.05); border: 1px solid var(--gold-dim); border-radius: 6px; color: var(--gold-light); text-transform: uppercase; }
+.se-txt.need { border-color: #ff6b55; }
+.se-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.se-opt { font-family: 'Cinzel', serif; font-size: 11.5px; letter-spacing: .5px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--gold-dim); background: none; color: var(--text); cursor: pointer; }
+.se-opt.on { background: var(--gold); color: #1a1006; border-color: var(--gold); }
+.se-sw { width: 34px; height: 34px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+.se-sw.on { box-shadow: 0 0 0 2px #0b0812, 0 0 0 4px var(--gold-light); }
+.se-save { width: 100%; margin-top: 8px; padding: 12px; border-radius: 6px; border: 1px solid #E8C84A; background: linear-gradient(180deg, #E8C84A, #B38D1C); color: #1a1006; font-family: 'Cinzel', serif; font-weight: 700; font-size: 12.5px; letter-spacing: 2px; cursor: pointer; }
+.fm-paper { position: relative; }
+.fm-pseal { position: absolute; right: 14px; top: 46%; width: 70px; height: 70px; transform: scale(2.2) rotate(-14deg); opacity: 0; transition: transform .35s cubic-bezier(.3,1.5,.5,1), opacity .2s; pointer-events: none; }
+.fm-pseal.on { transform: scale(1) rotate(-10deg); opacity: 1; }
+.fm-pseal svg { width: 100%; height: 100%; filter: drop-shadow(0 3px 4px rgba(60,20,5,.5)); }
+.dv-seal { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.dv-seal .dv-pseal { width: 26px; height: 26px; }
+.df-pseal { margin-top: auto; align-self: flex-end; }
+.df-pseal svg { width: 56px; height: 56px; transform: rotate(-10deg); filter: drop-shadow(0 2px 3px rgba(60,20,5,.4)); }
+.vakayiname .vk-stamps { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.vakayiname .vk-stamps .vk-stamp { margin: 10px 0 0; }
+.vakayiname .vk-pseal svg { width: 62px; height: 62px; margin-top: 8px; transform: rotate(8deg); filter: drop-shadow(0 2px 3px rgba(60,20,5,.4)); }

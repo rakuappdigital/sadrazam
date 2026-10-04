@@ -2610,6 +2610,94 @@ async function purchaseBundle(statusEl) {
   }
 }
 
+// ── Kişisel Mühür (4 Ekim 2026, kullanıcı onayı E) ──────────────────────
+// 10 akçe, kalıcı. Oyuncunun 1–2 harfi + şekil (yuvarlak/sekizgen/tuğralı) + mum rengi.
+// Resim dosyası yok: her seferinde SVG çizilir. Görünür: ferman kabulünde basılır, Divan
+// Oturumu MÜHÜRLE düğmesi, Defter sayfası, Vakayiname. Sahibi ücretsiz yeniden düzenler.
+const SEAL_KEY = "sadrazam_seal", SEAL_PRICE = 10;
+const SEAL_WAX = { crimson: ["#d4473a", "#8a1d12", "#5e110a", "#e8c84a"], lapis: ["#4a6fc4", "#1e3a7a", "#11224a", "#e8c84a"], emerald: ["#3fa36e", "#1e6b45", "#0f3a25", "#e8c84a"], onyx: ["#4a423c", "#1b1715", "#0a0807", "#d8b44a"] };
+function _getSeal() { try { const s = JSON.parse(localStorage.getItem(SEAL_KEY) || "null"); return s && s.owned ? s : null; } catch (e) { return null; } }
+function _setSeal(s) { try { localStorage.setItem(SEAL_KEY, JSON.stringify(s)); } catch (e) {} }
+let _sealGid = 0;
+function _personalSealSVG(cfg, cls) {
+  if (!cfg) return "";
+  const [c0, c1, c2, g] = SEAL_WAX[cfg.color] || SEAL_WAX.crimson, id = "psw" + (_sealGid++);
+  const J = [3, -2, 4, 1, -3, 2, 5, -1, 2, -4, 3, 0, 4, -2, 1, 3, -3, 2, 0, 4, -1, 2, -2, 3];
+  const P = J.map((j, i) => { const a = i / J.length * Math.PI * 2, r = 43 + j * 0.55; return [50 + r * Math.cos(a), 50 + r * Math.sin(a)]; });
+  const M = P.map((p, i) => { const q = P[(i + 1) % P.length]; return [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; });
+  const f1 = (n) => n.toFixed(1);
+  const edge = `M${f1(M[0][0])} ${f1(M[0][1])} ` + P.map((_, i) => { const p = P[(i + 1) % P.length], m = M[(i + 1) % P.length]; return `Q${f1(p[0])} ${f1(p[1])} ${f1(m[0])} ${f1(m[1])}`; }).join(" ") + "Z";
+  const oct = (r) => Array.from({ length: 8 }, (_, i) => { const a = (i / 8) * Math.PI * 2 + Math.PI / 8; return `${(50 + r * Math.cos(a)).toFixed(1)},${(50 + r * Math.sin(a)).toFixed(1)}`; }).join(" ");
+  const ring = cfg.shape === "oct"
+    ? `<polygon points="${oct(31)}" fill="none" stroke="${g}" stroke-width="1.6"/><polygon points="${oct(26.5)}" fill="none" stroke="${g}" stroke-width=".6" stroke-dasharray="1.5 2"/>`
+    : `<circle cx="50" cy="50" r="30" fill="none" stroke="${g}" stroke-width="1.6"/><circle cx="50" cy="50" r="26" fill="none" stroke="${g}" stroke-width=".6" stroke-dasharray="1.5 2"/>`;
+  const t = String(cfg.txt || "S").toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, "").slice(0, 2) || "S";
+  let mid;
+  if (cfg.shape === "tugra") {
+    const tg = _TUGRA_SVG.replace('class="fm-tugra"', 'x="29" y="18" width="42" height="27"').replace('aria-hidden="true"', '');
+    mid = `<g style="color:${g}" opacity=".85">${tg}</g><text x="50" y="72" text-anchor="middle" font-family="'Cinzel Decorative','Cinzel',serif" font-weight="700" font-size="${t.length > 1 ? 15 : 18}" fill="${g}">${t}</text>`;
+  } else {
+    mid = `<text x="50" y="${t.length > 1 ? 58 : 60}" text-anchor="middle" font-family="'Cinzel Decorative','Cinzel',serif" font-weight="700" font-size="${t.length > 1 ? 22 : 28}" fill="${g}" letter-spacing="1">${t}</text>`;
+  }
+  return `<svg class="${cls || ""}" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="${id}" cx="38%" cy="32%"><stop offset="0" stop-color="${c0}"/><stop offset=".7" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient></defs><path d="${edge}" fill="url(#${id})"/>${ring}${mid}</svg>`;
+}
+function renderMarketCosmetics() {
+  const box = document.getElementById("market-cosmetic-list"); if (!box) return;
+  const en = window.LANG === 'en', own = _getSeal();
+  const preview = own || { color: "crimson", shape: "round", txt: en ? "GV" : "SD" };
+  box.innerHTML = `<div class="mc-row"><div class="mc-prev">${_personalSealSVG(preview)}</div>
+    <div class="mc-info"><div class="mc-name">${en ? "Personal Seal" : "Kişisel Mühür"}</div><div class="mc-desc">${en ? "Your initials, your shape and wax colour. Pressed on your decrees, Divan decisions and Ledger pages." : "Baş harflerin, seçtiğin şekil ve mum rengi. Fermanlarına, Divan kararlarına ve Defter sayfalarına basılır."}</div></div>
+    <button type="button" class="mi-buy mc-btn">${own ? (en ? "EDIT" : "DÜZENLE") : `${SEAL_PRICE} ${AKCE_COIN_SVG}`}</button></div>`;
+  box.querySelector(".mc-btn").onclick = () => {
+    const status = document.getElementById("akce-status");
+    if (_getSeal()) { showSealEditor(); return; }
+    if (!spendAkce(SEAL_PRICE)) {
+      if (status) status.textContent = en ? `You need ${SEAL_PRICE} akce. Pouches are below.` : `${SEAL_PRICE} akçe gerekiyor. Keseler aşağıda.`;
+      document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    updateAkceUI();
+    _setSeal({ owned: true, txt: "", shape: "round", color: "crimson" });
+    if (window.playSelectConfirm) playSelectConfirm();
+    if (status) status.textContent = en ? "Your seal is ready. Choose your letters." : "Mührün hazır. Harflerini seç.";
+    renderMarketCosmetics();
+    showSealEditor();
+  };
+}
+function showSealEditor() {
+  const en = window.LANG === 'en', cur = _getSeal(); if (!cur) return;
+  const cfg = { txt: cur.txt || "", shape: cur.shape || "round", color: cur.color || "crimson" };
+  const ov = document.createElement("div");
+  ov.className = "info-panel-overlay"; ov.id = "seal-editor";
+  ov.innerHTML = `<div class="ip-box se-box"><div class="ip-title">${en ? "YOUR SEAL" : "MÜHRÜN"}</div><div class="ip-div"></div>
+    <div class="se-prev"></div>
+    <label class="se-lbl" for="se-txt">${en ? "LETTERS (1–2)" : "HARFLER (1–2)"}</label>
+    <input id="se-txt" class="se-txt" type="text" maxlength="2" autocomplete="off" autocapitalize="characters" value="${cfg.txt}">
+    <div class="se-lbl">${en ? "SHAPE" : "ŞEKİL"}</div>
+    <div class="se-row">${[["round", en ? "Round" : "Yuvarlak"], ["oct", en ? "Octagon" : "Sekizgen"], ["tugra", en ? "Tughra" : "Tuğralı"]].map(([k, l]) => `<button type="button" class="se-opt" data-shape="${k}">${l}</button>`).join("")}</div>
+    <div class="se-lbl">${en ? "WAX" : "MUM RENGİ"}</div>
+    <div class="se-row">${Object.keys(SEAL_WAX).map(k => `<button type="button" class="se-sw" data-color="${k}" style="background:${SEAL_WAX[k][1]}" aria-label="${k}"></button>`).join("")}</div>
+    <button type="button" class="se-save">${en ? "SAVE" : "KAYDET"}</button></div>`;
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+  const draw = () => {
+    ov.querySelector(".se-prev").innerHTML = _personalSealSVG({ ...cfg, txt: cfg.txt || "?" });
+    ov.querySelectorAll(".se-opt").forEach(b => b.classList.toggle("on", b.dataset.shape === cfg.shape));
+    ov.querySelectorAll(".se-sw").forEach(b => b.classList.toggle("on", b.dataset.color === cfg.color));
+  };
+  const inp = ov.querySelector("#se-txt");
+  inp.addEventListener("input", () => { cfg.txt = inp.value.toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, "").slice(0, 2); inp.value = cfg.txt; draw(); });
+  ov.querySelectorAll(".se-opt").forEach(b => b.onclick = () => { cfg.shape = b.dataset.shape; draw(); });
+  ov.querySelectorAll(".se-sw").forEach(b => b.onclick = () => { cfg.color = b.dataset.color; draw(); });
+  ov.querySelector(".se-save").onclick = () => {
+    if (!cfg.txt) { inp.focus(); inp.classList.add("need"); return; }
+    _setSeal({ owned: true, ...cfg });
+    ov.classList.remove("on"); setTimeout(() => ov.remove(), 300);
+    renderMarketCosmetics();
+  };
+  draw();
+}
+
 // ── Market: Eşyalar (3 Ekim 2026) ──
 // Oyun dışında 1 akçeyle alınır, "sandık"ta bekler (en fazla 3), bir sonraki saltanatın
 // başında boş kutulara kalıcı olarak (kullanılana kadar) konur.
@@ -2668,6 +2756,7 @@ function showAkceScreen() {
   updateBundleUI();
   updateStarterUI();
   renderMarketItems();
+  renderMarketCosmetics();
   const status = document.getElementById('akce-status');
   if (status) status.textContent = '';
 }
@@ -7058,7 +7147,16 @@ function _showFermanOverlay(item, done) {
   try { if (item.kind !== "view") (item.kind === "result" && !item.ok) ? Haptics.statNegative() : Haptics.letterArrival(); } catch (e) {}
   if (item.kind === "result") setTimeout(() => ov.querySelector(".fm-verdict")?.classList.add("stamped"), 650);
   const close = () => { ov.classList.remove("on"); setTimeout(() => { ov.remove(); done(); }, 320); };
-  ov.querySelector(".fm-btn").onclick = close;
+  ov.querySelector(".fm-btn").onclick = () => {
+    const seal = item.kind === "new" ? _getSeal() : null;
+    if (!seal) { close(); return; }
+    // Kişisel mühür: kabul ederken fermanın altına basılır
+    const st = document.createElement("div"); st.className = "fm-pseal"; st.innerHTML = _personalSealSVG(seal);
+    ov.querySelector(".fm-paper").appendChild(st);
+    requestAnimationFrame(() => st.classList.add("on"));
+    try { Haptics.cardPickup(); } catch (e) {}
+    setTimeout(close, 750);
+  };
   const rr = ov.querySelector(".fm-reroll");
   if (rr) rr.onclick = () => {
     const st = ov.querySelector(".fm-status");
@@ -7319,7 +7417,7 @@ function showDivanOturumu(c) {
         <span class="dv-delta"></span>
       </button>`; }).join("")}</div>
     <div class="dv-hint">${en ? "Back one voice. The other two will remember." : "Bir görüşü destekle. Diğer ikisi bunu unutmaz."}</div>
-    <button type="button" class="dv-seal" disabled>${en ? "SEAL THE DECISION" : "MÜHÜRLE"}</button>
+    <button type="button" class="dv-seal" disabled>${_getSeal() ? _personalSealSVG(_getSeal(), "dv-pseal") : ""}${en ? "SEAL THE DECISION" : "MÜHÜRLE"}</button>
     <button type="button" class="dv-sultan">${en ? "Leave it to the Sultan · Patience −5" : "Kararı Sultan'a bırak · Sabır −5"}</button>
   </div>`;
   document.body.appendChild(ov);
@@ -7432,7 +7530,7 @@ function showDefter(startPage) {
       <div class="df-spread">
         <div class="df-page df-left"><div class="df-pagein">${pageHTML()}</div>
           ${d.pages.length > 1 ? `<div class="df-nav"><button type="button" class="df-prev" aria-label="${en ? "Older" : "Önceki"}">‹</button><span>${idx + 1} / ${d.pages.length}</span><button type="button" class="df-next-btn" aria-label="${en ? "Newer" : "Sonraki"}">›</button></div>` : ""}</div>
-        <div class="df-page df-right">${trackHTML()}</div>
+        <div class="df-page df-right">${trackHTML()}${_getSeal() ? `<div class="df-pseal">${_personalSealSVG(_getSeal())}</div>` : ""}</div>
       </div>
       <button type="button" class="df-close">${en ? "CLOSE" : "KAPAT"}</button>
     </div>`;
@@ -9443,7 +9541,7 @@ function _chronicleHTML() {
     <p class="vk-intro">${esc(epilog[0] || "")}</p>
     <ol class="vk-list">${items}</ol>
     <div class="vk-end">${epilog.slice(1).map(l => `<p>${esc(l)}</p>`).join("")}</div>
-    <div class="vk-stamp"><b>${year}</b><span>${en ? (year === 1 ? "YEAR" : "YEARS") : "YIL"}</span></div>`;
+    <div class="vk-stamps"><div class="vk-stamp"><b>${year}</b><span>${en ? (year === 1 ? "YEAR" : "YEARS") : "YIL"}</span></div>${_getSeal() ? `<div class="vk-pseal">${_personalSealSVG(_getSeal())}</div>` : ""}</div>`;
 }
 
 function renderEpilog() {
