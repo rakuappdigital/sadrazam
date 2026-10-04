@@ -3438,6 +3438,7 @@ function startGame() {
   _timedUsedYear = 0;
   _ferman = null; _fermanStreak = 0; _fermanQueue = []; _fermanShowing = false; _fermanDoneThisGame = 0; _fermanTotalThisGame = 0;
   document.getElementById("ferman-chip")?.remove();
+  relPoints = {}; _relRescued = {}; _relKomploAt = {}; _relKomploDone = {}; _divanYear = 0; _divanUsed = [];
   _agedSeenThisGame = new Set();
   _stampMeta = new Map();
   _hekimYesCount = 0; _knotIdsSeenThisGame = new Set(); _challengeRewarded = false;
@@ -3610,6 +3611,18 @@ const TUTORIAL_STEPS = [
     icon: "assets/icons/icon-hazine.png",
     title: "Hazine",
     desc: "Devlet kasası. Boşalırsa iflas, taşarsa zimmet suçlaması."
+  },
+  {
+    stat: null,
+    icon: null,
+    title: "Padişah Fermanı",
+    desc: "Her yılın başında Sultan bir ferman verir. Yıl sonunda bakılır: yerine getirirsen sabrı artar, Vezirler Defteri'ne mühür düşer."
+  },
+  {
+    stat: null,
+    icon: null,
+    title: "Divan'ın İnsanları",
+    desc: "Valide Sultan, Rakip Vezir, Yeniçeri Ağası, Şeyhülislam, Defterdar ve Casuslar Başı seni hatırlar. İsteklerini kabul ettikçe yakınlaşır, reddettikçe uzaklaşırsın. Can dostun seni bir kez ölümden kurtarır; can düşmanın komplo kurar."
   },
   {
     stat: null,
@@ -3891,6 +3904,7 @@ function saveGameState() {
       muneccimN: _muneccimN, muneccimAt: _muneccimAt,
       timedUsedYear: _timedUsedYear,
       ferman: _ferman, fermanStreak: _fermanStreak, fermanDone: _fermanDoneThisGame, fermanTotal: _fermanTotalThisGame,
+      relPoints, relRescued: _relRescued, relKomploAt: _relKomploAt, relKomploDone: _relKomploDone, divanYear: _divanYear, divanUsed: _divanUsed,
       chronicle,
       v: 3
     };
@@ -4002,6 +4016,8 @@ function loadGameState(s) {
   _ferman = s.ferman || null; _fermanStreak = s.fermanStreak || 0; _fermanQueue = []; _fermanShowing = false;
   _fermanDoneThisGame = s.fermanDone || 0; _fermanTotalThisGame = s.fermanTotal || 0;
   setTimeout(_renderFermanChip, 0);
+  relPoints = s.relPoints || {}; _relRescued = s.relRescued || {}; _relKomploAt = s.relKomploAt || {}; _relKomploDone = s.relKomploDone || {};
+  _divanYear = s.divanYear || 0; _divanUsed = s.divanUsed || [];
   chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
   isGameOver = false;
   activeArcs = {};
@@ -4675,6 +4691,13 @@ function dealNext() {
   isInvestigating = false;
   if (c.character === "1-sultan") _lastSultanCardAt = cardsPlayed;
 
+  _renderCardRel(null);
+  // Divan Oturumu (3 Ekim 2026)
+  if (c.type === "divan") {
+    showDivanOturumu(c);
+    return;
+  }
+
   // Easter egg kartı
   if (c.type === "easter") {
     showEasterCard(c);
@@ -4812,6 +4835,7 @@ function dealNext() {
   }
 
   charName.textContent = (_isEN && c.character_name_en) ? c.character_name_en : (c.character_name || "");
+  _renderCardRel(c);
   cardText.textContent = displayText;
   const _leftTxt  = (_isEN && c.left_text_en)  ? c.left_text_en  : (c.left_text  || (_isEN ? "No"  : "Hayır"));
   const _rightTxt = (_isEN && c.right_text_en) ? c.right_text_en : (c.right_text || (_isEN ? "Yes" : "Evet"));
@@ -6664,7 +6688,7 @@ function _timeoutEffects(c) {
 function _fusePaused() {
   if (document.hidden) return true;
   if (_settOv && _settOv.style.display === 'flex') return true;
-  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay");
+  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay, #divan-oturumu, .info-panel-overlay, #rel-rescue-overlay");
 }
 function _maybeStartFuse(c) {
   _stopFuse();
@@ -6977,6 +7001,270 @@ function _defterGet() { try { const d = JSON.parse(localStorage.getItem(DEFTER_K
 function _defterSet(d) { try { localStorage.setItem(DEFTER_KEY, JSON.stringify(d)); } catch (e) {} }
 function _defterAddFerman() { const d = _defterGet(); d.fermans++; d.seals++; _defterSet(d); _fermanDoneThisGame++; return d.fermans; }
 let _fermanDoneThisGame = 0, _fermanTotalThisGame = 0;
+
+// ── Ana Kadro: ilişkiler (3 Ekim 2026) ─────────────────────────────────
+// Altı karakter oyuncuyu hatırlar. Kendi kartlarında isteğini kabul (sağ) +1, ret (sol)
+// −1 puan; 2 puan = 1 kademe (−3..+3). Divan Oturumu'nda destek ±2.
+//   Müttefik (+2): o karakterin kendi kartlarındaki olumsuz etkiler −%20
+//   Can Dostu (+3): saltanat başına bir kez, kendi alanındaki ölümden kurtarır
+//   Hasım (−2): o karakterin kartlarındaki olumsuz etkiler +%20
+//   Can Düşmanı (−3): saltanat başına bir kez, 15–25 kart sonra komplo kartı
+// Sadece mevcut kartların etkisini çarpar; yeni kart akışı yalnız kurtarma/komplo/Divan.
+const CAST = {
+  "5-valide-sultan":  { tr: "Valide Sultan",   en: "Valide Sultan",        rescue: [["saray", 0, 30]] },
+  "8-rakip-vezir":    { tr: "Rakip Vezir",     en: "Rival Vizier",         rescue: [["sabir", 0, 30]] },
+  "2-yeniceri":       { tr: "Yeniçeri Ağası",  en: "Janissary Commander",  rescue: [["yeniçeri", 0, 30], ["yeniçeri", 100, 70]] },
+  "3-seyhulislam":    { tr: "Şeyhülislam",     en: "Şeyhülislam",          rescue: [["ulema", 0, 30], ["ulema", 100, 70]] },
+  "4-defterdar":      { tr: "Defterdar",       en: "Treasurer",            rescue: [["hazine", 0, 30], ["hazine", 100, 70]] },
+  "14-casuslar_basi": { tr: "Casuslar Başı",   en: "Spymaster",            rescue: [["saray", 100, 70]] },
+};
+const REL_LEVELS = [
+  { tr: "CAN DÜŞMANI", en: "SWORN ENEMY", c: "#c2412f" }, { tr: "HASIM", en: "ADVERSARY", c: "#d9774a" }, { tr: "SOĞUK", en: "COLD", c: "#b9a07a" },
+  { tr: "TARAFSIZ", en: "NEUTRAL", c: "#8a8378" }, { tr: "YAKIN", en: "CLOSE", c: "#8fc79f" }, { tr: "MÜTTEFİK", en: "ALLY", c: "#4fae6c" }, { tr: "CAN DOSTU", en: "SWORN FRIEND", c: "#e8c84a" },
+];
+const RESCUE_TEXT = {
+  "5-valide-sultan":  ["Valide Sultan, Sultan'ın kulağına eğildi: \"Oğlum, bu adam bize sadıktır.\" Ferman yırtıldı.", "The Valide Sultan leaned to her son's ear: \"My son, this man is loyal to us.\" The decree was torn up."],
+  "8-rakip-vezir":    ["Rakip Vezir, beklenmedik biçimde senin için kefil oldu. Sultan azil kararını erteledi.", "Against all expectation, the Rival Vizier vouched for you. The Sultan postponed your dismissal."],
+  "2-yeniceri":       ["Yeniçeri Ağası ocağı yatıştırdı: \"Sadrazam bizdendir.\" Kazanlar yerine kondu.", "The Janissary Commander calmed the corps: \"The Grand Vizier is one of us.\" The cauldrons were set back in place."],
+  "3-seyhulislam":    ["Şeyhülislam cuma hutbesinde senin adını andırdı. Ulema saflarını yeniden düzenledi.", "The Şeyhülislam had your name spoken in the Friday sermon. The ulema closed ranks again."],
+  "4-defterdar":      ["Defterdar, Hazine-i Enderun'un gizli sandığını açtı: \"Bu günler için saklamıştım, Paşam.\"", "The Treasurer opened the inner treasury's hidden chest: \"I kept this for days like these, Pasha.\""],
+  "14-casuslar_basi": ["Casuslar Başı, Sultan'ın kuşkusunu besleyen mektubu yolda yakaladı ve yaktı.", "The Spymaster intercepted the letter feeding the Sultan's suspicion and burned it."],
+};
+const KOMPLO = {
+  "5-valide-sultan":  { tr: ["Valide Sultan seni Haseki'yle aynı odaya çağırdı. \"Ya şehzadem için sancak, ya da Sultan'a senin mektuplarını okurum.\"", "Sancağı ver", "Mektupları yak, ne olursa olsun"], en: ["The Valide Sultan summoned you before the Haseki. \"Either a province for my prince, or I read your letters to the Sultan.\"", "Grant the province", "Burn the letters, come what may"], l: { saray: 6, "yeniçeri": -8, hazine: -8 }, r: { saray: -14, ulema: 4 } },
+  "8-rakip-vezir":    { tr: ["Rakip Vezir, Divan'da senin aleyhine sahte bir zimmet defteri açtı. Herkes sana bakıyor.", "Defteri kabul et, öde", "Onu iftiracı ilan et"], en: ["In the Divan, the Rival Vizier opened a forged ledger accusing you of embezzlement. Every eye is on you.", "Accept the ledger, pay", "Denounce him as a slanderer"], l: { hazine: -14, saray: 4 }, r: { saray: -10, "yeniçeri": -5, ulema: 3 } },
+  "2-yeniceri":       { tr: ["Yeniçeri Ağası, ocağı Et Meydanı'na topladı. \"Ya bahşiş, ya sadrazamın başı.\"", "Bahşişi dağıt", "Sipahileri çağır"], en: ["The Janissary Commander gathered the corps in the Meat Square. \"Either a bonus, or the Grand Vizier's head.\"", "Pay the bonus", "Call the cavalry"], l: { hazine: -14, "yeniçeri": 6 }, r: { "yeniçeri": -14, saray: 5 } },
+  "3-seyhulislam":    { tr: ["Şeyhülislam, senin kararların için fetva hazırlattığını söyledi: \"Bid'at.\" Fetva cuma okunacak.", "Medreselere vakıf bağışla", "Fetvaya karşı çık"], en: ["The Şeyhülislam says he has had a fatwa drawn up against your rulings: \"Innovation.\" It will be read on Friday.", "Endow the madrasas", "Oppose the fatwa"], l: { hazine: -12, ulema: 6 }, r: { ulema: -14, saray: 4 } },
+  "4-defterdar":      { tr: ["Defterdar hesapları kilitledi. \"Ya beni Hazine'nin tek sahibi yaparsın, ya maaş günü kasada akçe olmaz.\"", "Yetkiyi ver", "Defterleri el koy"], en: ["The Treasurer has locked the accounts. \"Make me sole master of the treasury, or there will be no coin on payday.\"", "Grant the authority", "Seize the ledgers"], l: { saray: -8, hazine: 4, ulema: -4 }, r: { hazine: -14, "yeniçeri": -4 } },
+  "14-casuslar_basi": { tr: ["Casuslar Başı gece odana girdi. \"Senin hakkında bildiklerimi Venedik de bilmek istiyor. Fiyatımı biliyorsun.\"", "Fiyatını öde", "Onu zindana at"], en: ["The Spymaster entered your chamber at night. \"Venice wants to know what I know about you. You know my price.\"", "Pay his price", "Throw him in the dungeon"], l: { hazine: -13, saray: 3 }, r: { saray: -10, ulema: -4 } },
+};
+let relPoints = {};          // key -> -6..6
+let _relRescued = {};        // key -> true (saltanat başına bir kez)
+let _relKomploAt = {};       // key -> cardsPlayed (zamanlanmış komplo)
+let _relKomploDone = {};
+function relLevel(key) { const p = relPoints[key] || 0; return Math.max(-3, Math.min(3, Math.trunc(p / 2))); }
+function _relName(lv, en) { return REL_LEVELS[lv + 3][en ? "en" : "tr"]; }
+function _castName(key, en) { return CAST[key] ? CAST[key][en ? "en" : "tr"] : key; }
+// decide(): kart etkileri uygulanmadan önce — kendi kartındaki olumsuzlar ilişkiye göre çarpılır
+function _relAdjustEffects(card, fx) {
+  if (!card || !CAST[card.character] || card._divan) return fx;
+  const lv = relLevel(card.character);
+  const m = lv >= 2 ? 0.8 : lv <= -2 ? 1.2 : 1;
+  if (m === 1) return fx;
+  const out = {};
+  for (const [k, v] of Object.entries(fx || {})) out[k] = (typeof v === "number" && v < 0) ? Math.round(v * m) : v;
+  return out;
+}
+function relChange(key, delta, quiet) {
+  if (!CAST[key] || !delta) return;
+  const before = relLevel(key);
+  relPoints[key] = Math.max(-6, Math.min(6, (relPoints[key] || 0) + delta));
+  const after = relLevel(key);
+  if (after !== before) {
+    if (!quiet) _showRelToast(key, before, after);
+    if (after === -3 && !_relKomploDone[key] && _relKomploAt[key] == null) _relKomploAt[key] = cardsPlayed + 15 + Math.floor(Math.random() * 11);
+    _maybeRelTip();
+  }
+}
+function _relOnDecision(card, dir) {
+  if (!card || card._divan || card._timeout || !CAST[card.character]) return;
+  relChange(card.character, dir === "right" ? 1 : -1);
+}
+// checkGameOver / checkSultanSabir: Can Dostu kurtarması
+function _relTryRescue(stat, edge) {
+  for (const [key, c] of Object.entries(CAST)) {
+    if (relLevel(key) < 3 || _relRescued[key]) continue;
+    const r = c.rescue.find(([s, e]) => s === stat && e === edge);
+    if (!r) continue;
+    _relRescued[key] = true;
+    if (stat === "sabir") sultanSabir = r[2]; else stats[stat] = r[2];
+    updateStatUI();
+    _showRescue(key);
+    return true;
+  }
+  return false;
+}
+function _relDueKomplo() {
+  for (const [key, at] of Object.entries(_relKomploAt)) {
+    if (at == null || cardsPlayed < at || _relKomploDone[key]) continue;
+    _relKomploDone[key] = true; _relKomploAt[key] = null;
+    if (relLevel(key) > -3) continue; // bu arada barışıldıysa komplo yok
+    const k = KOMPLO[key];
+    const card = { id: "komplo_" + key + "_" + cardsPlayed, character: key, character_name: CAST[key].tr, character_name_en: CAST[key].en,
+      text: k.tr[0], text_en: k.en[0], left_text: k.tr[1], left_text_en: k.en[1], right_text: k.tr[2], right_text_en: k.en[2],
+      left_effects: k.l, right_effects: k.r, left_flags_set: [], right_flags_set: [], required_flags: [], excluded_flags: [], weight: 1, category: "intrigue", _komplo: true };
+    forcedQueue.unshift(card);
+    // komplo çözülünce ilişki Hasım'a döner
+    relPoints[key] = -4;
+  }
+}
+function _showRelToast(key, before, after) {
+  const game = document.getElementById("game"); if (!game) return;
+  const en = window.LANG === 'en', up = after > before, L = REL_LEVELS[after + 3];
+  const t = document.createElement("div");
+  t.className = "rel-toast";
+  t.innerHTML = `<span class="rt-med" style="background-image:url('assets/characters/${encodeURIComponent(key)}.jpg');--rc:${L.c}"></span><span class="rt-txt"><b>${_castName(key, en)}</b><em style="color:${L.c}">${up ? "▲" : "▼"} ${L[en ? "en" : "tr"]}</em></span>`;
+  game.appendChild(t);
+  requestAnimationFrame(() => t.classList.add("on"));
+  setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, 2300);
+}
+function _showRescue(key) {
+  const en = window.LANG === 'en';
+  const ov = document.createElement("div");
+  ov.id = "rel-rescue-overlay";
+  ov.innerHTML = `<div class="rr-box"><div class="rr-k">${en ? "SWORN FRIEND" : "CAN DOSTU"}</div><div class="rr-med" style="background-image:url('assets/characters/${encodeURIComponent(key)}.jpg')"></div><div class="rr-name">${_castName(key, en)}</div><p>${RESCUE_TEXT[key][en ? 1 : 0]}</p><button type="button">${en ? "CONTINUE" : "DEVAM"}</button></div>`;
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+  try { Haptics.achievement(); } catch (e) {}
+  ov.querySelector("button").onclick = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 300); };
+}
+// İlk kademe değişiminde bir kez: ilişkiler nasıl çalışır
+function _maybeRelTip() {
+  try { if (localStorage.getItem("sadrazam_rel_tip") === "1") return; localStorage.setItem("sadrazam_rel_tip", "1"); } catch (e) { return; }
+  setTimeout(() => _showInfoPanel(window.LANG === 'en'
+    ? ["THE PEOPLE OF THE DIVAN", "Six people remember you: the Valide Sultan, the Rival Vizier, the Janissary Commander, the Şeyhülislam, the Treasurer and the Spymaster. Grant their requests and they draw closer; refuse and they drift away.", "An Ally softens the harm their own requests do you. A Sworn Friend saves you from death once. A Sworn Enemy plots against you. You can see everyone in the menu, under Divan Circle."]
+    : ["DİVAN'IN İNSANLARI", "Altı kişi seni hatırlar: Valide Sultan, Rakip Vezir, Yeniçeri Ağası, Şeyhülislam, Defterdar ve Casuslar Başı. İsteklerini kabul ettikçe yakınlaşır, reddettikçe uzaklaşırsın.", "Müttefikin kendi isteklerinin sana verdiği zararı azaltır. Can dostun seni bir kez ölümden kurtarır. Can düşmanın komplo kurar. Herkesi menüde, Divan Halkası'nda görebilirsin."]), 900);
+}
+function _showInfoPanel([title, p1, p2]) {
+  const ov = document.createElement("div");
+  ov.className = "info-panel-overlay";
+  ov.innerHTML = `<div class="ip-box"><div class="ip-title">${title}</div><div class="ip-div"></div><p>${p1}</p><p>${p2}</p><button type="button">${window.LANG === 'en' ? "UNDERSTOOD" : "ANLADIM"}</button></div>`;
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+  ov.querySelector("button").onclick = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 300); };
+}
+// Kartta ilişki işareti (isim yanında 3 nokta)
+function _renderCardRel(c) {
+  let el = document.getElementById("card-rel");
+  if (!el) { el = document.createElement("span"); el.id = "card-rel"; charName.insertAdjacentElement("afterend", el); }
+  if (!c || !CAST[c.character] || c.type) { el.innerHTML = ""; el.style.display = "none"; return; }
+  const lv = relLevel(c.character), L = REL_LEVELS[lv + 3], n = Math.abs(lv), en = window.LANG === 'en';
+  el.style.display = "";
+  el.innerHTML = `<span class="cr-dots">${[0, 1, 2].map(i => `<i style="${i < n ? `background:${L.c};border-color:${L.c}` : `border-color:${L.c}`}"></i>`).join("")}</span><span class="cr-lbl" style="color:${L.c}">${L[en ? "en" : "tr"]}</span>`;
+}
+// Divan Halkası (oyun içi menü)
+function showDivanHalkasi() {
+  const en = window.LANG === 'en';
+  const ov = document.createElement("div");
+  ov.className = "info-panel-overlay";
+  const rows = Object.keys(CAST).map(k => {
+    const lv = relLevel(k), L = REL_LEVELS[lv + 3];
+    const perk = lv >= 3 ? (_relRescued[k] ? (en ? "Rescue used" : "Kurtarma kullanıldı") : (en ? "Will save you once" : "Seni bir kez kurtarır")) : lv === 2 ? (en ? "Their harm −20%" : "Verdiği zarar −%20") : lv === -2 ? (en ? "Their harm +20%" : "Verdiği zarar +%20") : lv <= -3 ? (en ? "Plotting against you" : "Komplo kuruyor") : "";
+    return `<div class="dh-row"><span class="dh-med" style="background-image:url('assets/characters/${encodeURIComponent(k)}.jpg');--rc:${L.c}"></span><span class="dh-info"><b>${_castName(k, en)}</b><em style="color:${L.c}">${L[en ? "en" : "tr"]}</em>${perk ? `<small>${perk}</small>` : ""}</span></div>`;
+  }).join("");
+  ov.innerHTML = `<div class="ip-box dh-box"><div class="ip-title">${en ? "DIVAN CIRCLE" : "DİVAN HALKASI"}</div><div class="ip-div"></div><div class="dh-list">${rows}</div><p class="dh-note">${en ? "Grant requests to draw closer, refuse to drift apart." : "İsteklerini kabul ettikçe yakınlaşır, reddettikçe uzaklaşırsın."}</p><button type="button">${en ? "CLOSE" : "KAPAT"}</button></div>`;
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+  ov.querySelector("button").onclick = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 300); };
+}
+
+// ── Divan Oturumu (3 Ekim 2026) ─────────────────────────────────────────
+// Yılda bir (yılın 12. kartında) ana kadrodan üç kişi aynı meseleyi tartışır. Bir
+// portreye dokun → etkileri ve kimin küseceğini gör → MÜHÜRLE. Desteklenen +2, diğer
+// ikisi −2 puan. "Kararı Sultan'a bırak": etkisiz, ilişki değişmez, Sultan sabrı −5.
+// Kart sayılır (cardsPlayed++), normal karar yolundan (decide) geçer.
+const DIVAN_ISSUES = [
+  { tr: "Sefer için hazineden ne kadar ayrılsın?", en: "How much of the treasury should go to the campaign?", seats: [
+    ["4-defterdar", "Sefer hazineyi boşaltır. Önce borçları kapatalım.", "A campaign empties the treasury. Settle the debts first.", { hazine: 8, "yeniçeri": -6 }],
+    ["2-yeniceri", "Ocak sefer bekliyor. Kılıç paslanırsa isyan çıkar.", "The corps awaits a campaign. A rusting sword breeds revolt.", { "yeniçeri": 10, hazine: -9 }],
+    ["3-seyhulislam", "Fetva hazır: gaza farzdır. Ama önce halkın duası.", "The fatwa is ready: holy war is a duty. But first, the people's prayers.", { ulema: 8, saray: -4 }]] },
+  { tr: "Venedik yeni ticaret ayrıcalıkları istiyor.", en: "Venice asks for new trade privileges.", seats: [
+    ["4-defterdar", "Gümrük gelirimiz ikiye katlanır.", "Our customs revenue would double.", { hazine: 9, ulema: -5 }],
+    ["3-seyhulislam", "Kâfire imtiyaz, ümmete zarardır.", "Privileges for the infidel harm the faithful.", { ulema: 8, hazine: -6 }],
+    ["14-casuslar_basi", "Verelim; karşılığında Venedik'in sırlarını alırız.", "Grant it; in return we take Venice's secrets.", { saray: 6, "yeniçeri": -5 }]] },
+  { tr: "Akçenin ayarını düşürelim mi?", en: "Should we debase the akce?", seats: [
+    ["4-defterdar", "Gümüşü azaltırsak kasa nefes alır.", "Less silver in the coin, and the treasury breathes.", { hazine: 12, "yeniçeri": -8, ulema: -3 }],
+    ["2-yeniceri", "Ocak, ayarı düşük akçeyle ödenmez!", "The corps will not be paid in debased coin!", { "yeniçeri": 8, hazine: -8 }],
+    ["5-valide-sultan", "Akçeye dokunmayın; saray harcamasını kısarım.", "Leave the coin alone; I will cut the palace's spending.", { saray: -6, hazine: 6 }]] },
+  { tr: "Yeni vakıf geliri medreseye mi, kışlaya mı?", en: "The new endowment income: the madrasa or the barracks?", seats: [
+    ["3-seyhulislam", "İlim olmadan devlet ayakta durmaz.", "Without learning, no state endures.", { ulema: 9, "yeniçeri": -5 }],
+    ["2-yeniceri", "Sınırda kılıç yoksa medreseyi kim korur?", "If there is no sword at the border, who guards the madrasa?", { "yeniçeri": 9, ulema: -5 }],
+    ["4-defterdar", "İkisine de değil; hazinede kalsın.", "Neither; keep it in the treasury.", { hazine: 7, ulema: -3, "yeniçeri": -3 }]] },
+  { tr: "Şehzade nerede yetişsin?", en: "Where should the prince be raised?", seats: [
+    ["5-valide-sultan", "Manisa'ya gitsin; dedeleri gibi sancakta pişsin.", "Send him to Manisa; let him be forged in a province like his forefathers.", { saray: 8, "yeniçeri": -4 }],
+    ["8-rakip-vezir", "İstanbul'da kalsın, göz önünde olsun.", "Let him stay in Istanbul, where we can watch him.", { saray: -5, ulema: 5 }],
+    ["14-casuslar_basi", "Nereye giderse gitsin, yanına bizim adamımızı verelim.", "Wherever he goes, let him go with one of our men.", { saray: 4, hazine: -5 }]] },
+  { tr: "Kahvehaneler fitne yuvası mı?", en: "Are the coffeehouses nests of sedition?", seats: [
+    ["3-seyhulislam", "Kapatılsın; namaz vakti kahve içiliyor.", "Close them; they drink coffee at prayer time.", { ulema: 9, hazine: -5 }],
+    ["4-defterdar", "Kapatmayın, vergilendirin.", "Don't close them, tax them.", { hazine: 8, ulema: -6 }],
+    ["14-casuslar_basi", "Açık kalsınlar; şehrin kulağı oradadır.", "Let them stay open; the city's ear is there.", { saray: 5, ulema: -4 }]] },
+  { tr: "Kıtlık var: ambarlardaki tahıl ne olsun?", en: "There is famine: what of the grain in the stores?", seats: [
+    ["4-defterdar", "İhracat sürsün; Venedik iyi fiyat veriyor.", "Keep exporting; Venice pays well.", { hazine: 9, ulema: -6 }],
+    ["2-yeniceri", "Önce ordunun ambarı dolsun.", "Fill the army's stores first.", { "yeniçeri": 8, saray: -5 }],
+    ["5-valide-sultan", "Halka dağıtın; Valide'nin aşevleri açılsın.", "Give it to the people; open the Valide's soup kitchens.", { ulema: 6, hazine: -8 }]] },
+  { tr: "Rakip Vezir'in sürgünü isteniyor.", en: "There are calls to exile the Rival Vizier.", seats: [
+    ["14-casuslar_basi", "Elimizde mektupları var. Sürülsün.", "We have his letters. Exile him.", { saray: 6, "yeniçeri": -5 }],
+    ["5-valide-sultan", "Affedin; affeden sultan güçlüdür.", "Pardon him; a sultan who pardons is strong.", { ulema: 5, saray: -4 }],
+    ["8-rakip-vezir", "Beni Divan'da tutun; işinize yararım.", "Keep me in the Divan; I will be of use.", { hazine: 6, saray: -6 }]] },
+];
+let _divanYear = 0;
+let _divanUsed = [];
+function _maybeQueueDivan() {
+  if (_divanYear === year || cardsPlayed % CARDS_PER_YEAR !== 12) return;
+  _divanYear = year;
+  let pool = DIVAN_ISSUES.map((_, i) => i).filter(i => !_divanUsed.includes(i));
+  if (!pool.length) { _divanUsed = []; pool = DIVAN_ISSUES.map((_, i) => i); }
+  const idx = pool[Math.floor(Math.random() * pool.length)];
+  _divanUsed.push(idx);
+  forcedQueue.push({ id: "divan_oturumu_" + year, type: "divan", _issue: idx });
+}
+function showDivanOturumu(c) {
+  const issue = DIVAN_ISSUES[c._issue] || DIVAN_ISSUES[0];
+  const en = window.LANG === 'en';
+  card.classList.add("no-swipe");
+  _setSideTabs(null);
+  const fxTxt = (fx) => Object.entries(fx).map(([k, v]) => `${({ saray: en ? "Palace" : "Saray", "yeniçeri": en ? "Army" : "Ordu", ulema: "Ulema", hazine: en ? "Treasury" : "Hazine" })[k]} ${v > 0 ? "+" : ""}${v}`).join(" · ");
+  const ov = document.createElement("div");
+  ov.id = "divan-oturumu";
+  ov.innerHTML = `<div class="dv-box">
+    <div class="dv-k">${en ? "IMPERIAL COUNCIL · UNDER THE DOME" : "DİVAN-I HÜMAYUN · KUBBEALTI"}</div>
+    <div class="dv-issue">${issue[en ? "en" : "tr"]}</div>
+    <div class="dv-seats">${issue.seats.map((s, i) => { const lv = relLevel(s[0]), L = REL_LEVELS[lv + 3]; return `
+      <button type="button" class="dv-seat" data-i="${i}">
+        <span class="dv-med" style="background-image:url('assets/characters/${encodeURIComponent(s[0])}.jpg');--rc:${L.c}"></span>
+        <span class="dv-who">${_castName(s[0], en)}</span>
+        <span class="dv-rel" style="color:${L.c}">${L[en ? "en" : "tr"]}</span>
+        <span class="dv-say">“${en ? s[2] : s[1]}”</span>
+        <span class="dv-fx">${fxTxt(s[3])}</span>
+        <span class="dv-delta"></span>
+      </button>`; }).join("")}</div>
+    <div class="dv-hint">${en ? "Back one voice. The other two will remember." : "Bir görüşü destekle. Diğer ikisi bunu unutmaz."}</div>
+    <button type="button" class="dv-seal" disabled>${en ? "SEAL THE DECISION" : "MÜHÜRLE"}</button>
+    <button type="button" class="dv-sultan">${en ? "Leave it to the Sultan · Patience −5" : "Kararı Sultan'a bırak · Sabır −5"}</button>
+  </div>`;
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+  try { Haptics.letterArrival(); } catch (e) {}
+  let sel = -1, done = false;
+  const seats = [...ov.querySelectorAll(".dv-seat")], sealBtn = ov.querySelector(".dv-seal");
+  seats.forEach(b => b.onclick = () => {
+    sel = +b.dataset.i;
+    ov.classList.add("chosen");
+    seats.forEach((s, j) => { s.classList.toggle("sel", j === sel); const d = s.querySelector(".dv-delta"); d.textContent = j === sel ? (en ? "▲ closer" : "▲ yakınlaşır") : (en ? "▼ resents" : "▼ küser"); d.className = "dv-delta " + (j === sel ? "up" : "down"); });
+    sealBtn.disabled = false;
+  });
+  const finish = (choice) => {
+    if (done) return; done = true;
+    ov.classList.remove("on");
+    setTimeout(() => ov.remove(), 300);
+    card.classList.remove("no-swipe");
+    let synth;
+    if (choice < 0) {
+      sultanSabir = Math.max(0, sultanSabir - 5);
+      synth = { id: c.id, _divan: true, _noCurse: true, character: "", right_effects: {}, right_flags_set: [] };
+    } else {
+      const s = issue.seats[choice];
+      issue.seats.forEach((o, j) => relChange(o[0], j === choice ? 2 : -2));
+      synth = { id: c.id, _divan: true, _noCurse: true, character: s[0], character_name: CAST[s[0]].tr, character_name_en: CAST[s[0]].en,
+        right_text: s[1], right_text_en: s[2], right_effects: { ...s[3] }, right_flags_set: [] };
+    }
+    currentCard = synth;
+    decide("right");
+    if (choice < 0) checkSultanSabir();
+  };
+  sealBtn.onclick = () => { if (sel >= 0) finish(sel); };
+  ov.querySelector(".dv-sultan").onclick = () => finish(-1);
+}
 
 function hasAdvisor(id) {
   return selectedAdvisors.some(a => a.id === id);
@@ -7488,6 +7776,7 @@ let _sultanWarningShown = false; // Çok güçlenince uyarı mektubu
 
 function checkSultanSabir() {
   if (isGameOver) return;
+  if (sultanSabir <= 0 && _relTryRescue("sabir", 0)) return;
   if (sultanSabir <= 0) {
     triggerGameOver("Sultan seni azletti. Hac yolculuğuna — sürgün olarak — gönderildin.", "azil");
   } else if (sultanSabir >= 85 && !_sultanWarningShown) {
@@ -7613,6 +7902,8 @@ function showHangingAnimation(onDone) {
 function checkGameOver() {
   if (isGameOver) return false;
   for (const stat of Object.keys(stats)) {
+    if (stats[stat] <= 0 && _relTryRescue(stat, 0)) return false;
+    if (stats[stat] >= 100 && _relTryRescue(stat, 100)) return false;
     if (stats[stat] <= 0)   { triggerGameOver(getRichDeathText(DEATH_TABLE[stat]?.[0]   || "Oyun bitti.", stat, 0), (stat === "yeniçeri" ? "yeniceri" : stat) + "_0");   return true; }
     if (stats[stat] >= 100) { triggerGameOver(getRichDeathText(DEATH_TABLE[stat]?.[100] || "Oyun bitti.", stat, 100), (stat === "yeniçeri" ? "yeniceri" : stat) + "_100"); return true; }
   }
@@ -7724,7 +8015,7 @@ function decide(dir) {
   }
 
   // Lanet kontrolü (süresi dolan kriz kartı bir "yön" seçimi sayılmaz)
-  if (!currentCard._timeout) checkCurse(dir);
+  if (!currentCard._timeout && !currentCard._noCurse) checkCurse(dir);
 
   // Savaş sonucu: sabit gecikme/her zaman zafer yerine — 2-10 kart arası rastgele
   // gecikme, sonuç (zafer/yenilgi) o anki askeri güce (Ordu statı + donanma müttefikliği) bağlı.
@@ -7794,8 +8085,9 @@ function decide(dir) {
     }
   }
 
-  applyEffects(currentCard[dir + "_effects"] || {});
+  applyEffects(_relAdjustEffects(currentCard, currentCard[dir + "_effects"] || {}));
   if (isGameOver) return;
+  _relOnDecision(currentCard, dir);
   _fermanTrack();
 
   // Yeni karakterlerin özel etkileri
@@ -7995,6 +8287,9 @@ function decide(dir) {
       forcedQueue.unshift(getMucizeCard());
     }
 
+    // Divan Oturumu (yılın 12. kartı) ve Can Düşmanı komplosu — 3 Ekim 2026
+    _maybeQueueDivan();
+    _relDueKomplo();
     // Padişah ziyareti: her ~45 kartta 1, yıl 3+
     tryPadisahZiyareti();
   tryHekimDinlenme();
@@ -9443,6 +9738,7 @@ function showGameMenu() {
     <div id="game-menu-box">
       <div id="game-menu-title">${isENMenu ? "PAUSED" : "DURAKLAT"}</div>
       <div id="game-menu-divider"></div>
+      <button class="game-menu-option secondary" id="gm-halka">${isENMenu ? "DIVAN CIRCLE" : "DİVAN HALKASI"}</button>
       <button class="game-menu-option secondary" id="gm-journal">${isENMenu ? "VIZIER'S JOURNAL" : "VEZİRLİK GÜNLÜĞÜ"}</button>
       <button class="game-menu-option secondary" id="gm-harita">${isENMenu ? "IMPERIAL MAP" : "İMPARATORLUK HARİTASI"}</button>
       <button class="game-menu-option secondary" id="gm-kodeks">${isENMenu ? "IMPERIAL CODEX" : "OSMANLI KODEKSİ"}</button>
@@ -9452,6 +9748,7 @@ function showGameMenu() {
     </div>`;
   document.body.appendChild(overlay);
 
+  document.getElementById("gm-halka").addEventListener("click", () => { overlay.remove(); showDivanHalkasi(); });
   document.getElementById("gm-journal").addEventListener("click", () => { overlay.remove(); showVezirlikGunlugu(); });
   document.getElementById("gm-harita").addEventListener("click",  () => { overlay.remove(); showHaritaOverlay(); });
   document.getElementById("gm-kodeks").addEventListener("click",  () => { overlay.remove(); showKartKodeksi(); });

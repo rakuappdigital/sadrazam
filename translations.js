@@ -124,6 +124,18 @@ window.EN_TUTORIAL_STEPS = [
   {
     stat: null,
     icon: null,
+    title: "The Sultan's Decree",
+    desc: "At the start of every year the Sultan issues a decree. It is judged at year's end: fulfil it and his patience grows, and a seal is added to the Viziers' Ledger."
+  },
+  {
+    stat: null,
+    icon: null,
+    title: "The People of the Divan",
+    desc: "The Valide Sultan, the Rival Vizier, the Janissary Commander, the Şeyhülislam, the Treasurer and the Spymaster remember you. Grant their requests to draw closer, refuse them to drift apart. A sworn friend saves you from death once; a sworn enemy plots against you."
+  },
+  {
+    stat: null,
+    icon: null,
     title: "How to Play?",
     desc: "Swipe left → No. Swipe right → Yes.\nOr use the ← → arrow keys.\nKeep all four powers balanced — how long can you last?"
   }

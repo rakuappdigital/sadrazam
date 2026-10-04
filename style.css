@@ -5379,3 +5379,62 @@ html, body {
 .fm-vsub { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13.5px; color: #4a3210; opacity: 0; transition: opacity 0.4s 0.5s; }
 .fm-verdict.stamped .fm-vtext, .fm-verdict.stamped .fm-vsub { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .fm-paper { transition: none; } .fm-wax { transition: none; } }
+
+/* ── Ana Kadro: ilişkiler (3 Ekim 2026) ── */
+#card-rel { display: flex; justify-content: center; align-items: center; gap: 6px; margin: -2px auto 2px; font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 1.2px; }
+#card-rel .cr-dots { display: inline-flex; gap: 3px; }
+#card-rel .cr-dots i { width: 6px; height: 6px; border-radius: 50%; border: 1px solid; }
+.rel-toast { position: absolute; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 54px); z-index: 30; pointer-events: none;
+  display: flex; align-items: center; gap: 9px; padding: 5px 13px 5px 5px; border-radius: 999px; background: rgba(12,9,20,0.94); border: 1px solid rgba(201,162,39,0.4);
+  transform: translate(-50%, -8px); opacity: 0; transition: opacity 0.35s, transform 0.35s; white-space: nowrap; box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+.rel-toast.on { opacity: 1; transform: translate(-50%, 0); }
+.rel-toast .rt-med, .dh-med { width: 30px; height: 30px; border-radius: 50%; background-size: cover; background-position: center 18%; box-shadow: 0 0 0 2px var(--rc), 0 0 10px var(--rc); flex-shrink: 0; }
+.rel-toast .rt-txt { display: flex; flex-direction: column; line-height: 1.15; }
+.rel-toast b { font-family: 'Cinzel', serif; font-size: 11px; color: var(--text); font-weight: 600; }
+.rel-toast em { font-style: normal; font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 1px; }
+#rel-rescue-overlay, .info-panel-overlay { position: fixed; inset: 0; z-index: 265; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(4,3,8,0.82); opacity: 0; transition: opacity 0.3s; }
+#rel-rescue-overlay.on, .info-panel-overlay.on { opacity: 1; }
+.rr-box, .ip-box { width: min(90vw, 340px); border-radius: 16px; padding: 24px 20px 18px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 9px;
+  background: linear-gradient(160deg, rgba(20,12,4,0.98), rgba(10,6,2,0.99)); border: 1px solid rgba(201,162,39,0.45); box-shadow: 0 0 60px rgba(201,162,39,0.14); }
+.rr-k { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px; color: #e8c84a; }
+.rr-med { width: 92px; height: 92px; border-radius: 50%; background-size: cover; background-position: center 18%; box-shadow: 0 0 0 3px #e8c84a, 0 0 30px rgba(232,200,74,0.5); }
+.rr-name, .ip-title { font-family: 'Cinzel Decorative', serif; font-size: 17px; color: var(--gold-light); letter-spacing: 1px; }
+.ip-div { width: 60px; height: 1px; background: var(--gold-dim); }
+.rr-box p, .ip-box p { margin: 0; font-family: 'IM Fell English', serif; font-size: 14.5px; line-height: 1.5; color: rgba(240,230,208,0.9); }
+.rr-box button, .ip-box > button { width: 100%; margin-top: 6px; padding: 12px; border-radius: 6px; border: 1px solid var(--gold-dim); background: rgba(201,162,39,0.1); color: var(--gold); font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 1.5px; cursor: pointer; }
+.dh-list { width: 100%; display: grid; gap: 9px; text-align: left; }
+.dh-row { display: flex; align-items: center; gap: 12px; }
+.dh-row .dh-med { width: 42px; height: 42px; }
+.dh-info { display: flex; flex-direction: column; line-height: 1.2; }
+.dh-info b { font-family: 'Cinzel', serif; font-size: 12.5px; color: var(--text); font-weight: 600; }
+.dh-info em { font-style: normal; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1.2px; }
+.dh-info small { font-family: 'IM Fell English', serif; font-size: 12.5px; color: rgba(240,230,208,0.6); }
+.ip-box .dh-note { font-size: 13px; font-style: italic; color: rgba(240,230,208,0.6); }
+
+/* ── Divan Oturumu (3 Ekim 2026) ── */
+#divan-oturumu { position: fixed; inset: 0; z-index: 225; display: flex; align-items: center; justify-content: center; padding: 14px; opacity: 0; transition: opacity 0.35s;
+  background: radial-gradient(ellipse at 50% 20%, rgba(40,27,8,0.93), rgba(5,4,10,0.97) 70%); }
+#divan-oturumu.on { opacity: 1; }
+.dv-box { width: min(96vw, 420px); display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.dv-k { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px; color: var(--gold); }
+.dv-issue { font-family: 'IM Fell English', serif; font-size: 18px; line-height: 1.35; color: #efe0bb; padding: 0 10px; }
+.dv-seats { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 6px; align-items: start; }
+.dv-seat { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px 10px; border-radius: 12px; border: 1px solid rgba(201,162,39,0.22); background: rgba(201,162,39,0.04);
+  color: inherit; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: opacity 0.3s, border-color 0.3s, background 0.3s, transform 0.15s; }
+.dv-seat:nth-child(2) { margin-top: -10px; }
+.dv-seat:active { transform: scale(0.97); }
+.dv-med { width: 64px; height: 64px; border-radius: 50%; background-size: cover; background-position: center 18%; box-shadow: 0 0 0 2px var(--rc), 0 0 0 5px #0b0812, 0 0 0 6px rgba(201,162,39,0.3); }
+.dv-who { font-family: 'Cinzel', serif; font-weight: 600; font-size: 10px; letter-spacing: 0.4px; color: var(--gold-light); line-height: 1.2; }
+.dv-rel { font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 1px; }
+.dv-say { font-family: 'IM Fell English', serif; font-style: italic; font-size: 12.5px; line-height: 1.3; color: var(--text); }
+.dv-fx { font-family: 'Cinzel', serif; font-size: 8.5px; line-height: 1.5; color: rgba(232,200,74,0.85); opacity: 0; transition: opacity 0.3s; }
+.dv-delta { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.5px; min-height: 12px; }
+.dv-delta.up { color: #7fd197; } .dv-delta.down { color: #ff8a78; }
+#divan-oturumu.chosen .dv-fx { opacity: 1; }
+#divan-oturumu.chosen .dv-seat:not(.sel) { opacity: 0.5; }
+.dv-seat.sel { border-color: var(--gold-light); background: rgba(201,162,39,0.12); }
+.dv-seat.sel .dv-med { box-shadow: 0 0 0 2px var(--gold-light), 0 0 0 5px #0b0812, 0 0 18px 6px rgba(232,200,74,0.45); }
+.dv-hint { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13px; color: rgba(240,230,208,0.6); }
+.dv-seal { width: 100%; padding: 13px; border-radius: 6px; border: 1px solid #E8C84A; background: linear-gradient(180deg, #E8C84A, #B38D1C); color: #1a1006; font-family: 'Cinzel', serif; font-weight: 700; font-size: 12.5px; letter-spacing: 2px; cursor: pointer; }
+.dv-seal:disabled { background: transparent; color: rgba(201,162,39,0.45); border-color: rgba(201,162,39,0.3); cursor: default; }
+.dv-sultan { background: none; border: 0; color: rgba(240,230,208,0.55); font-family: 'IM Fell English', serif; font-size: 13.5px; text-decoration: underline; cursor: pointer; padding: 6px; }
