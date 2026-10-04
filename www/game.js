@@ -3571,19 +3571,90 @@ function startGame() {
     _paywallAtGameStart = true;
   }
 
+  // Göreve başlama (mühür teslimi) sahnesinden sonra ilk kart (4 Ekim 2026)
+  const begin = () => _playCulus(() => { if (!isGameOver) dealNext(); });
   if (!localStorage.getItem('sadrazam_tutorial_done')) {
     showTutorial(() => {
       if (_paywallAtGameStart) { isPaywalled = true; showPaywallScreen(false); }
-      else dealNext();
+      else begin();
     });
   } else if (_paywallAtGameStart) {
     isPaywalled = true;
     showPaywallScreen(false);
   } else {
-    dealNext();
+    begin();
   }
 
   startAmbientMusic();
+}
+
+// ── Göreve başlama: Mühr-i Hümayun teslimi (4 Ekim 2026, kullanıcı seçimi: tuğralı mühür) ──
+// Divan kapıları açılır, sultanın adı kemerin üstündeki altın levhada, portre kemerde,
+// sultana özel söz daktiloyla yazılır, tuğralı mum mühür kadife yastığa düşer, "MÜHRÜ AL".
+// İlk oyunda tam (~6 sn), sonrakilerde hızlı; her an dokunarak sona atlanır.
+const CULUS_LINES = {
+  kanuni: ["Kanun, adaletin kılıcıdır. Mührüm artık sende; onu kendi adın için değil, devlet için kullan.", "Law is the sword of justice. My seal is yours now; use it not for your own name, but for the state."],
+  yavuz:  ["Benden önceki vezirlerimin kaçı hayatta, bilir misin? Al mührü. Acele et.", "Do you know how many of my viziers before you still live? Take the seal. Be quick."],
+  murad3: ["Hazine dolu, saray kalabalık. Bana huzur getir; gürültüyü kapının dışında bırak.", "The treasury is full, the palace crowded. Bring me peace; leave the noise outside the door."],
+};
+function _imperialSealSVG(cls) {
+  const J = [3, -2, 4, 1, -3, 2, 5, -1, 2, -4, 3, 0, 4, -2, 1, 3, -3, 2, 0, 4, -1, 2, -2, 3];
+  const P = J.map((j, i) => { const a = i / J.length * Math.PI * 2, r = 43 + j * 0.55; return [50 + r * Math.cos(a), 50 + r * Math.sin(a)]; });
+  const M = P.map((p, i) => { const q = P[(i + 1) % P.length]; return [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; });
+  const f1 = (n) => n.toFixed(1);
+  const edge = `M${f1(M[0][0])} ${f1(M[0][1])} ` + P.map((_, i) => { const p = P[(i + 1) % P.length], m = M[(i + 1) % P.length]; return `Q${f1(p[0])} ${f1(p[1])} ${f1(m[0])} ${f1(m[1])}`; }).join(" ") + "Z";
+  const tugra = _TUGRA_SVG.replace('class="fm-tugra"', 'x="25" y="31" width="50" height="32"').replace('aria-hidden="true"', '');
+  return `<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="culusw" cx="38%" cy="32%"><stop offset="0" stop-color="#d4473a"/><stop offset=".7" stop-color="#8a1d12"/><stop offset="1" stop-color="#5e110a"/></radialGradient></defs><path d="${edge}" fill="url(#culusw)"/><circle cx="50" cy="50" r="30" fill="none" stroke="#e8c84a" stroke-width="1.6"/><circle cx="50" cy="50" r="26" fill="none" stroke="#e8c84a" stroke-width=".6" stroke-dasharray="1.5 2"/><g style="color:#e8c84a">${tugra}</g></svg>`;
+}
+function _playCulus(done) {
+  if (!selectedSultan) { done(); return; }
+  const en = window.LANG === 'en', id = selectedSultan.id;
+  let first = true;
+  try { first = localStorage.getItem("sadrazam_culus_seen") !== "1"; localStorage.setItem("sadrazam_culus_seen", "1"); } catch (e) {}
+  const name = (en && window.EN_SULTANS && window.EN_SULTANS[id]) ? window.EN_SULTANS[id].name : selectedSultan.name;
+  const line = (CULUS_LINES[id] || CULUS_LINES.kanuni)[en ? 1 : 0];
+  const adv = selectedAdvisors.map(a => a.name);
+  const advLine = adv.length ? (en ? `${adv.join(" and ")} took ${adv.length > 1 ? "their places" : "his place"} at your side.` : `${adv.join(" ve ")} yanında yerini aldı.`) : "";
+  const k = first ? 1 : 0.5; // sonraki oyunlarda yarı süre
+  const ov = document.createElement("div");
+  ov.id = "culus-overlay";
+  ov.innerHTML = `
+    <div class="cu-k">${en ? "ACCESSION" : "GÖREVE BAŞLAMA"} · ${SULTAN_HICRI_START[id] || hicriYear}${en ? " AH" : ""}</div>
+    <div class="cu-plate"><span>${name.toLocaleUpperCase(en ? 'en' : 'tr')}</span></div>
+    <div class="cu-arch"><div style="background-image:url('assets/characters/1-sultan.jpg')"></div></div>
+    <div class="cu-line"></div>
+    <div class="cu-adv">${advLine}</div>
+    <div class="cu-sealbox"><div class="cu-cushion"></div><div class="cu-ring"></div>${_imperialSealSVG("cu-seal")}</div>
+    <button type="button" class="cu-take">${en ? "TAKE THE SEAL" : "MÜHRÜ AL"}</button>
+    <div class="cu-door l"></div><div class="cu-door r"></div>`;
+  document.body.appendChild(ov);
+  const lineEl = ov.querySelector(".cu-line"), timers = [];
+  let typeT = null, finished = false, closed = false;
+  const fullText = "“" + line + "”";
+  const showAll = () => {
+    if (finished) return; finished = true;
+    timers.forEach(clearTimeout); clearInterval(typeT);
+    lineEl.textContent = fullText;
+    ov.classList.add("st1", "st2", "st3");
+  };
+  const close = () => {
+    if (closed) return; closed = true;
+    try { Haptics.cardPickup(); } catch (e) {}
+    ov.classList.add("taken");
+    setTimeout(() => { ov.classList.add("out"); setTimeout(() => { ov.remove(); done(); }, 450); }, 450);
+  };
+  requestAnimationFrame(() => ov.classList.add("on"));
+  timers.push(setTimeout(() => { ov.classList.add("st1"); try { if (window.playSelectConfirm) playSelectConfirm(); } catch (e) {} }, 300 * k));
+  timers.push(setTimeout(() => {
+    ov.classList.add("st2");
+    let i = 0;
+    typeT = setInterval(() => { lineEl.textContent = fullText.slice(0, ++i); if (i >= fullText.length) clearInterval(typeT); }, first ? 30 : 15);
+  }, 1900 * k));
+  timers.push(setTimeout(() => { ov.classList.add("st3"); finished = true; try { Haptics.statPositive(); } catch (e) {} }, (1900 + fullText.length * (first ? 30 : 15) + 500) * k));
+  ov.addEventListener("click", (e) => {
+    if (e.target.closest(".cu-take") && ov.classList.contains("st3")) { close(); return; }
+    showAll();
+  });
 }
 
 // ── TUTORIAL ──────────────────────────────────────────────────────

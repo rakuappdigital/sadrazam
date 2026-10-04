@@ -5506,3 +5506,38 @@ html, body {
 @keyframes dsFade { to { opacity: 1; } }
 @keyframes dsRise { to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { #death-scene.on .ds-img { animation: none; transform: none; } #death-scene.on * { animation-duration: .01ms !important; animation-delay: 0s !important; } }
+
+/* ── Göreve başlama: Mühr-i Hümayun (4 Ekim 2026) — akan dikey düzen, üst üste binmez ── */
+#culus-overlay { position: fixed; inset: 0; z-index: 280; background: #07050c; overflow: hidden; opacity: 0; transition: opacity .4s ease;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1.4vh;
+  padding: calc(env(safe-area-inset-top, 0px) + 2.6vh) 22px calc(env(safe-area-inset-bottom, 0px) + 3vh); }
+#culus-overlay.on { opacity: 1; }
+#culus-overlay.out { opacity: 0; transition: opacity .45s ease; }
+.cu-k { font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 4px; color: rgba(240,230,208,.55); opacity: 0; transition: opacity .6s .3s; flex: 0 0 auto; }
+.cu-plate { position: relative; z-index: 4; text-align: center; opacity: 0; transform: translateY(-8px); transition: opacity .6s 1.4s, transform .6s 1.4s; flex: 0 0 auto; margin-top: -0.6vh; }
+.cu-plate span { position: relative; display: inline-block; font-family: 'Cinzel Decorative', serif; font-size: clamp(14px, 4.4vw, 18px); color: #2b1c0b; background: linear-gradient(180deg, #e8c84a, #b8901f); padding: 8px 18px 9px; border-radius: 3px; box-shadow: 0 4px 12px rgba(0,0,0,.6); }
+.cu-plate span::before, .cu-plate span::after { content: ""; position: absolute; top: 5px; width: 14px; height: 100%; background: #8a6a1a; z-index: -1; }
+.cu-plate span::before { left: -11px; clip-path: polygon(0 0,100% 0,100% 100%,0 100%,40% 50%); }
+.cu-plate span::after { right: -11px; clip-path: polygon(0 0,100% 0,60% 50%,100% 100%,0 100%); }
+.cu-arch { position: relative; flex: 0 1 auto; height: min(44vh, 400px); aspect-ratio: 3 / 3.9; max-width: 80vw; border-radius: 150px 150px 10px 10px; overflow: hidden; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(201,162,39,.25); }
+.cu-arch div { position: absolute; inset: 0; background-size: cover; background-position: center 12%; transform: scale(1.12); transition: transform 6s ease-out; }
+#culus-overlay.st2 .cu-arch div { transform: scale(1); }
+.cu-line { flex: 0 0 auto; width: 100%; max-width: 460px; text-align: center; font-family: 'IM Fell English', serif; font-style: italic; font-size: clamp(14px, 2.1vh, 17px); line-height: 1.38; color: #efe0bb; min-height: 2.8em; }
+.cu-adv { flex: 0 0 auto; text-align: center; font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1px; color: rgba(232,200,74,.7); opacity: 0; transition: opacity .6s; min-height: 1em; }
+#culus-overlay.st3 .cu-adv { opacity: 1; }
+.cu-sealbox { position: relative; flex: 0 0 auto; width: 160px; height: min(13vh, 112px); }
+.cu-cushion { position: absolute; left: 50%; bottom: 0; width: 150px; height: 28px; margin-left: -75px; border-radius: 50%; background: radial-gradient(ellipse at 50% 35%, #8a1d2a, #4a0b14 70%); box-shadow: 0 6px 12px rgba(0,0,0,.6); opacity: 0; transition: opacity .5s; }
+.cu-ring { position: absolute; left: 50%; bottom: 6px; width: 90px; height: 22px; margin-left: -45px; border-radius: 50%; border: 2px solid rgba(232,200,74,.7); opacity: 0; }
+.cu-seal { position: absolute; left: 50%; bottom: 10px; height: calc(100% - 10px); max-height: 96px; aspect-ratio: 1; transform: translate(-50%, -340px) scale(1.5) rotate(-20deg); opacity: 0; transition: transform .7s cubic-bezier(.3,1.35,.5,1), opacity .3s; filter: drop-shadow(0 6px 6px rgba(0,0,0,.6)); }
+.cu-take { flex: 0 0 auto; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 2.5px; color: #1a1006; background: linear-gradient(180deg, #e8c84a, #b8901f); border: 1px solid #e8c84a; border-radius: 6px; padding: 12px 26px; opacity: 0; pointer-events: none; transition: opacity .5s .6s; cursor: pointer; white-space: nowrap; }
+.cu-door { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 6; transition: transform 1.6s cubic-bezier(.6,.02,.2,1); background-color: #3a1f0f; background-image: repeating-linear-gradient(45deg, rgba(201,162,39,.18) 0 2px, transparent 2px 18px), repeating-linear-gradient(-45deg, rgba(201,162,39,.18) 0 2px, transparent 2px 18px); border: 2px solid #6b4a1a; }
+.cu-door.l { left: 0; border-right: 1px solid var(--gold); } .cu-door.r { right: 0; border-left: 1px solid var(--gold); }
+#culus-overlay.st1 .cu-door.l { transform: translateX(-102%); } #culus-overlay.st1 .cu-door.r { transform: translateX(102%); }
+#culus-overlay.st1 .cu-k, #culus-overlay.st1 .cu-plate { opacity: 1; transform: none; }
+#culus-overlay.st3 .cu-cushion { opacity: 1; }
+#culus-overlay.st3 .cu-seal { transform: translate(-50%, 0); opacity: 1; }
+#culus-overlay.st3 .cu-ring { animation: cuRing .8s .65s ease-out forwards; }
+#culus-overlay.st3 .cu-take { opacity: 1; pointer-events: auto; }
+#culus-overlay.taken .cu-seal { transform: translate(-50%, -60px) scale(.5); opacity: 0; transition: transform .45s ease-in, opacity .45s; }
+@keyframes cuRing { 0% { opacity: .9; transform: scale(.4); } 100% { opacity: 0; transform: scale(2.4); } }
+@media (prefers-reduced-motion: reduce) { .cu-door, .cu-seal, .cu-arch div { transition: none !important; } #culus-overlay.st3 .cu-ring { animation: none; } }
