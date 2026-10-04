@@ -5,7 +5,8 @@
 **Durum:** 1.6.0 (build 40) App Store Connect'e yüklendi — Delivery UUID
 `aca17f91-6674-4633-8afe-35fa0b4b020d`. ASC ayarlarını (görseller, metinler, IAP) kullanıcı
 kendisi yaptı; incelemeye gönderimi kullanıcı yapacak. Kullanıcıdan beklenen: `fullnoads`
-IAP'ı 1.6.0'a eklenmiş olmalı + RevenueCat'e import. GitHub'a push YAPILMADI (onay bekliyor).
+IAP'ı ayrı gönderimde incelemede (sorun değil; ret gelirse 1.6.0 yayındayken yeniden gönder) +
+RevenueCat'e import önerilir. 1.6.0 sürümü build 40 ile "Waiting for Review". GitHub'a push YAPILDI (5 Ekim).
 Yenilikler + promotional text: `~/Desktop/yenilikler-1.6.txt`; TR/EN ekran görüntüleri:
 `~/Desktop/appstore-1.6/TR|EN`.
 
