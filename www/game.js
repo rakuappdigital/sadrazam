@@ -652,7 +652,7 @@ const HICRI_MONTHS = [
   "Cemaziyelevvel","Cemaziyelahir","Recep","Şaban",
   "Ramazan","Şevval","Zilkade","Zilhicce"
 ];
-const SULTAN_HICRI_START = { kanuni: 927, yavuz: 918, murad3: 982 };
+const SULTAN_HICRI_START = { kanuni: 927, yavuz: 918, murad3: 982, murad4: 1032, ahmed3: 1115 };
 
 // ★ GOD MODE — test için geçici. Kaldırmak için ★ GOD MODE etiketli tüm satırları sil.
 let godMode = false; // ★ GOD MODE
@@ -789,6 +789,23 @@ const SULTANS = [
     desc: "Zengin hazine, zayıf otorite.",
     stats: { saray: 40, "yeniçeri": 40, ulema: 45, hazine: 65 },
     sultanSabir: 60
+  },
+  // Dönem sultanları (4 Ekim 2026) — Vezirler Defteri'ndeki mühür sayısıyla açılır
+  {
+    id: "murad4",
+    name: "IV. Murad",
+    desc: "Yasaklar dönemi. Sert ve sabırsız; ödülü de cezası da büyük.",
+    stats: { saray: 45, "yeniçeri": 60, ulema: 55, hazine: 45 },
+    sultanSabir: 40,
+    unlockSeals: 6
+  },
+  {
+    id: "ahmed3",
+    name: "III. Ahmed",
+    desc: "Lale Devri. Saray şen, hazine dolu; çarşı aç.",
+    stats: { saray: 60, "yeniçeri": 40, ulema: 45, hazine: 60 },
+    sultanSabir: 55,
+    unlockSeals: 15
   }
 ];
 
@@ -3445,6 +3462,17 @@ function showSultanScreen() {
         <span><img class="sc-stat-icon" src="assets/icons/icon-hazine.png" alt="Hazine"> ${s.stats.hazine}</span>
       </div>
     `;
+    const lockLeft = s.unlockSeals ? s.unlockSeals - _defterGet().seals : 0;
+    if (lockLeft > 0) {
+      btn.classList.add("locked");
+      const en = window.LANG === 'en';
+      btn.insertAdjacentHTML("beforeend", `<div class="sc-lock"><span class="sc-lock-k">${en ? "LOCKED" : "KİLİTLİ"}</span>${en ? `Earn ${lockLeft} more seal${lockLeft > 1 ? "s" : ""} in the Viziers' Ledger` : `Vezirler Defteri'nde ${lockLeft} mühür daha`}</div>`);
+      btn.onclick = () => { btn.classList.remove("sc-shake"); void btn.offsetWidth; btn.classList.add("sc-shake"); };
+      grid.appendChild(btn);
+      return;
+    }
+    const era = ERA_DEFS[s.id];
+    if (era) btn.querySelector(".sc-name").insertAdjacentHTML("afterend", `<div class="sc-era">${window.LANG === 'en' ? era.en : era.tr}</div>`);
     btn.onclick = () => {
       document.querySelectorAll(".sultan-card").forEach(el => el.classList.remove("selected"));
       btn.classList.add("selected");
@@ -3528,6 +3556,7 @@ function startGame() {
   _ferman = null; _fermanStreak = 0; _fermanQueue = []; _fermanShowing = false; _fermanDoneThisGame = 0; _fermanTotalThisGame = 0;
   document.getElementById("ferman-chip")?.remove();
   relPoints = {}; _relRescued = {}; _relKomploAt = {}; _relKomploDone = {}; _divanYear = 0; _divanUsed = [];
+  _eraReset();
   _endState = _endFresh();
   _agedSeenThisGame = new Set();
   _stampMeta = new Map();
@@ -3686,6 +3715,8 @@ const CULUS_LINES = {
   kanuni: ["Kanun, adaletin kılıcıdır. Mührüm artık sende; onu kendi adın için değil, devlet için kullan.", "Law is the sword of justice. My seal is yours now; use it not for your own name, but for the state."],
   yavuz:  ["Benden önceki vezirlerimin kaçı hayatta, bilir misin? Al mührü. Acele et.", "Do you know how many of my viziers before you still live? Take the seal. Be quick."],
   murad3: ["Hazine dolu, saray kalabalık. Bana huzur getir; gürültüyü kapının dışında bırak.", "The treasury is full, the palace crowded. Bring me peace; leave the noise outside the door."],
+  murad4: ["Geceleri şehri ben gezerim, Paşa. Gördüğümü sen de görmüş ol. Al mührü.", "At night I walk the city myself, Pasha. See what I see. Take the seal."],
+  ahmed3: ["Lale açtı, şiir okunuyor. Devlet de bir bahçe gibi bakılmak ister. Mührüm sende.", "The tulips are in bloom, poems are being read. A state, like a garden, wants tending. My seal is yours."],
 };
 function _imperialSealSVG(cls) {
   const J = [3, -2, 4, 1, -3, 2, 5, -1, 2, -4, 3, 0, 4, -2, 1, 3, -3, 2, 0, 4, -1, 2, -2, 3];
@@ -4066,6 +4097,7 @@ function saveGameState() {
       timedUsedYear: _timedUsedYear,
       ferman: _ferman, fermanStreak: _fermanStreak, fermanDone: _fermanDoneThisGame, fermanTotal: _fermanTotalThisGame,
       relPoints, relRescued: _relRescued, relKomploAt: _relKomploAt, relKomploDone: _relKomploDone, divanYear: _divanYear, divanUsed: _divanUsed,
+      era: _eraState,
       endState: _endState,
       chronicle,
       v: 3
@@ -4179,6 +4211,7 @@ function loadGameState(s) {
   _fermanDoneThisGame = s.fermanDone || 0; _fermanTotalThisGame = s.fermanTotal || 0;
   setTimeout(_renderFermanChip, 0);
   relPoints = s.relPoints || {}; _relRescued = s.relRescued || {}; _relKomploAt = s.relKomploAt || {}; _relKomploDone = s.relKomploDone || {};
+  _eraReset(s.era);
   _divanYear = s.divanYear || 0; _divanUsed = s.divanUsed || [];
   _endState = s.endState ? { ..._endFresh(), ...s.endState } : _endFresh();
   chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
@@ -4444,6 +4477,8 @@ function getNextCard() {
     }
   }
 
+  const eraCard = _eraPick();
+  if (eraCard) return eraCard;
   let eligible = getEligible();
   if (!eligible.length) { playCounts = {}; eligible = getEligible(); }
   if (!eligible.length) return null;
@@ -4577,6 +4612,7 @@ function getEligible() {
     if (c.is_pasa_terfi && (!isPasaMode || pasaPromoted)) return false;
     if (c.character === "8-rakip-vezir" && _nisan("rakip") === 1) return false; // Boş Koltuk
     if (c.is_event) return false;
+    if (c.era) return false; // dönem kartları _eraPick ile gelir
     if (c.arc_id) return false;
     if (c.is_traitor_reveal) return false;
     if (c.type === "letter") return false;
@@ -7013,6 +7049,8 @@ const FERMAN_INTROS = {
   kanuni: ["Sadrazamım, kanun herkese eşittir; senin işin onu yaşatmak. Bu yılın sonuna dek:", "My Grand Vizier, the law is equal for all; your task is to keep it alive. By the end of this year:"],
   yavuz:  ["Uzun söze gerek yok. Yıl bitmeden:", "No need for long words. Before the year is out:"],
   murad3: ["Sarayın huzuru bozulmasın, Sadrazam. Bu yıl içinde:", "Let the palace's peace remain unbroken, Grand Vizier. Within this year:"],
+  murad4: ["Yasak yasaktır, Sadrazam. Gevşeklik görmek istemem. Bu yıl:", "A ban is a ban, Grand Vizier. I will not tolerate laxity. This year:"],
+  ahmed3: ["Bahçe güzel, Sadrazam; ama çarşı da sakin kalsın. Bu yıl içinde:", "The garden is lovely, Grand Vizier; but let the bazaar stay calm too. Within this year:"],
 };
 let _ferman = null;        // { year, demands:[...], rerolled }
 let _fermanStreak = 0;     // üst üste başarısızlık
@@ -7132,7 +7170,7 @@ function _showFermanOverlay(item, done) {
   const en = window.LANG === 'en';
   const f = item.ferman || _ferman;
   if (!f) { done(); return; }
-  const FROM = { kanuni: ["KANUNÎ SULTAN SÜLEYMAN'DAN", "FROM SULEIMAN THE MAGNIFICENT"], yavuz: ["YAVUZ SULTAN SELİM'DEN", "FROM SELIM THE GRIM"], murad3: ["SULTAN III. MURAD'DAN", "FROM SULTAN MURAD III"] };
+  const FROM = { kanuni: ["KANUNÎ SULTAN SÜLEYMAN'DAN", "FROM SULEIMAN THE MAGNIFICENT"], yavuz: ["YAVUZ SULTAN SELİM'DEN", "FROM SELIM THE GRIM"], murad3: ["SULTAN III. MURAD'DAN", "FROM SULTAN MURAD III"], murad4: ["SULTAN IV. MURAD'DAN", "FROM SULTAN MURAD IV"], ahmed3: ["SULTAN III. AHMED'DEN", "FROM SULTAN AHMED III"] };
   const fromTxt = (FROM[selectedSultan?.id] || FROM.kanuni)[en ? 1 : 0];
   const intro = (FERMAN_INTROS[selectedSultan?.id] || FERMAN_INTROS.kanuni)[en ? 1 : 0];
   const list = f.demands.map((d, i) => `<li><b>${["I", "II"][i]}.</b><span>${_fermanDemandText(d, en)}</span>${item.kind !== "new" ? `<em class="${_fermanDemandOk(d) ? "y" : "n"}">${_fermanDemandOk(d) ? "✓" : "✗"}</em>` : ""}</li>`).join("");
@@ -7514,7 +7552,7 @@ function _miniSeal(on, big) {
 }
 function showDefter(startPage) {
   const en = window.LANG === 'en', d = _defterGet();
-  const S = { kanuni: ["Kanunî Sultan Süleyman", "Suleiman the Magnificent"], yavuz: ["Yavuz Sultan Selim", "Selim the Grim"], murad3: ["Sultan III. Murad", "Sultan Murad III"] };
+  const S = { kanuni: ["Kanunî Sultan Süleyman", "Suleiman the Magnificent"], yavuz: ["Yavuz Sultan Selim", "Selim the Grim"], murad3: ["Sultan III. Murad", "Sultan Murad III"], murad4: ["Sultan IV. Murad", "Sultan Murad IV"], ahmed3: ["Sultan III. Ahmed", "Sultan Ahmed III"] };
   let idx = Math.max(0, Math.min(d.pages.length - 1, startPage || 0));
   const ov = document.createElement("div");
   ov.id = "defter-overlay";
@@ -7737,6 +7775,109 @@ function askRetirement() {
     _actuallyTriggerGameOver(en ? "The Sultan called you before him and took back the seal with his own hand: \"You have served this state enough.\" You grew old in a waterside mansion, looking out over the Bosphorus."
       : "Sultan seni huzuruna çağırdı ve mührü kendi eliyle geri aldı: \"Bu devlete yetecek kadar hizmet ettin.\" Boğaz'a bakan bir yalıda yaşlandın.", "emeklilik");
   };
+}
+
+// ── Dönemler (4 Ekim 2026) ─────────────────────────────────────────────
+// Her sultanın dönemi kendi kart setini getirir (cards.json "era" alanı). Dönem
+// kartları normal havuzda değildir; her kartta ERA_PICK_CHANCE ile ayrı çekilir,
+// oyun başına en çok 2 kez (sayaçsız dönemde 1). Sayaç tek sayıdır (0–100):
+//   murad3 Harem Nüfuzu — 60+ iken Saray kayıpları %25 hafif; 80+ "taslaklar" krizi
+//   murad4 Sultan'ın Gözü — 75+ her kart sabır +, 20− her kart sabır −; dönemde sabır 2x
+//   ahmed3 Halkın Öfkesi — sayaçsız dönem kartı +2, yıl sonu +5; 50+ Patrona, 90+ isyan
+const ERA_DEFS = {
+  kanuni: { tr: "Zirve", en: "The Zenith", meter: null },
+  murad3: { tr: "Kadınlar Saltanatı", en: "Sultanate of Women", meter: ["HAREM NÜFUZU", "HAREM INFLUENCE"], start: 20, hot: 80 },
+  murad4: { tr: "Yasaklar", en: "The Prohibitions", meter: ["SULTAN'IN GÖZÜ", "SULTAN'S EYE"], start: 40, hot: 75, cold: 20 },
+  ahmed3: { tr: "Lale Devri", en: "Tulip Era", meter: ["HALKIN ÖFKESİ", "PUBLIC ANGER"], start: 20, hot: 50 },
+};
+const ERA_PICK_CHANCE = 0.3;
+const ERA_REPEAT_GAP = 24; // kriz/isyan kartı en erken bu kadar kart sonra yeniden
+let _eraState = { m: 0, crisisAt: -999 };
+function _eraDef() { return (selectedSultan && ERA_DEFS[selectedSultan.id]) || null; }
+function _eraReset(saved) {
+  const def = _eraDef();
+  _eraState = (saved && typeof saved === "object")
+    ? { m: Math.max(0, Math.min(100, +saved.m || 0)), crisisAt: typeof saved.crisisAt === "number" ? saved.crisisAt : -999 }
+    : { m: def && def.meter ? def.start : 0, crisisAt: -999 };
+  _renderEraChip();
+}
+function _eraSabirMul() { return selectedSultan && selectedSultan.id === "murad4" ? 2 : 1; }
+function _eraPick() {
+  const def = _eraDef();
+  if (!def || isPaywalled || Math.random() >= ERA_PICK_CHANCE) return null;
+  const sid = selectedSultan.id, maxPlays = def.meter ? 2 : 1;
+  const pool = allCards.filter(c => c.era === sid && !c.era_forced && (playCounts[c.id] || 0) < maxPlays &&
+    !(c.era_min && _eraState.m < c.era_min) && passesFilters(c) && !scheduledCards.some(sc => sc.cardId === c.id));
+  if (!pool.length) return null;
+  const fresh = pool.filter(c => !playCounts[c.id]); // önce görülmemişler
+  return weightedPick(fresh.length ? fresh : pool);
+}
+function _eraAdjustEffects(card, dir, fx) {
+  const ex = card && card[dir + "_era"];
+  if (ex && ex.chance) {
+    const win = Math.random() < 0.5, en = window.LANG === 'en';
+    fx = { ...fx, ...(win ? ex.chance[0] : ex.chance[1]) };
+    _eraToast(win ? (en ? "The bulbs doubled in value!" : "Soğanlar ikiye katlandı!") : (en ? "Tulip prices crashed!" : "Lale fiyatları çöktü!"), win);
+  }
+  if (selectedSultan && selectedSultan.id === "murad3" && _eraState.m >= 60 && typeof fx.saray === "number" && fx.saray < 0) {
+    fx = { ...fx, saray: Math.round(fx.saray * 0.75) };
+  }
+  return fx;
+}
+function _eraQueueCrisis(id) {
+  if (cardsPlayed - _eraState.crisisAt < ERA_REPEAT_GAP) return;
+  if (forcedQueue.some(c => c.id === id)) return;
+  const c = allCards.find(x => x.id === id);
+  if (!c) return;
+  _eraState.crisisAt = cardsPlayed;
+  forcedQueue.unshift(c);
+}
+function _eraMeterAdd(dm) {
+  if (!dm) return;
+  _eraState.m = Math.max(0, Math.min(100, _eraState.m + dm));
+}
+function _eraOnDecision(card, dir) {
+  const def = _eraDef();
+  if (!def || !def.meter || !card) return;
+  const sid = selectedSultan.id, ex = card[dir + "_era"] || {};
+  if (card.era === sid) {
+    _eraMeterAdd(ex.m || (sid === "ahmed3" ? 2 : 0));
+    for (const [k, v] of Object.entries(ex.rel || {})) relChange(k, v);
+  }
+  if (sid === "murad3" && _eraState.m >= 80) _eraQueueCrisis("era_saf_taslak");
+  if (sid === "ahmed3" && _eraState.m >= 90 && card.id !== "era_pat_isyan") _eraQueueCrisis("era_pat_isyan");
+  if (sid === "murad4") {
+    const d = _eraState.m >= def.hot ? 1 : _eraState.m <= def.cold ? -1 : 0;
+    if (d) { sultanSabir = Math.min(100, Math.max(0, sultanSabir + d * _eraSabirMul())); updateStatUI(); checkSultanSabir(); }
+  }
+  _renderEraChip();
+}
+function _eraYearClose() {
+  if (selectedSultan && selectedSultan.id === "ahmed3") { _eraMeterAdd(5); _renderEraChip(); }
+}
+function _renderEraChip() {
+  const game = document.getElementById("game"); if (!game) return;
+  let chip = document.getElementById("era-chip");
+  const def = _eraDef();
+  if (!def || !def.meter) { chip?.remove(); return; }
+  if (!chip) {
+    chip = document.createElement("div"); chip.id = "era-chip";
+    const anchor = document.getElementById("ferman-chip") || document.getElementById("dynamic-subtitle");
+    if (anchor && anchor.parentNode) anchor.insertAdjacentElement("afterend", chip); else game.appendChild(chip);
+  }
+  const en = window.LANG === 'en', m = Math.round(_eraState.m);
+  const hot = m >= def.hot, cold = def.cold != null && m <= def.cold;
+  chip.className = hot ? "hot" : cold ? "cold" : "";
+  chip.innerHTML = `<span class="ec-k">${def.meter[en ? 1 : 0]}</span><span class="ec-bar"><i style="width:${m}%"></i></span><span class="ec-v">${m}</span>`;
+}
+function _eraToast(text, good) {
+  const game = document.getElementById("game"); if (!game) return;
+  const t = document.createElement("div");
+  t.className = "era-toast " + (good ? "good" : "bad");
+  t.textContent = text;
+  game.appendChild(t);
+  requestAnimationFrame(() => t.classList.add("on"));
+  setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, 2300);
 }
 
 function hasAdvisor(id) {
@@ -8205,7 +8346,7 @@ function applyEffects(effects) {
       if (pendingItemEffect === "block_sabir") {
         shouldConsumeItem = true;
       } else {
-        let sc = raw;
+        let sc = raw * _eraSabirMul();
         if (hasAdvisor("semsi")) sc = Math.round(sc * 0.5);
         sultanSabir = Math.min(100, Math.max(0, sultanSabir + sc));
       }
@@ -8234,7 +8375,7 @@ function applyEffects(effects) {
     showStatDelta(stat, amp);
 
     if (stat === "saray" && pendingItemEffect !== "block_sabir") {
-      let sabirChange = raw < 0 ? -3 : 2;
+      let sabirChange = (raw < 0 ? -3 : 2) * _eraSabirMul();
       if (hasAdvisor("semsi")) sabirChange = Math.round(sabirChange * 0.5);
       sultanSabir = Math.min(100, Math.max(0, sultanSabir + sabirChange));
     }
@@ -8559,9 +8700,11 @@ function decide(dir) {
     }
   }
 
-  applyEffects(_nisanAdjustEffects(_relAdjustEffects(currentCard, currentCard[dir + "_effects"] || {})));
+  applyEffects(_eraAdjustEffects(currentCard, dir, _nisanAdjustEffects(_relAdjustEffects(currentCard, currentCard[dir + "_effects"] || {}))));
   if (isGameOver) return;
   _relOnDecision(currentCard, dir);
+  _eraOnDecision(currentCard, dir);
+  if (isGameOver) return;
   _fermanTrack();
   _endTrack();
   if (currentCard.id === "savaş_zafer") { const d = _defterGet(); d.end.wars++; _defterSet(d); }
@@ -9091,6 +9234,7 @@ window.addEventListener("touchend",  () => onEnd());
 function advanceYear() {
   _fermanCloseYear(); // biten yılın fermanı — paywall/sınır kontrollerinden önce
   _endYearClose();    // kader yolu durakları + son kontrolü (aynı sebeple önce)
+  _eraYearClose();
   // Paywall daha önce reddedildiyse: bir daha hiç paywall çıkmaz — bunun yerine
   // her oyun 2. yılın sonunda "ölümle" biter (Tam Sürüm alınana kadar kalıcı).
   // Bu ölüm kesin olmalı: normal triggerGameOver() İkinci Şans (reklam/akçe) teklifi

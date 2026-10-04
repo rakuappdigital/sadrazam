@@ -22053,6 +22053,1146 @@
       "investigate_text_en": "",
       "speech_left_en": "Timber is cheap, Pasha…",
       "speech_right_en": "Istanbul will rise from its ashes."
+    },
+    {
+      "id": "era_tak_rasathane",
+      "character": "takiyuddin",
+      "character_name": "Takiyüddin",
+      "text": "Paşam, Galata'da gökyüzünü ölçecek bir rasathane kurmak istiyorum. Yıldızlar devletin geleceğini söyler.",
+      "left_text": "Hazine buna dayanmaz",
+      "right_text": "Rasathane kurulsun",
+      "left_effects": {
+        "saray": -3,
+        "ulema": 2,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 6,
+        "ulema": -3,
+        "hazine": -10
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "era_rasathane"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Taqi al-Din",
+      "text_en": "Pasha, I wish to build an observatory in Galata to measure the heavens. The stars foretell the state's future.",
+      "left_text_en": "The treasury can't bear it",
+      "right_text_en": "Build the observatory",
+      "era": "murad3"
+    },
+    {
+      "id": "era_tak_kehanet",
+      "character": "takiyuddin",
+      "character_name": "Takiyüddin",
+      "text": "Kuyruklu bir yıldız göründü! Hesaplarıma göre bu, ordumuzun İran'da zaferine işaret.",
+      "left_text": "Kehanete itibar etme",
+      "right_text": "Sultan'a müjde ver",
+      "left_effects": {
+        "saray": -4,
+        "ulema": 3
+      },
+      "right_effects": {
+        "saray": 8,
+        "yeniçeri": 4,
+        "ulema": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "era_kehanet"
+      ],
+      "required_flags": [
+        "era_rasathane"
+      ],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Taqi al-Din",
+      "text_en": "A comet has appeared! By my reckoning it heralds our army's victory in Persia.",
+      "left_text_en": "Ignore the prophecy",
+      "right_text_en": "Bring the Sultan the good news",
+      "era": "murad3"
+    },
+    {
+      "id": "era_tak_yikim",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "text": "Yıldızlara bakmak felaket getirdi: veba ve yenilgi onun yüzünden. Rasathane yıkılsın!",
+      "left_text": "Bilim suç değildir",
+      "right_text": "Yıkılsın",
+      "left_effects": {
+        "saray": 3,
+        "ulema": -12
+      },
+      "right_effects": {
+        "saray": -4,
+        "ulema": 10,
+        "hazine": 2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "era_kehanet"
+      ],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "religious",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "Gazing at the stars brought disaster: plague and defeat are its fruit. Tear the observatory down!",
+      "left_text_en": "Science is no crime",
+      "right_text_en": "Tear it down",
+      "era": "murad3"
+    },
+    {
+      "id": "era_tak_cetvel",
+      "character": "takiyuddin",
+      "character_name": "Takiyüddin",
+      "text": "Hazırladığım yıldız cetvelleri Avrupa'dakilerden üstün. Kopyalarını Venedik'e satabiliriz.",
+      "left_text": "Bilgi satılmaz",
+      "right_text": "Satın",
+      "left_effects": {
+        "ulema": 4,
+        "hazine": -2
+      },
+      "right_effects": {
+        "ulema": -6,
+        "hazine": 9
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Taqi al-Din",
+      "text_en": "My star tables surpass Europe's. We could sell copies to Venice.",
+      "left_text_en": "Knowledge is not for sale",
+      "right_text_en": "Sell them",
+      "era": "murad3"
+    },
+    {
+      "id": "era_saf_hediye",
+      "character": "safiye-sultan",
+      "character_name": "Safiye Sultan",
+      "text": "Venedik balyosu bana değerli hediyeler yolladı. Karşılığında ticarette biraz yumuşaklık istiyorlar.",
+      "left_text": "Hediyeleri geri gönder",
+      "right_text": "Hatırını kırma",
+      "left_effects": {
+        "saray": -6,
+        "ulema": 4
+      },
+      "right_effects": {
+        "saray": 6,
+        "ulema": -6,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "royal",
+      "character_name_en": "Safiye Sultan",
+      "text_en": "The Venetian bailo sent me precious gifts. In return they ask for a little leniency in trade.",
+      "left_text_en": "Send the gifts back",
+      "right_text_en": "Don't offend her",
+      "era": "murad3",
+      "left_era": {
+        "m": -8
+      },
+      "right_era": {
+        "m": 12
+      }
+    },
+    {
+      "id": "era_saf_kulak",
+      "character": "safiye-sultan",
+      "character_name": "Safiye Sultan",
+      "text": "Valide Sultan'ın sözü eskisi kadar geçmiyor. Sultan'ın kulağı bende; bu sana da yarar, Paşa.",
+      "left_text": "Valide'nin yanında dur",
+      "right_text": "Seninle olalım",
+      "left_effects": {
+        "saray": -8,
+        "ulema": 3
+      },
+      "right_effects": {
+        "saray": 8,
+        "yeniçeri": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "royal",
+      "character_name_en": "Safiye Sultan",
+      "text_en": "The Valide Sultan's word no longer carries as it did. I have the Sultan's ear; that serves you too, Pasha.",
+      "left_text_en": "Stand with the Valide",
+      "right_text_en": "Let us be allies",
+      "era": "murad3",
+      "left_era": {
+        "m": -10,
+        "rel": {
+          "5-valide-sultan": 2
+        }
+      },
+      "right_era": {
+        "m": 15,
+        "rel": {
+          "5-valide-sultan": -2
+        }
+      }
+    },
+    {
+      "id": "era_saf_sancak",
+      "character": "safiye-sultan",
+      "character_name": "Safiye Sultan",
+      "text": "Oğlum şehzadenin sancağa değil, sarayın yanına yakın olması gerek. Manisa çok uzak.",
+      "left_text": "Kanun sancağı ister",
+      "right_text": "İstanbul'da kalsın",
+      "left_effects": {
+        "saray": -6,
+        "ulema": 4
+      },
+      "right_effects": {
+        "saray": 7,
+        "yeniçeri": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "royal",
+      "character_name_en": "Safiye Sultan",
+      "text_en": "My son the prince should be near the palace, not off in a province. Manisa is too far.",
+      "left_text_en": "The law demands a province",
+      "right_text_en": "Let him stay in Istanbul",
+      "era": "murad3",
+      "left_era": {
+        "m": -6
+      },
+      "right_era": {
+        "m": 10
+      }
+    },
+    {
+      "id": "era_saf_taslak",
+      "character": "safiye-sultan",
+      "character_name": "Safiye Sultan",
+      "text": "Divan kararlarının taslakları önce bana gelsin. Sultan böyle istiyor, Paşa.",
+      "left_text": "Divan bağımsızdır",
+      "right_text": "Taslaklar gönderilsin",
+      "left_effects": {
+        "saray": -12,
+        "ulema": 5
+      },
+      "right_effects": {
+        "saray": 6,
+        "yeniçeri": -6,
+        "ulema": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "crisis",
+      "character_name_en": "Safiye Sultan",
+      "text_en": "Let the drafts of the Divan's decisions come to me first. The Sultan wishes it so, Pasha.",
+      "left_text_en": "The Divan is independent",
+      "right_text_en": "Send her the drafts",
+      "era": "murad3",
+      "era_min": 60,
+      "left_era": {
+        "m": -20
+      },
+      "right_era": {
+        "m": 15
+      }
+    },
+    {
+      "id": "era_kir_muafiyet",
+      "character": "esther-kira",
+      "character_name": "Esther Kira",
+      "text": "Sarayın kumaş ve mücevher alımlarını ben yapıyorum. Gümrükten muafiyet verilirse fiyatlar düşer.",
+      "left_text": "Muafiyet olmaz",
+      "right_text": "Muafiyet verin",
+      "left_effects": {
+        "saray": -5,
+        "hazine": 4
+      },
+      "right_effects": {
+        "saray": 5,
+        "hazine": -7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Esther Kira",
+      "text_en": "I handle the palace's purchases of cloth and jewels. Grant me a customs exemption and prices will fall.",
+      "left_text_en": "No exemption",
+      "right_text_en": "Grant the exemption",
+      "era": "murad3",
+      "right_era": {
+        "m": 5
+      }
+    },
+    {
+      "id": "era_kir_iltizam",
+      "character": "esther-kira",
+      "character_name": "Esther Kira",
+      "text": "Selanik gümrüğünü üç yıllığına bana verin; parasını peşin öderim.",
+      "left_text": "Devletin gümrüğü satılmaz",
+      "right_text": "Peşin parayı al",
+      "left_effects": {
+        "ulema": 4,
+        "hazine": -3
+      },
+      "right_effects": {
+        "yeniçeri": -5,
+        "ulema": -4,
+        "hazine": 12
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "era_iltizam"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Esther Kira",
+      "text_en": "Farm out the Salonica customs to me for three years; I will pay for it in advance.",
+      "left_text_en": "The state's customs are not for sale",
+      "right_text_en": "Take the money up front",
+      "era": "murad3"
+    },
+    {
+      "id": "era_kir_sipahi",
+      "character": "11-sipahi_agasi",
+      "character_name": "Sipahi Ağası",
+      "text": "Kira'nın adamları maaşlarımızı ayarı düşük akçeyle ödüyor! Ocak kaynıyor.",
+      "left_text": "Sipahiler abartıyor",
+      "right_text": "İltizamı geri al",
+      "left_effects": {
+        "yeniçeri": -12,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 8,
+        "hazine": -10
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "era_iltizam"
+      ],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Sipahi Commander",
+      "text_en": "Kira's men are paying our wages in debased coin! The corps is boiling.",
+      "left_text_en": "The cavalry exaggerates",
+      "right_text_en": "Revoke the tax farm",
+      "era": "murad3"
+    },
+    {
+      "id": "era_kir_mektup",
+      "character": "esther-kira",
+      "character_name": "Esther Kira",
+      "text": "Haremde bir cariye Sultan'a bir mektup sızdırmış; içinde senin adın var. Mektup bende. Fiyatını konuşalım.",
+      "left_text": "Şantaja boyun eğme",
+      "right_text": "Öde, mektup yansın",
+      "left_effects": {
+        "saray": -8,
+        "ulema": 2
+      },
+      "right_effects": {
+        "saray": 4,
+        "hazine": -9
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Esther Kira",
+      "text_en": "A harem girl leaked a letter to the Sultan, and your name is in it. I have the letter. Let us discuss its price.",
+      "left_text_en": "Don't yield to blackmail",
+      "right_text_en": "Pay, and burn the letter",
+      "era": "murad3"
+    },
+    {
+      "id": "era_kdz_kahve",
+      "character": "kadizade",
+      "character_name": "Kadızade Mehmed",
+      "text": "Kahvehaneler fitne yuvası! Halk namaz yerine dedikodu ile vakit geçiriyor. Kapatılsın.",
+      "left_text": "Halkın kahvesine dokunma",
+      "right_text": "Kapatılsın",
+      "left_effects": {
+        "saray": 3,
+        "ulema": -8
+      },
+      "right_effects": {
+        "ulema": 9,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "era_kahve"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "religious",
+      "character_name_en": "Kadızade Mehmed",
+      "text_en": "The coffeehouses are nests of sedition! People gossip there instead of praying. Close them.",
+      "left_text_en": "Leave the people their coffee",
+      "right_text_en": "Close them",
+      "era": "murad4",
+      "left_era": {
+        "m": -15
+      },
+      "right_era": {
+        "m": 15
+      }
+    },
+    {
+      "id": "era_kdz_tutun",
+      "character": "kadizade",
+      "character_name": "Kadızade Mehmed",
+      "text": "Tütün içen meyhaneye gider, meyhaneye giden devlete isyan eder. Tütün yasaklansın.",
+      "left_text": "Vergi geliri kaybolur",
+      "right_text": "Yasaklansın",
+      "left_effects": {
+        "ulema": -7,
+        "hazine": 4
+      },
+      "right_effects": {
+        "ulema": 8,
+        "hazine": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "religious",
+      "character_name_en": "Kadızade Mehmed",
+      "text_en": "He who smokes goes to the tavern, and he who goes to the tavern rebels against the state. Ban tobacco.",
+      "left_text_en": "We lose the tax revenue",
+      "right_text_en": "Ban it",
+      "era": "murad4",
+      "left_era": {
+        "m": -10
+      },
+      "right_era": {
+        "m": 15
+      }
+    },
+    {
+      "id": "era_kdz_baskin",
+      "character": "15-halk_temsilcisi",
+      "character_name": "Halk Temsilcisi",
+      "text": "Kahvehaneler kapandı ama insanlar evlerde gizlice toplanıyor. Yasak için gece baskınları gerekiyor.",
+      "left_text": "Göz yum",
+      "right_text": "Baskın yapılsın",
+      "left_effects": {
+        "saray": -3,
+        "ulema": -5
+      },
+      "right_effects": {
+        "yeniçeri": 4,
+        "ulema": 5,
+        "hazine": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "era_kahve"
+      ],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "social",
+      "character_name_en": "People's Representative",
+      "text_en": "The coffeehouses are closed, but people gather secretly in their homes. The ban needs night raids.",
+      "left_text_en": "Turn a blind eye",
+      "right_text_en": "Order the raids",
+      "era": "murad4",
+      "left_era": {
+        "m": -12
+      },
+      "right_era": {
+        "m": 12
+      }
+    },
+    {
+      "id": "era_kdz_tekke",
+      "character": "kadizade",
+      "character_name": "Kadızade Mehmed",
+      "text": "Tekkelerde zikir ve sema bid'attır. Dervişler şehirden sürülsün!",
+      "left_text": "Tekkeler kalsın",
+      "right_text": "Sürülsünler",
+      "left_effects": {
+        "saray": 2,
+        "ulema": -6
+      },
+      "right_effects": {
+        "saray": -3,
+        "ulema": 7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "religious",
+      "character_name_en": "Kadızade Mehmed",
+      "text_en": "Chanting and whirling in the lodges is heresy. Drive the dervishes from the city!",
+      "left_text_en": "Let the lodges be",
+      "right_text_en": "Drive them out",
+      "era": "murad4",
+      "left_era": {
+        "m": -8
+      },
+      "right_era": {
+        "m": 10
+      }
+    },
+    {
+      "id": "era_koc_risale",
+      "character": "koci-bey",
+      "character_name": "Koçi Bey",
+      "text": "Devletin çöküş sebeplerini bir risalede topladım: rüşvet, liyakatsizlik, tımarların bozulması. Sultan'a sunayım mı?",
+      "left_text": "Sert sözler Sultan'ı kızdırır",
+      "right_text": "Sun, okusun",
+      "left_effects": {
+        "saray": 3,
+        "ulema": -3
+      },
+      "right_effects": {
+        "saray": -4,
+        "ulema": 6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "era_risale"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "political",
+      "character_name_en": "Koçi Bey",
+      "text_en": "I have set down the causes of the state's decline in a treatise: bribery, incompetence, ruined fiefs. Shall I present it to the Sultan?",
+      "left_text_en": "Harsh words will anger the Sultan",
+      "right_text_en": "Present it, let him read",
+      "era": "murad4",
+      "right_era": {
+        "m": 10
+      }
+    },
+    {
+      "id": "era_koc_timar",
+      "character": "koci-bey",
+      "character_name": "Koçi Bey",
+      "text": "Sultan risalemi okudu; tımar düzenini yeniden kurmak istiyor. Ama bu ayanların gelirini keser.",
+      "left_text": "Ayanları kızdırma",
+      "right_text": "Tımarlar düzeltilsin",
+      "left_effects": {
+        "yeniçeri": -4,
+        "hazine": 4
+      },
+      "right_effects": {
+        "yeniçeri": 9,
+        "hazine": -8
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "era_risale"
+      ],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "political",
+      "character_name_en": "Koçi Bey",
+      "text_en": "The Sultan has read my treatise and wants to restore the fief system. But it will cut the notables' income.",
+      "left_text_en": "Don't anger the notables",
+      "right_text_en": "Restore the fiefs",
+      "era": "murad4",
+      "left_era": {
+        "m": -8
+      },
+      "right_era": {
+        "m": 12
+      }
+    },
+    {
+      "id": "era_koc_liste",
+      "character": "koci-bey",
+      "character_name": "Koçi Bey",
+      "text": "Divan'da makamlar paraya satılıyor. Kimin aldığını biliyorum; liste bende.",
+      "left_text": "Listeyi yak",
+      "right_text": "İsimleri açıkla",
+      "left_effects": {
+        "saray": 4,
+        "ulema": -5
+      },
+      "right_effects": {
+        "saray": -8,
+        "ulema": 6,
+        "hazine": 5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Koçi Bey",
+      "text_en": "Offices in the Divan are being sold for money. I know who bought them; I have the list.",
+      "left_text_en": "Burn the list",
+      "right_text_en": "Reveal the names",
+      "era": "murad4",
+      "right_era": {
+        "m": 10
+      }
+    },
+    {
+      "id": "era_koc_veba",
+      "character": "koci-bey",
+      "character_name": "Koçi Bey",
+      "text": "Gelecek bahar büyük bir veba gelecek; belirtiler var. Şimdiden karantina hazırlansın mı?",
+      "left_text": "Panik yaratma",
+      "right_text": "Hazırlansın",
+      "left_effects": {
+        "hazine": 3
+      },
+      "right_effects": {
+        "ulema": 3,
+        "hazine": -7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "veba_önlemi"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "social",
+      "character_name_en": "Koçi Bey",
+      "text_en": "A great plague will come next spring; the signs are there. Shall we prepare a quarantine now?",
+      "left_text_en": "Don't spread panic",
+      "right_text_en": "Prepare it",
+      "era": "murad4"
+    },
+    {
+      "id": "era_mur_tebdil",
+      "character": "1-sultan",
+      "character_name": "Sultan IV. Murad",
+      "text": "Dün gece tebdil-i kıyafet çarşıdaydım. Üç tütün içeni kendi elimle cezalandırdım. Senin kadıların neredeydi?",
+      "left_text": "Kadıları savun",
+      "right_text": "Kadılar azledilsin",
+      "left_effects": {
+        "saray": -12,
+        "ulema": 4
+      },
+      "right_effects": {
+        "saray": 8,
+        "ulema": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "royal",
+      "character_name_en": "Sultan Murad IV",
+      "text_en": "Last night I walked the bazaar in disguise and punished three smokers with my own hand. Where were your judges?",
+      "left_text_en": "Defend the judges",
+      "right_text_en": "Dismiss the judges",
+      "era": "murad4",
+      "era_min": 60,
+      "left_era": {
+        "m": -15
+      },
+      "right_era": {
+        "m": 10
+      }
+    },
+    {
+      "id": "era_ned_senlik",
+      "character": "nedim",
+      "character_name": "Nedim",
+      "text": "Saadabad'da bir lale şenliği yapalım: kaplumbağaların sırtında mumlar, havuzda kayıklar, sabaha kadar şiir.",
+      "left_text": "İsraf olur",
+      "right_text": "Şenlik olsun",
+      "left_effects": {
+        "saray": -6,
+        "hazine": 5
+      },
+      "right_effects": {
+        "saray": 8,
+        "hazine": -8
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Nedim",
+      "text_en": "Let us hold a tulip festival at Sadabad: candles on the backs of tortoises, boats on the pool, poetry until dawn.",
+      "left_text_en": "It would be a waste",
+      "right_text_en": "Let the festival begin",
+      "era": "ahmed3",
+      "left_era": {
+        "m": -5
+      },
+      "right_era": {
+        "m": 15
+      }
+    },
+    {
+      "id": "era_ned_divan",
+      "character": "nedim",
+      "character_name": "Nedim",
+      "text": "Divanımı Sultan'a ithaf etmek istiyorum; içinde sizi de öven bir kaside var.",
+      "left_text": "Gerek yok",
+      "right_text": "Memnuniyetle",
+      "left_effects": {
+        "saray": -3
+      },
+      "right_effects": {
+        "saray": 6,
+        "ulema": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Nedim",
+      "text_en": "I wish to dedicate my collected poems to the Sultan; there is an ode in it praising you too.",
+      "left_text_en": "No need",
+      "right_text_en": "Gladly",
+      "era": "ahmed3",
+      "right_era": {
+        "m": 3
+      }
+    },
+    {
+      "id": "era_ned_muste",
+      "character": "nedim",
+      "character_name": "Nedim",
+      "text": "Ulema şiirlerimi müstehcen buluyor. Beni savunur musunuz, Paşam?",
+      "left_text": "Kendini savun",
+      "right_text": "Şair benim himayemde",
+      "left_effects": {
+        "saray": -4,
+        "ulema": 5
+      },
+      "right_effects": {
+        "saray": 5,
+        "ulema": -7
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Nedim",
+      "text_en": "The ulema find my poems indecent. Will you defend me, Pasha?",
+      "left_text_en": "Defend yourself",
+      "right_text_en": "The poet is under my protection",
+      "era": "ahmed3",
+      "right_era": {
+        "m": 5
+      }
+    },
+    {
+      "id": "era_mut_izin",
+      "character": "ibrahim-muteferrika",
+      "character_name": "İbrahim Müteferrika",
+      "text": "Avrupa'da kitaplar kalemle değil, matbaayla basılıyor. Bize de bir matbaa izni verilsin.",
+      "left_text": "Hattatların ekmeği",
+      "right_text": "İzin verilsin",
+      "left_effects": {
+        "ulema": 5,
+        "hazine": -2
+      },
+      "right_effects": {
+        "saray": 3,
+        "ulema": -7,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "era_matbaa"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "İbrahim Müteferrika",
+      "text_en": "In Europe books are made by the press, not the pen. Grant us leave to set up a printing press.",
+      "left_text_en": "The calligraphers' livelihood",
+      "right_text_en": "Grant the leave",
+      "era": "ahmed3"
+    },
+    {
+      "id": "era_mut_fetva",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "text": "Fetvamdır: dinî kitaplar basılamaz. Yalnız tarih, harita ve sözlük basılsın.",
+      "left_text": "Her şey basılsın",
+      "right_text": "Fetvaya uyalım",
+      "left_effects": {
+        "saray": 4,
+        "ulema": -10
+      },
+      "right_effects": {
+        "ulema": 5,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "era_matbaa"
+      ],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "religious",
+      "character_name_en": "Şeyhülislam",
+      "text_en": "This is my fatwa: no religious books may be printed. Only histories, maps and dictionaries.",
+      "left_text_en": "Print everything",
+      "right_text_en": "Abide by the fatwa",
+      "era": "ahmed3"
+    },
+    {
+      "id": "era_mut_talim",
+      "character": "ibrahim-muteferrika",
+      "character_name": "İbrahim Müteferrika",
+      "text": "Bastığım haritalarda Avrupa ordularının düzeni var. Ordu yeni usulde talim etsin.",
+      "left_text": "Eski usul yeter",
+      "right_text": "Yeni usul talim",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 5
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": -8,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "era_matbaa"
+      ],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "İbrahim Müteferrika",
+      "text_en": "The maps I print show how Europe's armies are ordered. Let the army drill in the new style.",
+      "left_text_en": "The old way is enough",
+      "right_text_en": "Drill in the new style",
+      "era": "ahmed3"
+    },
+    {
+      "id": "era_lal_sogan",
+      "character": "lale-tuccari",
+      "character_name": "Lale Tüccarı",
+      "text": "Hollanda'dan getirdiğim çizgili lale soğanı, tanesi bir konak fiyatına! Saray bahçesine yakışır.",
+      "left_text": "Bir çiçeğe konak verilmez",
+      "right_text": "Satın al",
+      "left_effects": {
+        "saray": -4,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 6,
+        "hazine": -9
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Tulip Merchant",
+      "text_en": "This striped tulip bulb from Holland costs as much as a mansion! It would grace the palace garden.",
+      "left_text_en": "No mansion for a flower",
+      "right_text_en": "Buy it",
+      "era": "ahmed3",
+      "right_era": {
+        "m": 8
+      }
+    },
+    {
+      "id": "era_lal_kumar",
+      "character": "lale-tuccari",
+      "character_name": "Lale Tüccarı",
+      "text": "Fiyatlar uçuyor! Hazineden pay ayırıp soğan alırsak gelecek bahar ikiye katlarız. Ya da her şeyi kaybederiz.",
+      "left_text": "Kumar oynamam",
+      "right_text": "Yatırım yap",
+      "left_effects": {
+        "ulema": 2
+      },
+      "right_effects": {},
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Tulip Merchant",
+      "text_en": "Prices are soaring! If the treasury buys bulbs now, we double our money by spring. Or lose it all.",
+      "left_text_en": "I don't gamble",
+      "right_text_en": "Invest",
+      "era": "ahmed3",
+      "right_era": {
+        "m": 6,
+        "chance": [
+          {
+            "saray": 3,
+            "hazine": 14
+          },
+          {
+            "saray": -3,
+            "hazine": -14
+          }
+        ]
+      }
+    },
+    {
+      "id": "era_pat_ekmek",
+      "character": "patrona-halil",
+      "character_name": "Patrona Halil",
+      "text": "Saadabad'a akan altın, çarşıda aç kalan esnafın ekmeği. Halk söyleniyor, Paşam.",
+      "left_text": "Esnafın derdi bitmez",
+      "right_text": "Eğlencelere kısıtlama",
+      "left_effects": {
+        "saray": 3,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": -8,
+        "hazine": 5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "social",
+      "character_name_en": "Patrona Halil",
+      "text_en": "The gold flowing to Sadabad is the bread of the hungry tradesmen in the bazaar. The people grumble, Pasha.",
+      "left_text_en": "Tradesmen always complain",
+      "right_text_en": "Curb the festivities",
+      "era": "ahmed3",
+      "era_min": 50,
+      "left_era": {
+        "m": 10
+      },
+      "right_era": {
+        "m": -15
+      }
+    },
+    {
+      "id": "era_pat_maas",
+      "character": "patrona-halil",
+      "character_name": "Patrona Halil",
+      "text": "İran cephesinden dönen askerin maaşı ödenmedi. Biz bekleriz, ama çok beklemeyiz.",
+      "left_text": "Hazine boş",
+      "right_text": "Ödensin",
+      "left_effects": {
+        "yeniçeri": -9,
+        "hazine": 3
+      },
+      "right_effects": {
+        "yeniçeri": 7,
+        "hazine": -10
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Patrona Halil",
+      "text_en": "The soldiers back from the Persian front have not been paid. We can wait, but not for long.",
+      "left_text_en": "The treasury is empty",
+      "right_text_en": "Pay them",
+      "era": "ahmed3",
+      "era_min": 50,
+      "left_era": {
+        "m": 12
+      },
+      "right_era": {
+        "m": -10
+      }
+    },
+    {
+      "id": "era_pat_isyan",
+      "character": "patrona-halil",
+      "character_name": "Patrona Halil",
+      "text": "Kazanlar devrildi, Bayezid Meydanı dolu. Sultan senin başını verirse tahtını kurtarır. Seçimini yap.",
+      "left_text": "Meydana çık, konuş",
+      "right_text": "Kaç, saklan",
+      "left_effects": {
+        "saray": -10,
+        "yeniçeri": -10,
+        "ulema": 4
+      },
+      "right_effects": {
+        "saray": -15,
+        "hazine": -8
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "crisis",
+      "character_name_en": "Patrona Halil",
+      "text_en": "The cauldrons are overturned and Bayezid Square is full. If the Sultan gives them your head, he keeps his throne. Choose.",
+      "left_text_en": "Go out to the square and speak",
+      "right_text_en": "Flee and hide",
+      "era": "ahmed3",
+      "era_forced": true,
+      "left_era": {
+        "m": -30
+      },
+      "right_era": {
+        "m": 10
+      }
+    },
+    {
+      "id": "era_mat_menzil",
+      "character": "matrakci-nasuh",
+      "character_name": "Matrakçı Nasuh",
+      "text": "Irakeyn seferinde geçtiğimiz her şehri resmettim. Bu menzilname Sultan'a sunulsun mu?",
+      "left_text": "Asker resimle değil kılıçla",
+      "right_text": "Sunulsun",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 3
+      },
+      "right_effects": {
+        "saray": 7,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Matrakçı Nasuh",
+      "text_en": "I painted every city we passed on the Iraq campaign. Shall this book of stages be presented to the Sultan?",
+      "left_text_en": "Soldiers fight with swords, not pictures",
+      "right_text_en": "Present it",
+      "era": "kanuni"
+    },
+    {
+      "id": "era_mat_matrak",
+      "character": "matrakci-nasuh",
+      "character_name": "Matrakçı Nasuh",
+      "text": "Ben aynı zamanda silahşorum. Matrak oyununu ordu talimine katalım; askerin çevikliği artar.",
+      "left_text": "Gerek yok",
+      "right_text": "Talime katılsın",
+      "left_effects": {
+        "hazine": 2
+      },
+      "right_effects": {
+        "yeniçeri": 6,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Matrakçı Nasuh",
+      "text_en": "I am also a swordsman. Let us add the matrak game to the army's drill; it sharpens a soldier's agility.",
+      "left_text_en": "No need",
+      "right_text_en": "Add it to the drill",
+      "era": "kanuni"
+    },
+    {
+      "id": "era_mat_harita",
+      "character": "matrakci-nasuh",
+      "character_name": "Matrakçı Nasuh",
+      "text": "Haritalarım düşman kalelerinin zayıf noktalarını gösteriyor. Casuslar Başı'na mı vereyim, Kaptan-ı Derya'ya mı?",
+      "left_text": "Casuslar Başı",
+      "right_text": "Kaptan-ı Derya",
+      "left_effects": {
+        "saray": 4,
+        "yeniçeri": -2
+      },
+      "right_effects": {
+        "yeniçeri": 5,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 10,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Matrakçı Nasuh",
+      "text_en": "My maps show the weak points of enemy fortresses. Shall I give them to the Spymaster or to the Grand Admiral?",
+      "left_text_en": "The Spymaster",
+      "right_text_en": "The Grand Admiral",
+      "era": "kanuni"
     }
   ]
 }

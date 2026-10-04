@@ -55,6 +55,14 @@ window.EN_SULTANS = {
   murad3: {
     name: "Murad III",
     desc: "Rich treasury, weak authority."
+  },
+  murad4: {
+    name: "Murad IV",
+    desc: "The age of prohibitions. Harsh and impatient; great rewards, heavy penalties."
+  },
+  ahmed3: {
+    name: "Ahmed III",
+    desc: "The Tulip Era. A merry palace, a full treasury; a hungry bazaar."
   }
 };
 
