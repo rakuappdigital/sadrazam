@@ -5438,3 +5438,45 @@ html, body {
 .dv-seal { width: 100%; padding: 13px; border-radius: 6px; border: 1px solid #E8C84A; background: linear-gradient(180deg, #E8C84A, #B38D1C); color: #1a1006; font-family: 'Cinzel', serif; font-weight: 700; font-size: 12.5px; letter-spacing: 2px; cursor: pointer; }
 .dv-seal:disabled { background: transparent; color: rgba(201,162,39,0.45); border-color: rgba(201,162,39,0.3); cursor: default; }
 .dv-sultan { background: none; border: 0; color: rgba(240,230,208,0.55); font-family: 'IM Fell English', serif; font-size: 13.5px; text-decoration: underline; cursor: pointer; padding: 6px; }
+
+/* ── Vezirler Defteri (3 Ekim 2026) ── */
+#gameover-defter { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 6px auto 2px; font-family: 'IM Fell English', serif; font-size: 13px; color: rgba(240,230,208,0.75); }
+#gameover-defter button { font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1.2px; color: var(--gold-light); background: rgba(201,162,39,0.1); border: 1px solid var(--gold-dim); border-radius: 999px; padding: 5px 11px; cursor: pointer; }
+#defter-overlay { position: fixed; inset: 0; z-index: 280; display: flex; align-items: center; justify-content: center; padding: 14px; background: rgba(4,3,8,0.86); opacity: 0; transition: opacity 0.3s; }
+#defter-overlay.on { opacity: 1; }
+.df-book { width: min(96vw, 560px); max-height: 92vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 12px 14px; border-radius: 10px;
+  background: linear-gradient(135deg, #4a2412, #2e150a 60%, #3d1d0e); box-shadow: inset 0 0 0 2px #8a6a2a, inset 0 0 0 5px #2a1208, inset 0 0 0 6px rgba(201,162,39,0.45), 0 20px 50px rgba(0,0,0,0.7); }
+.df-title { font-family: 'Cinzel Decorative', serif; font-size: 16px; letter-spacing: 2px; color: #e8c84a; text-shadow: 0 1px 0 #000; }
+.df-spread { width: 100%; display: grid; grid-template-columns: 1fr 1fr; border-radius: 4px; perspective: 1200px;
+  background: linear-gradient(90deg, #d8c595, #efe1bd 46%, #c2a670 50%, #efe1bd 54%, #d8c595); box-shadow: 0 6px 16px rgba(0,0,0,0.5); }
+@media (max-width: 520px) { .df-spread { grid-template-columns: 1fr; background: linear-gradient(180deg, #efe1bd, #e2cfa0); } .df-left { border-bottom: 1px dashed rgba(90,60,20,0.35); } }
+.df-page { padding: 16px 16px 12px; color: #2b1c0b; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.df-left { transform-origin: right center; }
+.df-left.flip-l { animation: dfFlipL 0.36s ease-in-out; } .df-left.flip-r { animation: dfFlipR 0.36s ease-in-out; }
+@keyframes dfFlipL { 50% { transform: rotateY(-70deg); opacity: 0.4; } }
+@keyframes dfFlipR { 50% { transform: rotateY(70deg); opacity: 0.4; } }
+.df-pagein { display: flex; flex-direction: column; gap: 8px; }
+.df-no { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2.5px; color: #7a2a12; }
+.df-name { font-family: 'Cinzel Decorative', serif; font-size: 17px; line-height: 1.2; color: #3a2410; }
+.df-rows { display: grid; gap: 3px; }
+.df-rows div { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dotted rgba(43,28,11,0.3); padding: 3px 0; font-family: 'IM Fell English', serif; font-size: 13.5px; }
+.df-rows b { font-family: 'Cinzel', serif; font-size: 11.5px; font-weight: 600; text-align: right; }
+.df-ev { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13.5px; line-height: 1.4; }
+.df-ev span { display: block; font-style: normal; font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 1.5px; color: #7a2a12; margin-bottom: 2px; }
+.df-empty { font-family: 'IM Fell English', serif; font-style: italic; font-size: 14px; line-height: 1.5; padding: 20px 0; text-align: center; }
+.df-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: auto; font-family: 'Cinzel', serif; font-size: 11px; color: #5a3a10; }
+.df-nav button { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(90,60,20,0.45); background: rgba(255,255,255,0.25); color: #5a3a10; font-size: 18px; line-height: 1; cursor: pointer; }
+.df-right { align-items: center; text-align: center; }
+.df-total { display: flex; align-items: baseline; gap: 6px; }
+.df-total b { font-family: 'Cinzel Decorative', serif; font-size: 34px; color: #7a1a12; line-height: 1; }
+.df-total span { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2.5px; color: #7a2a12; }
+.df-track { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; border-radius: 999px; background: rgba(120,80,20,0.1); box-shadow: inset 0 1px 3px rgba(60,30,5,0.25); }
+.df-seal { width: 30px; height: 30px; }
+.df-seal.big { width: 38px; height: 38px; }
+.df-seal.on { filter: drop-shadow(0 2px 2px rgba(60,20,5,0.45)); }
+.df-next { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13.5px; color: #4a3210; }
+.df-how { margin-top: 4px; font-family: 'IM Fell English', serif; font-size: 13px; line-height: 1.4; text-align: left; border-top: 1px solid rgba(43,28,11,0.25); padding-top: 8px; }
+.df-how span { display: block; font-family: 'Cinzel', serif; font-size: 9.5px; letter-spacing: 1.5px; color: #7a2a12; margin-bottom: 2px; }
+.df-stat { font-family: 'Cinzel', serif; font-size: 10.5px; color: #5a3a10; }
+.df-close { width: 100%; max-width: 280px; padding: 11px; border-radius: 6px; border: 1px solid rgba(232,200,74,0.5); background: rgba(201,162,39,0.1); color: #e8c84a; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .df-left.flip-l, .df-left.flip-r { animation: none; } }

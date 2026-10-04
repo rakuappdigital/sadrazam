@@ -6997,7 +6997,7 @@ function _renderFermanChip() {
 
 // ── Vezirler Defteri: kalıcı kayıt (Defter ekranı ayrı) ──
 const DEFTER_KEY = "sadrazam_defter";
-function _defterGet() { try { const d = JSON.parse(localStorage.getItem(DEFTER_KEY) || "{}"); return { seals: d.seals || 0, fermans: d.fermans || 0, pages: Array.isArray(d.pages) ? d.pages : [], deaths: Array.isArray(d.deaths) ? d.deaths : [] }; } catch (e) { return { seals: 0, fermans: 0, pages: [], deaths: [] }; } }
+function _defterGet() { try { const d = JSON.parse(localStorage.getItem(DEFTER_KEY) || "{}"); return { seals: d.seals || 0, fermans: d.fermans || 0, claimed: d.claimed || 0, pages: Array.isArray(d.pages) ? d.pages : [], deaths: Array.isArray(d.deaths) ? d.deaths : [] }; } catch (e) { return { seals: 0, fermans: 0, claimed: 0, pages: [], deaths: [] }; } }
 function _defterSet(d) { try { localStorage.setItem(DEFTER_KEY, JSON.stringify(d)); } catch (e) {} }
 function _defterAddFerman() { const d = _defterGet(); d.fermans++; d.seals++; _defterSet(d); _fermanDoneThisGame++; return d.fermans; }
 let _fermanDoneThisGame = 0, _fermanTotalThisGame = 0;
@@ -7264,6 +7264,99 @@ function showDivanOturumu(c) {
   };
   sealBtn.onclick = () => { if (sel >= 0) finish(sel); };
   ov.querySelector(".dv-sultan").onclick = () => finish(-1);
+}
+
+// ── Vezirler Defteri (3 Ekim 2026) ────────────────────────────────────
+// Her saltanat bir sayfa (sultan, süre, ferman, ölüm, en büyük olay). Mühürler:
+// yerine getirilen her ferman 1, ilk kez görülen her ölüm sebebi 1. Her 5 mühürde
+// Divan'dan ihsan: 3 akçe. Ana menüden ve ölüm ekranından açılır.
+const DEFTER_IHSAN_EVERY = 5, DEFTER_IHSAN_AKCE = 3, DEFTER_MAX_PAGES = 40;
+const DEATH_TITLES = {
+  saray_0: ["İdam Fermanı", "Death Warrant"], saray_100: ["Tahtın Gölgesi", "The Throne's Shadow"],
+  yeniceri_0: ["Dağılan Ordu", "The Army Scattered"], yeniceri_100: ["Kazan Kalktı", "The Cauldrons Overturned"],
+  ulema_0: ["Hutbede Okunmayan Ad", "A Name Left Unspoken"], ulema_100: ["Şeyhülislam'ın Divanı", "The Şeyhülislam's Divan"],
+  hazine_0: ["İflas", "Bankruptcy"], hazine_100: ["Zimmet", "Embezzlement"], saglik: ["Son Nefes", "The Last Breath"],
+  azil: ["Hac Yolu Sürgünü", "Exile on the Pilgrim Road"], sultan_guc: ["İki Cellat", "Two Executioners"],
+  padisah_red: ["Sultan'ın Gazabı", "The Sultan's Wrath"], sehzade: ["Şehzadenin Hamlesi", "The Prince's Gambit"],
+  yanlis_oda: ["Yanlış Oda", "The Wrong Room"], free_limit: ["Mühür Geri Döndü", "The Seal Returned"],
+};
+let _defterSealsThisGame = 0, _defterIhsanThisGame = 0;
+function _defterRecordReign() {
+  const d = _defterGet();
+  const top = chronicle.slice().sort((a, b) => (b.sc - a.sc) || (b.hy - a.hy))[0];
+  const cause = _deathCause || "";
+  let deathSeal = 0;
+  if (cause && cause !== "free_limit" && !d.deaths.includes(cause)) { d.deaths.push(cause); d.seals++; deathSeal = 1; }
+  d.pages.unshift({ s: selectedSultan?.id || "kanuni", y: year, h0: (selectedSultan && SULTAN_HICRI_START[selectedSultan.id]) || hicriYear, h1: hicriYear,
+    f: _fermanDoneThisGame, ft: _fermanTotalThisGame, c: cause, ev: top ? [top.n, top.ne, top.t, top.te] : null, sl: _fermanDoneThisGame + deathSeal });
+  d.pages = d.pages.slice(0, DEFTER_MAX_PAGES);
+  _defterSet(d);
+  _defterSealsThisGame = _fermanDoneThisGame + deathSeal;
+  _defterIhsanThisGame = _defterClaimIhsan();
+}
+// Birikmiş mühür eşikleri için akçe ihsanı (bir kez)
+function _defterClaimIhsan() {
+  const d = _defterGet(); const due = Math.floor(d.seals / DEFTER_IHSAN_EVERY);
+  const claimed = d.claimed || 0;
+  if (due > claimed) { addAkce((due - claimed) * DEFTER_IHSAN_AKCE); d.claimed = due; _defterSet(d); updateAkceUI(); return (due - claimed) * DEFTER_IHSAN_AKCE; }
+  return 0;
+}
+function _miniSeal(on, big) {
+  const r = big ? 13 : 10.5;
+  return on
+    ? `<svg class="df-seal on${big ? " big" : ""}" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="${r + 1.5}" fill="#7a1a12" opacity=".35"/><circle cx="15" cy="15" r="${r}" fill="url(#dfw)"/><circle cx="15" cy="15" r="${r - 3.2}" fill="none" stroke="#e8c84a" stroke-width=".9"/><path d="M15 ${15 - r * 0.42}l1.3 3.4 3.6.2-2.8 2.2 1 3.5-3.1-2-3.1 2 1-3.5-2.8-2.2 3.6-.2z" fill="#e8c84a" transform="translate(0 0.6) scale(1)"/></svg>`
+    : `<svg class="df-seal${big ? " big" : ""}" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="${r}" fill="none" stroke="#8a6a3a" stroke-width=".8" stroke-dasharray="1.6 1.6" opacity=".7"/>${big ? `<text x="15" y="18.2" text-anchor="middle" font-family="Cinzel, serif" font-size="8.5" font-weight="700" fill="#8a5a10">+${DEFTER_IHSAN_AKCE}</text>` : ""}</svg>`;
+}
+function showDefter(startPage) {
+  const en = window.LANG === 'en', d = _defterGet();
+  const S = { kanuni: ["Kanunî Sultan Süleyman", "Suleiman the Magnificent"], yavuz: ["Yavuz Sultan Selim", "Selim the Grim"], murad3: ["Sultan III. Murad", "Sultan Murad III"] };
+  let idx = Math.max(0, Math.min(d.pages.length - 1, startPage || 0));
+  const ov = document.createElement("div");
+  ov.id = "defter-overlay";
+  const pageHTML = () => {
+    if (!d.pages.length) return `<div class="df-empty">${en ? "No reign has been recorded yet. Your first page is written when your first reign ends." : "Henüz kaydedilmiş bir saltanat yok. İlk sayfan, ilk saltanatın bittiğinde yazılır."}</div>`;
+    const p = d.pages[idx], no = d.pages.length - idx;
+    const ev = p.ev ? `<div class="df-ev"><span>${en ? "The great event" : "En büyük olay"}</span>${en ? p.ev[1] : p.ev[0]} · “${en ? p.ev[3] : p.ev[2]}”</div>` : "";
+    const dt = DEATH_TITLES[p.c] ? DEATH_TITLES[p.c][en ? 1 : 0] : (en ? "Unknown" : "Bilinmiyor");
+    return `<div class="df-no">${en ? `PAGE ${no}` : `SAYFA ${no}`}</div>
+      <div class="df-name">${en ? `Grand Vizier under ${(S[p.s] || S.kanuni)[1]}` : `${(S[p.s] || S.kanuni)[0]}'ın Sadrazamı`.replace("Selim'ın", "Selim'in").replace("Murad'ın", "Murad'ın")}</div>
+      <div class="df-rows">
+        <div><span>${en ? "Reign" : "Saltanat"}</span><b>${p.h0}–${p.h1} ${en ? "AH" : "H."} · ${p.y} ${en ? (p.y === 1 ? "year" : "years") : "yıl"}</b></div>
+        <div><span>${en ? "Decrees" : "Fermanlar"}</span><b>${p.f} / ${p.ft}</b></div>
+        <div><span>${en ? "The end" : "Son"}</span><b>${dt}</b></div>
+        <div><span>${en ? "Seals earned" : "Kazanılan mühür"}</span><b>${p.sl || 0}</b></div>
+      </div>${ev}`;
+  };
+  const trackHTML = () => {
+    const n = d.seals, nextM = (Math.floor(n / DEFTER_IHSAN_EVERY) + 1) * DEFTER_IHSAN_EVERY, from = nextM - DEFTER_IHSAN_EVERY;
+    const cells = []; for (let i = from; i < nextM; i++) cells.push(_miniSeal(i < n, i === nextM - 1));
+    return `<div class="df-total"><b>${n}</b><span>${en ? "SEALS" : "MÜHÜR"}</span></div>
+      <div class="df-track">${cells.join("")}</div>
+      <div class="df-next">${en ? `${nextM - n} more seal${nextM - n === 1 ? "" : "s"} · a gift of ${DEFTER_IHSAN_AKCE} akce from the Divan` : `${nextM - n} mühür sonra · Divan'dan ${DEFTER_IHSAN_AKCE} akçe ihsan`}</div>
+      <div class="df-how"><span>${en ? "How seals are earned" : "Mühür nasıl kazanılır"}</span>${en ? "Fulfil the Sultan's decree: 1 seal. Meet an end you have never met before: 1 seal." : "Padişah fermanını yerine getir: 1 mühür. Daha önce görmediğin bir sonla karşılaş: 1 mühür."}</div>
+      <div class="df-stat">${en ? `${d.fermans} decrees fulfilled · ${d.deaths.length} different ends` : `${d.fermans} ferman yerine getirildi · ${d.deaths.length} farklı son`}</div>`;
+  };
+  ov.innerHTML = `<svg width="0" height="0" style="position:absolute"><defs><radialGradient id="dfw" cx="38%" cy="32%"><stop offset="0" stop-color="#d4473a"/><stop offset=".75" stop-color="#8a1d12"/><stop offset="1" stop-color="#5e110a"/></radialGradient></defs></svg>
+    <div class="df-book">
+      <div class="df-title">${en ? "THE VIZIERS' LEDGER" : "VEZİRLER DEFTERİ"}</div>
+      <div class="df-spread">
+        <div class="df-page df-left"><div class="df-pagein">${pageHTML()}</div>
+          ${d.pages.length > 1 ? `<div class="df-nav"><button type="button" class="df-prev" aria-label="${en ? "Older" : "Önceki"}">‹</button><span>${idx + 1} / ${d.pages.length}</span><button type="button" class="df-next-btn" aria-label="${en ? "Newer" : "Sonraki"}">›</button></div>` : ""}</div>
+        <div class="df-page df-right">${trackHTML()}</div>
+      </div>
+      <button type="button" class="df-close">${en ? "CLOSE" : "KAPAT"}</button>
+    </div>`;
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+  const flip = (dir) => {
+    const ni = idx + dir; if (ni < 0 || ni >= d.pages.length) return;
+    const pg = ov.querySelector(".df-left");
+    pg.classList.remove("flip-l", "flip-r"); void pg.offsetWidth; pg.classList.add(dir > 0 ? "flip-l" : "flip-r");
+    setTimeout(() => { idx = ni; ov.querySelector(".df-pagein").innerHTML = pageHTML(); const sp = ov.querySelector(".df-nav span"); if (sp) sp.textContent = `${idx + 1} / ${d.pages.length}`; }, 180);
+  };
+  ov.querySelector(".df-prev")?.addEventListener("click", () => flip(1));
+  ov.querySelector(".df-next-btn")?.addEventListener("click", () => flip(-1));
+  ov.querySelector(".df-close").onclick = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 300); };
 }
 
 function hasAdvisor(id) {
@@ -8889,6 +8982,7 @@ function showGameOver(reason) {
 
   saveHighScore();
   saveDeathArchive(reason);
+  try { _defterRecordReign(); } catch (e) { console.warn('[defter]', e); }
   GameCenter.submitScore(year);
 
   const newAchievements = checkAchievements(reason);
@@ -8945,6 +9039,14 @@ function showGameOver(reason) {
   let _pc = document.getElementById("gameover-pending");
   if (!_pc) { _pc = document.createElement("div"); _pc.id = "gameover-pending"; const y = document.getElementById("gameover-year"); if (y && y.parentNode === _goPanel) y.insertAdjacentElement("afterend", _pc); }
   _pc.innerHTML = _pendingConsequencesHTML(3);
+  // Vezirler Defteri satırı (3 Ekim 2026)
+  let _dl = document.getElementById("gameover-defter");
+  if (!_dl) { _dl = document.createElement("div"); _dl.id = "gameover-defter"; _pc.insertAdjacentElement("afterend", _dl); }
+  {
+    const en = window.LANG === 'en';
+    _dl.innerHTML = `<span>${en ? "Recorded in the Viziers' Ledger" : "Vezirler Defteri'ne işlendi"}${_defterSealsThisGame ? ` · +${_defterSealsThisGame} ${en ? "seal" + (_defterSealsThisGame > 1 ? "s" : "") : "mühür"}` : ""}${_defterIhsanThisGame ? ` · +${_defterIhsanThisGame} ${en ? "akce gift" : "akçe ihsan"}` : ""}</span><button type="button">${en ? "OPEN THE LEDGER" : "DEFTERİ AÇ"}</button>`;
+    _dl.querySelector("button").onclick = () => showDefter(0);
+  }
   gameoverScreen.classList.add("visible");
 
   // Rating prompt — her 3. oyundan sonra, en az 2 yıl hayatta kaldıysa göster
@@ -9860,6 +9962,7 @@ function renderAchievementsScreen(filterTier) {
 
 // Ekran butonları
 document.getElementById("btn-achievements")?.addEventListener("click", openAchievementsScreen);
+document.getElementById("btn-defter")?.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showDefter(0); });
 document.getElementById("btn-ach-back")?.addEventListener("click", () => {
   achievementsScreen.classList.add("hidden");
   introScreen.style.display = "";
