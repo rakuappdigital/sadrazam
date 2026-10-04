@@ -903,6 +903,7 @@ const ACHIEVEMENTS = [
   { id: "gizli_ustat",   tier:"platinum", icon:GAME_ICONS.gizli_ustat, name:"Gizli Üstat",          desc:"Tek oyunda 3 sır ortaya çıkar: Halkın Sevgisi, Casus Ağı, gizli hain, aynı gün dönen iki karar.", check: s => (s.secretsRevealed||0) >= 3 },
 
   // ── GİZLİ ──
+  { id: "memory_sharp",   tier:"silver",   icon:GAME_ICONS.first_letter, name:"Hafızası Kuvvetli",   desc:"Geçmiş kararlarını soran 5 soruya doğru cevap ver.", check: s => (s.memCorrect||0) >= 5 },
   { id: "rival_five",     tier:"secret",   icon:GAME_ICONS.rival_five, name:"Rakibin Rakibi",     desc:"Rakip Vezir ile 5 kez yüzleş.",              check: s => (s.characterMemory?.["8-rakip-vezir"]?.left||0)+(s.characterMemory?.["8-rakip-vezir"]?.right||0) >= 5 },
   { id: "zimmet",         tier:"secret",   icon:GAME_ICONS.zimmet, name:"Zimmet Şüphelisi",    desc:"Zimmet suçuyla öl.",                          check: s => s.deathCause === "hazine_100" },
   { id: "valide_loyal",   tier:"secret",   icon:GAME_ICONS.valide_loyal, name:"Valide'nin Gözdesi",  desc:"Tek oyunda Valide Sultan'ın tüm isteklerini kabul et.", check: s => (s.characterMemory?.["5-valide-sultan"]?.left||0)===0 && (s.characterMemory?.["5-valide-sultan"]?.right||0)>=3 },
@@ -3552,6 +3553,8 @@ function startGame() {
   scheduledCards = [];
   _criticalShownCount = 0; _criticalLastAt = -999; _criticalYear = 0;
   _muneccimN = 0; _muneccimAt = -999;
+  _memLog = []; _memN = 0; _memAt = -999;
+  _variantLast = {};
   _timedUsedYear = 0;
   _ferman = null; _fermanStreak = 0; _fermanQueue = []; _fermanShowing = false; _fermanDoneThisGame = 0; _fermanTotalThisGame = 0;
   document.getElementById("ferman-chip")?.remove();
@@ -4099,6 +4102,7 @@ function saveGameState() {
       secondChanceOfferedThisGame: _secondChanceOfferedThisGame,
       receivedLetters,
       muneccimN: _muneccimN, muneccimAt: _muneccimAt,
+      memLog: _memLog, memN: _memN, memAt: _memAt,
       timedUsedYear: _timedUsedYear,
       ferman: _ferman, fermanStreak: _fermanStreak, fermanDone: _fermanDoneThisGame, fermanTotal: _fermanTotalThisGame,
       relPoints, relRescued: _relRescued, relKomploAt: _relKomploAt, relKomploDone: _relKomploDone, divanYear: _divanYear, divanUsed: _divanUsed,
@@ -4211,6 +4215,7 @@ function loadGameState(s) {
   _secondChanceOfferedThisGame = s.secondChanceOfferedThisGame || false;
   receivedLetters = s.receivedLetters || 0;
   _muneccimN = s.muneccimN || 0; _muneccimAt = s.muneccimAt ?? -999;
+  _memLog = Array.isArray(s.memLog) ? s.memLog.filter(e => e && e.id && (e.dir === "left" || e.dir === "right")) : []; _memN = s.memN || 0; _memAt = s.memAt ?? -999;
   _timedUsedYear = s.timedUsedYear || 0;
   _ferman = s.ferman || null; _fermanStreak = s.fermanStreak || 0; _fermanQueue = []; _fermanShowing = false;
   _fermanDoneThisGame = s.fermanDone || 0; _fermanTotalThisGame = s.fermanTotal || 0;
@@ -4897,7 +4902,7 @@ function dealNext() {
     }
   }
 
-  const c = getNextCard();
+  const c = _applyTextVariant(getNextCard());
   if (!c) return;
   currentCard = c;
   isInvestigating = false;
@@ -5180,8 +5185,8 @@ function setupInvestigateBtn(c, displayText) {
     btn.title = back ? (isEN ? "Back" : "Geri") : (isEN ? "Investigate" : "Soruştur");
     btn.setAttribute("aria-label", btn.title);
   };
-  const isCandidate = TRAITOR_CANDIDATES.includes(c.character) && !c.knot_of;
-  if (!c.investigate_text && !isCandidate) {
+  const isCandidate = TRAITOR_CANDIDATES.includes(c.character) && !c.knot_of && !c._mem;
+  if ((!c.investigate_text && !isCandidate) || c._mem) {
     btn.classList.add("hidden");
     btn.onclick = null;
     return;
@@ -7303,7 +7308,7 @@ function _relName(lv, en) { return REL_LEVELS[lv + 3][en ? "en" : "tr"]; }
 function _castName(key, en) { return CAST[key] ? CAST[key][en ? "en" : "tr"] : key; }
 // decide(): kart etkileri uygulanmadan önce — kendi kartındaki olumsuzlar ilişkiye göre çarpılır
 function _relAdjustEffects(card, fx) {
-  if (!card || !CAST[card.character] || card._divan) return fx;
+  if (!card || !CAST[card.character] || card._divan || card._mem) return fx;
   const lv = relLevel(card.character);
   const m = lv >= 2 ? 0.8 : lv <= -2 ? 1.2 : 1;
   if (m === 1) return fx;
@@ -7323,7 +7328,7 @@ function relChange(key, delta, quiet) {
   }
 }
 function _relOnDecision(card, dir) {
-  if (!card || card._divan || card._timeout || !CAST[card.character]) return;
+  if (!card || card._divan || card._timeout || card._mem || !CAST[card.character]) return;
   relChange(card.character, dir === "right" ? 1 : -1);
 }
 // checkGameOver / checkSultanSabir: Can Dostu kurtarması
@@ -8007,6 +8012,143 @@ function _eraToast(text, good) {
   game.appendChild(t);
   requestAnimationFrame(() => t.classList.add("on"));
   setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, 2300);
+}
+
+// ── Metin varyantları (4 Ekim 2026) ───────────────────────────────────
+// En sık çıkan kartlarda aynı karar, aynı seçenekler, farklı sahne (cards.json
+// "text_variants"). Kart her gelişinde orijinal ya da bir varyant gösterilir; aynı
+// oyunda yeniden gelirse sıradaki sahneye geçer. Etkiler ve bayraklar değişmez.
+let _variantLast = {};
+function _applyTextVariant(c) {
+  if (!c || c._mem || !Array.isArray(c.text_variants) || !c.text_variants.length) return c;
+  const n = c.text_variants.length + 1; // 0 = orijinal metin
+  const last = _variantLast[c.id];
+  const i = last === undefined ? Math.floor(Math.random() * n) : (last + 1) % n;
+  _variantLast[c.id] = i;
+  if (i === 0) return c;
+  const v = c.text_variants[i - 1] || {};
+  return { ...c, text: v.text || c.text, text_en: v.text_en || c.text_en };
+}
+
+// ── Hafıza kartları (4 Ekim 2026) ─────────────────────────────────────
+// Karakterler 15–40 kart önce verilen bir kararı geri getirir. Dört tür:
+//   sinav    aynı karakter kararını sorar; doğru Saray +6 (+ilişki), yanlış Saray −5
+//   yuzlesme aynı karakter: "arkasındayım" → seçtiğin tarafın artılarının yarısı + Saray +2;
+//            "hata ettim" → öbür tarafın artılarının yarısı, Saray −4
+//   tuzak    Rakip Vezir vermediğin kararı vermişsin gibi anlatır; kabul Saray −7, ret Saray +5
+//   dedikodu Saray kedisi eski kaydı anar; etkisiz (easter egg)
+// Kararlar yalnızca cards.json kartlarından kaydedilir (id + taraf); kart her zaman
+// allCards'tan yeniden okunur. Oyun başına en çok 3, aralarında en az 25 kart.
+// Doğru seçenek rastgele tarafta durur (konum ipucu vermesin). İlişki ve lanet sistemine
+// otomatik etki etmez (_mem / _noCurse); Vakayiname'ye yazılmaz.
+const MEM_MIN_CARDS = 25, MEM_GAP = 25, MEM_MAX = 3, MEM_CHANCE = 0.3, MEM_AGE = [15, 40], MEM_LOG_MAX = 50;
+let _memLog = [], _memN = 0, _memAt = -999;
+function _memEligibleSrc(c) {
+  return !!c && !c.type && !c.is_event && !c.arc_id && c.character && c.character !== "1-sultan" &&
+    c.text && c.text_en && c.left_text && c.right_text && c.left_text_en && c.right_text_en &&
+    c.left_text !== c.right_text && !c._mem && !c._divan && !c._timeout && !c._komplo;
+}
+function _memOnDecision(card, dir) {
+  if (!card) return;
+  if (card._mem) {
+    const m = card._mem, en = window.LANG === 'en';
+    for (const [k, v] of Object.entries(m.rel || {})) if (v && v[dir]) relChange(k, v[dir]);
+    if (m.ok) {
+      const ok = dir === m.ok;
+      if (ok) updateCrossGame({ memCorrect: 1 });
+      _eraToast(m.msg[ok ? 0 : 1][en ? 1 : 0], ok);
+    }
+    return;
+  }
+  const src = card.id ? allCards.find(c => c.id === card.id) : null; // dağıtılan kart bazen kopya
+  if (src && _memEligibleSrc(src)) {
+    const ent = { id: card.id, dir, at: cardsPlayed };
+    if (card.text !== src.text) { ent.tx = card.text; ent.txe = card.text_en; } // metin varyantı gösterildiyse
+    _memLog.push(ent);
+    if (_memLog.length > MEM_LOG_MAX) _memLog.splice(0, _memLog.length - MEM_LOG_MAX);
+  }
+}
+function _memSnippet(t, max) {
+  const str = String(t || "").trim(), m = str.match(/^[\s\S]*?[.!?…](?=\s|$)/); // eski iOS'ta lookbehind yok
+  const first = (m ? m[0] : str).trim();
+  if (first.length <= max) return first;
+  const cut = first.slice(0, max); return cut.slice(0, Math.max(cut.lastIndexOf(" "), 20)).replace(/[,;:]$/, "") + "…";
+}
+function _memHalfPlus(fx) {
+  const out = {};
+  for (const [k, v] of Object.entries(fx || {})) if (k !== "sultanSabir" && typeof v === "number" && v > 0) out[k] = Math.min(5, Math.ceil(v / 2));
+  return out;
+}
+const _memPick = (a) => a[Math.floor(Math.random() * a.length)];
+function _memBuild(type, e, src) {
+  const nm = src.character_name || "", nmEn = src.character_name_en || nm;
+  const q = _memSnippet(e.tx || src.text, 90), qe = _memSnippet(e.txe || src.text_en, 100);
+  const ch = src[e.dir + "_text"], chEn = src[e.dir + "_text_en"];
+  const other = e.dir === "left" ? "right" : "left";
+  const oth = src[other + "_text"], othEn = src[other + "_text_en"];
+  const base = { id: "mem_" + type + "_" + cardsPlayed, character: src.character, character_name: nm, character_name_en: nmEn,
+    left_flags_set: [], right_flags_set: [], required_flags: [], excluded_flags: [], weight: 1, category: "intrigue", _noCurse: true };
+  const swap = Math.random() < 0.5; // doğru/tutarlı seçenek hangi tarafta
+  const L = swap ? "right" : "left", R = swap ? "left" : "right"; // L: "doğru" tarafın yeri
+  const put = (card, side, tr, en, fx) => { card[side + "_text"] = tr; card[side + "_text_en"] = en; card[side + "_effects"] = fx; };
+  if (type === "sinav") {
+    const T = _memPick([
+      ["Paşam, kâtipler kayıtları karıştırmış. Size “" + q + "” diye geldiğimde ne buyurmuştunuz?", "Pasha, the scribes have muddled the records. When I came to you saying “" + qe + "”, what did you order?"],
+      ["Paşam, defterde o günün sayfası boş kalmış. “" + q + "” dediğimde kararınız neydi?", "Pasha, that day's page in the ledger is blank. When I said “" + qe + "”, what was your decision?"],
+      ["Hatırlarsınız, “" + q + "” demiştim. Kâtip sizin cevabınızı yazmayı unutmuş.", "You will remember I said “" + qe + "”. The scribe forgot to write down your answer."]]);
+    const card = { ...base, text: T[0], text_en: T[1] };
+    put(card, L, "“" + ch + "” dedim", "I said “" + chEn + "”", { saray: 6 });
+    put(card, R, "“" + oth + "” dedim", "I said “" + othEn + "”", { saray: -5 });
+    const rel = {}; if (CAST[src.character]) rel[src.character] = { [L]: 1 };
+    card._mem = { type, ok: L, rel, msg: [["Doğru hatırladın, kayıtlar düzeltildi", "You remembered right; the records are fixed"], ["Yanlış hatırladın; Divan bunu konuşuyor", "You remembered wrong; the Divan is talking"]] };
+    return card;
+  }
+  if (type === "yuzlesme") {
+    const T = _memPick([
+      ["“" + ch + "” demiştiniz. O kararın sonuçları ortada, Paşam. Hâlâ arkasında mısınız?", "You said “" + chEn + "”. The results of that decision are plain to see, Pasha. Do you still stand by it?"],
+      ["Divan'da hâlâ “" + ch + "” kararınız konuşuluyor. Fikriniz değişti mi?", "The Divan is still talking about your decision: “" + chEn + "”. Have you changed your mind?"]]);
+    const card = { ...base, text: T[0], text_en: T[1] };
+    const keep = _memHalfPlus(src[e.dir + "_effects"]); keep.saray = (keep.saray || 0) + 2;
+    const flip = _memHalfPlus(src[other + "_effects"]); flip.saray = (flip.saray || 0) - 4;
+    put(card, L, "Arkasındayım", "I stand by it", keep);
+    put(card, R, "Hata ettim", "I was wrong", flip);
+    card._mem = { type, ok: null, rel: {} };
+    return card;
+  }
+  if (type === "tuzak") {
+    const T = _memPick([
+      ["Herkes biliyor ki " + nm + " size geldiğinde “" + oth + "” dediniz. Divan'da bunu konuşuyorlar, Paşam.", "Everyone knows that when " + nmEn + " came to you, you said “" + othEn + "”. The Divan is talking about it, Pasha."],
+      [nm + " meselesinde “" + oth + "” dediğinizi duydum. Cesur bir karardı.", "I heard that in the matter of " + nmEn + " you said “" + othEn + "”. A bold decision."]]);
+    const card = { ...base, character: "8-rakip-vezir", character_name: "Rakip Vezir", character_name_en: "Rival Vizier", text: T[0], text_en: T[1] };
+    put(card, L, "Yanlış biliyorsun", "You heard wrong", { saray: 5 });
+    put(card, R, "Öyle dedim", "I did say that", { saray: -7 });
+    card._mem = { type, ok: L, rel: { "8-rakip-vezir": { [L]: -1 } }, msg: [["Tuzağı fark ettin", "You saw through the trap"], ["Vermediğin bir kararın yükünü üstlendin", "You took the blame for a decision you never made"]] };
+    return card;
+  }
+  // dedikodu
+  const card = { ...base, character: "easter-kedi", character_name: "Saray Kedisi", character_name_en: "Palace Cat",
+    text: "Kâtibin masasına kurulmuş, pençesi bir kaydın üstünde: “" + nm + ": " + ch + "”. Miyav.",
+    text_en: "It has settled on the scribe's desk, one paw on a record: “" + nmEn + ": " + chEn + "”. Meow." };
+  put(card, "left", "Kaydı kaldır", "Lift the record", {});
+  put(card, "right", "Kediyi okşa", "Pet the cat", {});
+  card._mem = { type: "dedikodu", ok: null, rel: {} };
+  return card;
+}
+function _maybeQueueMemory() {
+  if (isGameOver || isPaywalled || !selectedSultan) return;
+  if (_memN >= MEM_MAX || cardsPlayed < MEM_MIN_CARDS || cardsPlayed - _memAt < MEM_GAP) return;
+  if (forcedQueue.length) return;
+  if (Math.random() >= MEM_CHANCE) return;
+  const pool = _memLog.filter(e => { const age = cardsPlayed - e.at; return age >= MEM_AGE[0] && age <= MEM_AGE[1]; })
+    .map(e => ({ e, src: allCards.find(c => c.id === e.id) })).filter(x => _memEligibleSrc(x.src));
+  if (!pool.length) return;
+  const { e, src } = _memPick(pool);
+  const rakipOk = _nisan("rakip") !== 1 && src.character !== "8-rakip-vezir" && year >= 2;
+  const r = Math.random();
+  const type = r < 0.4 ? "sinav" : r < 0.65 ? "yuzlesme" : (r < 0.85 && rakipOk) ? "tuzak" : "dedikodu";
+  const card = _memBuild(type, e, src);
+  _memN++; _memAt = cardsPlayed;
+  forcedQueue.push(card);
 }
 
 function hasAdvisor(id) {
@@ -8837,6 +8979,7 @@ function decide(dir) {
   if (isGameOver) return;
   _relOnDecision(currentCard, dir);
   _eraOnDecision(currentCard, dir);
+  _memOnDecision(currentCard, dir);
   if (isGameOver) return;
   _fermanTrack();
   _endTrack();
@@ -9047,6 +9190,7 @@ function decide(dir) {
     tryPadisahZiyareti();
   tryHekimDinlenme();
   _maybeQueueMuneccim(); // sonda: kuyruk boşsa gelir
+  _maybeQueueMemory();   // hafıza kartı: kuyruk boşsa, seyrek
   if (isChallengeMode) updateChallengeUI();
   checkPargaliSecret();
   // Şehzade her yıl sonu güçlenir
@@ -9781,6 +9925,7 @@ function buildAchievementState(deathReason) {
     deathsSeen: [...new Set([...(cg.deathsSeen||[]), ...(deathReason?[deathReason]:[])])],
     deathCauses: [...new Set([..._deathCausesFromCrossGame(cg), ...(_deathCause && _deathCause !== "free_limit" ? [_deathCause] : [])])],
     totalCurses: (cg.totalCurses||0) + (cursedEver?1:0),
+    memCorrect: cg.memCorrect || 0,
   };
 }
 
@@ -9961,7 +10106,7 @@ function getEpilogText() {
 // dönen sonuç 4, sonuç doğuran karar ve olay 3, iz bırakan karar 1.
 const CHRONICLE_MAX = 60, CHRONICLE_SHOW = 7;
 function _recordChronicle(c, dir, newFlags) {
-  if (!c || !dir || c.type === "easter" || c.type === "padisah_ziyaret") return;
+  if (!c || !dir || c.type === "easter" || c.type === "padisah_ziyaret" || c._mem) return;
   const srcMap = _getConsequenceSources();
   let k = null, sc = 0;
   if (c.knot_of) { k = "knot"; sc = 5; }

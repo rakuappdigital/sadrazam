@@ -370,6 +370,7 @@ window.EN_ACHIEVEMENTS = {
   pasa_mode:       { name: "From Pasha to Grand Vizier", desc: "Become Grand Vizier in Pasha mode and survive 5 more years." },
   item_collector:  { name: "Collector",                desc: "Collect 5 different items in one game." },
   gizli_ustat:     { name: "Secret Master",            desc: "Reveal 3 secrets in one game: the People's Love, the Spy Network, the hidden traitor, two decisions returning on the same day." },
+  memory_sharp:    { name: "A Sharp Memory",           desc: "Answer 5 questions about your past decisions correctly." },
   rival_five:      { name: "The Rival's Rival",        desc: "Confront the Rival Vizier 5 times." },
   zimmet:          { name: "Embezzlement Suspect",     desc: "Die accused of embezzlement." },
   valide_loyal:    { name: "The Valide's Favorite",    desc: "Accept all of the Valide Sultan's requests in one game." },

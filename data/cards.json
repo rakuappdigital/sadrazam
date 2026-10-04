@@ -248,7 +248,17 @@
       "right_text_en": "Order the construction",
       "investigate_text_en": "",
       "speech_left_en": "A hungry soldier's weapon weeps.",
-      "speech_right_en": "Inform your Sultan — we are pleased."
+      "speech_right_en": "Inform your Sultan — we are pleased.",
+      "text_variants": [
+        {
+          "text": "Paşam, Etmeydanı'ndaki kışlanın çatısı dün gece çöktü; iki asker yaralandı. Yeni bir kışla yapılmazsa kışın ocakta huzur kalmaz.",
+          "text_en": "Pasha, the roof of the Etmeydanı barracks collapsed last night and two soldiers were injured. Without new barracks, there will be no peace in the corps this winter."
+        },
+        {
+          "text": "Kışlada salgın var; askerler nemli koğuşlarda üst üste yatıyor. Yeni bir kışla için izninizi bekliyorum.",
+          "text_en": "There is sickness in the barracks; the men sleep packed together in damp halls. I await your permission for new barracks."
+        }
+      ]
     },
     {
       "id": "yeniceri_maaş_gecikmesi",
@@ -292,7 +302,17 @@
       "right_text_en": "Pay from the treasury",
       "investigate_text_en": "",
       "speech_left_en": "A hungry soldier's weapon weeps.",
-      "speech_right_en": "Inform your Sultan — we are pleased."
+      "speech_right_en": "Inform your Sultan — we are pleased.",
+      "text_variants": [
+        {
+          "text": "Paşam, ulufe günü geçti ve keseler boş. Ortalar kışlada toplanıp fısıldaşıyor. Kazan devrilmeden önce bir karar gerek.",
+          "text_en": "Pasha, pay day has passed and the purses are empty. The companies gather in the barracks and whisper. A decision is needed before the cauldron is overturned."
+        },
+        {
+          "text": "Askere ödenecek akçe ayarı düşük çıktı, kabul etmiyorlar. Doğru dürüst maaş ödenmezse ocak kaynar.",
+          "text_en": "The coins meant for the soldiers turned out to be debased, and they refuse them. If proper wages are not paid, the corps will boil over."
+        }
+      ]
     },
     {
       "id": "yeniceri_tüfek_talebi",
@@ -382,7 +402,17 @@
       "speech_left_en": "A hungry soldier's weapon weeps.",
       "speech_right_en": "Inform your Sultan — we are pleased.",
       "triggers_on_left": "disiplin_gevsedi",
-      "trigger_delay": 10
+      "trigger_delay": 10,
+      "text_variants": [
+        {
+          "text": "Bir bölük gece çarşıda dükkân yağmaladı. Esnaf Divan'a şikâyete geldi. Sert bir ceza vermezsek bu iş yayılır.",
+          "text_en": "A company looted shops in the bazaar last night. The tradesmen have come to the Divan to complain. If we do not punish them harshly, this will spread."
+        },
+        {
+          "text": "Yeniçeriler bir zabitlerini kazan başında dövdü. Ocakta itaat sarsıldı, Paşam. Gereğini yapmama izin verin.",
+          "text_en": "The janissaries beat one of their officers beside the cauldron. Obedience in the corps is shaken, Pasha. Let me do what is necessary."
+        }
+      ]
     },
     {
       "id": "yeniceri_yaşlı_birlik",
@@ -427,7 +457,7 @@
       "character_name": "Şeyhülislam",
       "faction": "din",
       "text": "Sadrazam Hazretleri, bir Venedikli tüccarın faaliyetleri konusunda fetva talebi var. Şartlı caiz diyebilirim, ama karar sizin.",
-      "left_text": "Fetvayı erteleyın",
+      "left_text": "Fetvayı erteleyin",
       "right_text": "Şartlı caiz deyin",
       "left_effects": {
         "saray": -3,
@@ -458,7 +488,17 @@
       "right_text_en": "Issue it as conditionally permissible",
       "investigate_text_en": "",
       "speech_left_en": "This is not the path of God, Pasha.",
-      "speech_right_en": "So sharia commands — rightly done."
+      "speech_right_en": "So sharia commands — rightly done.",
+      "text_variants": [
+        {
+          "text": "Galata'daki bir Venedik tüccarı faizli işlem yapıyor diye şikâyet var. Fetva isteniyor. Şartlı caiz diyebilirim; siz ne dersiniz?",
+          "text_en": "There is a complaint that a Venetian merchant in Galata trades at interest. A fatwa is requested. I could call it conditionally permissible; what do you say?"
+        },
+        {
+          "text": "Venedikli bir tüccar kendi meyhanesini açmak için izin istiyor. Bir fetva gerekiyor. Şartlarla izin verilebilir, ama karar sizin.",
+          "text_en": "A Venetian merchant asks permission to open his own tavern. A fatwa is required. It could be allowed under conditions, but the decision is yours."
+        }
+      ]
     },
     {
       "id": "seyhulislam_medrese",
@@ -502,7 +542,17 @@
       "right_text_en": "Allocate the land",
       "investigate_text_en": "",
       "speech_left_en": "This is not the path of God, Pasha.",
-      "speech_right_en": "So sharia commands — rightly done."
+      "speech_right_en": "So sharia commands — rightly done.",
+      "text_variants": [
+        {
+          "text": "Eyüp'te talebeler cami avlusunda ders görüyor; yağmurda kitaplar ıslanıyor. Yeni bir medrese için arazi tahsisini rica ediyorum.",
+          "text_en": "In Eyüp the students study in the mosque courtyard, and their books get soaked in the rain. I ask that land be allocated for a new madrasa."
+        },
+        {
+          "text": "Bir vakıf sahibi medrese binasını yaptırmaya hazır, yalnızca arazi bekliyor. Devlet bir arsa verirse ilim yuvası bir yılda açılır.",
+          "text_en": "A benefactor is ready to fund a madrasa building; only the land is missing. If the state grants a plot, the house of learning opens within a year."
+        }
+      ]
     },
     {
       "id": "seyhulislam_zındıklık",
@@ -664,7 +714,17 @@
       "speech_left_en": "You will regret this, my lord.",
       "speech_right_en": "The state has found safety.",
       "triggers_on_right": "vergi_tepkisi",
-      "trigger_delay": 8
+      "trigger_delay": 8,
+      "text_variants": [
+        {
+          "text": "Efendim, kasada ancak üç aylık ulufe kaldı. Ya seferin masrafını kısacağız ya da halktan yeni bir vergi isteyeceğiz.",
+          "text_en": "My lord, there is only three months' pay left in the treasury. We must either cut the cost of the campaign or ask the people for a new tax."
+        },
+        {
+          "text": "Hesapları üç kez topladım, Paşam: sene sonunda açık veriyoruz. Ordunun payından mı kesilsin, yoksa vergi mi artsın?",
+          "text_en": "I have added the accounts three times, Pasha: we will end the year in deficit. Shall we cut the army's share, or raise taxes?"
+        }
+      ]
     },
     {
       "id": "defterdar_vergi_tahsil",
@@ -703,7 +763,17 @@
       "right_text_en": "Impose penalties on the villagers",
       "investigate_text_en": "",
       "speech_left_en": "You will regret this, my lord.",
-      "speech_right_en": "The state has found safety."
+      "speech_right_en": "The state has found safety.",
+      "text_variants": [
+        {
+          "text": "Karaman tahsildarı keseyi yarı boş getirdi. “Köylü ödeyemedi” diyor, ama kendi konağına yeni bir kanat yaptırmış. Ne buyurursunuz?",
+          "text_en": "The Karaman tax collector brought back a half-empty purse. He says the villagers could not pay, yet he has added a new wing to his mansion. What is your order?"
+        },
+        {
+          "text": "Bu yıl Anadolu'dan gelen vergi geçen yılın yarısı. Ya köylü gerçekten tükendi ya da tahsildarlar elini kesenin içine daldırdı.",
+          "text_en": "This year's taxes from Anatolia are half of last year's. Either the villagers are truly exhausted, or the collectors have dipped into the purse."
+        }
+      ]
     },
     {
       "id": "defterdar_borç_teklifi",
@@ -786,7 +856,17 @@
       "right_text_en": "Grant the permit",
       "investigate_text_en": "",
       "speech_left_en": "You will regret this, my lord.",
-      "speech_right_en": "The state has found safety."
+      "speech_right_en": "The state has found safety.",
+      "text_variants": [
+        {
+          "text": "Üsküdar'da haftalık bir pazar açılması için ruhsat istendi. Hazineye kira girer ama eski çarşının loncaları ayaklandı.",
+          "text_en": "A permit has been requested for a weekly market in Üsküdar. The treasury would collect rent, but the old bazaar's guilds are up in arms."
+        },
+        {
+          "text": "Galatalı tüccarlar yeni bir kapalı çarşı kurmak istiyor. Gelir artar, ama loncalar “ekmeğimize göz dikiyorlar” diye Divan'a dilekçe verdi.",
+          "text_en": "The Galata merchants want to build a new covered bazaar. Revenue would rise, but the guilds have petitioned the Divan: “They are after our bread.”"
+        }
+      ]
     },
     {
       "id": "defterdar_gümrük",
@@ -904,7 +984,17 @@
       "right_text_en": "Increase it",
       "investigate_text_en": "",
       "speech_left_en": "You should listen to your mother, Pasha.",
-      "speech_right_en": "A wise decision — may God be pleased."
+      "speech_right_en": "A wise decision — may God be pleased.",
+      "text_variants": [
+        {
+          "text": "Haremde kışlık kürkler eskidi, mutfağın bakır kapları delik. Bu ödenekle sarayın itibarı korunmaz, Paşam.",
+          "text_en": "The harem's winter furs are worn out and the kitchen's copper pots are full of holes. The palace's dignity cannot be kept on this allowance, Pasha."
+        },
+        {
+          "text": "Yeni gelen cariyelerin eğitimi, hekim ücretleri, bayram hediyeleri... Harem ödeneği yetmiyor. Artırılmasını bekliyorum.",
+          "text_en": "The training of the new maidservants, the physicians' fees, the festival gifts... The harem allowance is not enough. I expect it to be raised."
+        }
+      ]
     },
     {
       "id": "valide_hoca_seçimi",
@@ -941,7 +1031,17 @@
       "right_text_en": "Take the Persian tutor",
       "investigate_text_en": "",
       "speech_left_en": "You should listen to your mother, Pasha.",
-      "speech_right_en": "A wise decision — may God be pleased."
+      "speech_right_en": "A wise decision — may God be pleased.",
+      "text_variants": [
+        {
+          "text": "Şehzadem okumayı söktü, artık bir hoca lazım. Ulemanın önerdiği bir müderris var, bir de Tebriz'den gelen meşhur bir Acem hoca. Siz seçin.",
+          "text_en": "My prince has learned to read; now he needs a tutor. The clergy propose a madrasa teacher, and there is a famous Persian scholar from Tabriz. You choose."
+        },
+        {
+          "text": "Şehzadenin hocası emekliye ayrıldı. Yerine iki aday var: biri ulemanın gözdesi, öbürü Acem sarayında şehzadeler yetiştirmiş biri.",
+          "text_en": "The prince's tutor has retired. Two candidates remain: one is the clergy's favourite, the other once raised princes at the Persian court."
+        }
+      ]
     },
     {
       "id": "valide_cariyer_şüphesi",
@@ -1068,7 +1168,17 @@
       "right_text_en": "Send the detachment",
       "investigate_text_en": "",
       "speech_left_en": "The seas are unforgiving, Grand Vizier.",
-      "speech_right_en": "The fleet is ready, awaiting your orders."
+      "speech_right_en": "The fleet is ready, awaiting your orders.",
+      "text_variants": [
+        {
+          "text": "Sakız açıklarında üç ticaret gemimiz Ceneviz korsanlarına yakalandı. Mürettebat fidye için tutuluyor. Bir müfreze yollayayım mı?",
+          "text_en": "Off Chios, three of our merchant ships were taken by Genoese pirates. The crews are held for ransom. Shall I send a detachment?"
+        },
+        {
+          "text": "Tüccarlar artık Akdeniz'e çıkmaktan korkuyor; korsanlar Rodos'tan Girit'e kadar kol geziyor. İzin verirseniz peşlerine düşerim.",
+          "text_en": "The merchants are now afraid to sail the Mediterranean; pirates roam from Rhodes to Crete. With your permission, I will hunt them down."
+        }
+      ]
     },
     {
       "id": "kaptan_tersane",
@@ -1195,7 +1305,17 @@
       "right_text_en": "Transfer the funds",
       "investigate_text_en": "",
       "speech_left_en": "The seas are unforgiving, Grand Vizier.",
-      "speech_right_en": "The fleet is ready, awaiting your orders."
+      "speech_right_en": "The fleet is ready, awaiting your orders.",
+      "text_variants": [
+        {
+          "text": "Kış fırtınası Tersane'ye vurdu; iki kadırganın direği kırıldı, biri karaya oturdu. Tamir için ödenek bekliyorum.",
+          "text_en": "A winter storm struck the Arsenal; two galleys lost their masts and one ran aground. I await funds for repairs."
+        },
+        {
+          "text": "Mısır dönüşü donanma fırtınaya yakalandı. Gemilerin yarısı su alıyor. Tamir edilmezse yazın denize çıkamayız.",
+          "text_en": "The fleet returning from Egypt was caught in a storm. Half the ships are taking on water. Without repairs, we cannot sail this summer."
+        }
+      ]
     },
     {
       "id": "kaptan_malta_ittifak",
@@ -1274,7 +1394,17 @@
       "investigate_text_en": "",
       "speech_left_en": "This refusal means war, Pasha.",
       "speech_right_en": "My homeland thanks you.",
-      "triggers_arc_on_right": "venedik"
+      "triggers_arc_on_right": "venedik",
+      "text_variants": [
+        {
+          "text": "Venedik Doçu'nun mektubunu getirdim. Galata'da kendi depomuzu kurmak ve konsolos bulundurmak istiyoruz. Karşılığında ipek ve Murano camı.",
+          "text_en": "I bring a letter from the Doge of Venice. We wish to establish our own warehouse in Galata and keep a consul there. In return: silk and Murano glass."
+        },
+        {
+          "text": "Venedik tüccarları İstanbul'da vergi muafiyetli bir han istiyor. Antlaşmayı imzalarsanız her yıl gemi dolusu cam ve kumaş gelir.",
+          "text_en": "The Venetian merchants want a tax-exempt inn in Istanbul. If you sign the agreement, shiploads of glass and cloth will arrive every year."
+        }
+      ]
     },
     {
       "id": "elci_sınır_müzakere",
@@ -1745,7 +1875,17 @@
       "right_text_en": "Consider the pardon",
       "investigate_text_en": "",
       "speech_left_en": "Mercy? Rarely seen.",
-      "speech_right_en": "As you command, my lord."
+      "speech_right_en": "As you command, my lord.",
+      "text_variants": [
+        {
+          "text": "Mahkûmun annesi gece kapıma geldi, bir kese altın bıraktı. Ben dokunmadım. Bu kese bir af için mi kullanılsın, yoksa geri mi gitsin?",
+          "text_en": "The condemned man's mother came to my door at night and left a purse of gold. I did not touch it. Shall it buy a pardon, or be returned?"
+        },
+        {
+          "text": "İdamı yarın olan adamın ailesi zengin. Bana teklif ettikleri parayı size getirdim. Af sizin elinizde, Paşam.",
+          "text_en": "The family of the man to be executed tomorrow is rich. I have brought you the money they offered me. The pardon is in your hands, Pasha."
+        }
+      ]
     },
     {
       "id": "cellat_çocuk",
@@ -1866,7 +2006,17 @@
       "right_text_en": "Take precautions",
       "investigate_text_en": "",
       "speech_left_en": "Neglecting the body is costly.",
-      "speech_right_en": "A healthy state is a strong state."
+      "speech_right_en": "A healthy state is a strong state.",
+      "text_variants": [
+        {
+          "text": "Kasımpaşa'da bir haftada otuz kişi hummaya tutuldu. Kuyuların suyundan şüpheleniyorum. Hemen önlem almazsak şehre yayılır.",
+          "text_en": "Thirty people in Kasımpaşa fell ill with fever in a single week. I suspect the well water. If we do not act at once, it will spread through the city."
+        },
+        {
+          "text": "Tekkelerde ve hanlarda ateşli hastalar çoğalıyor, Paşam. Daha salgın demek için erken, ama beklersek geç kalırız.",
+          "text_en": "Feverish patients are multiplying in the lodges and inns, Pasha. It is too early to call it an epidemic, but if we wait we will be too late."
+        }
+      ]
     },
     {
       "id": "hekimbasi_karantina",
@@ -1905,7 +2055,17 @@
       "right_text_en": "Put them in quarantine",
       "investigate_text_en": "",
       "speech_left_en": "Neglecting the body is costly.",
-      "speech_right_en": "A healthy state is a strong state."
+      "speech_right_en": "A healthy state is a strong state.",
+      "text_variants": [
+        {
+          "text": "Halep'ten gelen kervanda iki deveci ateşler içinde. Kervanı şehre sokmadan önce kırk gün bekletmemiz gerekir, Paşam.",
+          "text_en": "Two camel drivers in the caravan from Aleppo are burning with fever. We must hold the caravan for forty days before letting it into the city, Pasha."
+        },
+        {
+          "text": "İskele'ye yanaşan bir gemide öksüren tayfalar var. Yükü ipek ve baharat; tüccarlar acele ediyor. Karantina şart diyorum.",
+          "text_en": "A ship docking at the pier has coughing sailors aboard. Its cargo is silk and spice, and the merchants are in a hurry. I say quarantine is essential."
+        }
+      ]
     },
     {
       "id": "hekimbasi_darüşşifa",
@@ -2103,7 +2263,17 @@
       "right_text_en": "Send emergency supplies",
       "investigate_text_en": "",
       "speech_left_en": "The Sipahi have no patience, Pasha.",
-      "speech_right_en": "Your army is ready and eager."
+      "speech_right_en": "Your army is ready and eager.",
+      "text_variants": [
+        {
+          "text": "Rumeli sınırından haber var: süvarilerin atlarına arpa kalmamış, askerler kuru ekmekle idare ediyor. Erzak yolu tıkalı, Paşam.",
+          "text_en": "Word from the Rumelian frontier: the cavalry horses have no barley left, and the men are living on dry bread. The supply road is blocked, Pasha."
+        },
+        {
+          "text": "Sınır kalelerinden üçü erzak bekliyor. Sipahiler kendi atlarını kesmeye başlamadan bir şey yapılmalı.",
+          "text_en": "Three frontier fortresses are waiting for supplies. Something must be done before the cavalrymen start slaughtering their own horses."
+        }
+      ]
     },
     {
       "id": "sipahi_emeklilik",
@@ -2253,7 +2423,17 @@
       "right_text_en": "Let him recite it — and give the gift",
       "investigate_text_en": "",
       "speech_left_en": "Poetry too is a weapon, do not forget.",
-      "speech_right_en": "You have been a source of inspiration, Pasha."
+      "speech_right_en": "You have been a source of inspiration, Pasha.",
+      "text_variants": [
+        {
+          "text": "Paşam, adınızı Sinan'ın kubbeleriyle karşılaştırdığım bir kaside yazdım. Divan'da okumama izin verin; bir kese akçe yeter.",
+          "text_en": "Pasha, I have written an ode comparing your name to Sinan's domes. Let me recite it in the Divan; a purse of akçe will suffice."
+        },
+        {
+          "text": "Bayram için yazdığım methiye hazır. Divan'da okunursa halk dilinde dolaşır. Mütevazı bir ihsan beklerim.",
+          "text_en": "The eulogy I wrote for the festival is ready. If it is read in the Divan, it will be on every tongue. I expect a modest gift."
+        }
+      ]
     },
     {
       "id": "saray_sairi_hiciv",
@@ -2366,7 +2546,17 @@
       "right_text_en": "Persian is more beautiful",
       "investigate_text_en": "",
       "speech_left_en": "Poetry too is a weapon, do not forget.",
-      "speech_right_en": "You have been a source of inspiration, Pasha."
+      "speech_right_en": "You have been a source of inspiration, Pasha.",
+      "text_variants": [
+        {
+          "text": "Divan şairleri ikiye bölündü: bir taraf “şiir Arapçanın ağırlığıyla yazılır” diyor, öbürü “Farsçanın inceliği şart.” Hakem siz olun.",
+          "text_en": "The Divan poets are split in two: one side says poetry must carry the weight of Arabic, the other insists on the grace of Persian. You be the judge."
+        },
+        {
+          "text": "Yeni sultan için yazılacak cülus kasidesinin dili tartışılıyor. Şeyhülislam Arapça istiyor, saray şairleri Farsça.",
+          "text_en": "The language of the accession ode for the Sultan is in dispute. The Şeyhülislam wants Arabic; the palace poets want Persian."
+        }
+      ]
     },
     {
       "id": "saray_sairi_kehanet",
@@ -2483,7 +2673,17 @@
       "right_text_en": "Launch an investigation",
       "investigate_text_en": "",
       "speech_left_en": "Trade stops, the state goes hungry.",
-      "speech_right_en": "Istanbul will prosper, Pasha."
+      "speech_right_en": "Istanbul will prosper, Pasha.",
+      "text_variants": [
+        {
+          "text": "Gemim üç haftadır Galata'da yükünü boşaltamıyor. Gümrük memuru “acelen varsa bedelini öde” diyor. Bu rezalete son verin, Paşam.",
+          "text_en": "My ship has been unable to unload at Galata for three weeks. The customs officer says, “If you are in a hurry, pay the price.” Put an end to this disgrace, Pasha."
+        },
+        {
+          "text": "Mısır'dan getirdiğim pirinç gümrükte çürüyor. Memurlar mühür basmak için kese istiyor. Bu böyle giderse tüccar İstanbul'a mal getirmez.",
+          "text_en": "The rice I brought from Egypt is rotting at customs. The officers want a purse before they stamp it. If this goes on, no merchant will bring goods to Istanbul."
+        }
+      ]
     },
     {
       "id": "tüccar_kervan_saldırı",
@@ -2603,7 +2803,17 @@
       "right_text_en": "Open an investigation",
       "investigate_text_en": "",
       "speech_left_en": "Trade stops, the state goes hungry.",
-      "speech_right_en": "Istanbul will prosper, Pasha."
+      "speech_right_en": "Istanbul will prosper, Pasha.",
+      "text_variants": [
+        {
+          "text": "Rakibim gece yarısı Haliç'te kayıklara gümrüksüz kumaş yüklüyor. Kayıkçı tanığım. Bunu kayda geçirin, Paşam.",
+          "text_en": "My rival loads untaxed cloth onto boats in the Golden Horn at midnight. The boatman is my witness. Put this on record, Pasha."
+        },
+        {
+          "text": "Bir tüccar mallarını hacı kafilesine karıştırıp vergisiz sokuyor. Kendi gözümle gördüm. Şikâyetimi resmen yazdırmak istiyorum.",
+          "text_en": "A merchant hides his goods among the pilgrim caravan to bring them in untaxed. I saw it with my own eyes. I want my complaint formally recorded."
+        }
+      ]
     },
     {
       "id": "casuslar_sızdırma",
@@ -2646,7 +2856,17 @@
       "speech_left_en": "Shadows speak in silence.",
       "speech_right_en": "The right decision — knowledge is power.",
       "triggers_on_left": "sizinti_devam",
-      "trigger_delay": 10
+      "trigger_delay": 10,
+      "text_variants": [
+        {
+          "text": "Venedik balyosu Divan kararlarını bizden önce öğreniyor, Paşam. İçeride bir kulak var. Ağımı genişletmeme izin verin.",
+          "text_en": "The Venetian bailo learns the Divan's decisions before we do, Pasha. There is an ear inside. Let me expand my network."
+        },
+        {
+          "text": "Ele geçirdiğimiz bir mektupta seferin tarihi yazıyor. Bunu bilen beş kişi var. Hangisi olduğunu bulmam için adam lazım.",
+          "text_en": "A letter we intercepted contains the campaign's date. Only five people knew it. I need more men to find out which one."
+        }
+      ]
     },
     {
       "id": "casuslar_tutuklama",
@@ -2848,7 +3068,17 @@
       "right_text_en": "Reduce the tax",
       "investigate_text_en": "",
       "speech_left_en": "The people's patience is running thin, Pasha.",
-      "speech_right_en": "The people pray for you — may God be pleased."
+      "speech_right_en": "The people pray for you — may God be pleased.",
+      "text_variants": [
+        {
+          "text": "Paşam, Konya'dan gelen bir köylü heyeti kapıda bekliyor. Vergiler yüzünden tarlalarını bırakıp dağa çıkanlar var. Bu gidişle isyan kapıda.",
+          "text_en": "Pasha, a delegation of villagers from Konya waits at the gate. Some have left their fields for the mountains because of the taxes. At this rate, rebellion is at the door."
+        },
+        {
+          "text": "Çarşıda bir duvara yazı asılmış: “Vergi bizi yedi, sıra Divan'da.” Halk öfkeli, Paşam. Bir adım atılmazsa bu yazılar çoğalır.",
+          "text_en": "A notice has been nailed to a wall in the bazaar: “The taxes devoured us; the Divan is next.” The people are angry, Pasha. If nothing is done, more notices will follow."
+        }
+      ]
     },
     {
       "id": "halk_ekmek_fiyatı",
@@ -2887,7 +3117,17 @@
       "right_text_en": "Set a price ceiling for bakers",
       "investigate_text_en": "",
       "speech_left_en": "The people's patience is running thin, Pasha.",
-      "speech_right_en": "The people pray for you — may God be pleased."
+      "speech_right_en": "The people pray for you — may God be pleased.",
+      "text_variants": [
+        {
+          "text": "Fırınların önünde sabahtan kuyruk var; ekmek iki haftada iki kat pahalandı. Halk fırıncıları ihtikârla suçluyor, Paşam.",
+          "text_en": "There are queues outside the bakeries from dawn; bread has doubled in price in two weeks. The people accuse the bakers of profiteering, Pasha."
+        },
+        {
+          "text": "Bir kadın Divan kapısında ağlıyordu: “Çocuklarıma ekmek alamıyorum.” Fırıncılar un pahalı diyor, halk vurgun diyor. Karar sizin.",
+          "text_en": "A woman was weeping at the Divan gate: “I cannot buy bread for my children.” The bakers blame the price of flour; the people call it profiteering. The decision is yours."
+        }
+      ]
     },
     {
       "id": "halk_kıtlık",
@@ -2973,7 +3213,17 @@
       "speech_left_en": "The people's patience is running thin, Pasha.",
       "speech_right_en": "The people pray for you — may God be pleased.",
       "triggers_on_right": "lonca_muafiyet_sonuc",
-      "trigger_delay": 12
+      "trigger_delay": 12,
+      "text_variants": [
+        {
+          "text": "Debbağlar ve dokumacılar loncası birlikte geldi: “Kervanlar azaldı, tezgâhlar boş.” Bu yıl vergiden muaf tutulmak istiyorlar.",
+          "text_en": "The tanners' and weavers' guilds came together: “The caravans are fewer, the looms are idle.” They ask to be exempt from tax this year."
+        },
+        {
+          "text": "Esnaf, yangından sonra dükkânlarını yeni açtı. Bu yıl vergi alınırsa kepenk kapatacaklarını söylüyorlar.",
+          "text_en": "The tradesmen have only just reopened their shops after the fire. They say that if they are taxed this year, they will shut their shutters."
+        }
+      ]
     },
     {
       "id": "halk_kalabalık",
@@ -3053,7 +3303,17 @@
       "right_text_en": "Interrogate them immediately",
       "investigate_text_en": "",
       "speech_left_en": "The palace lives on gossip.",
-      "speech_right_en": "You have protected the palace, Pasha."
+      "speech_right_en": "You have protected the palace, Pasha.",
+      "text_variants": [
+        {
+          "text": "Gece nöbetçileri Harem bahçesinde, duvarın dibinde saklanan bir adam buldu. Üstünde mühürsüz bir mektup var. Ne yapalım?",
+          "text_en": "The night watch found a man hiding at the foot of the wall in the Harem garden. He carries an unsealed letter. What shall we do?"
+        },
+        {
+          "text": "Haremağası kılığına girmiş biri Harem kapısından geçmeye çalışırken yakalandı. Dili tutuk, kim olduğunu söylemiyor.",
+          "text_en": "Someone disguised as a harem eunuch was caught trying to pass the Harem gate. He stammers and will not say who he is."
+        }
+      ]
     },
     {
       "id": "saray_elçi_protokol",
@@ -3090,7 +3350,17 @@
       "right_text_en": "Issue a formal warning",
       "investigate_text_en": "",
       "speech_left_en": "The palace lives on gossip.",
-      "speech_right_en": "You have protected the palace, Pasha."
+      "speech_right_en": "You have protected the palace, Pasha.",
+      "text_variants": [
+        {
+          "text": "Fransız elçisi Divan'a kılıcıyla girmekte ısrar etti. Teşrifatçılar dehşet içinde. Bunu bir uyarıyla mı bildirelim, yoksa geçelim mi?",
+          "text_en": "The French ambassador insisted on entering the Divan wearing his sword. The masters of ceremonies are horrified. Shall we issue a warning, or let it pass?"
+        },
+        {
+          "text": "İngiliz elçisi Sultan'ın huzurunda şapkasını çıkarmadı. Saray dedikodusu başladı bile. Resmî bir uyarı gönderelim mi?",
+          "text_en": "The English ambassador kept his hat on in the Sultan's presence. The palace gossip has already begun. Shall we send a formal warning?"
+        }
+      ]
     },
     {
       "id": "saray_sır_ifşası",
@@ -3634,7 +3904,17 @@
       "right_text_en": "Open an investigation",
       "investigate_text_en": "",
       "speech_left_en": "The peasant cries — no one hears.",
-      "speech_right_en": "The state has not forgotten us — thanks be."
+      "speech_right_en": "The state has not forgotten us — thanks be.",
+      "text_variants": [
+        {
+          "text": "Paşam, sipahinin adamları dedemden kalma bağı “ağanın arazisi” diye çitle çevirdi. Kadı onların adamı. Adaleti sizden bekliyorum.",
+          "text_en": "Pasha, the sipahi's men fenced off the vineyard my grandfather left me as “the lord's land.” The judge is their man. I seek justice from you."
+        },
+        {
+          "text": "Köyün ortak merasını bir ağa kendi sürüsüne ayırdı. Hayvanlarımız aç. Tapumuz var ama dinleyen yok.",
+          "text_en": "A lord has taken the village's common pasture for his own flock. Our animals are starving. We hold the deed, but no one listens."
+        }
+      ]
     },
     {
       "id": "köylü_eşkıya",
@@ -3673,7 +3953,17 @@
       "right_text_en": "Send a military detachment",
       "investigate_text_en": "",
       "speech_left_en": "The peasant cries — no one hears.",
-      "speech_right_en": "The state has not forgotten us — thanks be."
+      "speech_right_en": "The state has not forgotten us — thanks be.",
+      "text_variants": [
+        {
+          "text": "Dün gece eşkıyalar değirmenimizi yaktı, iki koyunu götürdü. Ağa “benim işim değil” diyor. Yardım edin, Paşam.",
+          "text_en": "Last night bandits burned our mill and took two sheep. The local lord says it is not his business. Help us, Pasha."
+        },
+        {
+          "text": "Köyümüzün yolunu eşkıya tuttu; kimse pazara mal götüremiyor. Bir müfreze gelmezse bu kış aç kalacağız.",
+          "text_en": "Bandits hold the road to our village; no one can take goods to market. If no detachment comes, we will starve this winter."
+        }
+      ]
     },
     {
       "id": "köylü_vergi_erteleme",
@@ -3716,7 +4006,17 @@
       "speech_left_en": "The peasant cries — no one hears.",
       "speech_right_en": "The state has not forgotten us — thanks be.",
       "triggers_on_left": "koylu_topraktan_kacti",
-      "trigger_delay": 12
+      "trigger_delay": 12,
+      "text_variants": [
+        {
+          "text": "Dolu yağdı, buğday tarlada yattı. Bu yıl vergiyi verirsek kışın tohumluk bile kalmaz. Bir yıl mühlet istiyoruz, Paşam.",
+          "text_en": "Hail fell and flattened the wheat. If we pay the tax this year, we will not even have seed left for winter. We ask for a year's grace, Pasha."
+        },
+        {
+          "text": "Köyümüzde çekirge her şeyi yedi. Tahsildar kapıya dayandı. Bir yıllık erteleme verilirse borcumuzu sonra kuruşu kuruşuna öderiz.",
+          "text_en": "Locusts ate everything in our village. The tax collector is at the door. If you defer it for a year, we will pay every last coin later."
+        }
+      ]
     },
     {
       "id": "köylü_su_kanalı",
@@ -3876,7 +4176,17 @@
       "right_text_en": "Balance the rates",
       "investigate_text_en": "",
       "speech_left_en": "Our church is under pressure, Pasha.",
-      "speech_right_en": "Your tolerance will go down in history."
+      "speech_right_en": "Your tolerance will go down in history.",
+      "text_variants": [
+        {
+          "text": "Fener'deki cemaatim bu yıl iki kat cizye ödedi, komşuları yarısını. Gençler adaya göçmeye başladı. Bu adaletsizlik düzelmeli.",
+          "text_en": "My congregation in Fener paid double the poll tax this year, their neighbours half. The young are starting to leave for the islands. This injustice must be corrected."
+        },
+        {
+          "text": "Rum esnafı aynı dükkân için Müslüman komşusundan fazla vergi ödüyor. Mahallede kırgınlık büyüyor, Paşam.",
+          "text_en": "Greek tradesmen pay more tax than their Muslim neighbours for the same shop. Resentment is growing in the quarter, Pasha."
+        }
+      ]
     },
     {
       "id": "rum_din_baskı",
@@ -4108,7 +4418,17 @@
       "right_text_en": "Re-examine the file",
       "investigate_text_en": "",
       "speech_left_en": "If the trade route closes, we all suffer.",
-      "speech_right_en": "Our service to Istanbul continues."
+      "speech_right_en": "Our service to Istanbul continues.",
+      "text_variants": [
+        {
+          "text": "Bedesten'deki dükkânıma yanlış hesapla vergi cezası kesildi. Defterleri getirdim, Paşam. Haksızlığın düzeltilmesini istiyorum.",
+          "text_en": "My shop in the Bedesten was fined after a miscalculated assessment. I have brought my ledgers, Pasha. I ask that the injustice be corrected."
+        },
+        {
+          "text": "Komşu dükkân aynı malı satıyor, ondan az, benden çok vergi istendi. Ceza da üstüne geldi. Dosyamın yeniden incelenmesini rica ederim.",
+          "text_en": "The shop next door sells the same goods, yet he was taxed less and I more. Then came the fine. I ask that my file be reviewed."
+        }
+      ]
     },
     {
       "id": "ermeni_kilise_bağış",
@@ -4227,7 +4547,17 @@
       "speech_left_en": "Fear demands a higher interest than money.",
       "speech_right_en": "Your treasury will grow, Pasha.",
       "triggers_on_right": "yahudi_borc_vadesi",
-      "trigger_delay": 14
+      "trigger_delay": 14,
+      "text_variants": [
+        {
+          "text": "Sefer yaklaşıyor, hazine zor durumda diye duydum. Ailemin kasası emrinizde: düşük faiz, beş yıl vade.",
+          "text_en": "I hear a campaign approaches and the treasury is under strain. My family's coffers are at your command: low interest, five-year term."
+        },
+        {
+          "text": "Paşam, Selanik'teki kardeşlerimle bir araya geldik. Devlete uzun vadeli bir borç verebiliriz. Şartlar size uygun olur.",
+          "text_en": "Pasha, my brothers in Salonica and I have joined together. We can lend the state a long-term loan, on terms that will suit you."
+        }
+      ]
     },
     {
       "id": "yahudi_cemaat_hak",
@@ -9216,7 +9546,17 @@
       "right_text_en": "Duty means standing ready",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "text_variants": [
+        {
+          "text": "İki aydır kılıcım kınında, Paşam. Kâtip “iş yok, maaş yok” diyor. Ben yine de her sabah hazır bekliyorum.",
+          "text_en": "My sword has stayed in its sheath for two months, Pasha. The scribe says, “No work, no wages.” Yet I stand ready every morning."
+        },
+        {
+          "text": "Defterdar maaşımı kesmek istiyor, çünkü son zamanlarda idam yok. Barış zamanında cellat ne yer, Paşam?",
+          "text_en": "The Treasurer wants to cut my wages because there have been no executions lately. What does an executioner eat in peacetime, Pasha?"
+        }
+      ]
     },
     {
       "id": "saray_sairi_rakip",
@@ -17090,7 +17430,17 @@
       "character_name_en": "Chief Harem Eunuch",
       "text_en": "The harem's most senior eunuch has come before you: \"I can bring you every whisper inside the palace walls, Grand Vizier. I only need your trust.\"",
       "left_text_en": "Keep your distance",
-      "right_text_en": "Accept his offer"
+      "right_text_en": "Accept his offer",
+      "text_variants": [
+        {
+          "text": "Kızlarağası yanınıza sokulup fısıldadı: “Haremde kim kime mektup yazıyor, hepsini bilirim. İsterseniz sizin de kulağınız olurum.”",
+          "text_en": "The Chief Black Eunuch leaned close and whispered: “I know who writes to whom in the harem. If you wish, I can be your ear as well.”"
+        },
+        {
+          "text": "Kızlarağası bir kese ve bir teklifle geldi: “Sarayın gizli koridorlarında olan biten size ulaşsın. Karşılığında yalnızca dostluğunuz.”",
+          "text_en": "The Chief Black Eunuch arrived with a purse and an offer: “Let everything that happens in the palace's hidden corridors reach you. In return, only your friendship.”"
+        }
+      ]
     },
     {
       "id": "kizlaragasi_harem_kavga",
@@ -23193,6 +23543,2834 @@
       "left_text_en": "The Spymaster",
       "right_text_en": "The Grand Admiral",
       "era": "kanuni"
+    },
+    {
+      "id": "kahveci_dedikodu",
+      "character": "kahveci",
+      "character_name": "Kahveci",
+      "faction": "halk",
+      "text": "Paşam, kahvehanede iki sipahi sizin hakkınızda konuşuyordu. Ne dediklerini anlatayım mı, yoksa kulağınız kirlenmesin mi?",
+      "left_text": "Dedikoduya kulak vermem",
+      "right_text": "Anlat bakalım",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Coffee Server",
+      "text_en": "Pasha, two cavalrymen were talking about you in the coffeehouse. Shall I tell you what they said, or spare your ears?",
+      "left_text_en": "I don't listen to gossip",
+      "right_text_en": "Tell me"
+    },
+    {
+      "id": "kahveci_yasak",
+      "character": "kahveci",
+      "character_name": "Kahveci",
+      "faction": "halk",
+      "text": "Bir vaiz kahvenin haram olduğunu söyledi, müşterilerim korkudan gelmiyor. Bir söz söyleseniz dükkânım kurtulur.",
+      "left_text": "Vaize karışmam",
+      "right_text": "Kahve serbesttir",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -4,
+        "hazine": 3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "religious",
+      "character_name_en": "Coffee Server",
+      "text_en": "A preacher declared coffee forbidden, and my customers are afraid to come. One word from you would save my shop.",
+      "left_text_en": "I won't interfere with the preacher",
+      "right_text_en": "Coffee is permitted"
+    },
+    {
+      "id": "kahveci_meddah",
+      "character": "kahveci",
+      "character_name": "Kahveci",
+      "faction": "halk",
+      "text": "Kahvehaneme bir meddah geldi; Divan'ı taklit ediyor, halk gülmekten kırılıyor. Sizi de taklit ediyor, Paşam.",
+      "left_text": "Bırakın gülsünler",
+      "right_text": "Susturun",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Coffee Server",
+      "text_en": "A storyteller has come to my coffeehouse; he mimics the Divan and the crowd roars with laughter. He mimics you too, Pasha.",
+      "left_text_en": "Let them laugh",
+      "right_text_en": "Silence him"
+    },
+    {
+      "id": "kahveci_yemen",
+      "character": "kahveci",
+      "character_name": "Kahveci",
+      "faction": "halk",
+      "text": "Yemen'den kahve gelmez oldu; korsanlar yolu kesmiş. Fiyat iki katına çıktı. Hazine bir gemi kahve alsa halk dua eder.",
+      "left_text": "Halk beklesin",
+      "right_text": "Bir gemi alın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "economic",
+      "character_name_en": "Coffee Server",
+      "text_en": "Coffee no longer comes from Yemen; pirates have cut the route. The price has doubled. If the treasury bought a shipload, the people would bless you.",
+      "left_text_en": "Let the people wait",
+      "right_text_en": "Buy a shipload"
+    },
+    {
+      "id": "hkatip_kayip_kese",
+      "character": "hazine-katibi",
+      "character_name": "Hazine Kâtibi",
+      "faction": "saray",
+      "text": "Paşam, sayımda bir kese akçe eksik çıktı. Ya hesap yanlış ya da biri aldı. Hazine odasını kapatıp herkesi arayalım mı?",
+      "left_text": "Hesap yeniden yapılsın",
+      "right_text": "Herkes aransın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Treasury Scribe",
+      "text_en": "Pasha, a purse of akçe is missing from the count. Either the sums are wrong or someone took it. Shall we lock the treasury room and search everyone?",
+      "left_text_en": "Recount the sums",
+      "right_text_en": "Search everyone"
+    },
+    {
+      "id": "hkatip_ayar",
+      "character": "hazine-katibi",
+      "character_name": "Hazine Kâtibi",
+      "faction": "saray",
+      "text": "Darphaneden yeni gelen akçeler hafif çıktı, Paşam. Gümüş azaltılmış. Bunu sessizce kabul mü edelim, yoksa darphane eminini mi çağıralım?",
+      "left_text": "Sessiz kalalım",
+      "right_text": "Darphane emini gelsin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "economic",
+      "character_name_en": "Treasury Scribe",
+      "text_en": "The new coins from the mint are light, Pasha. The silver has been reduced. Do we accept it quietly, or summon the master of the mint?",
+      "left_text_en": "Stay quiet",
+      "right_text_en": "Summon the mint master"
+    },
+    {
+      "id": "hkatip_defter",
+      "character": "hazine-katibi",
+      "character_name": "Hazine Kâtibi",
+      "faction": "saray",
+      "text": "Eski vergi defterleri nemden çürüyor. Yeniden yazdırmak için on kâtip ve üç ay lazım. Yoksa kimin ne borcu var, bilinmez olur.",
+      "left_text": "Eski defterler yeter",
+      "right_text": "Yeniden yazılsın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Treasury Scribe",
+      "text_en": "The old tax registers are rotting from damp. Rewriting them takes ten scribes and three months. Otherwise no one will know who owes what.",
+      "left_text_en": "The old registers will do",
+      "right_text_en": "Have them rewritten"
+    },
+    {
+      "id": "hkatip_terfi",
+      "character": "hazine-katibi",
+      "character_name": "Hazine Kâtibi",
+      "faction": "saray",
+      "text": "Paşam, on yıldır aynı masadayım. Baş kâtiplik boşaldı. Hakkımın verilmesini, bir de küçük bir zam rica ediyorum.",
+      "left_text": "Sıra başkasında",
+      "right_text": "Terfi etsin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "political",
+      "character_name_en": "Treasury Scribe",
+      "text_en": "Pasha, I have sat at the same desk for ten years. The post of chief scribe is vacant. I ask for what I am owed, and a small raise.",
+      "left_text_en": "It is someone else's turn",
+      "right_text_en": "Promote him"
+    },
+    {
+      "id": "spbaba_timar",
+      "character": "sipahi-babasi",
+      "character_name": "Sipahi Babası",
+      "faction": "ordu",
+      "text": "Oğlum seferde şehit düştü, Paşam. Tımarı başkasına verilecekmiş. Torunum büyüyene kadar bize kalsın, ne olur.",
+      "left_text": "Kanun kanundur",
+      "right_text": "Tımar ailede kalsın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Sipahi Father",
+      "text_en": "My son fell on campaign, Pasha. His fief is to be given to another. Let it stay with us until my grandson grows up, I beg you.",
+      "left_text_en": "The law is the law",
+      "right_text_en": "Keep the fief in the family"
+    },
+    {
+      "id": "spbaba_at",
+      "character": "sipahi-babasi",
+      "character_name": "Sipahi Babası",
+      "faction": "ordu",
+      "text": "Köyde bir tay doğdu; böylesini görmedim. Sultan'ın ahırına layık. Bedeli biraz yüksek ama bir sefer kazandırır.",
+      "left_text": "Gerek yok",
+      "right_text": "Satın alın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "military",
+      "character_name_en": "Sipahi Father",
+      "text_en": "A foal was born in our village; I have never seen its like. Worthy of the Sultan's stable. The price is a little high, but it could win a campaign.",
+      "left_text_en": "No need",
+      "right_text_en": "Buy it"
+    },
+    {
+      "id": "spbaba_kavga",
+      "character": "sipahi-babasi",
+      "character_name": "Sipahi Babası",
+      "faction": "ordu",
+      "text": "Torunum yeniçeri bir çocukla kavga etti; yeniçeriler evimizi taşladı. Ocak bize düşman oldu, Paşam.",
+      "left_text": "Çocuk kavgası, geçer",
+      "right_text": "Ağaya hesap sorun",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": -4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Sipahi Father",
+      "text_en": "My grandson fought with a janissary boy, and the janissaries stoned our house. The corps has turned against us, Pasha.",
+      "left_text_en": "A children's quarrel; it will pass",
+      "right_text_en": "Call the Agha to account"
+    },
+    {
+      "id": "spbaba_nasihat",
+      "character": "sipahi-babasi",
+      "character_name": "Sipahi Babası",
+      "faction": "ordu",
+      "text": "Kırk yıl sefer gördüm. Gençler kılıcı unuttu, tüfeğe meraklı. Eski usul talimi geri getirin, Paşam.",
+      "left_text": "Zaman değişti",
+      "right_text": "Eski talim dönsün",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "military",
+      "character_name_en": "Sipahi Father",
+      "text_en": "I have seen forty years of campaigns. The young have forgotten the sword and fancy the musket. Bring back the old drill, Pasha.",
+      "left_text_en": "Times have changed",
+      "right_text_en": "Bring back the old drill"
+    },
+    {
+      "id": "bahcivan_cesme",
+      "character": "saray-bahcivani",
+      "character_name": "Saray Bahçıvanı",
+      "faction": "saray",
+      "text": "Bahçedeki mermer çeşme çatladı, su yollar kurudu. Lâleler susuz kalacak. Usta getirtelim mi?",
+      "left_text": "Kova ile sulayın",
+      "right_text": "Usta gelsin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Palace Gardener",
+      "text_en": "The marble fountain in the garden has cracked and the channels have run dry. The tulips will go thirsty. Shall we bring a master builder?",
+      "left_text_en": "Water them by bucket",
+      "right_text_en": "Bring the master"
+    },
+    {
+      "id": "bahcivan_hollanda",
+      "character": "saray-bahcivani",
+      "character_name": "Saray Bahçıvanı",
+      "faction": "saray",
+      "text": "Hollandalı bir tüccar nadir soğanlar getirmiş; çizgili, alacalı lâleler. Pahalı ama bahçemiz dillere destan olur.",
+      "left_text": "Bizim lâlemiz yeter",
+      "right_text": "Soğanları alın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "economic",
+      "character_name_en": "Palace Gardener",
+      "text_en": "A Dutch merchant has brought rare bulbs: striped, variegated tulips. Expensive, but our garden would become legendary.",
+      "left_text_en": "Our own tulips are enough",
+      "right_text_en": "Buy the bulbs"
+    },
+    {
+      "id": "bahcivan_cocuk",
+      "character": "saray-bahcivani",
+      "character_name": "Saray Bahçıvanı",
+      "faction": "saray",
+      "text": "Bahçeye bir çocuk girmiş, gül koparırken yakaladım. Aç olduğunu söylüyor. Bostancılara mı teslim edeyim?",
+      "left_text": "Bostancılara verin",
+      "right_text": "Karnını doyurun",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "social",
+      "character_name_en": "Palace Gardener",
+      "text_en": "A child got into the garden; I caught him picking roses. He says he is hungry. Shall I hand him to the guards?",
+      "left_text_en": "Give him to the guards",
+      "right_text_en": "Feed him"
+    },
+    {
+      "id": "bahcivan_sebze",
+      "character": "saray-bahcivani",
+      "character_name": "Saray Bahçıvanı",
+      "faction": "saray",
+      "text": "Paşam, bahçenin bir köşesini sebzeye ayırsak mutfağın çarşı masrafı yarıya iner. Ama Valide Sultan çiçek istiyor.",
+      "left_text": "Çiçekler kalsın",
+      "right_text": "Sebze ekilsin",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "economic",
+      "character_name_en": "Palace Gardener",
+      "text_en": "Pasha, if we gave a corner of the garden to vegetables, the kitchen's market costs would halve. But the Valide Sultan wants flowers.",
+      "left_text_en": "Keep the flowers",
+      "right_text_en": "Plant vegetables"
+    },
+    {
+      "id": "sair_hiciv",
+      "character": "gezgin-sair",
+      "character_name": "Gezgin Şair",
+      "faction": "halk",
+      "text": "Çarşıda bir hiciv dolaşıyor, Paşam; Defterdar'ı alaya alıyor. Yazanı biliyorum. Adını vereyim mi?",
+      "left_text": "Şairler susmasın",
+      "right_text": "Adını ver",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Wandering Poet",
+      "text_en": "A satire is going around the bazaar, Pasha, mocking the Treasurer. I know who wrote it. Shall I give you his name?",
+      "left_text_en": "Let poets speak",
+      "right_text_en": "Give me the name"
+    },
+    {
+      "id": "sair_kervan",
+      "character": "gezgin-sair",
+      "character_name": "Gezgin Şair",
+      "faction": "halk",
+      "text": "Bağdat'tan geldim; yollarda gördüklerimi bir seyahatnameye yazdım. Divan basarsa her vilayet okur.",
+      "left_text": "Gerek yok",
+      "right_text": "Çoğaltılsın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "cultural",
+      "character_name_en": "Wandering Poet",
+      "text_en": "I have come from Baghdad and written down everything I saw on the road. If the Divan has it copied, every province will read it.",
+      "left_text_en": "No need",
+      "right_text_en": "Have it copied"
+    },
+    {
+      "id": "sair_mersiye",
+      "character": "gezgin-sair",
+      "character_name": "Gezgin Şair",
+      "faction": "halk",
+      "text": "Sınırda şehit düşen askerler için bir mersiye yazdım. Divan'da okunursa ocak gönülden bağlanır.",
+      "left_text": "Divan'da şiire yer yok",
+      "right_text": "Okunsun",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Wandering Poet",
+      "text_en": "I have written an elegy for the soldiers who fell on the frontier. If it is read in the Divan, the corps will be bound to you heart and soul.",
+      "left_text_en": "No place for poetry in the Divan",
+      "right_text_en": "Let it be read"
+    },
+    {
+      "id": "sair_kahve",
+      "character": "gezgin-sair",
+      "character_name": "Gezgin Şair",
+      "faction": "halk",
+      "text": "Paşam, halkın derdini en iyi kahvehanede duyarsınız. Tebdil-i kıyafet bir gece benimle gelir misiniz?",
+      "left_text": "Sadrazam kahvede oturmaz",
+      "right_text": "Gelirim",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 2,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "social",
+      "character_name_en": "Wandering Poet",
+      "text_en": "Pasha, you hear the people's troubles best in a coffeehouse. Will you come with me one night, in disguise?",
+      "left_text_en": "A Grand Vizier does not sit in coffeehouses",
+      "right_text_en": "I will come"
+    },
+    {
+      "id": "fener_gemi",
+      "character": "fener-bekcisi",
+      "character_name": "Fener Bekçisi",
+      "faction": "ordu",
+      "text": "Dün gece Boğaz'dan fenersiz bir gemi geçti, Paşam. Bayrağı yoktu. Kaptan-ı Derya'ya haber vereyim mi?",
+      "left_text": "Balıkçıdır, geçin",
+      "right_text": "Donanma kollasın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Lighthouse Keeper",
+      "text_en": "Last night an unlit ship slipped through the Bosphorus, Pasha. It flew no flag. Shall I inform the Grand Admiral?",
+      "left_text_en": "Probably a fisherman; let it go",
+      "right_text_en": "Have the fleet patrol"
+    },
+    {
+      "id": "fener_sis",
+      "character": "fener-bekcisi",
+      "character_name": "Fener Bekçisi",
+      "faction": "ordu",
+      "text": "Sis mevsimi geldi. Fenerin yanına bir sis çanı kurmazsak bu kış bir gemi daha kayalara çarpacak.",
+      "left_text": "Fener yeter",
+      "right_text": "Çan kurulsun",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -1,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "military",
+      "character_name_en": "Lighthouse Keeper",
+      "text_en": "Fog season has come. If we don't put a fog bell beside the lighthouse, another ship will hit the rocks this winter.",
+      "left_text_en": "The lighthouse is enough",
+      "right_text_en": "Install the bell"
+    },
+    {
+      "id": "fener_kacakci",
+      "character": "fener-bekcisi",
+      "character_name": "Fener Bekçisi",
+      "faction": "ordu",
+      "text": "Kaçakçılar fenerin ışığını kısmam için bana kese teklif etti. Reddettim ama tekrar gelecekler.",
+      "left_text": "Sen hallet",
+      "right_text": "Pusu kurun",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Lighthouse Keeper",
+      "text_en": "Smugglers offered me a purse to dim the lighthouse. I refused, but they will come again.",
+      "left_text_en": "Deal with it yourself",
+      "right_text_en": "Set an ambush"
+    },
+    {
+      "id": "fener_aile",
+      "character": "fener-bekcisi",
+      "character_name": "Fener Bekçisi",
+      "faction": "ordu",
+      "text": "Yirmi yıldır fenerdeyim, ailemi yılda bir görürüm. Oğlum yerime geçsin, ben de köyüme döneyim, Paşam.",
+      "left_text": "Sen kal",
+      "right_text": "Oğlun geçsin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 1,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "social",
+      "character_name_en": "Lighthouse Keeper",
+      "text_en": "I have kept the lighthouse for twenty years and see my family once a year. Let my son take my place so I can go home, Pasha.",
+      "left_text_en": "You stay",
+      "right_text_en": "Let your son take over"
+    },
+    {
+      "id": "yamak_rusvet",
+      "character": "kadi-yamagi",
+      "character_name": "Kadı Yamağı",
+      "faction": "din",
+      "text": "Paşam, efendim kadı bir davada hediye kabul etti. Söylesem işimden olurum, söylemesem vicdanım rahat etmez.",
+      "left_text": "Bunu duymadım",
+      "right_text": "Kadı sorgulansın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "religious",
+      "character_name_en": "Judge's Apprentice",
+      "text_en": "Pasha, my master the judge accepted a gift in a case. If I speak I lose my post; if I stay silent my conscience gives me no rest.",
+      "left_text_en": "I did not hear this",
+      "right_text_en": "Have the judge questioned"
+    },
+    {
+      "id": "yamak_miras",
+      "character": "kadi-yamagi",
+      "character_name": "Kadı Yamağı",
+      "faction": "din",
+      "text": "Bir tüccar ölmüş, üç oğlu mirasa düştü. Kadı işi aylardır sürüncemede bırakıyor. Sizin bir emriniz yeter.",
+      "left_text": "Kadı karar versin",
+      "right_text": "Hemen bölüştürün",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -1
+      },
+      "right_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "religious",
+      "character_name_en": "Judge's Apprentice",
+      "text_en": "A merchant has died and his three sons are fighting over the inheritance. The judge has let it drag on for months. A word from you would settle it.",
+      "left_text_en": "Let the judge decide",
+      "right_text_en": "Divide it now"
+    },
+    {
+      "id": "yamak_kitap",
+      "character": "kadi-yamagi",
+      "character_name": "Kadı Yamağı",
+      "faction": "din",
+      "text": "Mahkemenin fıkıh kitapları eskidi, sayfaları dağılıyor. Yenilerini istinsah ettirmek için bir ödenek gerekiyor.",
+      "left_text": "Eskileri yeter",
+      "right_text": "Yenileri yazılsın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "religious",
+      "character_name_en": "Judge's Apprentice",
+      "text_en": "The court's law books are worn out and their pages are falling apart. Funds are needed to have new copies made.",
+      "left_text_en": "The old ones will do",
+      "right_text_en": "Have new ones copied"
+    },
+    {
+      "id": "yamak_kadin",
+      "character": "kadi-yamagi",
+      "character_name": "Kadı Yamağı",
+      "faction": "din",
+      "text": "Bir kadın kocasından boşanmak için mahkemeye geldi; kocası Divan'da tanıdığı var diye tehdit ediyor. Kadı korkuyor.",
+      "left_text": "Bu aile işi",
+      "right_text": "Kadı adil karar versin",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "social",
+      "character_name_en": "Judge's Apprentice",
+      "text_en": "A woman came to court seeking divorce; her husband threatens that he has friends in the Divan. The judge is afraid.",
+      "left_text_en": "This is a family matter",
+      "right_text_en": "Let the judge rule justly"
+    },
+    {
+      "id": "silahtar_kilic",
+      "character": "silahtar",
+      "character_name": "Silahtar",
+      "faction": "ordu",
+      "text": "Sultan'ın kılıcının kabzası gevşemiş, Paşam. Usta kuyumcu üç gün istiyor. O sürede alay için hangi kılıç kuşanılsın?",
+      "left_text": "Yedek kılıç",
+      "right_text": "Yenisi dövülsün",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Royal Sword-Bearer",
+      "text_en": "The hilt of the Sultan's sword has come loose, Pasha. The master goldsmith needs three days. Which sword should he wear for the procession meanwhile?",
+      "left_text_en": "The spare sword",
+      "right_text_en": "Have a new one forged"
+    },
+    {
+      "id": "silahtar_talim",
+      "character": "silahtar",
+      "character_name": "Silahtar",
+      "faction": "ordu",
+      "text": "Enderun'daki gençlere kılıç talimi veriyorum. Bazıları çok yetenekli. Seferde benimle gelmelerine izin verin.",
+      "left_text": "Enderun'da kalsınlar",
+      "right_text": "Gelsinler",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": -1,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "military",
+      "character_name_en": "Royal Sword-Bearer",
+      "text_en": "I train the young men of the palace school in the sword. Some are very gifted. Let them come with me on campaign.",
+      "left_text_en": "Let them stay at the school",
+      "right_text_en": "Let them come"
+    },
+    {
+      "id": "silahtar_rakip",
+      "character": "silahtar",
+      "character_name": "Silahtar",
+      "faction": "ordu",
+      "text": "Rikâbdar Ağa bana karşı Sultan'ın kulağını dolduruyor. Bir sözünüzle bu iş biter, Paşam.",
+      "left_text": "Kendiniz halledin",
+      "right_text": "Senin tarafındayım",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": -1,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Royal Sword-Bearer",
+      "text_en": "The Stirrup-holder Agha is filling the Sultan's ear against me. One word from you would end it, Pasha.",
+      "left_text_en": "Settle it yourselves",
+      "right_text_en": "I am on your side"
+    },
+    {
+      "id": "silahtar_hediye_av",
+      "character": "silahtar",
+      "character_name": "Silahtar",
+      "faction": "ordu",
+      "text": "Sultan ava çıkmak istiyor. Av alayı için yeni yaylar ve şahinler gerek. Bütçe ne kadar olsun?",
+      "left_text": "Mütevazı bir av",
+      "right_text": "Görkemli olsun",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "royal",
+      "character_name_en": "Royal Sword-Bearer",
+      "text_en": "The Sultan wishes to go hunting. The hunt needs new bows and falcons. How large a budget?",
+      "left_text_en": "A modest hunt",
+      "right_text_en": "Make it magnificent"
+    },
+    {
+      "id": "asci_zehir",
+      "character": "saray-ascisi",
+      "character_name": "Saray Aşçısı",
+      "faction": "saray",
+      "text": "Paşam, kilerde tanımadığım bir şişe buldum. Kokusu tuhaf. Belki bir şey değil, belki de birinin yemeğine konacaktı.",
+      "left_text": "Dökün gitsin",
+      "right_text": "Hekimbaşı baksın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Palace Chef",
+      "text_en": "Pasha, I found an unfamiliar flask in the larder. It smells strange. Perhaps nothing, perhaps meant for someone's food.",
+      "left_text_en": "Pour it away",
+      "right_text_en": "Have the Chief Physician examine it"
+    },
+    {
+      "id": "asci_ramazan",
+      "character": "saray-ascisi",
+      "character_name": "Saray Aşçısı",
+      "faction": "saray",
+      "text": "Ramazan yaklaşıyor. Saray kapısında halka iftar sofrası kurmak âdettir; bu yıl ne kadar büyük olsun?",
+      "left_text": "Her zamanki kadar",
+      "right_text": "Bütün şehre yetsin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "religious",
+      "character_name_en": "Palace Chef",
+      "text_en": "Ramadan approaches. It is custom to lay an iftar table for the people at the palace gate. How large should it be this year?",
+      "left_text_en": "The usual size",
+      "right_text_en": "Enough for the whole city"
+    },
+    {
+      "id": "asci_yenicerikazan",
+      "character": "saray-ascisi",
+      "character_name": "Saray Aşçısı",
+      "faction": "saray",
+      "text": "Yeniçeri aşçıları pilavın etinin azaldığından şikâyetçi. Kazana fazladan et göndersem ocak memnun olur.",
+      "left_text": "Şimdilik yeter",
+      "right_text": "Et gönderin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Palace Chef",
+      "text_en": "The janissary cooks complain there is less meat in the pilaf. If I sent extra meat for the cauldron, the corps would be pleased.",
+      "left_text_en": "Enough for now",
+      "right_text_en": "Send meat"
+    },
+    {
+      "id": "asci_tarif",
+      "character": "saray-ascisi",
+      "character_name": "Saray Aşçısı",
+      "faction": "saray",
+      "text": "Fransız elçisinin aşçısı bir tarifimi çalıp kendi sarayında sunmuş. Saray tatlısı artık Paris'te! Protesto edelim mi?",
+      "left_text": "Gülüp geçin",
+      "right_text": "Protesto edin",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "cultural",
+      "character_name_en": "Palace Chef",
+      "text_en": "The French ambassador's cook stole one of my recipes and served it at his own court. The palace dessert is now in Paris! Shall we protest?",
+      "left_text_en": "Laugh it off",
+      "right_text_en": "Lodge a protest"
+    },
+    {
+      "id": "talebe_hoca",
+      "character": "medrese-ogrencisi",
+      "character_name": "Medrese Öğrencisi",
+      "faction": "din",
+      "text": "Hocamız derse gelmiyor, maaşını alıp başka işle uğraşıyor. Talebeler sahipsiz kaldı, Paşam.",
+      "left_text": "Hocalar dokunulmazdır",
+      "right_text": "Yerine yenisi gelsin",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "religious",
+      "character_name_en": "Madrasa Student",
+      "text_en": "Our teacher no longer comes to class; he takes his salary and attends to other business. The students are abandoned, Pasha.",
+      "left_text_en": "Teachers are not to be touched",
+      "right_text_en": "Replace him"
+    },
+    {
+      "id": "talebe_kitap",
+      "character": "medrese-ogrencisi",
+      "character_name": "Medrese Öğrencisi",
+      "faction": "din",
+      "text": "Kütüphanede astronomi kitapları kilitli tutuluyor; müderris “zararlı” diyor. Okumamıza izin verilsin, Paşam.",
+      "left_text": "Müderris bilir",
+      "right_text": "Açılsın",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "cultural",
+      "character_name_en": "Madrasa Student",
+      "text_en": "The astronomy books in the library are kept locked; the professor calls them harmful. Let us read them, Pasha.",
+      "left_text_en": "The professor knows best",
+      "right_text_en": "Unlock them"
+    },
+    {
+      "id": "talebe_kavga",
+      "character": "medrese-ogrencisi",
+      "character_name": "Medrese Öğrencisi",
+      "faction": "din",
+      "text": "Medrese talebeleriyle yeniçeriler çarşıda kavga etti. Bizimkiler hapiste. Serbest bırakılmaları için yalvarıyorum.",
+      "left_text": "Ceza çeksinler",
+      "right_text": "Serbest bırakın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 3,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 4,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "social",
+      "character_name_en": "Madrasa Student",
+      "text_en": "Madrasa students and janissaries brawled in the bazaar. Our boys are in prison. I beg for their release.",
+      "left_text_en": "Let them serve their sentence",
+      "right_text_en": "Release them"
+    },
+    {
+      "id": "talebe_imtihan",
+      "character": "medrese-ogrencisi",
+      "character_name": "Medrese Öğrencisi",
+      "faction": "din",
+      "text": "Kadılık imtihanında torpil yapılıyor; zengin aileler cevapları önceden alıyor. Biz yoksullar ne yapacağız?",
+      "left_text": "Kanıt getir",
+      "right_text": "İmtihan yeniden yapılsın",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "religious",
+      "character_name_en": "Madrasa Student",
+      "text_en": "There is favouritism in the judges' examination; wealthy families get the answers in advance. What are we poor students to do?",
+      "left_text_en": "Bring proof",
+      "right_text_en": "Hold the exam again"
+    },
+    {
+      "id": "bostanci_bahce",
+      "character": "bostancibasi",
+      "character_name": "Bostancıbaşı",
+      "faction": "saray",
+      "text": "Paşam, saray bahçelerine gece yabancılar giriyor. Bostancı ocağına yirmi yeni nefer alırsam surlar yeniden güvenli olur.",
+      "left_text": "Mevcutlar yeter",
+      "right_text": "Nefer alın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "royal",
+      "character_name_en": "Head Gardener",
+      "text_en": "Pasha, strangers are slipping into the palace gardens at night. If I enlist twenty new men into the gardeners' corps, the walls will be safe again.",
+      "left_text_en": "The current men will do",
+      "right_text_en": "Enlist them"
+    },
+    {
+      "id": "bostanci_gizli",
+      "character": "bostancibasi",
+      "character_name": "Bostancıbaşı",
+      "faction": "saray",
+      "text": "Sultan'ın bir emri var, Paşam: bir zimmetçi ağa sessizce ortadan kalkacak. Boğaz'da bir kayık hazır. Sizin de mührünüz gerekiyor.",
+      "left_text": "Mahkemeye çıksın",
+      "right_text": "Mühürlüyorum",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": -4,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "bostanci_gizli_infaz"
+      ],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Head Gardener",
+      "text_en": "There is an order from the Sultan, Pasha: an embezzling agha is to disappear quietly. A boat waits on the Bosphorus. Your seal is also required.",
+      "left_text_en": "Let him stand trial",
+      "right_text_en": "I will seal it"
+    },
+    {
+      "id": "bostanci_ifsa",
+      "character": "bostancibasi",
+      "character_name": "Bostancıbaşı",
+      "faction": "saray",
+      "text": "Paşam, o gece Boğaz'daki işi bir kayıkçı görmüş. Çarşıda konuşuyor. Onu da susturalım mı, yoksa para mı verelim?",
+      "left_text": "Parayla susturun",
+      "right_text": "O da kaybolsun",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": -2,
+        "ulema": -7,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "bostanci_gizli_infaz"
+      ],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "crisis",
+      "character_name_en": "Head Gardener",
+      "text_en": "Pasha, a boatman saw what happened on the Bosphorus that night. He is talking in the bazaar. Do we silence him too, or pay him?",
+      "left_text_en": "Pay for his silence",
+      "right_text_en": "He disappears too"
+    },
+    {
+      "id": "bostanci_kavak",
+      "character": "bostancibasi",
+      "character_name": "Bostancıbaşı",
+      "faction": "saray",
+      "text": "Sarayın yüz yıllık çınarı yıldırımla yarıldı. Ulema uğursuzluk diyor. Keselim mi, yoksa ayakta mı kalsın?",
+      "left_text": "Kesilsin",
+      "right_text": "Ayakta kalsın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Head Gardener",
+      "text_en": "The palace's hundred-year-old plane tree was split by lightning. The ulema call it an ill omen. Do we cut it down or leave it standing?",
+      "left_text_en": "Cut it down",
+      "right_text_en": "Leave it standing"
+    },
+    {
+      "id": "bostanci_kayik",
+      "character": "bostancibasi",
+      "character_name": "Bostancıbaşı",
+      "faction": "saray",
+      "text": "Sultan'ın saltanat kayığı eskidi; on dört çifte kürek, yarısı çatlak. Yenisi yapılmazsa Sultan halkın önünde mahcup olur.",
+      "left_text": "Bu yıl idare etsin",
+      "right_text": "Yenisi yapılsın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "royal",
+      "character_name_en": "Head Gardener",
+      "text_en": "The Sultan's imperial barge is worn out; of its fourteen pairs of oars, half are cracked. Without a new one, the Sultan will be shamed before the people.",
+      "left_text_en": "Make do this year",
+      "right_text_en": "Build a new one"
+    },
+    {
+      "id": "bostanci_sadakat",
+      "character": "bostancibasi",
+      "character_name": "Bostancıbaşı",
+      "faction": "saray",
+      "text": "Bostancılar bana bağlıdır, Paşam, ama hep doğru tarafta dururlar. Sizin tarafınızda durmamızı isterseniz bir ihsan yeter.",
+      "left_text": "Sadakat satın alınmaz",
+      "right_text": "İhsan verin",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "political",
+      "character_name_en": "Head Gardener",
+      "text_en": "The gardeners are loyal to me, Pasha, but they always stand on the right side. If you want us on yours, a gift will do.",
+      "left_text_en": "Loyalty is not for sale",
+      "right_text_en": "Give the gift"
+    },
+    {
+      "id": "mehter_sefer",
+      "character": "mehterbasi",
+      "character_name": "Mehterbaşı",
+      "faction": "ordu",
+      "text": "Sefere çıkacak ordunun önünde mehter yürümezse askerin yüreği kalkmaz, Paşam. Yeni kösler ve zurnalar lazım.",
+      "left_text": "Eskileri çalsın",
+      "right_text": "Yenileri alınsın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Bandmaster",
+      "text_en": "If the band does not march before an army setting out on campaign, the soldiers' hearts will not rise, Pasha. We need new drums and pipes.",
+      "left_text_en": "Let them play the old ones",
+      "right_text_en": "Buy new ones"
+    },
+    {
+      "id": "mehter_bayram",
+      "character": "mehterbasi",
+      "character_name": "Mehterbaşı",
+      "faction": "ordu",
+      "text": "Bayramda mehter Divan meydanında çalsın mı? Halk bayılır ama ulema “gürültü” diye homurdanıyor.",
+      "left_text": "Bu yıl çalmasın",
+      "right_text": "Çalsın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 3,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Bandmaster",
+      "text_en": "Shall the band play in the Divan square for the festival? The people adore it, but the ulema grumble about the noise.",
+      "left_text_en": "No playing this year",
+      "right_text_en": "Let them play"
+    },
+    {
+      "id": "mehter_beste",
+      "character": "mehterbasi",
+      "character_name": "Mehterbaşı",
+      "faction": "ordu",
+      "text": "Sizin adınıza yeni bir marş besteledim, Paşam. Askerler söylemeye başladı bile. Divan'da çalınmasına izin verir misiniz?",
+      "left_text": "Sultan'ın adına olsun",
+      "right_text": "Benim adımla çalınsın",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 1,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "cultural",
+      "character_name_en": "Bandmaster",
+      "text_en": "I have composed a new march in your name, Pasha. The soldiers have already begun to sing it. Will you allow it to be played in the Divan?",
+      "left_text_en": "Dedicate it to the Sultan",
+      "right_text_en": "Play it in my name"
+    },
+    {
+      "id": "mehter_avrupa",
+      "character": "mehterbasi",
+      "character_name": "Mehterbaşı",
+      "faction": "ordu",
+      "text": "Avusturya elçisi mehterimizi dinlemiş, Viyana'ya bir takım götürmek istiyor. Karşılığında altın veriyor.",
+      "left_text": "Mehter satılmaz",
+      "right_text": "Hediye edin, altını alın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": -1
+      },
+      "right_effects": {
+        "saray": 1,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "diplomatic",
+      "character_name_en": "Bandmaster",
+      "text_en": "The Austrian ambassador heard our band and wants to take a set of instruments back to Vienna. He offers gold in return.",
+      "left_text_en": "The band is not for sale",
+      "right_text_en": "Give them, take the gold"
+    },
+    {
+      "id": "mehter_ihtiyar",
+      "character": "mehterbasi",
+      "character_name": "Mehterbaşı",
+      "faction": "ordu",
+      "text": "Kös çalan ihtiyar Hasan Ağa elli yıl orduyla yürüdü. Artık kollarını kaldıramıyor. Ona bir maaş bağlanmasını rica ediyorum.",
+      "left_text": "Ocak baksın",
+      "right_text": "Maaş bağlansın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "military",
+      "character_name_en": "Bandmaster",
+      "text_en": "Old Hasan Agha, who beats the great drum, has marched with the army for fifty years. Now he can no longer lift his arms. I ask that he be granted a pension.",
+      "left_text_en": "Let the corps look after him",
+      "right_text_en": "Grant the pension"
+    },
+    {
+      "id": "mehter_gece",
+      "character": "mehterbasi",
+      "character_name": "Mehterbaşı",
+      "faction": "ordu",
+      "text": "Düşman kalesinin önünde gece boyu mehter çalarsak askerleri uykusuz kalır, sabah teslim olurlar. Denenmiş bir yoldur.",
+      "left_text": "Bizimkiler de uyuyamaz",
+      "right_text": "Gece boyu çalınsın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -1,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "military",
+      "character_name_en": "Bandmaster",
+      "text_en": "If we play the band all night before the enemy fortress, their soldiers will not sleep, and by morning they will surrender. It is a proven method.",
+      "left_text_en": "Our men won't sleep either",
+      "right_text_en": "Play through the night"
+    },
+    {
+      "id": "natir_dedikodu",
+      "character": "hamam-natiri",
+      "character_name": "Hamam Natırı",
+      "faction": "halk",
+      "text": "Paşam, hamamda kadınlar konuşur, ben de dinlerim. Bir vezirin karısı kocasının Venedik'ten kese aldığını söyledi.",
+      "left_text": "Kadın dedikodusu",
+      "right_text": "Soruşturulsun",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Bath Attendant",
+      "text_en": "Pasha, women talk in the bathhouse, and I listen. A vizier's wife said her husband takes purses from Venice.",
+      "left_text_en": "Women's gossip",
+      "right_text_en": "Investigate it"
+    },
+    {
+      "id": "natir_hamam",
+      "character": "hamam-natiri",
+      "character_name": "Hamam Natırı",
+      "faction": "halk",
+      "text": "Mahallemizin hamamının kubbesi çöktü. Kadınlar haftalardır yıkanamıyor. Vakıf parası yetmiyor, Paşam.",
+      "left_text": "Vakıf halletsin",
+      "right_text": "Onarım ödeneği verin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "social",
+      "character_name_en": "Bath Attendant",
+      "text_en": "The dome of our neighbourhood bathhouse has collapsed. The women have not been able to bathe for weeks. The endowment money is not enough, Pasha.",
+      "left_text_en": "Let the endowment handle it",
+      "right_text_en": "Grant repair funds"
+    },
+    {
+      "id": "natir_gelin",
+      "character": "hamam-natiri",
+      "character_name": "Hamam Natırı",
+      "faction": "halk",
+      "text": "Gelin hamamında Valide Sultan'ın adamlarından birinin kızını gördüm; şehzadeye aday diyorlar. Bunu bilmek istersiniz diye düşündüm.",
+      "left_text": "Beni ilgilendirmez",
+      "right_text": "Bir kese al, gözünü dört aç",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "intrigue",
+      "character_name_en": "Bath Attendant",
+      "text_en": "At a bridal bath I saw the daughter of one of the Valide Sultan's men; they say she is a candidate for the prince. I thought you would want to know.",
+      "left_text_en": "Not my concern",
+      "right_text_en": "Take a purse, keep your eyes open"
+    },
+    {
+      "id": "natir_salgin",
+      "character": "hamam-natiri",
+      "character_name": "Hamam Natırı",
+      "faction": "halk",
+      "text": "Hamama gelen kadınlarda kaşıntılı bir döküntü yayılıyor. Hamamları bir hafta kapatmak gerek, ama esnaf kızar.",
+      "left_text": "Açık kalsın",
+      "right_text": "Bir hafta kapatın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "social",
+      "character_name_en": "Bath Attendant",
+      "text_en": "A rash with itching is spreading among the women at the bathhouse. The baths should close for a week, but the tradesmen will be angry.",
+      "left_text_en": "Keep them open",
+      "right_text_en": "Close for a week"
+    },
+    {
+      "id": "natir_ucret",
+      "character": "hamam-natiri",
+      "character_name": "Hamam Natırı",
+      "faction": "halk",
+      "text": "Hamam ücretine zam istiyoruz; odun pahalandı. Ama fakir kadınlar bir daha gelemez, Paşam. Ne buyurursunuz?",
+      "left_text": "Ücret aynı kalsın, odun desteği",
+      "right_text": "Zam yapılsın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Bath Attendant",
+      "text_en": "We want to raise the bathhouse fee; firewood has grown expensive. But poor women will no longer be able to come, Pasha. What do you order?",
+      "left_text_en": "Keep the fee, subsidise the wood",
+      "right_text_en": "Raise the fee"
+    },
+    {
+      "id": "natir_casus",
+      "character": "hamam-natiri",
+      "character_name": "Hamam Natırı",
+      "faction": "halk",
+      "text": "Casuslar Başı'nın adamları beni ayartmaya çalıştı. Onlara mı çalışayım, yoksa yalnız size mi?",
+      "left_text": "Onlarla çalış, bana da anlat",
+      "right_text": "Yalnız bana",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "intrigue",
+      "character_name_en": "Bath Attendant",
+      "text_en": "The Spymaster's men tried to recruit me. Shall I work for them, or for you alone?",
+      "left_text_en": "Work for them, report to me too",
+      "right_text_en": "Only for me"
+    },
+    {
+      "id": "hanci_vergi",
+      "character": "kervansaray-hancisi",
+      "character_name": "Kervansaray Hancısı",
+      "faction": "halk",
+      "text": "Yol vergisi arttığından beri kervanlar başka yoldan gidiyor; hanım bomboş. Vergiyi indirirseniz ticaret geri gelir.",
+      "left_text": "Vergi aynı kalsın",
+      "right_text": "Vergiyi indirin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 3
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Caravanserai Keeper",
+      "text_en": "Since the road tax rose, the caravans take another route; my inn is empty. If you lower the tax, trade will return.",
+      "left_text_en": "The tax stays",
+      "right_text_en": "Lower the tax"
+    },
+    {
+      "id": "hanci_haber",
+      "character": "kervansaray-hancisi",
+      "character_name": "Kervansaray Hancısı",
+      "faction": "halk",
+      "text": "Dün gece hanımda kalan Acem tüccarlar sınırda asker toplandığını konuşuyordu. Size haber vermem gerekti.",
+      "left_text": "Tüccar lafı",
+      "right_text": "Sınıra keşif gitsin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Caravanserai Keeper",
+      "text_en": "Last night the Persian merchants staying at my inn spoke of troops gathering on the border. I had to tell you.",
+      "left_text_en": "Merchants' talk",
+      "right_text_en": "Send scouts to the border"
+    },
+    {
+      "id": "hanci_eskiya",
+      "character": "kervansaray-hancisi",
+      "character_name": "Kervansaray Hancısı",
+      "faction": "halk",
+      "text": "Hanımın önünden geçen yolda kervanlar soyuluyor. Birkaç asker konuşlandırılsa yol yeniden güvenli olur.",
+      "left_text": "Kervanlar kendi korusun",
+      "right_text": "Asker gönderin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 1,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "right_effects": {
+        "saray": 1,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "military",
+      "character_name_en": "Caravanserai Keeper",
+      "text_en": "Caravans are being robbed on the road past my inn. If a few soldiers were stationed here, the road would be safe again.",
+      "left_text_en": "Let the caravans guard themselves",
+      "right_text_en": "Send soldiers"
+    },
+    {
+      "id": "hanci_onarim",
+      "character": "kervansaray-hancisi",
+      "character_name": "Kervansaray Hancısı",
+      "faction": "halk",
+      "text": "Hanın avlu duvarı yıkıldı; deve yatağı açıkta kaldı. Vakıf mütevellisi para vermiyor. Siz bir emir verseniz…",
+      "left_text": "Mütevelliye karışmam",
+      "right_text": "Onarım emri verin",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Caravanserai Keeper",
+      "text_en": "The courtyard wall of the inn has fallen; the camel stalls are exposed. The endowment's trustee refuses to pay. If you gave an order…",
+      "left_text_en": "I won't interfere with the trustee",
+      "right_text_en": "Order the repairs"
+    },
+    {
+      "id": "hanci_hacilar",
+      "character": "kervansaray-hancisi",
+      "character_name": "Kervansaray Hancısı",
+      "faction": "halk",
+      "text": "Hac kafilesi hanıma sığmıyor; yüzlerce hacı avluda yatıyor. Hazine bir gecelik yemek verse hayır duası alırsınız.",
+      "left_text": "Kendi azıkları var",
+      "right_text": "Yemek verilsin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "religious",
+      "character_name_en": "Caravanserai Keeper",
+      "text_en": "The pilgrim caravan does not fit in my inn; hundreds of pilgrims are sleeping in the courtyard. If the treasury provided one night's meal, you would earn their blessings.",
+      "left_text_en": "They have their own provisions",
+      "right_text_en": "Provide the meal"
+    },
+    {
+      "id": "hanci_yabanci",
+      "character": "kervansaray-hancisi",
+      "character_name": "Kervansaray Hancısı",
+      "faction": "halk",
+      "text": "Hanımda kalan bir Frenk kendini tüccar diye tanıtıyor ama kalelerin resmini çiziyor. Yakalatayım mı?",
+      "left_text": "Elçiliğe bildir",
+      "right_text": "Yakalatın",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": -1,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "diplomatic",
+      "character_name_en": "Caravanserai Keeper",
+      "text_en": "A Frank staying at my inn says he is a merchant, but he sketches the fortresses. Shall I have him arrested?",
+      "left_text_en": "Report him to his embassy",
+      "right_text_en": "Have him arrested"
+    },
+    {
+      "id": "saka_yangin",
+      "character": "sakabasi",
+      "character_name": "Sakabaşı",
+      "faction": "halk",
+      "text": "Paşam, yangın mevsimi geldi. Sakaların yarısının kırbası delik. Yenileri alınmazsa bir yangında şehir yanar.",
+      "left_text": "Yamalasınlar",
+      "right_text": "Yenileri alınsın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "crisis",
+      "character_name_en": "Chief Water-Carrier",
+      "text_en": "Pasha, the fire season has come. Half the water-carriers' skins are torn. If new ones are not bought, the city will burn in the next fire.",
+      "left_text_en": "Let them patch them",
+      "right_text_en": "Buy new ones"
+    },
+    {
+      "id": "saka_cesme",
+      "character": "sakabasi",
+      "character_name": "Sakabaşı",
+      "faction": "halk",
+      "text": "Fatih'teki büyük çeşme kurudu, su yolu tıkanmış. Halk bizden su alıyor ama fiyat iki katına çıktı.",
+      "left_text": "Sakalar kazansın",
+      "right_text": "Su yolu açılsın",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "social",
+      "character_name_en": "Chief Water-Carrier",
+      "text_en": "The great fountain in Fatih has run dry; the water channel is blocked. The people buy water from us, but the price has doubled.",
+      "left_text_en": "Let the water-carriers profit",
+      "right_text_en": "Clear the channel"
+    },
+    {
+      "id": "saka_hile",
+      "character": "sakabasi",
+      "character_name": "Sakabaşı",
+      "faction": "halk",
+      "text": "Bazı sakalar kuyu suyunu “Kırkçeşme suyu” diye satıyor. Ben yakaladım. Ceza verilsin mi, yoksa lonca mı halletsin?",
+      "left_text": "Lonca halletsin",
+      "right_text": "Ceza verilsin",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "social",
+      "character_name_en": "Chief Water-Carrier",
+      "text_en": "Some water-carriers sell well water as “Kırkçeşme water.” I caught them. Should they be punished, or should the guild handle it?",
+      "left_text_en": "Let the guild handle it",
+      "right_text_en": "Punish them"
+    },
+    {
+      "id": "saka_tulumba",
+      "character": "sakabasi",
+      "character_name": "Sakabaşı",
+      "faction": "halk",
+      "text": "Frenkler ateş söndürmek için tulumba diye bir alet yapmış. Bir tane getirtirsek sakaların on katı iş görür.",
+      "left_text": "Sakalar yeter",
+      "right_text": "Tulumba getirtin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "crisis",
+      "character_name_en": "Chief Water-Carrier",
+      "text_en": "The Franks have made a device called a pump for putting out fires. If we brought one here, it would do the work of ten water-carriers.",
+      "left_text_en": "The water-carriers are enough",
+      "right_text_en": "Bring a pump"
+    },
+    {
+      "id": "saka_bayram",
+      "character": "sakabasi",
+      "character_name": "Sakabaşı",
+      "faction": "halk",
+      "text": "Kurban bayramında sakalar camilere bedava su taşır, âdettir. Ama bu yıl odun gibi su da pahalı. Bir yardım rica ediyorum.",
+      "left_text": "Âdet âdettir",
+      "right_text": "Hazineden ödensin",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "religious",
+      "character_name_en": "Chief Water-Carrier",
+      "text_en": "During the Feast of Sacrifice the water-carriers bring free water to the mosques; it is custom. But this year water is as expensive as wood. I ask for help.",
+      "left_text_en": "Custom is custom",
+      "right_text_en": "Pay from the treasury"
+    },
+    {
+      "id": "saka_yeniceri",
+      "character": "sakabasi",
+      "character_name": "Sakabaşı",
+      "faction": "halk",
+      "text": "Yeniçeriler kırbalarımızı zorla alıp kendi kışlalarına su taşıtıyor, para vermiyorlar. Sakalar bıktı, Paşam.",
+      "left_text": "Asker sudan ölmez",
+      "right_text": "Ağaya ihtar",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 3,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": -4,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "military",
+      "character_name_en": "Chief Water-Carrier",
+      "text_en": "The janissaries seize our water skins and make us carry water to their barracks without pay. The water-carriers are fed up, Pasha.",
+      "left_text_en": "Soldiers need water too",
+      "right_text_en": "Warn the Agha"
+    },
+    {
+      "id": "simitci_tanisma",
+      "character": "simitci-ciragi",
+      "character_name": "Simitçi Çırağı",
+      "faction": "halk",
+      "text": "Paşam, ben her sabah bütün çarşıyı dolaşırım; kimin kime ne dediğini bilirim. Bana bir akçe verseniz, size her şeyi anlatırım!",
+      "left_text": "Haydi git oyna",
+      "right_text": "Haberci ol",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [
+        "simitci_haberci"
+      ],
+      "required_flags": [],
+      "excluded_flags": [
+        "simitci_haberci"
+      ],
+      "weight": 8,
+      "min_year": 1,
+      "category": "social",
+      "character_name_en": "Simit Boy",
+      "text_en": "Pasha, I walk the whole bazaar every morning; I know who says what to whom. Give me one akçe and I'll tell you everything!",
+      "left_text_en": "Off you go and play",
+      "right_text_en": "Be my messenger"
+    },
+    {
+      "id": "simitci_lonca",
+      "character": "simitci-ciragi",
+      "character_name": "Simitçi Çırağı",
+      "faction": "halk",
+      "text": "Ustam simidi küçülttü ama fiyat aynı. Halk kızıyor, ustam bana kızıyor. Bir kanun çıksa da simidin ağırlığı belli olsa…",
+      "left_text": "Esnaf bilir",
+      "right_text": "Narh konsun",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Simit Boy",
+      "text_en": "My master made the simit smaller but kept the price. The people are angry, and my master is angry at me. If only there were a law fixing a simit's weight…",
+      "left_text_en": "The tradesmen know best",
+      "right_text_en": "Set an official standard"
+    },
+    {
+      "id": "simitci_ihbar",
+      "character": "simitci-ciragi",
+      "character_name": "Simitçi Çırağı",
+      "faction": "halk",
+      "text": "Paşam! Paşam! Galata'da yeniçeriler kahvede toplanmış, maaş için ayaklanacaklarmış. Kendi kulağımla duydum!",
+      "left_text": "Çocuk lafı",
+      "right_text": "Ağaya haber verin",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -3,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "simitci_haberci"
+      ],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Simit Boy",
+      "text_en": "Pasha! Pasha! The janissaries have gathered in a coffeehouse in Galata; they say they will rise up over their pay. I heard it with my own ears!",
+      "left_text_en": "Child's talk",
+      "right_text_en": "Warn the Agha"
+    },
+    {
+      "id": "simitci_ates",
+      "character": "simitci-ciragi",
+      "character_name": "Simitçi Çırağı",
+      "faction": "halk",
+      "text": "Fırının bacası tutuştu, Paşam! Sakaları ben çağırdım, yangın büyümeden söndü. Ustam beni kovmak istiyor ama ben kurtardım!",
+      "left_text": "Ustası bilir",
+      "right_text": "Bir kese ödül",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [
+        "simitci_haberci"
+      ],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "crisis",
+      "character_name_en": "Simit Boy",
+      "text_en": "The bakery chimney caught fire, Pasha! I called the water-carriers and it was put out before it spread. My master wants to dismiss me, but I saved it!",
+      "left_text_en": "His master decides",
+      "right_text_en": "Reward him with a purse"
+    },
+    {
+      "id": "simitci_okul",
+      "character": "simitci-ciragi",
+      "character_name": "Simitçi Çırağı",
+      "faction": "halk",
+      "text": "Paşam, okumayı çok istiyorum ama ustam izin vermiyor, sıbyan mektebine para da yok. Bana bir yol gösterir misiniz?",
+      "left_text": "Önce işini öğren",
+      "right_text": "Mektebe yazdırın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "religious",
+      "character_name_en": "Simit Boy",
+      "text_en": "Pasha, I want so much to learn to read, but my master won't allow it, and there is no money for the primary school. Can you show me a way?",
+      "left_text_en": "Learn your trade first",
+      "right_text_en": "Enrol him in school"
+    },
+    {
+      "id": "simitci_saray",
+      "character": "simitci-ciragi",
+      "character_name": "Simitçi Çırağı",
+      "faction": "halk",
+      "text": "Saray mutfağı simidimizi sevmiş! Her sabah yüz simit istiyorlar ama ustam fiyatı ikiye katlamak istiyor. Siz ne dersiniz?",
+      "left_text": "Eski fiyattan",
+      "right_text": "İstediği verilsin",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "royal",
+      "character_name_en": "Simit Boy",
+      "text_en": "The palace kitchen loves our simit! They want a hundred every morning, but my master wants to double the price. What do you say?",
+      "left_text_en": "At the old price",
+      "right_text_en": "Pay what he asks"
+    },
+    {
+      "id": "saatci_kule",
+      "character": "saatci-ustasi",
+      "character_name": "Saatçi Ustası",
+      "faction": "saray",
+      "text": "Paşam, saray avlusuna Avrupa usulü bir saat kulesi yapabilirim. Divan vaktinde toplanır, herkes saati bilir.",
+      "left_text": "Ezan vakti yeter",
+      "right_text": "Kule yapılsın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "cultural",
+      "character_name_en": "Master Clockmaker",
+      "text_en": "Pasha, I could build a European-style clock tower in the palace courtyard. The Divan would meet on time and everyone would know the hour.",
+      "left_text_en": "The call to prayer is enough",
+      "right_text_en": "Build the tower"
+    },
+    {
+      "id": "saatci_hediye",
+      "character": "saatci-ustasi",
+      "character_name": "Saatçi Ustası",
+      "faction": "saray",
+      "text": "İngiliz elçisi Sultan'a mekanik bir saat hediye etmiş, ama bozuk. Onarırsam elçi mahcup olur, onarmazsam Sultan kızar.",
+      "left_text": "Elçiye geri gönderin",
+      "right_text": "Onarın",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "diplomatic",
+      "character_name_en": "Master Clockmaker",
+      "text_en": "The English ambassador gave the Sultan a mechanical clock, but it is broken. If I repair it the ambassador is embarrassed; if not, the Sultan will be angry.",
+      "left_text_en": "Send it back to the ambassador",
+      "right_text_en": "Repair it"
+    },
+    {
+      "id": "saatci_cirak",
+      "character": "saatci-ustasi",
+      "character_name": "Saatçi Ustası",
+      "faction": "saray",
+      "text": "Bu zanaatı İstanbul'da bilen tek kişi benim. Beş çırak yetiştirmeme izin verilsin; yoksa ben ölünce saatler de durur.",
+      "left_text": "Şimdilik gerek yok",
+      "right_text": "Çıraklar alınsın",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "economic",
+      "character_name_en": "Master Clockmaker",
+      "text_en": "I am the only one in Istanbul who knows this craft. Let me train five apprentices; otherwise, when I die, the clocks will stop too.",
+      "left_text_en": "No need for now",
+      "right_text_en": "Take on apprentices"
+    },
+    {
+      "id": "saatci_rasat",
+      "character": "saatci-ustasi",
+      "character_name": "Saatçi Ustası",
+      "faction": "saray",
+      "text": "Muvakkithanedeki saatler iftar vaktini iki dakika geç gösteriyor. Ulemaya söylersem gücenirler. Ne yapayım?",
+      "left_text": "Sessizce düzelt",
+      "right_text": "Ulemaya bildir",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "religious",
+      "character_name_en": "Master Clockmaker",
+      "text_en": "The clocks at the timekeepers' house show the evening fast-breaking two minutes late. If I tell the ulema, they will be offended. What shall I do?",
+      "left_text_en": "Fix it quietly",
+      "right_text_en": "Inform the ulema"
+    },
+    {
+      "id": "saatci_cep",
+      "character": "saatci-ustasi",
+      "character_name": "Saatçi Ustası",
+      "faction": "saray",
+      "text": "Size özel bir cep saati yaptım, Paşam; kapağında mührünüz kazılı. Bedelini sormayın, sadece kabul edin.",
+      "left_text": "Kabul edemem",
+      "right_text": "Teşekkürle kabul",
+      "left_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "royal",
+      "character_name_en": "Master Clockmaker",
+      "text_en": "I have made a pocket watch just for you, Pasha, with your seal engraved on the lid. Don't ask the price; simply accept it.",
+      "left_text_en": "I cannot accept",
+      "right_text_en": "Accept with thanks"
+    },
+    {
+      "id": "saatci_frenk",
+      "character": "saatci-ustasi",
+      "character_name": "Saatçi Ustası",
+      "faction": "saray",
+      "text": "Frenk saatçiler İstanbul'a dükkân açmak istiyor. Benim gibi ustaları batırırlar ama saatler ucuzlar.",
+      "left_text": "Yerli usta korunsun",
+      "right_text": "Dükkân açsınlar",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": -1
+      },
+      "right_effects": {
+        "saray": -1,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "economic",
+      "character_name_en": "Master Clockmaker",
+      "text_en": "Frankish clockmakers want to open shops in Istanbul. They would ruin masters like me, but clocks would become cheaper.",
+      "left_text_en": "Protect the local masters",
+      "right_text_en": "Let them open shops"
+    },
+    {
+      "id": "kayikci_haber",
+      "character": "kayikci",
+      "character_name": "Kayıkçı",
+      "faction": "halk",
+      "text": "Paşam, kayığıma Venedik balyosunun kâtibi bindi; yolda Rakip Vezir'in konağının önünde durdurdu. Bir paket bıraktı.",
+      "left_text": "Bana ne",
+      "right_text": "Gözünü dört aç",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Boatman",
+      "text_en": "Pasha, the Venetian bailo's secretary took my boat; on the way he had me stop at the Rival Vizier's mansion. He left a package.",
+      "left_text_en": "Not my concern",
+      "right_text_en": "Keep your eyes open"
+    },
+    {
+      "id": "kayikci_ucret",
+      "character": "kayikci",
+      "character_name": "Kayıkçı",
+      "faction": "halk",
+      "text": "Boğaz'da kayık ücretine narh konuldu, ama akıntıya karşı kürek çekmek iki kat emek. Ücret artmazsa kayıkçılar işi bırakır.",
+      "left_text": "Narh narhtır",
+      "right_text": "Akıntı ücreti eklensin",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": -1
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "economic",
+      "character_name_en": "Boatman",
+      "text_en": "A fixed fare was set for boats on the Bosphorus, but rowing against the current is twice the work. If fares don't rise, the boatmen will quit.",
+      "left_text_en": "The fare is the fare",
+      "right_text_en": "Add a current surcharge"
+    },
+    {
+      "id": "kayikci_firtina",
+      "character": "kayikci",
+      "character_name": "Kayıkçı",
+      "faction": "halk",
+      "text": "Fırtınada üç kayık devrildi, iki kayıkçı boğuldu. Ailelerine kimse bakmıyor, Paşam.",
+      "left_text": "Lonca baksın",
+      "right_text": "Aylık bağlansın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 1
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "crisis",
+      "character_name_en": "Boatman",
+      "text_en": "Three boats capsized in the storm and two boatmen drowned. No one is looking after their families, Pasha.",
+      "left_text_en": "Let the guild look after them",
+      "right_text_en": "Grant them a stipend"
+    },
+    {
+      "id": "kayikci_kacak",
+      "character": "kayikci",
+      "character_name": "Kayıkçı",
+      "faction": "halk",
+      "text": "Bir tüccar gece yarısı kayığıma vergisiz ipek yüklemek istedi; iyi para verdi. Reddettim. Kim olduğunu söyleyeyim mi?",
+      "left_text": "Gerek yok",
+      "right_text": "Söyle, yakalansın",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -1
+      },
+      "right_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 1,
+      "category": "intrigue",
+      "character_name_en": "Boatman",
+      "text_en": "A merchant wanted to load untaxed silk onto my boat at midnight and offered good money. I refused. Shall I tell you who he was?",
+      "left_text_en": "No need",
+      "right_text_en": "Tell me; he'll be caught"
+    },
+    {
+      "id": "kayikci_sultan",
+      "character": "kayikci",
+      "character_name": "Kayıkçı",
+      "faction": "halk",
+      "text": "Sultan'ın kayığı arızalanmış; beni çağırdılar. Sultan'ı Üsküdar'a ben geçirdim! Bana “bir dileğin var mı” dedi. Sizin için ne isteyeyim?",
+      "left_text": "Kendin için iste",
+      "right_text": "Sadrazamı övsün",
+      "left_effects": {
+        "saray": 1,
+        "yeniçeri": 0,
+        "ulema": 1,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 4,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "royal",
+      "character_name_en": "Boatman",
+      "text_en": "The Sultan's barge broke down and they called me. I rowed the Sultan to Üsküdar! He asked me if I had a wish. What shall I ask for you?",
+      "left_text_en": "Ask for yourself",
+      "right_text_en": "Have him praise the Grand Vizier"
+    },
+    {
+      "id": "kayikci_kopru",
+      "character": "kayikci",
+      "character_name": "Kayıkçı",
+      "faction": "halk",
+      "text": "Haliç'e köprü yapılacakmış diye duyduk. Kayıkçıların ekmeği gider, Paşam. Bu köprüden vazgeçin.",
+      "left_text": "Köprü yapılacak",
+      "right_text": "Vazgeçildi",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -1,
+        "hazine": -2
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 8,
+      "min_year": 2,
+      "category": "economic",
+      "character_name_en": "Boatman",
+      "text_en": "We heard a bridge will be built over the Golden Horn. The boatmen will lose their livelihood, Pasha. Give up this bridge.",
+      "left_text_en": "The bridge will be built",
+      "right_text_en": "The bridge is cancelled"
     }
   ]
 }
