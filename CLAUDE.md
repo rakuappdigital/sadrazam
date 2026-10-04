@@ -325,6 +325,29 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   Ölüm sahneleri ÇERÇEVESİZ (kullanıcı kararı, 4 Ekim): kartlarla aynı çizim dili ama tam ekran,
   kenara kadar dolu; alt üçte bir metin için sakin. Gelen görselde çerçeve varsa kırp ya da kullanıcıya söyle.
 
+## 3f. 4 Ekim 2026 (2. tur) sistemleri
+
+- **Ölüm sahneleri**: `_playDeathScene` (game.js) — HER ölüm tam ekran sahne; görseller
+  `assets/deaths/death-<sebep>.jpg` (1080x1440, kullanıcı üretimi, çerçevesiz). `DEATH_SCENE_ALIAS`:
+  yanlis_oda→sultan_guc, emeklilik→free_limit, bilinmeyen→saray_0. Eski portre sinematiği
+  (`#cinematic-death` büyüyüp solma) KULLANICI İSTEĞİYLE KALDIRILDI — geri getirme.
+- **Göreve başlama** `_playCulus` (startGame → `begin`): kapılar, isim levhası, tuğralı mum mühür
+  `_imperialSealSVG`, MÜHRÜ AL; ilk oyunda tam, sonra yarı süre, dokununca atlar. Akan flex düzen.
+- **Yaşayan Divan** `_updateDivanBg` (kriz nabzından çağrılır): `#divan-bg` z −2, önceden
+  bulanık `assets/divan-bg.jpg` (canlı blur YOK), data-mode calm/tense/crisis. Kullanıcının
+  `divan-salonu` görseli gelince aynı işlemle (kırp, GaussianBlur 9, parlaklık .62) değiştir.
+- **Kişisel mühür** `SEAL_KEY sadrazam_seal`, `_personalSealSVG`, `renderMarketCosmetics`,
+  `showSealEditor`: ferman kabulü (`.fm-pseal`), Divan MÜHÜRLE, Defter, Vakayiname.
+- **Sonlar** `ENDINGS` (7), `_endState` (kayıtta), `_endYearClose` (advanceYear'da ferman
+  kapanışından hemen sonra, paywall'dan önce), `_endReach`, `_nisan(id)` (1 / Miras 0.5),
+  `_nisanAdjustEffects` (decide), `_nisanYearStart`, `_nisanUlemaRescue`, `_pickMiras`
+  (göreve başlamadan sonra), `showKaderYollari` (Defter), `askRetirement` (menü, 3 son + 20. yıl).
+  Kalıcı ilerleme `sadrazam_defter.end` {p, done, wars, dvSeyh, retired} — `_defterGet` bu
+  alanı da döndürmeli. Son görselleri `assets/endings/end-<id>.jpg` (yoksa madalyalı sahne).
+- Test sarmalayıcısı `pw.js` göreve başlama sahnesini otomatik geçer (`test_keep_culus=1` kapatır).
+- Prompt dosyaları: `~/Desktop/olumler`, `~/Desktop/yeni` (10 karakter + divan-salonu),
+  `~/Desktop/sonlar` (7 son + emeklilik).
+
 ## 4. Kritik sabitler
 
 - `CARDS_PER_YEAR = 24` (satır ~6) — **çok önemli**, yeni bir "N kartta bir
