@@ -87,22 +87,8 @@
 
       <!-- Dekoratif tuğra / hilal -->
       <div id="intro-tugra">
-        <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-          <!-- Kavisli çerçeve -->
-          <path d="M10,110 Q10,10 100,10 Q190,10 190,110" fill="none" stroke="rgba(201,162,39,0.55)" stroke-width="1.2"/>
-          <path d="M30,110 Q30,30 100,30 Q170,30 170,110" fill="none" stroke="rgba(201,162,39,0.25)" stroke-width="0.8"/>
-          <!-- Hilal -->
-          <circle cx="100" cy="58" r="22" fill="none" stroke="rgba(201,162,39,0.7)" stroke-width="1.5"/>
-          <circle cx="110" cy="54" r="18" fill="#080612"/>
-          <!-- Yıldız -->
-          <polygon points="100,38 102.5,46 111,46 104.5,51 107,59 100,54 93,59 95.5,51 89,46 97.5,46" fill="rgba(201,162,39,0.8)"/>
-          <!-- Yan süsler -->
-          <line x1="10" y1="110" x2="45" y2="110" stroke="rgba(201,162,39,0.4)" stroke-width="0.8"/>
-          <line x1="155" y1="110" x2="190" y2="110" stroke="rgba(201,162,39,0.4)" stroke-width="0.8"/>
-          <circle cx="45" cy="110" r="2" fill="rgba(201,162,39,0.5)"/>
-          <circle cx="155" cy="110" r="2" fill="rgba(201,162,39,0.5)"/>
-          <circle cx="100" cy="10" r="2.5" fill="rgba(201,162,39,0.6)"/>
-        </svg>
+        <!-- Tuğralı kemer (4 Ekim 2026, kullanıcının çizimi; eski hilal amblemi yerine) -->
+        <img src="assets/emblem-tugra.png" alt="" width="81" height="118">
       </div>
 
       <!-- Başlık bloğu -->
@@ -239,12 +225,23 @@
   <!-- ── HAKKINDA ── -->
   <div id="about-overlay" style="display:none">
     <div id="about-box">
-      <div id="about-ornament">✦</div>
-      <div id="about-title" data-i18n="about.title">HAKKINDA</div>
-      <div id="about-divider"></div>
-      <p id="about-text" data-i18n="about.text">Metin yükleniyor…</p>
-      <div id="about-thanks" data-i18n="about.thanks">Desteğin için teşekkürler ♡</div>
-      <button id="about-close" data-i18n="about.close">KAPAT</button>
+      <div id="about-hero"><div id="about-title" data-i18n="about.title">Divan</div></div>
+      <div id="about-in">
+        <div id="about-stats">
+          <div><b id="ab-n-cards">585</b><span data-i18n="about.sCards">KART</span></div>
+          <div><b id="ab-n-chars">64</b><span data-i18n="about.sChars">KARAKTER</span></div>
+          <div><b id="ab-n-sultans">5</b><span data-i18n="about.sSultans">SULTAN</span></div>
+          <div><b id="ab-n-ends">7</b><span data-i18n="about.sEnds">SON</span></div>
+        </div>
+        <p id="about-hello" data-i18n="about.hello">Merhaba,</p>
+        <p id="about-text" data-i18n="about.text">Bu oyunu tek bir geliştirici kurdu.</p>
+        <p id="about-text2" data-i18n="about.text2">Divan büyümeye devam ediyor.</p>
+        <div id="about-cta">
+          <button id="about-rate" data-i18n="about.rate">PUAN VER</button>
+          <button id="about-feedback" data-i18n="about.feedback">GÖRÜŞ YAZ</button>
+        </div>
+        <button id="about-close" data-i18n="about.close">KAPAT</button>
+      </div>
     </div>
   </div>
 

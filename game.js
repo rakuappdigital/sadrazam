@@ -2652,9 +2652,9 @@ function _personalSealSVG(cfg, cls) {
   let mid;
   if (cfg.shape === "tugra") {
     const tg = _TUGRA_SVG.replace('class="fm-tugra"', 'x="29" y="18" width="42" height="27"').replace('aria-hidden="true"', '');
-    mid = `<g style="color:${g}" opacity=".85">${tg}</g><text x="50" y="72" text-anchor="middle" font-family="'Cinzel Decorative','Cinzel',serif" font-weight="700" font-size="${t.length > 1 ? 15 : 18}" fill="${g}">${t}</text>`;
+    mid = `<g style="color:${g}" opacity=".85">${tg}</g><text x="50" y="72" text-anchor="middle" font-family="'Cinzel Decorative','Alegreya SC',serif" font-weight="700" font-size="${t.length > 1 ? 15 : 18}" fill="${g}">${t}</text>`;
   } else {
-    mid = `<text x="50" y="${t.length > 1 ? 58 : 60}" text-anchor="middle" font-family="'Cinzel Decorative','Cinzel',serif" font-weight="700" font-size="${t.length > 1 ? 22 : 28}" fill="${g}" letter-spacing="1">${t}</text>`;
+    mid = `<text x="50" y="${t.length > 1 ? 58 : 60}" text-anchor="middle" font-family="'Cinzel Decorative','Alegreya SC',serif" font-weight="700" font-size="${t.length > 1 ? 22 : 28}" fill="${g}" letter-spacing="1">${t}</text>`;
   }
   return `<svg class="${cls || ""}" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="${id}" cx="38%" cy="32%"><stop offset="0" stop-color="${c0}"/><stop offset=".7" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient></defs><path d="${edge}" fill="url(#${id})"/>${ring}${mid}</svg>`;
 }
@@ -9840,7 +9840,7 @@ function renderAchievementBadges() {
   section.innerHTML = "";
 
   const title = document.createElement("div");
-  title.style.cssText = "font-family:'Cinzel',serif;font-size:10px;color:rgba(201,162,39,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;text-align:center;";
+  title.style.cssText = "font-family:'Alegreya SC',serif;font-size:10px;color:rgba(201,162,39,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;text-align:center;";
   title.textContent = window.LANG === 'en' ? "ACHIEVEMENTS EARNED" : "KAZANILAN BAŞARIMLAR";
   section.appendChild(title);
 
@@ -10362,10 +10362,27 @@ _settOv.addEventListener('click', e => { if (e.target === _settOv) hideSettingsO
 
 // ── Hakkında Popup ───────────────────────────────────────────────
 const _aboutOv = document.getElementById('about-overlay');
-function showAboutOverlay() { _aboutOv.style.display = 'flex'; }
+function showAboutOverlay() {
+  // Rakamlar oyundan canlı okunur: yeni kart/karakter/sultan/son eklendikçe kendiliğinden güncellenir
+  const set = (id, v) => { const e = document.getElementById(id); if (e && v) e.textContent = v; };
+  try {
+    set('ab-n-cards', allCards.length);
+    set('ab-n-chars', new Set(allCards.map(c => c.character).filter(Boolean)).size);
+    set('ab-n-sultans', SULTANS.length);
+    set('ab-n-ends', ENDINGS.length);
+  } catch (e) {}
+  _aboutOv.style.display = 'flex';
+}
 function hideAboutOverlay() { _aboutOv.style.display = 'none'; }
 document.getElementById('sett-about-btn').addEventListener('click', showAboutOverlay);
 document.getElementById('about-close').addEventListener('click', hideAboutOverlay);
+document.getElementById('about-rate')?.addEventListener('click', () => {
+  try { localStorage.setItem('sadrazam_rated', '1'); } catch (e) {}
+  window.open('itms-apps://itunes.apple.com/app/id6783881003?action=write-review', '_blank');
+});
+document.getElementById('about-feedback')?.addEventListener('click', () => {
+  window.open('https://sadrazam-web.vercel.app/support.html', '_blank');
+});
 _aboutOv.addEventListener('click', e => { if (e.target === _aboutOv) hideAboutOverlay(); });
 
 function showHaritaOverlay() {
