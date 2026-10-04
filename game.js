@@ -6712,6 +6712,25 @@ function _updateCrisisPulse() {
   }
   game.classList.toggle("crisis-on", n > 0);
   game.classList.toggle("crisis-2", n > 1);
+  _updateDivanBg(game);
+}
+
+// ── Yaşayan Divan: tek resim, üç ışık (4 Ekim 2026, kullanıcı seçimi C:2) ──
+// Kartın arkasında önceden bulanıklaştırılmış, karartılmış Divan salonu (assets/divan-bg.jpg;
+// canlı CSS blur YOK — kaydırmada her karede yeniden bulanıklaştırma eski cihazı yorar).
+// Durum değişince sadece ışık katmanları değişir: Sakin (hepsi 25–75), Gergin (biri dışında),
+// Kriz (biri ≤15 ya da ≥85; kriz nabzıyla aynı eşik). Mevsim Efekti kapalıyken de durur (statik).
+function _updateDivanBg(game) {
+  let bg = document.getElementById("divan-bg");
+  if (!bg) {
+    bg = document.createElement("div"); bg.id = "divan-bg"; bg.setAttribute("aria-hidden", "true");
+    bg.innerHTML = '<i class="db-calm"></i><i class="db-tense"></i><i class="db-crisis"></i>';
+    game.insertBefore(bg, game.firstChild);
+  }
+  const vals = Object.values(stats);
+  const crisis = !isGameOver && vals.some(v => v <= CRISIS_LOW || v >= CRISIS_HIGH);
+  const tense = !crisis && vals.some(v => v < 25 || v > 75);
+  bg.dataset.mode = crisis ? "crisis" : tense ? "tense" : "calm";
 }
 
 // ── Titreyen etki bölgesi (3 Ekim 2026) ──

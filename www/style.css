@@ -5541,3 +5541,15 @@ html, body {
 #culus-overlay.taken .cu-seal { transform: translate(-50%, -60px) scale(.5); opacity: 0; transition: transform .45s ease-in, opacity .45s; }
 @keyframes cuRing { 0% { opacity: .9; transform: scale(.4); } 100% { opacity: 0; transform: scale(2.4); } }
 @media (prefers-reduced-motion: reduce) { .cu-door, .cu-seal, .cu-arch div { transition: none !important; } #culus-overlay.st3 .cu-ring { animation: none; } }
+
+/* ── Yaşayan Divan: tek resim, üç ışık (4 Ekim 2026) — sadece görüntü ── */
+#divan-bg { position: absolute; inset: 0; z-index: -2; pointer-events: none; background: url('assets/divan-bg.jpg') center 35% / cover no-repeat; opacity: .66; transition: opacity 1s ease; }
+#divan-bg::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,6,18,.55) 0%, rgba(8,6,18,.15) 30%, rgba(8,6,18,.25) 70%, rgba(8,6,18,.85) 100%); }
+#divan-bg i { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease; }
+#divan-bg .db-calm { background: radial-gradient(ellipse at 50% 18%, rgba(232,190,110,.22), transparent 60%); }
+#divan-bg .db-tense { background: radial-gradient(ellipse at 50% 18%, rgba(210,140,60,.16), transparent 55%), linear-gradient(transparent 55%, rgba(0,0,0,.45)); }
+#divan-bg .db-crisis { background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(170,30,15,.45)); }
+#divan-bg[data-mode="calm"] .db-calm, #divan-bg[data-mode="tense"] .db-tense, #divan-bg[data-mode="crisis"] .db-crisis { opacity: 1; }
+#divan-bg[data-mode="tense"] { opacity: .52; }
+#divan-bg[data-mode="crisis"] { opacity: .42; }
+#game.night-mode #divan-bg { opacity: .4; }
