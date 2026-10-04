@@ -348,6 +348,45 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
 - Prompt dosyaları: `~/Desktop/olumler`, `~/Desktop/yeni` (10 karakter + divan-salonu),
   `~/Desktop/sonlar` (7 son + emeklilik).
 
+## 3g. 4 Ekim 2026 (3. tur) sistemleri
+
+- **Dönemler** `ERA_DEFS`, `_eraState` (kayıtta `era`), `_eraPick` (getNextCard'da, %30, ayrı kanal;
+  cards.json `era` alanlı kartlar getEligible'dan HARİÇ), `_eraAdjustEffects`/`_eraOnDecision` (decide),
+  `_eraYearClose` (aynı yıl iki kez işlemez — paywall'dan satın alınca advanceYear tekrar çağrılır).
+  Sultanlar `murad4` (6 mühür), `ahmed3` (15 mühür) — `unlockSeals`, sultan ekranında kilit. Kart
+  alanları: `era`, `era_min`, `era_forced`, `left/right_era: {m, rel, chance}`. Çip `#era-chip`.
+- **Yıl Sonu** `advanceYear` = `_ysStart` + `_advanceYearInner` + `_ysFinish`. Ekran `#yil-sonu`
+  ferman kuyruğunun `yearend` öğesi; HİÇBİR PENCERE KENDİLİĞİNDEN KAPANMAZ (kullanıcı kuralı). Sıra:
+  Yıl Sonu → Son → paywall (`kind:"call"`) → yeni ferman. Kuyruk tek zamanlayıcılı (`_fermanKick`,
+  `_fermanNext` açık pencere varken çıkmaz). Ertelenen kartlar `_ysDefer(card, n)` (kayıtta). Yıl
+  Özeti kartı kaldırıldı; vergi reformu yıllık havuzda yok. Yılın ilk kartında fitil yok, Padişah ilk
+  3 kartta gelmez, eşya animasyonu/bilgi penceresi `_ysModalOpen()` iken bekler (yeni modal eklersen
+  oraya da ekle).
+- **Hafıza kartları** `_memLog` (karar: id+taraf+kart, varyant metni `tx`), `_maybeQueueMemory`
+  (decide sonunda), `_memBuild` (sinav/yuzlesme/tuzak/dedikodu), `_memOnDecision`. Kartlar `_mem` +
+  `_noCurse`: ilişkiye otomatik puan yazmaz, Vakayiname'ye girmez, büyüteç çıkmaz. Başarım
+  `memory_sharp` (crossgame `memCorrect`). ESKİ iOS: regex'te lookbehind KULLANMA (sözdizimi hatası).
+- **Metin varyantları** cards.json `text_variants: [{text, text_en}]`, `_applyTextVariant` (dealNext;
+  aynı oyunda sıradaki sahne). Etki/seçenek değişmez.
+- **Market eşyaları** ITEMS'ta `price` (`_itemPrice`; iki dükkân da okur), `passive` (kum_saati
+  `_kumSaatiMul` fitilde, mehter_kosu `_mehterCheck` applyEffects sonunda). usturlap `_usturlapLeft`,
+  muhurlu_zarf scheduledCards'ı +8, lale_sogani dönem sayacı/Saray.
+- **Kozmetikler** `COSMETICS`, localStorage `sadrazam_cosmetics`, `renderCosmeticRows` (Market),
+  `_applyCosmetics` (#card `frame-*`, ::before/::after — kart boyutunu değiştirmez), `_kaftanImg`
+  (Defter, ölüm, son), Hattat Kalemi `.vakayiname.gilded` + paylaşım tuvali.
+- **Diplomasi** `DIP_STATES` (5 muadil, portreler `assets/characters/<char>.jpg`), `_dipState`
+  (kayıtta `dip`; itibar −6..6, kademe trunc/2), mektup/tehdit/davet kartları `_dip`,
+  `_dipYearStart` (advanceYear'da ertelemelerden sonra), görüşme `#dip-summit` (ferman kuyruğu
+  `kind:"summit"`), `_dipAdjustEffects`, Habsburg `rollSavasSonucu` +%15. Oyunlar arası
+  `sadrazam_diplomasi` {met, refused}. Defter sayfasında `tr` (antlaşmalar). Başarımlar dip_*.
+- **Görünüş**: font Alegreya (metin) + Alegreya SC (başlık), Cinzel Decorative yalnız logo/büyük
+  başlık; dosyalar `assets/fonts` (latin + latin-ext). `*` için `lining-nums` (Alegreya'nın eski usul
+  rakamları barlarda okunmuyordu). Ana ekran amblemi `assets/emblem-tugra.png` (118px). Hakkında
+  `#about-*` (rakamlar showAboutOverlay'de canlı). Müzik: menu5/6 yalnız `_MENU_TRACKS`, oyun5/6
+  yalnız `_GAME_TRACKS`.
+- Testler (scratchpad): era/ys/music/mem/var/market/cosm/dip_test.js + önceki 17 grup. `pw.js`
+  `__ysClose()` yardımcısı Yıl Sonu'nu (gerekirse önce açık fermanı) kapatır.
+
 ## 4. Kritik sabitler
 
 - `CARDS_PER_YEAR = 24` (satır ~6) — **çok önemli**, yeni bir "N kartta bir

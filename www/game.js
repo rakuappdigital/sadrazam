@@ -899,10 +899,14 @@ const ACHIEVEMENTS = [
   { id: "all_chars",      tier:"platinum", icon:GAME_ICONS.all_chars, name:"Osmanlı Ansiklopedisi",desc:"Tek oyunda 26 farklı karakter gör.",          check: s => (s.seenCharacters||new Set()).size >= 26 },
   { id: "no_low_stat",    tier:"platinum", icon:GAME_ICONS.no_low_stat, name:"Sıfır Kriz",          desc:"Hiçbir stat 15'in altına inmeden 10 yıl.",   check: s => s.year>=10 && s.minAnyStat>=15 },
   { id: "pasa_mode",      tier:"platinum", icon:GAME_ICONS.pasa_mode, name:"Paşadan Sultana",     desc:"Paşalık modunda Sadrazam ol ve 5 yıl devam et.", check: s => s.isPasaMode && s.pasaPromoted && s.year>=8 },
-  { id: "item_collector", tier:"platinum", icon:GAME_ICONS.item_collector, name:"Koleksiyoncu",        desc:"Tek oyunda 5 farklı item topla.",             check: s => s.uniqueItemsCollected >= 5 },
+  { id: "item_collector", tier:"platinum", icon:GAME_ICONS.item_collector, name:"Koleksiyoncu",        desc:"Tek oyunda 5 farklı item topla.",             check: s => ((s.uniqueItemsCollected && s.uniqueItemsCollected.size) || 0) >= 5 },
   { id: "gizli_ustat",   tier:"platinum", icon:GAME_ICONS.gizli_ustat, name:"Gizli Üstat",          desc:"Tek oyunda 3 sır ortaya çıkar: Halkın Sevgisi, Casus Ağı, gizli hain, aynı gün dönen iki karar.", check: s => (s.secretsRevealed||0) >= 3 },
 
   // ── GİZLİ ──
+  { id: "dip_first",      tier:"bronze",   icon:GAME_ICONS.diplomat, name:"Masada",              desc:"Bir yabancı muadille ilk kez görüş.",           check: s => (s.dipMet||0) >= 1 },
+  { id: "dip_all",        tier:"gold",     icon:GAME_ICONS.diplomat, name:"Beş Başkent",         desc:"Beş muadilin hepsiyle görüş (oyunlar boyunca).", check: s => (s.dipMet||0) >= 5 },
+  { id: "dip_two",        tier:"secret",   icon:GAME_ICONS.diplomat, name:"Ebedi Sulh",          desc:"Tek saltanatta iki antlaşma imzala.",            check: s => (s.dipTreaties||0) >= 2 },
+  { id: "dip_refuse",     tier:"secret",   icon:GAME_ICONS.diplomat, name:"Kapı Dışarı",         desc:"Hasım bir devletin tehdit mektubunu üç kez geri çevir.", check: s => (s.dipRefused||0) >= 3 },
   { id: "memory_sharp",   tier:"silver",   icon:GAME_ICONS.first_letter, name:"Hafızası Kuvvetli",   desc:"Geçmiş kararlarını soran 5 soruya doğru cevap ver.", check: s => (s.memCorrect||0) >= 5 },
   { id: "rival_five",     tier:"secret",   icon:GAME_ICONS.rival_five, name:"Rakibin Rakibi",     desc:"Rakip Vezir ile 5 kez yüzleş.",              check: s => (s.characterMemory?.["8-rakip-vezir"]?.left||0)+(s.characterMemory?.["8-rakip-vezir"]?.right||0) >= 5 },
   { id: "zimmet",         tier:"secret",   icon:GAME_ICONS.zimmet, name:"Zimmet Şüphelisi",    desc:"Zimmet suçuyla öl.",                          check: s => s.deathCause === "hazine_100" },
@@ -994,6 +998,7 @@ function rollSavasSonucu() {
   const ordu = stats["yeniçeri"] ?? 50;
   let chance = (ordu - 25) / 60; // ordu 25 -> ~%0, ordu 85 -> ~%100
   if (activeFlags["kaptan_ally_ready"]) chance += 0.15; // Kaptan-ı Derya'nın donanma desteği
+  if (_dipTreaty("habsburg")) chance += 0.15; // Sulhname (diplomasi)
   chance = Math.max(0.05, Math.min(0.92, chance)); // her zaman biraz şans/risk payı bırak
   return Math.random() < chance;
 }
@@ -2202,6 +2207,12 @@ const ITEMS = {
   sifa_otu:       { icon: "assets/icons/item-sifa-otu.png",       name: "Şifa Otu",       desc: "En düşük stat +20 (anlık)",           effect: "heal_20",       color: "#27ae60" },
   casus_maskesi:  { icon: "assets/icons/item-casus-maskesi.png",  name: "Casus Maskesi",  desc: "Bu kartı atla, sonraki kart gelsin",  effect: "skip_card",     color: "#2980b9" },
   dervis_muska:   { icon: "assets/icons/item-dervis-muska.png",   name: "Derviş Muskası", desc: "Bu kart Sultan sabrını etkilemez",    effect: "block_sabir",   color: "#8e44ad" },
+  // Market eşyaları (4 Ekim 2026) — kendi fiyatları var (price); passive: kutuda bekler, gerektiğinde kendiliğinden çalışır
+  usturlap:       { icon: "assets/icons/item-usturlap.png",       name: "Müneccim Usturlabı", desc: "Sonraki 3 kartta seçeneklerin etkilerini gösterir", effect: "preview_3", color: "#c9a227", price: 3 },
+  kum_saati:      { icon: "assets/icons/item-kum-saati.png",      name: "Kum Saati",      desc: "Zamanlı kartta fitil iki kat yavaş yanar (kendiliğinden)", effect: "fuse_slow", color: "#b0572a", price: 2, passive: true },
+  mehter_kosu:    { icon: "assets/icons/item-mehter-kosu.png",    name: "Mehter Kösü",    desc: "Ordu 15'in altına düşerse bir kez +15 (kendiliğinden)", effect: "ordu_rescue", color: "#c0392b", price: 3, passive: true },
+  lale_sogani:    { icon: "assets/icons/item-lale-sogani.png",    name: "Lale Soğanı",    desc: "Lale Devri'nde Halkın Öfkesi −15; diğer dönemlerde Saray +6", effect: "lale", color: "#c0392b", price: 3 },
+  muhurlu_zarf:   { icon: "assets/icons/item-muhurlu-zarf.png",   name: "Mühürlü Zarf",   desc: "Bekleyen en yakın gecikmeli sonucu 8 kart erteler", effect: "delay_8", color: "#8a1d12", price: 2 },
 };
 
 // Her item için oyuncu rehberi
@@ -2211,6 +2222,11 @@ const ITEM_HOW_TO_USE = {
   yeniceri_nisan: "Orduyu kaybetmek üzere olduğun anlarda kullan. Bir sonraki kartta ordu cezası gelecekse aktive et, zarar gelmez. Yeniçeri isyanı ya da savaş kartlarına karşı güçlü.",
   sifa_otu:       "Hemen etkili! Aktive ettiğin anda en düşük statına +20 ekler. Tükenmek üzereyken veya kritik durumlarda anlık kurtarıcı.",
   casus_maskesi:  "İstemediğin bir kart geldiğinde kullan. Aktive edince mevcut kartı tamamen atlar, bir sonraki kart gelir. Tehlikeli bir karakterden kaçmak için ideal.",
+  usturlap:       "Zor bir karar dizisine girerken kullan. Sonraki 3 kartta her seçeneğin hangi gücü ne kadar değiştireceği kart üstünde görünür.",
+  kum_saati:      "Kullanmana gerek yok: kutunda durduğu sürece zamanlı bir kriz kartı geldiğinde fitili iki kat yavaşlatır ve tükenir.",
+  mehter_kosu:    "Kullanmana gerek yok: kutunda durduğu sürece Ordu 15'in altına düşerse kendiliğinden çalar, Ordu'ya +15 verir ve tükenir.",
+  lale_sogani:    "Hemen etkili! III. Ahmed'in Lale Devri'nde Halkın Öfkesi'ni 15 düşürür; diğer dönemlerde Saray'a +6 verir.",
+  muhurlu_zarf:   "Kötü bir sonuç kötü bir zamana denk gelecekse kullan. Bekleyen gecikmeli sonuçlardan en yakını 8 kart sonraya kayar. Bekleyen sonuç yoksa harcanmaz.",
   dervis_muska:   "Sultan sabrı azaltıcı kartlara karşı kullan. Aktive edince bir sonraki kart Sultan sabrını hiç etkilemez. Sultan'ın sabrı azalıyorken hayat kurtarır.",
 };
 
@@ -2679,6 +2695,7 @@ function renderMarketCosmetics() {
     if (window.playSelectConfirm) playSelectConfirm();
     if (status) status.textContent = en ? "Your seal is ready. Choose your letters." : "Mührün hazır. Harflerini seç.";
     renderMarketCosmetics();
+    renderCosmeticRows();
     showSealEditor();
   };
 }
@@ -2744,12 +2761,12 @@ function renderMarketItems() {
   box.innerHTML = Object.keys(ITEMS).filter(id => !ESYA_DUKKANI_EXCLUDED.includes(id)).map(id => {
     const itm = ITEMS[id], e = (en && window.EN_ITEMS) ? window.EN_ITEMS[id] : null;
     const owned = stash.filter(x => x === id).length;
-    return `<div class="mi-row"><img class="mi-icon" src="${itm.icon}" alt=""><div class="mi-info"><div class="mi-name">${e ? e.name : itm.name}${owned ? ` <span class="mi-own">×${owned}</span>` : ""}</div><div class="mi-desc">${e ? e.desc : itm.desc}</div></div><button type="button" class="mi-buy" data-id="${id}" ${full ? "disabled" : ""}>${full ? (en ? "FULL" : "DOLU") : `${ITEM_AKCE_COST} ${AKCE_COIN_SVG}`}</button></div>`;
+    return `<div class="mi-row"><img class="mi-icon" src="${itm.icon}" alt=""><div class="mi-info"><div class="mi-name">${e ? e.name : itm.name}${owned ? ` <span class="mi-own">×${owned}</span>` : ""}</div><div class="mi-desc">${e ? e.desc : itm.desc}</div></div><button type="button" class="mi-buy" data-id="${id}" ${full ? "disabled" : ""}>${full ? (en ? "FULL" : "DOLU") : `${_itemPrice(id)} ${AKCE_COIN_SVG}`}</button></div>`;
   }).join("");
   box.querySelectorAll(".mi-buy").forEach(b => b.onclick = () => {
     const status = document.getElementById("akce-status");
     if (_getStash().length >= ITEM_STASH_MAX) return;
-    if (!spendAkce(ITEM_AKCE_COST)) {
+    if (!spendAkce(_itemPrice(b.dataset.id))) {
       if (status) status.textContent = en ? "Not enough akce. Pouches are below." : "Akçe yetmiyor. Keseler aşağıda.";
       document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
@@ -2775,6 +2792,7 @@ function showAkceScreen() {
   updateStarterUI();
   renderMarketItems();
   renderMarketCosmetics();
+  renderCosmeticRows();
   const status = document.getElementById('akce-status');
   if (status) status.textContent = '';
 }
@@ -3555,12 +3573,15 @@ function startGame() {
   _muneccimN = 0; _muneccimAt = -999;
   _memLog = []; _memN = 0; _memAt = -999;
   _variantLast = {};
+  _usturlapLeft = 0; _usturlapCard = null;
   _timedUsedYear = 0;
   _ferman = null; _fermanStreak = 0; _fermanQueue = []; _fermanShowing = false; _fermanDoneThisGame = 0; _fermanTotalThisGame = 0;
   document.getElementById("ferman-chip")?.remove();
   relPoints = {}; _relRescued = {}; _relKomploAt = {}; _relKomploDone = {}; _divanYear = 0; _divanUsed = [];
   _eraReset();
   _ysReset();
+  _dipReset();
+  _applyCosmetics();
   _endState = _endFresh();
   _agedSeenThisGame = new Set();
   _stampMeta = new Map();
@@ -4106,7 +4127,7 @@ function saveGameState() {
       timedUsedYear: _timedUsedYear,
       ferman: _ferman, fermanStreak: _fermanStreak, fermanDone: _fermanDoneThisGame, fermanTotal: _fermanTotalThisGame,
       relPoints, relRescued: _relRescued, relKomploAt: _relKomploAt, relKomploDone: _relKomploDone, divanYear: _divanYear, divanUsed: _divanUsed,
-      era: _eraState, ys: { s1: _ysSnap1, s5: _ysSnap5, def: _ysDeferred, last: _ysLastYear },
+      era: _eraState, dip: _dipState, ys: { s1: _ysSnap1, s5: _ysSnap5, def: _ysDeferred, last: _ysLastYear },
       endState: _endState,
       chronicle,
       v: 3
@@ -4223,6 +4244,8 @@ function loadGameState(s) {
   relPoints = s.relPoints || {}; _relRescued = s.relRescued || {}; _relKomploAt = s.relKomploAt || {}; _relKomploDone = s.relKomploDone || {};
   _eraReset(s.era);
   _ysReset(s.ys);
+  _dipReset(s.dip);
+  _applyCosmetics();
   _divanYear = s.divanYear || 0; _divanUsed = s.divanUsed || [];
   _endState = s.endState ? { ..._endFresh(), ...s.endState } : _endFresh();
   chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
@@ -5057,7 +5080,8 @@ function dealNext() {
   const _leftTxt  = (_isEN && c.left_text_en)  ? c.left_text_en  : (c.left_text  || (_isEN ? "No"  : "Hayır"));
   const _rightTxt = (_isEN && c.right_text_en) ? c.right_text_en : (c.right_text || (_isEN ? "Yes" : "Evet"));
   _setSideTabs(_leftTxt, _rightTxt);
-  if (window.previewMode && c.left_effects && c.right_effects) {
+  if (_usturlapLeft > 0 && !c.type) { _usturlapLeft--; _usturlapCard = c; } else if (_usturlapCard !== c) _usturlapCard = null;
+  if ((window.previewMode || _usturlapShownFor(c)) && c.left_effects && c.right_effects) {
     choiceLeft.innerHTML  = _leftTxt  + getEffectPreviewHTML(c.left_effects);
     choiceRight.innerHTML = _rightTxt + getEffectPreviewHTML(c.right_effects);
   } else {
@@ -6928,7 +6952,7 @@ function _timeoutEffects(c) {
 function _fusePaused() {
   if (document.hidden) return true;
   if (_settOv && _settOv.style.display === 'flex') return true;
-  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay, #divan-oturumu, .info-panel-overlay, #rel-rescue-overlay, #yil-sonu, #ending-overlay");
+  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay, #divan-oturumu, .info-panel-overlay, #rel-rescue-overlay, #yil-sonu, #ending-overlay, #dip-summit");
 }
 function _maybeStartFuse(c) {
   _stopFuse();
@@ -6936,7 +6960,7 @@ function _maybeStartFuse(c) {
   if (mode === 'off' || !_isCrisisCard(c) || _timedUsedYear === year || isGameOver) return;
   if (cardsPlayed % CARDS_PER_YEAR === 0) return; // yeni yılın ilk kartı (Yıl Sonu'ndan hemen sonra) fitilsiz
   _timedUsedYear = year;
-  const total = TIMED_BASE_MS * (TIMED_DIFF[difficultyId] || 1) * (mode === 'slow' ? 1.5 : 1);
+  const total = TIMED_BASE_MS * (TIMED_DIFF[difficultyId] || 1) * (mode === 'slow' ? 1.5 : 1) * _kumSaatiMul();
   const r = card.getBoundingClientRect();
   const w = Math.max(10, card.offsetWidth || r.width), h = Math.max(10, card.offsetHeight || r.height);
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -7170,6 +7194,7 @@ function _fermanNext() {
   const after = () => { _fermanShowing = false; _fermanKick(250); };
   if (item.kind === "ending") { _showEndingOverlay(item.id, after); return; }
   if (item.kind === "yearend") { if (item.skip || isGameOver) { _fermanShowing = false; _fermanNext(); return; } _showYearEnd(item, after); return; }
+  if (item.kind === "summit") { if (isGameOver) { _fermanShowing = false; _fermanNext(); return; } _showDipSummit(item.k, after); return; }
   if (item.kind === "call") { _fermanShowing = false; if (!isGameOver) item.fn(); _fermanNext(); return; }
   _showFermanOverlay(item, after);
 }
@@ -7413,7 +7438,7 @@ function showDivanHalkasi() {
     const perk = lv >= 3 ? (_relRescued[k] ? (en ? "Rescue used" : "Kurtarma kullanıldı") : (en ? "Will save you once" : "Seni bir kez kurtarır")) : lv === 2 ? (en ? "Their harm −20%" : "Verdiği zarar −%20") : lv === -2 ? (en ? "Their harm +20%" : "Verdiği zarar +%20") : lv <= -3 ? (en ? "Plotting against you" : "Komplo kuruyor") : "";
     return `<div class="dh-row"><span class="dh-med" style="background-image:url('assets/characters/${encodeURIComponent(k)}.jpg');--rc:${L.c}"></span><span class="dh-info"><b>${_castName(k, en)}</b><em style="color:${L.c}">${L[en ? "en" : "tr"]}</em>${perk ? `<small>${perk}</small>` : ""}</span></div>`;
   }).join("");
-  ov.innerHTML = `<div class="ip-box dh-box"><div class="ip-title">${en ? "DIVAN CIRCLE" : "DİVAN HALKASI"}</div><div class="ip-div"></div><div class="dh-list">${rows}</div><p class="dh-note">${en ? "Grant requests to draw closer, refuse to drift apart." : "İsteklerini kabul ettikçe yakınlaşır, reddettikçe uzaklaşırsın."}</p><button type="button">${en ? "CLOSE" : "KAPAT"}</button></div>`;
+  ov.innerHTML = `<div class="ip-box dh-box"><div class="ip-title">${en ? "DIVAN CIRCLE" : "DİVAN HALKASI"}</div><div class="ip-div"></div><div class="dh-list">${rows}</div>${_dipHalkaRows(en)}<p class="dh-note">${en ? "Grant requests to draw closer, refuse to drift apart." : "İsteklerini kabul ettikçe yakınlaşır, reddettikçe uzaklaşırsın."}</p><button type="button">${en ? "CLOSE" : "KAPAT"}</button></div>`;
   document.body.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("on"));
   ov.querySelector("button").onclick = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 300); };
@@ -7551,7 +7576,8 @@ function _defterRecordReign() {
   let deathSeal = 0;
   if (cause && cause !== "free_limit" && !d.deaths.includes(cause)) { d.deaths.push(cause); d.seals++; deathSeal = 1; }
   d.pages.unshift({ s: selectedSultan?.id || "kanuni", y: year, h0: (selectedSultan && SULTAN_HICRI_START[selectedSultan.id]) || hicriYear, h1: hicriYear,
-    f: _fermanDoneThisGame, ft: _fermanTotalThisGame, c: cause, ev: top ? [top.n, top.ne, top.t, top.te] : null, sl: _fermanDoneThisGame + deathSeal });
+    f: _fermanDoneThisGame, ft: _fermanTotalThisGame, c: cause, ev: top ? [top.n, top.ne, top.t, top.te] : null, sl: _fermanDoneThisGame + deathSeal,
+    tr: (_dipState && _dipState.treaties.slice()) || [] });
   d.pages = d.pages.slice(0, DEFTER_MAX_PAGES);
   _defterSet(d);
   _defterSealsThisGame = _fermanDoneThisGame + deathSeal;
@@ -7582,12 +7608,13 @@ function showDefter(startPage) {
     const ev = p.ev ? `<div class="df-ev"><span>${en ? "The great event" : "En büyük olay"}</span>${en ? p.ev[1] : p.ev[0]} · “${en ? p.ev[3] : p.ev[2]}”</div>` : "";
     const dt = DEATH_TITLES[p.c] ? DEATH_TITLES[p.c][en ? 1 : 0] : (en ? "Unknown" : "Bilinmiyor");
     return `<div class="df-no">${en ? `PAGE ${no}` : `SAYFA ${no}`}</div>
-      <div class="df-name">${en ? `Grand Vizier under ${(S[p.s] || S.kanuni)[1]}` : `${(S[p.s] || S.kanuni)[0]}'ın Sadrazamı`.replace("Selim'ın", "Selim'in").replace("Murad'ın", "Murad'ın")}</div>
+      ${_kaftanImg("df-kaftan")}<div class="df-name">${en ? `Grand Vizier under ${(S[p.s] || S.kanuni)[1]}` : `${(S[p.s] || S.kanuni)[0]}'ın Sadrazamı`.replace("Selim'ın", "Selim'in").replace("Murad'ın", "Murad'ın")}</div>
       <div class="df-rows">
         <div><span>${en ? "Reign" : "Saltanat"}</span><b>${p.h0}–${p.h1} ${en ? "AH" : "H."} · ${p.y} ${en ? (p.y === 1 ? "year" : "years") : "yıl"}</b></div>
         <div><span>${en ? "Decrees" : "Fermanlar"}</span><b>${p.f} / ${p.ft}</b></div>
         <div><span>${en ? "The end" : "Son"}</span><b>${dt}</b></div>
         <div><span>${en ? "Seals earned" : "Kazanılan mühür"}</span><b>${p.sl || 0}</b></div>
+        ${Array.isArray(p.tr) && p.tr.length ? `<div><span>${en ? "Treaties" : "Antlaşmalar"}</span><b>${p.tr.filter(k => DIP_STATES[k]).map(k => DIP_STATES[k].treaty[en ? 1 : 0]).join(" · ")}</b></div>` : ""}
       </div>${ev}`;
   };
   const trackHTML = () => {
@@ -7735,7 +7762,7 @@ function _showEndingOverlay(id, done) {
   ov.innerHTML = `<div class="en-img"></div><div class="en-shade"></div>
     <div class="en-box"><div class="en-k">${en ? `AN ENDING · ${n}/${ENDINGS.length}` : `BİR SON · ${n}/${ENDINGS.length}`}</div>
       <svg class="en-medal" viewBox="0 0 70 76" aria-hidden="true"><path d="M22 2h26l-6 20H28z" fill="#6B1A1A" stroke="#e8c84a"/><circle cx="35" cy="46" r="25" fill="#2b1c0b" stroke="#e8c84a" stroke-width="2"/><circle cx="35" cy="46" r="19" fill="none" stroke="#e8c84a" stroke-dasharray="2 2"/><path d="M35 31l4 9.5 10 .4-8 6.3 2.8 9.8-8.8-5.8-8.8 5.8 2.8-9.8-8-6.3 10-.4z" fill="#e8c84a"/></svg>
-      <div class="en-title">${en ? e.en : e.tr}</div><p class="en-text">${e.text[en ? 1 : 0]}</p>
+      ${_kaftanImg("en-kaftan")}<div class="en-title">${en ? e.en : e.tr}</div><p class="en-text">${e.text[en ? 1 : 0]}</p>
       <div class="en-gain"><b>${en ? "ORDER" : "NİŞAN"} · ${e.nisan[en ? 1 : 0].toLocaleUpperCase(en ? 'en' : 'tr')}</b>${e.nd[en ? 1 : 0]}. ${en ? "Active for the rest of this reign; recorded in the Ledger as an Inheritance for future reigns (+2 seals)." : "Bu saltanatın geri kalanında işler; Defter'e Miras olarak işlendi (+2 mühür)."}</div>
       ${n >= ENDING_RETIRE_ENDS ? `<div class="en-ret">${en ? `You have met ${n} endings. Reach year ${ENDING_RETIRE_YEAR} and you may ask to retire from the menu.` : `${n} son gördün. ${ENDING_RETIRE_YEAR}. yıla ulaşınca menüden emekliliğini isteyebilirsin.`}</div>` : ""}
       <button type="button" class="en-btn">${en ? "THE REIGN CONTINUES" : "SALTANAT DEVAM EDİYOR"}</button></div>`;
@@ -7833,7 +7860,7 @@ function _ysReleaseDeferred() {
 }
 function _ysModalOpen() {
   if (_fermanShowing || _fermanKickT || _fermanQueue.length) return true; // pencereler arası boşluk da sayılır
-  return !!document.querySelector("#yil-sonu, #ferman-overlay, #ending-overlay, #sultan-event-overlay, #paywall-screen.visible, #free-limit-overlay, #death-scene, #divan-overlay, #divan-oturumu, #culus-overlay, #miras-overlay");
+  return !!document.querySelector("#dip-summit, #yil-sonu, #ferman-overlay, #ending-overlay, #sultan-event-overlay, #paywall-screen.visible, #free-limit-overlay, #death-scene, #divan-overlay, #divan-oturumu, #culus-overlay, #miras-overlay");
 }
 function _ysFinish() {
   const item = _ysCur; _ysCur = null;
@@ -8012,6 +8039,358 @@ function _eraToast(text, good) {
   game.appendChild(t);
   requestAnimationFrame(() => t.classList.add("on"));
   setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, 2300);
+}
+
+// ── Diplomasi verisi (4 Ekim 2026) — game.js'e modül olarak eklenecek
+const DIP_STATES = {
+  venedik: { char: "venedik-sansolye", tr: "Venedik Büyük Şansölyesi", en: "Grand Chancellor of Venice", st: ["Venedik", "Venice"],
+    treaty: ["Ticaret Antlaşması", "Trade Treaty", "Her yıl başında Hazine +4; Venedik kartlarında Hazine kayıpları %25 hafif.", "Treasury +4 at the start of each year; Treasury losses on Venetian cards are 25% lighter."] },
+  safevi: { char: "safevi-itimaduddevle", tr: "Safevi İtimadüddevlesi", en: "Safavid Grand Vizier", st: ["Safevi", "Safavid"],
+    treaty: ["Sınır Barışı", "Border Peace", "Ordu kayıpları %15 hafif.", "Army losses are 15% lighter."] },
+  habsburg: { char: "habsburg-sansolye", tr: "Habsburg Saray Şansölyesi", en: "Habsburg Court Chancellor", st: ["Habsburg", "Habsburg"],
+    treaty: ["Sulhname", "Peace Treaty", "Savaşlarda zafer şansı +%15.", "+15% chance of victory in wars."] },
+  fransa: { char: "fransa-kardinal", tr: "Fransa Kardinal-Bakanı", en: "Cardinal-Minister of France", st: ["Fransa", "France"],
+    treaty: ["Kapitülasyon İttifakı", "Capitulation Alliance", "Sultan sabrı kayıpları %20 hafif.", "Losses to the Sultan's patience are 20% lighter."] },
+  moskova: { char: "moskova-elci-basi", tr: "Moskova Elçilik Dairesi Başı", en: "Head of the Muscovite Ambassadorial Office", st: ["Moskova", "Muscovy"],
+    treaty: ["Karadeniz Ticareti", "Black Sea Trade", "Her yıl başında Hazine +2 ve Ordu +2.", "Treasury +2 and Army +2 at the start of each year."] },
+};
+// Mevcut kartlardan itibar: bu kartlarda sağ (isteği kabul) +1, sol −1
+const DIP_CARD_STATE = { venedikbalyosu: "venedik", "23-safevi_elcisi": "safevi" };
+const DIP_CARD_ID_STATE = { elci_fransız_ittifak: "fransa", fransiz_ittifak_haberi: "fransa", dugum_venedik_gumruk: "venedik", venedik_2: "venedik", venedik_1: "venedik", elci_ticaret_imtiyazı: "venedik" };
+// Mektuplar: [metin_tr, metin_en, [sol_tr, sol_en, etki, itibar], [sağ_tr, sağ_en, etki, itibar]]
+const DIP_LETTERS = {
+  venedik: [
+    ["Galata'daki tüccarlarımız gümrükte bekletiliyor. Bu yıl vergiyi indirirseniz Doç efendimiz Divan'a iki gemi Murano camı hediye edecek.",
+     "Our merchants in Galata are being held at customs. If you lower the tax this year, our Doge will send the Divan two shiploads of Murano glass.",
+     ["Vergi aynı kalsın", "The tax stays", { hazine: 3 }, -1], ["İndirelim", "Lower it", { hazine: -4, saray: 3 }, 1]],
+    ["Korsanlar Adriyatik'te gemilerimizi vuruyor. Donanmanız bir sefer devriye gezerse Venedik bunu unutmaz.",
+     "Pirates are striking our ships in the Adriatic. If your fleet patrols for one season, Venice will not forget it.",
+     ["Kendi denizinizi koruyun", "Guard your own sea", { "yeniçeri": 2 }, -1], ["Devriye gönderelim", "Send a patrol", { "yeniçeri": -3, hazine: 2 }, 1]],
+    ["Bir Venedik kâtibi casuslukla suçlanıp tutuklandı. Masum olduğuna yemin ederim. Serbest bırakılmasını rica ediyorum.",
+     "A Venetian secretary has been arrested for spying. I swear he is innocent. I ask for his release.",
+     ["Yargılanacak", "He will stand trial", { saray: 3, ulema: 1 }, -1], ["Serbest bırakılsın", "Release him", { saray: -2 }, 1]]],
+  safevi: [
+    ["Tebriz'de tuttuğumuz otuz Osmanlı askerini, Erzurum'daki yüz tüccarımızla takas etmeyi öneriyorum. Sınırda bir kış daha kan dökülmesin.",
+     "I propose to exchange the thirty Ottoman soldiers we hold in Tabriz for our hundred merchants in Erzurum. Let no more blood be shed on the border this winter.",
+     ["Önce tüccarlar döner", "The merchants return first", { hazine: 2 }, -1], ["Takas kabul", "Accept the exchange", { "yeniçeri": 4, ulema: -2 }, 1]],
+    ["Hacca giden kafilelerimiz Bağdat'ta vergi ödüyor. Bu vergi kalkarsa şahımız sınırda sükûnet sözü veriyor.",
+     "Our pilgrim caravans pay a toll in Baghdad. If the toll is lifted, our Shah promises calm on the border.",
+     ["Vergi kalkmaz", "The toll stays", { hazine: 3, ulema: 1 }, -1], ["Kaldırılsın", "Lift it", { hazine: -4, "yeniçeri": 2 }, 1]],
+    ["Bir Safevi şehzadesi sizin topraklarınıza sığındı. Onu iade ederseniz aramızdaki en büyük kıvılcım söner.",
+     "A Safavid prince has fled to your lands. If you hand him over, the greatest spark between us will be put out.",
+     ["Sığınana kıyılmaz", "A refugee is not betrayed", { ulema: 3, saray: -1 }, -1], ["İade edilsin", "Hand him over", { ulema: -4, saray: 2 }, 1]]],
+  habsburg: [
+    ["İmparatorumuz Macaristan sınırında yirmi yıllık bir sulh öneriyor. Karşılığında yıllık haracın yarıya inmesini istiyor.",
+     "Our Emperor proposes a twenty-year peace on the Hungarian border. In return he asks that the yearly tribute be halved.",
+     ["Haraç aynen ödenir", "The tribute stays as it is", { hazine: 3 }, -1], ["Sulh konuşulabilir", "Peace can be discussed", { "yeniçeri": -2, saray: 2 }, 1]],
+    ["Viyana'dan bir hekim heyeti İstanbul'a gelmek istiyor; veba üzerine bilgi alışverişi. Kapılarınızı açar mısınız?",
+     "A delegation of physicians from Vienna wishes to come to Istanbul to exchange knowledge on the plague. Will you open your doors?",
+     ["Gerek yok", "No need", { ulema: 2 }, -1], ["Gelsinler", "Let them come", { ulema: -2, saray: 2, hazine: -1 }, 1]],
+    ["Sınırdaki akıncılarınız köylerimizi yaktı. Bir özür ve tazminat bekliyoruz; yoksa İmparator sefer hazırlığına başlayacak.",
+     "Your raiders on the border burned our villages. We expect an apology and compensation, or the Emperor will begin preparing for war.",
+     ["Akıncı akıncıdır", "Raiders will raid", { "yeniçeri": 3 }, -1], ["Tazminat ödensin", "Pay compensation", { hazine: -5, saray: 2 }, 1]]],
+  fransa: [
+    ["Kralımız Habsburglara karşı ortak bir cephe öneriyor. Akdeniz'de donanmanız, Ren'de ordumuz. Tüccarlarımıza Mısır'da imtiyaz yeter.",
+     "Our King proposes a common front against the Habsburgs: your fleet in the Mediterranean, our army on the Rhine. Privileges for our merchants in Egypt would suffice.",
+     ["İttifak olmaz", "No alliance", { ulema: 2 }, -1], ["Konuşalım", "Let us talk", { saray: 3, hazine: -2 }, 1]],
+    ["Kudüs'teki Latin keşişlerin kiliseleri yıkılmak üzere. Onarım izni verirseniz Kralımız minnettar kalır.",
+     "The churches of the Latin monks in Jerusalem are about to collapse. If you allow repairs, our King will be grateful.",
+     ["İzin yok", "No permission", { ulema: 3 }, -1], ["Onarsınlar", "Let them repair", { ulema: -3, saray: 2 }, 1]],
+    ["Paris'e bir elçi gönderirseniz sarayımızın kapıları ardına kadar açılır. Kralımız Osmanlı'nın inceliklerini merak ediyor.",
+     "If you send an envoy to Paris, the doors of our court will be thrown wide open. Our King is curious about Ottoman refinement.",
+     ["Elçiye gerek yok", "No need for an envoy", { hazine: 2 }, -1], ["Elçi gitsin", "Send an envoy", { hazine: -3, saray: 3, ulema: 1 }, 1]]],
+  moskova: [
+    ["Kırım hanının akınları ticaretimizi bitiriyor. Hanı dizginlerseniz Çar efendimiz her yıl samur kürk ve kereste yollar.",
+     "The Crimean Khan's raids are ruining our trade. If you rein in the Khan, our Tsar will send sable furs and timber every year.",
+     ["Han bizim tebamızdır", "The Khan is our subject", { "yeniçeri": 3 }, -1], ["Hana mektup yazılsın", "Write to the Khan", { hazine: 3, "yeniçeri": -2 }, 1]],
+    ["Azak'ta bir ticaret iskelesi açmak istiyoruz. Gümrüğü sizin olsun, yeter ki gemilerimiz yanaşabilsin.",
+     "We wish to open a trading pier at Azov. Keep the customs for yourselves, so long as our ships may dock.",
+     ["Azak kapalı", "Azov stays closed", { "yeniçeri": 2 }, -1], ["İskele açılsın", "Open the pier", { hazine: 3, "yeniçeri": -2 }, 1]],
+    ["İstanbul'daki Rus tüccarlarının kendi kiliselerinde ayin yapmasına izin verir misiniz? Çar efendimiz bunu soruyor.",
+     "Will you allow the Russian merchants in Istanbul to hold services in their own church? Our Tsar asks this of you.",
+     ["Patrikhaneye gitsinler", "Let them go to the Patriarchate", { ulema: 2 }, -1], ["İzin verilsin", "Allow it", { ulema: -2, hazine: 2 }, 1]]],
+};
+// Hasım olunca: tehdit mektubu. Sol = geri çevir (Kapı Dışarı sayacı), sağ = yatıştır
+const DIP_THREATS = {
+  venedik: ["Gümrükte uğradığımız haksızlıklar yüzünden Venedik gemileri artık İstanbul'a uğramayacak. Bunu düzeltmezseniz ticaretiniz kurur.",
+            "Because of the injustices at customs, Venetian ships will no longer call at Istanbul. Unless you correct this, your trade will dry up.",
+            { hazine: -4, saray: 2 }, { hazine: -6 }],
+  safevi: ["Şah efendimiz sınırdaki kalelerinizi tehdit sayıyor. Geri çekilmezseniz baharda Tebriz'den ordu yürüyecek.",
+           "Our Shah considers your border fortresses a threat. If you do not withdraw, an army will march from Tabriz in spring.",
+           { "yeniçeri": -4, saray: 2 }, { "yeniçeri": -2, hazine: -4 }],
+  habsburg: ["İmparator haracı reddetmeye hazırlanıyor. Bir elçi ve hediyeler gelmezse sınır kaleleri kuşatılacak.",
+             "The Emperor is preparing to refuse the tribute. Unless an envoy and gifts arrive, the frontier fortresses will be besieged.",
+             { "yeniçeri": -3, saray: 2 }, { hazine: -6, saray: -1 }],
+  fransa: ["Kralımız Habsburglarla barış masasına oturmayı düşünüyor. Dostluğumuzu hor görürseniz yalnız kalırsınız.",
+           "Our King is considering making peace with the Habsburgs. If you scorn our friendship, you will stand alone.",
+           { saray: -3, ulema: 2 }, { hazine: -5, saray: 1 }],
+  moskova: ["Çar efendimiz Kırım hanının akınlarına artık sabretmiyor. Kazaklar Karadeniz'e inmeye hazır.",
+            "Our Tsar will no longer tolerate the Khan's raids. The Cossacks are ready to come down to the Black Sea.",
+            { "yeniçeri": -4, saray: 2 }, { hazine: -5, "yeniçeri": 1 }],
+};
+const DIP_INVITE = ["{n} sizi bir görüşmeye davet ediyor. Mektubunda “iki devletin geleceğini masada konuşalım” yazıyor.",
+                    "The {n} invites you to a meeting. The letter reads: “Let us discuss the future of our two states at the table.”"];
+// Görüşme turları: [soru_tr, soru_en, güç, [sert_tr, sert_en], [yumuşak_tr, yumuşak_en]]
+const DIP_ROUNDS = {
+  venedik: [["Gümrükte imtiyaz istiyoruz.", "We ask for privileges at customs.", "hazine", ["Gümrük açık, karşılığında donanma desteği", "Open customs in exchange for naval support"], ["İmtiyaz verelim, kalıcı dostluk", "Grant them, for lasting friendship"]],
+            ["Korsanlara karşı ortak devriye?", "A joint patrol against pirates?", "yeniçeri", ["Donanmamız yeter", "Our fleet is enough"], ["Ortak devriye", "A joint patrol"]],
+            ["Haremde bir dostumuz var; işinizi kolaylaştırabilir.", "We have a friend in the harem who could ease your work.", "saray", ["Saray işi bizimdir", "Palace matters are ours"], ["Dostluğa açığız", "We are open to friendship"]]],
+  safevi: [["Bağdat yolunda serbest hac geçişi istiyoruz.", "We ask for free passage for pilgrims on the Baghdad road.", "ulema", ["Hac yolu açık, propaganda yasak", "The road is open, preaching forbidden"], ["Kayıtsız şartsız açalım", "Open it without conditions"]],
+            ["Sınırdaki kalelerden ikisi boşaltılsın.", "Let two of the border fortresses be emptied.", "yeniçeri", ["Kaleler yerinde kalır", "The fortresses stay"], ["Biri boşaltılsın", "Empty one of them"]],
+            ["İpek yolu vergisini birlikte belirleyelim.", "Let us set the silk road toll together.", "hazine", ["Vergiyi biz belirleriz", "We set the toll"], ["Ortak tarife", "A joint tariff"]]],
+  habsburg: [["Haracın kaldırılmasını istiyoruz.", "We ask that the tribute be abolished.", "hazine", ["Haraç sürer, sınır sakin", "The tribute stays, the border stays calm"], ["Yarıya inebilir", "It can be halved"]],
+             ["Sınır garnizonları azaltılsın.", "Let the border garrisons be reduced.", "yeniçeri", ["Garnizonlar kalır", "The garrisons stay"], ["Karşılıklı azaltalım", "Reduce them on both sides"]],
+             ["Sultanınız İmparatorumuza “kardeş” desin.", "Let your Sultan call our Emperor “brother”.", "saray", ["Sultan unvanını kimseyle paylaşmaz", "The Sultan shares his title with no one"], ["Mektuplarda “dost” yazılsın", "Letters may say “friend”"]]],
+  fransa: [["Mısır ticaretinde imtiyaz.", "Privileges in the Egyptian trade.", "hazine", ["Sınırlı imtiyaz, gümrük bizde", "Limited privileges, customs stay ours"], ["Geniş imtiyaz", "Broad privileges"]],
+           ["Kudüs'teki kiliselerin bakımı bize verilsin.", "Give us the care of the churches in Jerusalem.", "ulema", ["Kutsal yerler bizim himayemizde", "The holy places are under our protection"], ["Kısmi izin", "Partial permission"]],
+           ["Habsburglara karşı ortak sefer.", "A joint campaign against the Habsburgs.", "yeniçeri", ["Sefer kararını Sultan verir", "The Sultan decides on campaigns"], ["Söz verelim", "Let us promise"]]],
+  moskova: [["Azak'ta bir ticaret iskelesi istiyoruz.", "We want a trading pier at Azov.", "hazine", ["İskele bizim gümrüğümüzle", "A pier under our customs"], ["Serbest iskele", "A free pier"]],
+            ["Kırım akınları dursun.", "Let the Crimean raids stop.", "yeniçeri", ["Han dizginlenir, sınır bizde", "The Khan is reined in, the border is ours"], ["Hana yazılsın", "Write to the Khan"]],
+            ["Ortodoks tebanın hamisi biz olalım.", "Let us be the protectors of the Orthodox subjects.", "ulema", ["Tebamızın hamisi Sultan'dır", "The Sultan protects his subjects"], ["Patrikhaneyle görüşsünler", "Let them speak with the Patriarchate"]]],
+};
+
+// İtibar −6..6 puan, kademe = trunc(p/2) → −3..3 (Ana Kadro ile aynı ölçek).
+// Mektup: 2. yıldan sonra yıl başında %50, yılda en çok 1, Yıl Sonu'ndan 5 kart sonra.
+// Davet: 4. yıldan sonra, son görüşmeden en az 4 yıl geçmişse, Dost (+2) ya da Müttefik
+// devlet varsa %30. Görüşme penceresi ferman kuyruğundan açılır (üst üste binmez).
+const DIP_KEY = "sadrazam_diplomasi"; // oyunlar arası: görüşülen muadiller, reddedilen tehditler
+const DIP_ERA_START = { murad3: { venedik: 2 }, murad4: { safevi: -2 }, ahmed3: { fransa: 2 } };
+let _dipState = null;
+function _dipFresh() {
+  const rel = {}; Object.keys(DIP_STATES).forEach(k => rel[k] = 0);
+  Object.assign(rel, (selectedSultan && DIP_ERA_START[selectedSultan.id]) || {});
+  return { rel, sent: {}, lastLetterYear: 0, lastSummitYear: -99, treaties: [] };
+}
+function _dipReset(saved) {
+  _dipState = (saved && typeof saved === "object" && saved.rel) ? { ..._dipFresh(), ...saved } : _dipFresh();
+}
+function _dipGlobal() { try { const o = JSON.parse(localStorage.getItem(DIP_KEY) || "{}"); return { met: Array.isArray(o.met) ? o.met : [], refused: o.refused || 0 }; } catch (e) { return { met: [], refused: 0 }; } }
+function _dipGlobalSet(o) { try { localStorage.setItem(DIP_KEY, JSON.stringify(o)); } catch (e) {} }
+function _dipLevel(k) { const p = (_dipState && _dipState.rel[k]) || 0; return Math.max(-3, Math.min(3, Math.trunc(p / 2))); }
+function _dipRel(k, d) { if (!_dipState || !DIP_STATES[k] || !d) return; _dipState.rel[k] = Math.max(-6, Math.min(6, (_dipState.rel[k] || 0) + d)); }
+function _dipTreaty(k) { return !!(_dipState && _dipState.treaties.includes(k)); }
+function _dipCardState(c) { return c ? (DIP_CARD_ID_STATE[c.id] || DIP_CARD_STATE[c.character] || null) : null; }
+function _dipCard(k, kind, txt, L, Rr) {
+  const S = DIP_STATES[k];
+  return { id: "dip_" + kind + "_" + k + "_" + cardsPlayed, character: S.char, character_name: S.tr, character_name_en: S.en,
+    text: txt[0], text_en: txt[1], left_text: L[0], left_text_en: L[1], right_text: Rr[0], right_text_en: Rr[1],
+    left_effects: L[2] || {}, right_effects: Rr[2] || {}, left_flags_set: [], right_flags_set: [], required_flags: [], excluded_flags: [],
+    weight: 1, category: "diplomatic", _noCurse: true, _dip: { k, kind, rel: { left: L[3] || 0, right: Rr[3] || 0 } } };
+}
+function _dipLetterCard(k) {
+  if (_dipLevel(k) <= -3) { // hasım: tehdit
+    const t = DIP_THREATS[k];
+    return _dipCard(k, "threat", [t[0], t[1]], ["Geri çevir", "Turn it down", t[2], -1], ["Yatıştır", "Appease them", t[3], 2]);
+  }
+  const list = DIP_LETTERS[k], i = (_dipState.sent[k] || 0);
+  if (i >= list.length) return null;
+  _dipState.sent[k] = i + 1;
+  const L = list[i];
+  return _dipCard(k, "letter", [L[0], L[1]], L[2], L[3]);
+}
+function _dipInviteCard(k) {
+  const S = DIP_STATES[k];
+  return _dipCard(k, "invite", [DIP_INVITE[0].replace("{n}", S.tr), DIP_INVITE[1].replace("{n}", S.en)],
+    ["Davete gitme", "Decline", {}, -2], ["Masaya otur", "Take a seat at the table", {}, 0]);
+}
+// advanceYear içinde, year++ ve ertelemelerden sonra
+function _dipYearStart() {
+  if (!_dipState || isGameOver) return;
+  if (_dipTreaty("venedik")) stats.hazine = Math.min(100, stats.hazine + 4);
+  if (_dipTreaty("moskova")) { stats.hazine = Math.min(100, stats.hazine + 2); stats["yeniçeri"] = Math.min(100, stats["yeniçeri"] + 2); }
+  const keys = Object.keys(DIP_STATES);
+  // davet (mektuptan önce; aynı yıl ikisi birden gelmez)
+  if (year >= 4 && year - _dipState.lastSummitYear >= 4) {
+    const friends = keys.filter(k => _dipLevel(k) >= 2 && !_dipTreaty(k));
+    if (friends.length && Math.random() < 0.3) {
+      const k = friends[Math.floor(Math.random() * friends.length)];
+      _dipState.lastSummitYear = year; _dipState.lastLetterYear = year;
+      _ysDefer(_dipInviteCard(k), 7);
+      return;
+    }
+  }
+  if (year >= 2 && _dipState.lastLetterYear !== year && Math.random() < 0.5) {
+    const hostile = keys.filter(k => _dipLevel(k) <= -3);
+    const pool = hostile.length ? hostile : keys.filter(k => (_dipState.sent[k] || 0) < DIP_LETTERS[k].length);
+    if (!pool.length) return;
+    const c = _dipLetterCard(pool[Math.floor(Math.random() * pool.length)]);
+    if (c) { _dipState.lastLetterYear = year; _ysDefer(c, 5); }
+  }
+}
+function _dipOnDecision(card, dir) {
+  if (!card || !_dipState) return;
+  if (card._dip) {
+    const d = card._dip;
+    _dipRel(d.k, d.rel[dir]);
+    if (d.kind === "threat" && dir === "left") { const g = _dipGlobal(); g.refused++; _dipGlobalSet(g); }
+    if (d.kind === "invite" && dir === "right") _fermanEnqueue({ kind: "summit", k: d.k });
+    return;
+  }
+  const k = _dipCardState(card);
+  if (k && !card._divan && !card._timeout) _dipRel(k, dir === "right" ? 1 : -1);
+}
+// Antlaşma etkileri (decide'da applyEffects'ten önce)
+function _dipAdjustEffects(card, fx) {
+  if (!_dipState || !_dipState.treaties.length) return fx;
+  const out = { ...fx };
+  if (_dipTreaty("safevi") && typeof out["yeniçeri"] === "number" && out["yeniçeri"] < 0) out["yeniçeri"] = Math.round(out["yeniçeri"] * 0.85);
+  if (_dipTreaty("fransa") && typeof out.sultanSabir === "number" && out.sultanSabir < 0) out.sultanSabir = Math.round(out.sultanSabir * 0.8);
+  if (_dipTreaty("venedik") && _dipCardState(card) === "venedik" && typeof out.hazine === "number" && out.hazine < 0) out.hazine = Math.round(out.hazine * 0.75);
+  return out;
+}
+function _dipChance(k) {
+  const v = stats, avg = (v.saray + v["yeniçeri"] + v.ulema + v.hazine) / 4, lo = Math.min(v.saray, v["yeniçeri"], v.ulema, v.hazine);
+  let c = 30 + 10 * _dipLevel(k) + Math.max(-15, Math.min(15, (avg - 50) * 0.6));
+  if (lo < 25) c -= 15;
+  if (sultanSabir >= 70) c += 5;
+  return Math.max(5, Math.min(90, Math.round(c)));
+}
+function _showDipSummit(k, done) {
+  document.getElementById("dip-summit")?.remove();
+  const en = window.LANG === 'en', S = DIP_STATES[k], rounds = DIP_ROUNDS[k];
+  const SN = { saray: ["SARAY", "PALACE"], "yeniçeri": ["ORDU", "ARMY"], ulema: ["ULEMA", "CLERGY"], hazine: ["HAZİNE", "TREASURY"] };
+  let chance = _dipChance(k), i = 0; const log = [];
+  const ov = document.createElement("div"); ov.id = "dip-summit";
+  document.body.appendChild(ov);
+  const head = () => `<div class="dsm-med" style="background-image:url('assets/characters/${encodeURIComponent(S.char)}.jpg')"></div>
+    <div class="dsm-k">${en ? "SUMMIT" : "GÖRÜŞME"}</div><div class="dsm-n">${en ? S.en : S.tr}</div>
+    <div class="dsm-ch"><span>${en ? "CHANCE" : "ŞANS"} %${chance}</span><i style="width:${chance}%"></i></div>`;
+  const render = () => {
+    const r = rounds[i];
+    ov.innerHTML = `<div class="dsm-in">${head()}<div class="dsm-r">${en ? `ROUND ${i + 1}/3` : `TUR ${i + 1}/3`}</div>
+      <p class="dsm-say">“${en ? r[1] : r[0]}”</p>
+      <div class="dsm-opts"><button type="button" data-k="hard">${en ? r[3][1] : r[3][0]}<small>${en ? `Strong if ${SN[r[2]][1]} is high` : `${SN[r[2]][0]} güçlüyse kazandırır`}</small></button>
+      <button type="button" data-k="soft">${en ? r[4][1] : r[4][0]}<small>${en ? "Safe, small gain" : "Güvenli, küçük kazanç"}</small></button></div>
+      <div class="dsm-log">${log.join("<br>")}</div></div>`;
+    ov.querySelectorAll(".dsm-opts button").forEach(b => b.onclick = () => {
+      const val = stats[r[2]] ?? 50; let d, m;
+      if (b.dataset.k === "hard") { d = val >= 55 ? 10 : -10; m = val >= 55 ? (en ? `<b class="ok">Round won</b> · ${SN[r[2]][1]} ${val}` : `<b class="ok">Tur kazanıldı</b> · ${SN[r[2]][0]} ${val}`) : (en ? `<b class="bad">Round lost</b> · ${SN[r[2]][1]} ${val}` : `<b class="bad">Tur kaybedildi</b> · ${SN[r[2]][0]} ${val}`); }
+      else { d = 3; m = en ? `<b class="ok">Eased through</b> · +3%` : `<b class="ok">Yumuşak geçildi</b> · +%3`; }
+      chance = Math.max(5, Math.min(90, chance + d)); log.push(m); i++;
+      if (i < 3) render(); else finish();
+    });
+  };
+  const finish = () => {
+    const win = Math.random() * 100 < chance;
+    const g = _dipGlobal(); if (!g.met.includes(k)) g.met.push(k); _dipGlobalSet(g);
+    if (win) { _dipState.treaties.push(k); _dipRel(k, 2); }
+    else { _dipRel(k, -4); sultanSabir = Math.max(0, sultanSabir - 10); updateStatUI();
+      const t = DIP_THREATS[k]; _ysDefer(_dipCard(k, "threat", [t[0], t[1]], ["Geri çevir", "Turn it down", t[2], -1], ["Yatıştır", "Appease them", t[3], 2]), 12); }
+    ov.innerHTML = `<div class="dsm-in">${head()}
+      <p class="dsm-say">${win ? (en ? `Hands are shaken. <b class="ok">${S.treaty[1]}</b> is signed.` : `El sıkışıldı. <b class="ok">${S.treaty[0]}</b> imzalandı.`) : (en ? "You rise from the table without an agreement." : "Masadan anlaşmadan kalkıldı.")}</p>
+      <div class="dsm-log">${log.join("<br>")}<br><br>${win ? `<b class="ok">${en ? "TREATY" : "ANTLAŞMA"}</b> · ${en ? S.treaty[3] : S.treaty[2]}` : `<b class="bad">${en ? "COST" : "BEDEL"}</b> · ${en ? "Relations fall · Sultan's patience −10" : "İlişki düştü · Sultan sabrı −10"}`}</div>
+      <button type="button" class="dsm-go">${en ? "CONTINUE" : "DEVAM"}</button></div>`;
+    ov.querySelector(".dsm-go").onclick = () => { ov.classList.remove("on"); setTimeout(() => { ov.remove(); checkSultanSabir(); done(); }, 300); };
+  };
+  render();
+  requestAnimationFrame(() => ov.classList.add("on"));
+}
+function _dipHalkaRows(en) {
+  if (!_dipState) return "";
+  const rows = Object.entries(DIP_STATES).map(([k, S]) => {
+    const lv = _dipLevel(k), L = REL_LEVELS[lv + 3];
+    return `<div class="dh-row"><span class="dh-med" style="background-image:url('assets/characters/${encodeURIComponent(S.char)}.jpg');--rc:${L.c}"></span><span class="dh-info"><b>${S.st[en ? 1 : 0]} · ${en ? S.en : S.tr}</b><em style="color:${L.c}">${L[en ? "en" : "tr"]}</em>${_dipTreaty(k) ? `<small>${en ? S.treaty[1] : S.treaty[0]}</small>` : ""}</span></div>`;
+  }).join("");
+  return `<div class="ip-title dh-sub">${en ? "FOREIGN RELATIONS" : "DIŞ İLİŞKİLER"}</div><div class="ip-div"></div><div class="dh-list">${rows}</div>`;
+}
+
+// ── Kozmetikler (4 Ekim 2026) — akçeyle bir kez alınır, kalıcı, dengeyi değiştirmez ──
+// Çini Kart Çerçevesi (3 desen, Market'ten seçilir) · Sadrazam Kaftanı (3 renk; Defter
+// sayfası, ölüm ve son sahneleri) · Hattat Kalemi (Vakayiname + paylaşım görseli varaklı).
+const COSM_KEY = "sadrazam_cosmetics";
+const COSMETICS = {
+  cini:   { price: 8, icon: "assets/icons/item-cini-cerceve.png", tr: "Çini Kart Çerçevesi", en: "Tile Card Frame",
+            dtr: "Kartlarının kenarı çini deseniyle döşenir. Üç desen; istediğin zaman değiştir.", den: "Your cards are framed in tile patterns. Three patterns; switch any time.",
+            opts: [["iznik", "İznik", "Iznik"], ["kutahya", "Kütahya", "Kütahya"], ["lale", "Lale", "Tulip"]] },
+  kaftan: { price: 6, icon: "assets/icons/item-kaftan.png", tr: "Sadrazam Kaftanı", en: "Grand Vizier's Kaftan",
+            dtr: "Vezirler Defteri'nde, ölüm ve son sahnelerinde senin kaftanın görünür. Üç renk.", den: "Your kaftan appears in the Viziers' Ledger and in death and ending scenes. Three colours.",
+            opts: [["kirmizi", "Kırmızı", "Crimson"], ["lacivert", "Lacivert", "Navy"], ["zumrut", "Zümrüt", "Emerald"]] },
+  kalem:  { price: 5, icon: "assets/icons/item-hattat-kalemi.png", tr: "Hattat Kalemi", en: "Calligrapher's Pen",
+            dtr: "Vakayiname altın varaklı bir hat sayfasına dönüşür; paylaşılan görsel de.", den: "Your Chronicle becomes a gilded calligraphy page, and so does your shared image.",
+            opts: null },
+};
+function _cosmGet() { try { const o = JSON.parse(localStorage.getItem(COSM_KEY) || "{}"); return (o && typeof o === "object") ? o : {}; } catch (e) { return {}; } }
+function _cosmSet(o) { try { localStorage.setItem(COSM_KEY, JSON.stringify(o)); } catch (e) {} }
+function _cosmOwned(id) { return !!_cosmGet()[id]; }
+function _cosmSel(id) { const o = _cosmGet(); return o[id] ? (o[id + "Sel"] || (COSMETICS[id].opts ? COSMETICS[id].opts[0][0] : true)) : null; }
+function _applyCosmetics() {
+  const c = document.getElementById("card"); if (!c) return;
+  c.classList.remove("frame-iznik", "frame-kutahya", "frame-lale");
+  const f = _cosmSel("cini"); if (f && f !== "off") c.classList.add("frame-" + f);
+}
+function _kaftanImg(cls) {
+  const k = _cosmSel("kaftan"); if (!k) return "";
+  return `<img class="cosm-kaftan k-${k} ${cls || ""}" src="${COSMETICS.kaftan.icon}" alt="">`;
+}
+function renderCosmeticRows() {
+  const box = document.getElementById("market-cosmetic-list"); if (!box) return;
+  const en = window.LANG === 'en';
+  box.querySelectorAll(".mc-cosm").forEach(e => e.remove());
+  for (const [id, c] of Object.entries(COSMETICS)) {
+    const own = _cosmOwned(id), sel = _cosmSel(id);
+    const row = document.createElement("div"); row.className = "mc-row mc-cosm"; row.dataset.id = id;
+    let ctrl;
+    if (!own) ctrl = `<button type="button" class="mi-buy mc-btn mc-buy">${c.price} ${AKCE_COIN_SVG}</button>`;
+    else if (c.opts) ctrl = `<div class="mc-opts">${(id === "cini" ? [["off", "Kapalı", "Off"]] : []).concat(c.opts).map(([k, tr, enN]) => `<button type="button" class="mc-opt${sel === k ? " on" : ""}" data-k="${k}">${en ? enN : tr}</button>`).join("")}</div>`;
+    else ctrl = `<span class="mc-owned">${en ? "OWNED" : "SENİN"}</span>`;
+    row.innerHTML = `<div class="mc-prev mc-ico"><img src="${c.icon}" alt=""></div><div class="mc-info"><div class="mc-name">${en ? c.en : c.tr}</div><div class="mc-desc">${en ? c.den : c.dtr}</div>${own && c.opts ? ctrl : ""}</div>${own && c.opts ? "" : ctrl}`;
+    box.appendChild(row);
+    row.querySelector(".mc-buy")?.addEventListener("click", () => {
+      const status = document.getElementById("akce-status");
+      if (_cosmOwned(id)) return;
+      if (!spendAkce(c.price)) {
+        if (status) status.textContent = en ? `You need ${c.price} akce. Pouches are below.` : `${c.price} akçe gerekiyor. Keseler aşağıda.`;
+        document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      const o = _cosmGet(); o[id] = true; if (c.opts) o[id + "Sel"] = c.opts[0][0]; _cosmSet(o);
+      if (window.playSelectConfirm) playSelectConfirm();
+      if (status) status.textContent = en ? "It is yours." : "Artık senin.";
+      updateAkceUI(); _applyCosmetics(); renderCosmeticRows();
+    });
+    row.querySelectorAll(".mc-opt").forEach(b => b.addEventListener("click", () => {
+      const o = _cosmGet(); o[id + "Sel"] = b.dataset.k; _cosmSet(o);
+      if (window.playSelectConfirm) playSelectConfirm();
+      _applyCosmetics(); renderCosmeticRows();
+    }));
+  }
+}
+
+// ── Market eşyaları (4 Ekim 2026) ─────────────────────────────────────
+let _usturlapLeft = 0; // Müneccim Usturlabı: kalan önizlemeli kart
+let _usturlapCard = null; // sayaç düşerken önizlemesi gösterilen kart
+function _usturlapShownFor(c) { return c === _usturlapCard; }
+function _itemSlotUsed(slotIndex, id) {
+  itemsUsed++; if (id) uniqueItemsCollected.add(id);
+  playerItems[slotIndex] = null; playerItemExpiry[slotIndex] = null;
+  if (activeItemIndex === slotIndex) { activeItemIndex = null; pendingItemEffect = null; card.style.boxShadow = ""; }
+  updateItemBar();
+}
+function _slotOf(id) { return playerItems.indexOf(id); }
+function _previewOn(c) { return !!c && !c.type && (window.previewMode || _usturlapLeft > 0 || c === _usturlapCard); }
+function _renderChoicePreview(c) {
+  if (!_previewOn(c) || !c.left_effects || !c.right_effects) return;
+  const en = window.LANG === 'en';
+  const l = (en && c.left_text_en) ? c.left_text_en : (c.left_text || ""), r = (en && c.right_text_en) ? c.right_text_en : (c.right_text || "");
+  choiceLeft.innerHTML = l + getEffectPreviewHTML(c.left_effects);
+  choiceRight.innerHTML = r + getEffectPreviewHTML(c.right_effects);
+}
+// Kum Saati: fitil başlarken kutuda varsa süre iki katı, eşya tükenir
+function _kumSaatiMul() {
+  const i = _slotOf("kum_saati"); if (i < 0) return 1;
+  _itemSlotUsed(i, "kum_saati");
+  const en = window.LANG === 'en';
+  showItemToast((en ? "Hourglass" : "Kum Saati") + (en ? " — the fuse burns at half speed" : " — fitil yarı hızda yanıyor"));
+  return 2;
+}
+// Mehter Kösü: Ordu 15'in altına inince bir kez +15
+function _mehterCheck() {
+  if (isGameOver || (stats["yeniçeri"] ?? 50) >= 15) return;
+  const i = _slotOf("mehter_kosu"); if (i < 0) return;
+  _itemSlotUsed(i, "mehter_kosu");
+  stats["yeniçeri"] = Math.min(100, stats["yeniçeri"] + 15); showStatDelta("yeniçeri", 15);
+  const en = window.LANG === 'en';
+  showItemToast((en ? "Kettle Drum" : "Mehter Kösü") + (en ? " — the army rallies: +15" : " — ordu toparlandı: +15"));
 }
 
 // ── Metin varyantları (4 Ekim 2026) ───────────────────────────────────
@@ -8290,6 +8669,7 @@ const ITEM_AKCE_COST = 1; // 1 akçe = 1 anlamlı kurtarma (İkinci Şans 29 Eyl
 // kazanılabilir kalsın diye (altın_muhur = hazine cezası bloğu, sultan_ferman =
 // saray cezası bloğu), akçeyle garantiye bağlanamaz.
 const ESYA_DUKKANI_EXCLUDED = ["altin_muhur", "sultan_ferman"];
+function _itemPrice(id) { return (ITEMS[id] && ITEMS[id].price) || ITEM_AKCE_COST; }
 
 function showEsyaDukkani() {
   if (isGameOver) return;
@@ -8309,7 +8689,7 @@ function showEsyaDukkani() {
           <div class="esya-name">${name}</div>
           <div class="esya-desc">${desc}</div>
         </div>
-        <button class="esya-buy-btn" data-id="${id}">${ITEM_AKCE_COST} ${AKCE_COIN_SVG}</button>
+        <button class="esya-buy-btn" data-id="${id}">${_itemPrice(id)} ${AKCE_COIN_SVG}</button>
       </div>`;
   }).join("");
 
@@ -8341,7 +8721,7 @@ function showEsyaDukkani() {
         // spendAkce() bakiye yetersizse false döner ve hiçbir şey düşürmez —
         // dönüş değeri kontrol edilmeden gainItem() çağrılırsa akçe düşmeden
         // eşya verilmiş olur. Burada asla o duruma düşülmediğinden emin oluyoruz.
-        if (!spendAkce(ITEM_AKCE_COST)) {
+        if (!spendAkce(_itemPrice(id))) {
           closeEsyaDukkani();
           redirectToAkcePurchase(() => showEsyaDukkani());
           return;
@@ -8350,7 +8730,7 @@ function showEsyaDukkani() {
         if (window.playSelectConfirm) playSelectConfirm();
         closeEsyaDukkani();
       };
-      if (getAkceBalance() < ITEM_AKCE_COST) {
+      if (getAkceBalance() < _itemPrice(id)) {
         closeEsyaDukkani();
         redirectToAkcePurchase(() => showEsyaDukkani());
         return;
@@ -8466,6 +8846,35 @@ function showItemConfirm(slotIndex, item) {
 }
 
 function executeItem(slotIndex, item) {
+  const _en = window.LANG === 'en', _id = Object.keys(ITEMS).find(k => ITEMS[k] === item);
+  const _nm = (_en && window.EN_ITEMS && window.EN_ITEMS[_id]) ? window.EN_ITEMS[_id].name : item.name;
+  if (item.passive) { // kutuda bekler, kendiliğinden çalışır — dokununca harcanmaz
+    showItemToast(_nm + (_en ? " — works by itself when needed" : " — gerektiğinde kendiliğinden çalışır"));
+    return;
+  }
+  if (item.effect === "delay_8") {
+    const sc = scheduledCards.filter(x => x.afterCardsPlayed > cardsPlayed).sort((a, b) => a.afterCardsPlayed - b.afterCardsPlayed)[0];
+    if (!sc) { showItemToast(_nm + (_en ? " — no pending consequence" : " — bekleyen sonuç yok")); return; }
+    sc.afterCardsPlayed += 8;
+    _itemSlotUsed(slotIndex, _id);
+    showItemToast(_nm + (_en ? " — a consequence was delayed 8 cards" : " — bir sonuç 8 kart ertelendi"));
+    try { updateFateBar(); } catch (e) {}
+    return;
+  }
+  if (item.effect === "preview_3") {
+    _usturlapLeft = 3;
+    _itemSlotUsed(slotIndex, _id);
+    showItemToast(_nm + (_en ? " — effects visible for 3 cards" : " — 3 kart boyunca etkiler görünür"));
+    _renderChoicePreview(currentCard);
+    return;
+  }
+  if (item.effect === "lale") {
+    _itemSlotUsed(slotIndex, _id);
+    if (selectedSultan && selectedSultan.id === "ahmed3") { _eraMeterAdd(-15); _renderEraChip(); showItemToast(_nm + (_en ? " — Public Anger −15" : " — Halkın Öfkesi −15")); }
+    else { stats.saray = Math.min(100, stats.saray + 6); showStatDelta("saray", 6); updateStatUI(); showItemToast(_nm + (_en ? " — Palace +6" : " — Saray +6")); }
+    Haptics.statPositive();
+    return;
+  }
   itemsUsed++;
   uniqueItemsCollected.add(Object.keys(ITEMS).find(k => ITEMS[k] === item));
 
@@ -8656,6 +9065,7 @@ function applyEffects(effects) {
     }
   }
   if (shouldConsumeItem) consumeActiveItem();
+  _mehterCheck();
   updateStatUI();
   checkSultanSabir();
   checkGameOver();
@@ -8975,11 +9385,12 @@ function decide(dir) {
     }
   }
 
-  applyEffects(_eraAdjustEffects(currentCard, dir, _nisanAdjustEffects(_relAdjustEffects(currentCard, currentCard[dir + "_effects"] || {}))));
+  applyEffects(_dipAdjustEffects(currentCard, _eraAdjustEffects(currentCard, dir, _nisanAdjustEffects(_relAdjustEffects(currentCard, currentCard[dir + "_effects"] || {})))));
   if (isGameOver) return;
   _relOnDecision(currentCard, dir);
   _eraOnDecision(currentCard, dir);
   _memOnDecision(currentCard, dir);
+  _dipOnDecision(currentCard, dir);
   if (isGameOver) return;
   _fermanTrack();
   _endTrack();
@@ -9617,6 +10028,7 @@ function _advanceYearInner() {
   if (histCards.length > 0 && Math.random() < 0.25) {
     _ysDefer(histCards[Math.floor(Math.random() * histCards.length)], 8);
   }
+  _dipYearStart();
 
   // ── ÖZELLİK 1: MÜTTEFİK FLAG'LERİNİ GÜNCELLE ───────────────────
   updateAllyFlags();
@@ -9782,7 +10194,7 @@ function _playDeathScene(reason, key, onDone, onFail) {
     const ov = document.createElement("div");
     ov.id = "death-scene";
     ov.innerHTML = `<div class="ds-img" style="background-image:url('${pre.src}')"></div><div class="ds-shade"></div><div class="ds-vig"></div>
-      <div class="ds-txt"><div class="ds-kick">${en ? "THE END OF A REIGN" : "SALTANATIN SONU"}</div><div class="ds-title">${esc(title)}</div><div class="ds-rule"></div>
+      <div class="ds-txt">${_kaftanImg("ds-kaftan")}<div class="ds-kick">${en ? "THE END OF A REIGN" : "SALTANATIN SONU"}</div><div class="ds-title">${esc(title)}</div><div class="ds-rule"></div>
       <div class="ds-text">${esc(reason)}</div><div class="ds-yr">${en ? `${year} ${year === 1 ? "YEAR" : "YEARS"}` : `${year} YIL`} · ${esc(String(months[hicriMonth % 12]).toLocaleUpperCase(en ? 'en' : 'tr'))} ${hicriYear}</div></div>
       <div class="ds-tap">${en ? "TAP TO CONTINUE" : "DEVAM ETMEK İÇİN DOKUN"}</div>`;
     document.body.appendChild(ov);
@@ -9926,6 +10338,7 @@ function buildAchievementState(deathReason) {
     deathCauses: [...new Set([..._deathCausesFromCrossGame(cg), ...(_deathCause && _deathCause !== "free_limit" ? [_deathCause] : [])])],
     totalCurses: (cg.totalCurses||0) + (cursedEver?1:0),
     memCorrect: cg.memCorrect || 0,
+    dipMet: _dipGlobal().met.length, dipRefused: _dipGlobal().refused, dipTreaties: (_dipState && _dipState.treaties.length) || 0,
   };
 }
 
@@ -10168,7 +10581,7 @@ function renderEpilog() {
     }
   }
   // Vakayiname sayfası (Tarihçilerin Notu cümleleri sayfanın açılışı ve kapanışı oldu)
-  section.className = "vakayiname";
+  section.className = "vakayiname" + (_cosmOwned("kalem") ? " gilded" : "");
   section.innerHTML = _chronicleHTML();
 }
 
@@ -10249,6 +10662,12 @@ async function shareFerman() {
   c.lineWidth = 1;
   c.strokeRect(28, 28, 744, 1044);
 
+  if (_cosmOwned("kalem")) { // Hattat Kalemi: altın varaklı çift çerçeve + köşe gülleri
+    const gg = c.createLinearGradient(0, 0, 800, 1100); gg.addColorStop(0, "#f3d98a"); gg.addColorStop(0.5, "#b8892a"); gg.addColorStop(1, "#f3d98a");
+    c.strokeStyle = gg; c.lineWidth = 7; c.strokeRect(8, 8, 784, 1084);
+    c.lineWidth = 2; c.strokeRect(40, 40, 720, 1020);
+    [[40,40],[760,40],[40,1060],[760,1060]].forEach(([x, y]) => { c.beginPath(); c.arc(x, y, 14, 0, Math.PI * 2); c.fillStyle = "#9a1d12"; c.fill(); c.lineWidth = 2; c.strokeStyle = gg; c.stroke(); c.beginPath(); c.arc(x, y, 5, 0, Math.PI * 2); c.fillStyle = "#f3d98a"; c.fill(); });
+  }
   // Köşe bezemeleri
   const corners = [[28,28],[772,28],[28,1072],[772,1072]];
   corners.forEach(([x,y]) => {

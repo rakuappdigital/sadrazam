@@ -5691,3 +5691,60 @@ html, body {
 }
 #yil-sonu .ys-a6 .fm-wax { width: 46px; height: 46px; opacity: 0; transform: scale(2.2) rotate(-14deg); }
 #yil-sonu.s6 .ys-a6 .fm-wax { opacity: 1; transform: scale(1) rotate(-8deg); transition-delay: 0.25s; }
+
+/* ── Kozmetikler (4 Ekim 2026) ── */
+.mc-cosm .mc-ico { display: flex; align-items: center; justify-content: center; }
+.mc-cosm .mc-ico img { width: 54px; height: 54px; object-fit: contain; }
+.mc-opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.mc-opt { font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: .04em; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--gold-dim); background: transparent; color: rgba(240,230,208,.75); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mc-opt.on { background: var(--gold); color: #1a1006; border-color: var(--gold); }
+.mc-owned { font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: .08em; color: var(--gold-light); align-self: center; white-space: nowrap; }
+/* Çini Kart Çerçevesi: kartın üstüne çizilen desenli kenar (yerleşimi değiştirmez) */
+#card.frame-iznik::after, #card.frame-kutahya::after, #card.frame-lale::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; padding: 7px; border-radius: inherit;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; }
+#card.frame-iznik::before, #card.frame-kutahya::before, #card.frame-lale::before { content: ""; position: absolute; inset: 7px; z-index: 3; pointer-events: none; border: 1px solid rgba(232,200,74,.9); border-radius: 6px; }
+#card.frame-iznik::after { background: repeating-conic-gradient(from 45deg, #1b3f8f 0 25%, #f3efe2 0 50%) 0 0 / 14px 14px, #1b3f8f; }
+#card.frame-kutahya::after { background: radial-gradient(circle, #e8c84a 0 2px, transparent 3px) 0 0 / 12px 12px, linear-gradient(135deg, #1f6b4a, #0f4a33); }
+#card.frame-lale::after { background: radial-gradient(ellipse 4px 7px at 50% 55%, #f3efe2 0 60%, transparent 70%) 0 0 / 14px 16px, linear-gradient(135deg, #a81f1f, #6e1010); }
+#card.frame-iznik #card-bottom { background: linear-gradient(180deg, #0d1730, #0a1124); }
+#card.frame-kutahya #card-bottom { background: linear-gradient(180deg, #0c2219, #08180f); }
+#card.frame-lale #card-bottom { background: linear-gradient(180deg, #200b0b, #160707); }
+/* Sadrazam Kaftanı */
+.cosm-kaftan { display: block; object-fit: contain; margin: 0 auto; }
+.cosm-kaftan.k-lacivert { filter: hue-rotate(205deg) saturate(1.1); }
+.cosm-kaftan.k-zumrut { filter: hue-rotate(115deg) saturate(.9); }
+.df-kaftan { width: 44px; height: 44px; margin-bottom: 2px; }
+.ds-kaftan { width: 54px; height: 54px; margin-bottom: 6px; filter: drop-shadow(0 0 8px rgba(232,200,74,.35)); }
+.ds-kaftan.k-lacivert { filter: hue-rotate(205deg) saturate(1.1) drop-shadow(0 0 8px rgba(232,200,74,.35)); }
+.ds-kaftan.k-zumrut { filter: hue-rotate(115deg) saturate(.9) drop-shadow(0 0 8px rgba(232,200,74,.35)); }
+.en-kaftan { width: 48px; height: 48px; margin: 4px auto 2px; }
+/* Hattat Kalemi: varaklı Vakayiname */
+#gameover-epilog.vakayiname.gilded { background: radial-gradient(ellipse at 50% 0%, rgba(232,200,74,.28), transparent 60%), linear-gradient(180deg, #f3e8cc, #e6d3a8);
+  border-image: linear-gradient(135deg, #f3d98a, #b8892a 30%, #f3d98a 50%, #b8892a 70%, #f3d98a) 12; outline: 1px solid #b8892a; outline-offset: -16px; }
+.vakayiname.gilded .vk-title::before, .vakayiname.gilded .vk-title::after { content: "❦"; color: #b8892a; margin: 0 8px; }
+.vakayiname.gilded .vk-intro::first-letter { float: left; font-family: 'Cinzel Decorative', serif; font-size: 40px; line-height: .9; padding: 3px 6px 0 0; color: #9a1d12; }
+.vakayiname.gilded .vk-intro { text-align: left; }
+.vakayiname.gilded .vk-list li { border-left: 2px solid rgba(184,137,42,.45); padding-left: 8px; }
+.vakayiname.gilded .vk-yr { color: #9a1d12; }
+
+/* ── Diplomasi (4 Ekim 2026) ── */
+.dh-sub { margin-top: 14px; }
+#dip-summit { position: fixed; inset: 0; z-index: 271; display: flex; align-items: center; justify-content: center; padding: calc(env(safe-area-inset-top, 0px) + 18px) 18px calc(env(safe-area-inset-bottom, 0px) + 18px);
+  background: radial-gradient(ellipse at 50% 30%, #2a1d0c, #06050a 72%); opacity: 0; transition: opacity .4s ease; overflow-y: auto; }
+#dip-summit.on { opacity: 1; }
+#dip-summit .dsm-in { width: 100%; max-width: 360px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; margin: auto; }
+#dip-summit .dsm-med { width: 104px; height: 104px; border-radius: 50%; background-size: cover; background-position: center 18%; box-shadow: 0 0 0 2px var(--gold-light, #e8c84a), 0 0 22px rgba(232,200,74,.35); }
+#dip-summit .dsm-k { font-family: 'Alegreya SC', serif; font-size: 11px; letter-spacing: 3px; color: rgba(240,230,208,.6); }
+#dip-summit .dsm-n { font-family: 'Alegreya SC', serif; font-weight: 700; font-size: 19px; color: var(--gold-light, #e8c84a); }
+#dip-summit .dsm-ch { width: 100%; position: relative; height: 22px; border-radius: 11px; background: rgba(255,255,255,.07); overflow: hidden; }
+#dip-summit .dsm-ch i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #9a7a1c, #e8c84a); transition: width .4s; }
+#dip-summit .dsm-ch span { position: relative; z-index: 1; font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: 1px; line-height: 22px; color: #fff; text-shadow: 0 1px 2px #000; }
+#dip-summit .dsm-r { font-family: 'Alegreya SC', serif; font-size: 11px; letter-spacing: 2px; color: rgba(240,230,208,.6); margin-top: 4px; }
+#dip-summit .dsm-say { font-family: 'Alegreya', serif; font-style: italic; font-size: 16.5px; line-height: 1.45; color: #f0e6d0; margin: 0; }
+#dip-summit .dsm-opts { display: grid; gap: 8px; width: 100%; }
+#dip-summit .dsm-opts button { font-family: 'Alegreya', serif; font-size: 15px; text-align: left; padding: 11px 13px; border-radius: 8px; border: 1px solid rgba(201,162,39,.55); background: rgba(201,162,39,.07); color: #f0e6d0; cursor: pointer; line-height: 1.35; -webkit-tap-highlight-color: transparent; }
+#dip-summit .dsm-opts small { display: block; font-size: 12.5px; color: rgba(240,230,208,.6); margin-top: 3px; }
+#dip-summit .dsm-log { font-family: 'Alegreya', serif; font-size: 14px; line-height: 1.5; color: #d9cfb8; }
+#dip-summit .ok { color: #7fd197; } #dip-summit .bad { color: #ff8a78; }
+#dip-summit .dsm-go { margin-top: 6px; font-family: 'Alegreya SC', serif; font-size: 13px; letter-spacing: 2px; color: #1a1006; background: linear-gradient(180deg, #e8c84a, #c9a227); border: none; padding: 12px 28px; border-radius: 5px; cursor: pointer; }
