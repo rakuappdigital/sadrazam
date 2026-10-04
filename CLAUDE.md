@@ -322,6 +322,8 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
 - Testler (scratchpad, `pw.js` sessiz Playwright sarmalayıcısı ile — testlerde ses ÇIKMAZ):
   ach/flow/guard/fx/fuse/sefer/bundle/pw_new/items/ferman/kadro/defter_test.js.
 - Masaüstü: `~/Desktop/olumler/PROMPTLAR.txt` (death-<anahtar>), `~/Desktop/yeni/PROMPTLAR.txt`.
+  Ölüm sahneleri ÇERÇEVESİZ (kullanıcı kararı, 4 Ekim): kartlarla aynı çizim dili ama tam ekran,
+  kenara kadar dolu; alt üçte bir metin için sakin. Gelen görselde çerçeve varsa kırp ya da kullanıcıya söyle.
 
 ## 4. Kritik sabitler
 
