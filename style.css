@@ -5330,3 +5330,52 @@ html, body {
 .mi-buy svg { width: 14px; height: 14px; }
 .mi-buy:disabled { background: transparent; color: rgba(201,162,39,0.6); border-color: rgba(201,162,39,0.35); cursor: default; }
 #market-items-stash { margin-top: 8px; font-family: 'IM Fell English', serif; font-style: italic; font-size: 12.5px; color: rgba(240,230,208,0.6); text-align: center; }
+
+/* ── Padişah Fermanı (3 Ekim 2026) ── */
+#game.has-ferman #dynamic-subtitle { display: none; }
+#ferman-chip { display: flex; align-items: center; gap: 7px; width: max-content; margin: 4px auto 0; padding: 4px 11px 4px 9px; border-radius: 999px;
+  border: 1px solid rgba(201,162,39,0.55); background: rgba(107,26,26,0.55); color: #f0e6d0; font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 0.6px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; position: relative; z-index: 3; }
+#ferman-chip .fc-k { color: var(--gold-light); letter-spacing: 1.5px; font-size: 9px; }
+#ferman-chip .fc-v i { font-style: normal; color: rgba(240,230,208,0.6); }
+#ferman-chip .fc-dot { width: 7px; height: 7px; border-radius: 50%; }
+#ferman-chip .fc-dot.y { background: #7fd197; box-shadow: 0 0 6px #7fd197; }
+#ferman-chip .fc-dot.n { background: #e0a020; box-shadow: 0 0 6px #e0a020; }
+#ferman-overlay { position: fixed; inset: 0; z-index: 270; background: rgba(4,3,8,0.78); display: flex; align-items: center; justify-content: center; padding: 18px; opacity: 0; transition: opacity 0.3s ease; }
+#ferman-overlay.on { opacity: 1; }
+.fm-scroll { width: min(92vw, 360px); display: flex; flex-direction: column; align-items: center; }
+.fm-rod { width: 106%; height: 13px; border-radius: 7px; background: linear-gradient(180deg, #a07c33, #5a4012 70%, #3b2a0b); box-shadow: 0 3px 8px rgba(0,0,0,0.6); position: relative; z-index: 2; }
+.fm-rod::before, .fm-rod::after { content: ''; position: absolute; top: -3px; width: 12px; height: 19px; border-radius: 4px; background: linear-gradient(180deg, #c9a227, #6b4a10); }
+.fm-rod::before { left: -6px; } .fm-rod::after { right: -6px; }
+.fm-paper { width: 100%; max-height: 0; overflow: hidden; color: #2b1c0b; text-align: center;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.35), transparent 60%), linear-gradient(180deg, #efe0bb, #e3cf9e 60%, #d9c08a);
+  box-shadow: inset 0 0 40px rgba(120,80,20,0.25), 0 10px 30px rgba(0,0,0,0.6); transition: max-height 1s cubic-bezier(0.5,0.05,0.2,1); }
+#ferman-overlay.on .fm-paper { max-height: 82vh; overflow-y: auto; }
+.fm-paper > * { margin-left: 18px; margin-right: 18px; }
+.fm-tugra { display: block; width: 104px; height: 66px; margin: 14px auto 2px; color: #7a2a12; }
+.fm-from, .fm-kick { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 2.5px; color: #7a2a12; margin-top: 6px; }
+.fm-kick { margin-top: 16px; }
+.fm-intro { font-family: 'IM Fell English', serif; font-style: italic; font-size: 14.5px; line-height: 1.45; margin-top: 8px; margin-bottom: 8px; }
+.fm-list { list-style: none; padding: 9px 0; margin-top: 4px; margin-bottom: 10px; border-top: 1px solid rgba(43,28,11,0.25); border-bottom: 1px solid rgba(43,28,11,0.25); display: grid; gap: 7px; text-align: left; }
+.fm-list li { display: flex; gap: 8px; align-items: baseline; font-family: 'IM Fell English', serif; font-size: 15px; line-height: 1.35; }
+.fm-list li b { font-family: 'Cinzel', serif; font-size: 11px; color: #7a2a12; flex: 0 0 auto; }
+.fm-list li span { flex: 1; }
+.fm-list li em { font-style: normal; font-family: 'Cinzel', serif; font-weight: 700; }
+.fm-list li em.y { color: #21632f; } .fm-list li em.n { color: #8a1d12; }
+.fm-stakes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: left; font-family: 'IM Fell English', serif; font-size: 12.5px; margin-bottom: 10px; }
+.fm-stakes div { border: 1px solid rgba(43,28,11,0.25); border-radius: 5px; padding: 5px 8px; }
+.fm-stakes b { display: block; font-family: 'Cinzel', serif; font-size: 11px; }
+.fm-stakes .ok b { color: #21632f; } .fm-stakes .no b { color: #8a1d12; }
+.fm-prog { font-family: 'Cinzel', serif; font-size: 11.5px; color: #5a3a10; margin-bottom: 10px; }
+.fm-btn { display: block; width: calc(100% - 36px); margin: 4px 18px 10px; padding: 11px; border: 0; border-radius: 5px; background: #6B1A1A; color: #f3e4c0; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(232,200,74,0.45); }
+.fm-reroll { display: inline-flex; align-items: center; gap: 5px; margin: 0 18px 4px; background: none; border: 0; font-family: 'IM Fell English', serif; font-size: 13px; color: #6b4a10; text-decoration: underline; cursor: pointer; }
+.fm-reroll svg { width: 13px; height: 13px; }
+.fm-status { font-family: 'IM Fell English', serif; font-size: 12px; color: #8a1d12; min-height: 14px; margin-bottom: 8px; }
+.fm-verdict { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 12px; }
+.fm-wax { width: 96px; height: 96px; filter: drop-shadow(0 4px 6px rgba(60,20,5,0.5)); transform: scale(2.2) rotate(-14deg); opacity: 0; transition: transform 0.38s cubic-bezier(0.3,1.5,0.5,1), opacity 0.2s; }
+.fm-verdict.stamped .fm-wax { transform: scale(1) rotate(-8deg); opacity: 1; }
+.fm-vtext { font-family: 'Cinzel Decorative', serif; font-size: 16px; letter-spacing: 1.5px; opacity: 0; transition: opacity 0.4s 0.35s; }
+.fm-verdict.ok .fm-vtext { color: #6B1A1A; } .fm-verdict.fail .fm-vtext { color: #2b211c; }
+.fm-vsub { font-family: 'IM Fell English', serif; font-style: italic; font-size: 13.5px; color: #4a3210; opacity: 0; transition: opacity 0.4s 0.5s; }
+.fm-verdict.stamped .fm-vtext, .fm-verdict.stamped .fm-vsub { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .fm-paper { transition: none; } .fm-wax { transition: none; } }

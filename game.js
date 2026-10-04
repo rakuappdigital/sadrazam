@@ -3436,6 +3436,8 @@ function startGame() {
   _criticalShownCount = 0; _criticalLastAt = -999; _criticalYear = 0;
   _muneccimN = 0; _muneccimAt = -999;
   _timedUsedYear = 0;
+  _ferman = null; _fermanStreak = 0; _fermanQueue = []; _fermanShowing = false; _fermanDoneThisGame = 0; _fermanTotalThisGame = 0;
+  document.getElementById("ferman-chip")?.remove();
   _agedSeenThisGame = new Set();
   _stampMeta = new Map();
   _hekimYesCount = 0; _knotIdsSeenThisGame = new Set(); _challengeRewarded = false;
@@ -3888,6 +3890,7 @@ function saveGameState() {
       receivedLetters,
       muneccimN: _muneccimN, muneccimAt: _muneccimAt,
       timedUsedYear: _timedUsedYear,
+      ferman: _ferman, fermanStreak: _fermanStreak, fermanDone: _fermanDoneThisGame, fermanTotal: _fermanTotalThisGame,
       chronicle,
       v: 3
     };
@@ -3996,6 +3999,9 @@ function loadGameState(s) {
   receivedLetters = s.receivedLetters || 0;
   _muneccimN = s.muneccimN || 0; _muneccimAt = s.muneccimAt ?? -999;
   _timedUsedYear = s.timedUsedYear || 0;
+  _ferman = s.ferman || null; _fermanStreak = s.fermanStreak || 0; _fermanQueue = []; _fermanShowing = false;
+  _fermanDoneThisGame = s.fermanDone || 0; _fermanTotalThisGame = s.fermanTotal || 0;
+  setTimeout(_renderFermanChip, 0);
   chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
   isGameOver = false;
   activeArcs = {};
@@ -4614,6 +4620,7 @@ function dealNext() {
   if (_freeYearLimitReached()) { _enforceFreeYearLimit(); return; }
   _effectShimmer(null);
   _stopFuse();
+  if (!_ferman && !isPaywalled && selectedSultan) _fermanNew(true); // yılın fermanı (ilk kart / yeni yıl)
   renderKnotVisual(null); // özel kart tiplerinde birleşik görünüm kalmasın
   _hideAgeOverlay(); card.style.removeProperty("--age-f");
   _hideConsequenceStamp();
@@ -6768,6 +6775,209 @@ function _showSeferMap(result) {
   setTimeout(close, 3200);
 }
 
+// ── Padişah Fermanı (3 Ekim 2026) ─────────────────────────────────────
+// Her yılın başında Sultan 1 (5. yıldan sonra 2) talep verir; yıl sonunda bakılır.
+// Getirildi: Sultan sabrı +12, Vezirler Defteri'ne 1 mühür, ömür boyu her 3 fermanda
+// 1 akçe. Getirilmedi: sabır −12; üst üste 2 başarısızlıkta "Sultan'ın Gazabı" kartı.
+// Kişi talepleri "hiçbir isteğini geri çevirme" biçiminde: karakter o yıl hiç gelmezse
+// de yerine getirilmiş sayılır (yılda ~1 kez geldikleri için "2 kez kabul et" adil olmazdı).
+// Yılda 1 kez 1 akçeyle ferman değiştirilebilir. Durum kayıtla saklanır.
+const FERMAN_STATS = { saray: ["Saray", "the Palace"], "yeniçeri": ["Ordu", "the Army"], ulema: ["Ulema", "the Ulema"], hazine: ["Hazine", "the Treasury"] };
+const FERMAN_PEOPLE = [
+  { key: "5-valide-sultan", dir: "left",  tr: "Valide Sultan'ın hiçbir isteğini geri çevirme.", en: "Refuse none of the Valide Sultan's requests." },
+  { key: "3-seyhulislam",   dir: "left",  tr: "Bu yıl Şeyhülislam'ı hiç kırma.", en: "Do not slight the Şeyhülislam this year." },
+  { key: "2-yeniceri",      dir: "left",  tr: "Yeniçeri Ağası'nın hiçbir isteğini reddetme.", en: "Refuse none of the Janissary Commander's demands." },
+  { key: "8-rakip-vezir",   dir: "right", tr: "Rakip Vezir'in hiçbir teklifini kabul etme.", en: "Accept none of the Rival Vizier's offers." },
+  { key: "15-halk_temsilcisi", dir: "left", tr: "Halkın temsilcisini hiç geri çevirme.", en: "Never turn away the people's representative." },
+];
+const FERMAN_BANS = [
+  { flag: "defterdar_borc_alındı", tr: "Bu yıl borç alma.", en: "Take no loans this year." },
+  { flag: "savaş_başladı", tr: "Bu yıl savaş ilan etme.", en: "Declare no war this year." },
+];
+const FERMAN_INTROS = {
+  kanuni: ["Sadrazamım, kanun herkese eşittir; senin işin onu yaşatmak. Bu yılın sonuna dek:", "My Grand Vizier, the law is equal for all; your task is to keep it alive. By the end of this year:"],
+  yavuz:  ["Uzun söze gerek yok. Yıl bitmeden:", "No need for long words. Before the year is out:"],
+  murad3: ["Sarayın huzuru bozulmasın, Sadrazam. Bu yıl içinde:", "Let the palace's peace remain unbroken, Grand Vizier. Within this year:"],
+};
+let _ferman = null;        // { year, demands:[...], rerolled }
+let _fermanStreak = 0;     // üst üste başarısızlık
+let _fermanQueue = [];     // gösterilecek pencereler
+let _fermanShowing = false;
+
+function _fermanPick(yr) {
+  const ds = [], keys = Object.keys(FERMAN_STATS);
+  const low = keys.slice().sort((a, b) => stats[a] - stats[b]).slice(0, 2);
+  const k = low[Math.floor(Math.random() * low.length)];
+  if (Math.random() < 0.6) {
+    const X = Math.min(75, Math.max(45, Math.round((stats[k] + 8 + yr) / 5) * 5));
+    ds.push({ t: "target", k, X });
+  } else {
+    const Y = Math.min(40, 25 + 5 * Math.floor((yr - 1) / 2));
+    const kk = keys.filter(x => stats[x] > Y + 6);
+    const pick = kk.length ? kk[Math.floor(Math.random() * kk.length)] : k;
+    ds.push({ t: "keep", k: pick, Y, min: stats[pick] });
+  }
+  if (yr >= 5) {
+    const opts = [];
+    FERMAN_BANS.forEach((b, i) => { if (!activeFlags[b.flag]) opts.push({ t: "ban", i }); });
+    FERMAN_PEOPLE.forEach((p, i) => opts.push({ t: "person", i, base: (characterMemory[p.key] || {})[p.dir] || 0 }));
+    if (opts.length) ds.push(opts[Math.floor(Math.random() * opts.length)]);
+  }
+  return ds;
+}
+function _fermanNew(show) {
+  if (isGameOver || !selectedSultan) return;
+  _ferman = { year, demands: _fermanPick(year), rerolled: false };
+  _renderFermanChip();
+  if (show) _fermanEnqueue({ kind: "new" });
+}
+function _fermanDemandOk(d) {
+  if (d.t === "target") return stats[d.k] >= d.X;
+  if (d.t === "keep") return Math.min(d.min, stats[d.k]) >= d.Y;
+  if (d.t === "ban") return !activeFlags[FERMAN_BANS[d.i].flag];
+  if (d.t === "person") { const p = FERMAN_PEOPLE[d.i]; return (((characterMemory[p.key] || {})[p.dir]) || 0) === d.base; }
+  return false;
+}
+function _fermanDemandText(d, en) {
+  const L = en ? 1 : 0;
+  if (d.t === "target") return en ? `Raise ${FERMAN_STATS[d.k][1]} to at least ${d.X} by year's end.` : `Yıl sonunda ${FERMAN_STATS[d.k][0]} en az ${d.X} olsun.`;
+  if (d.t === "keep") return en ? `Do not let ${FERMAN_STATS[d.k][1]} fall below ${d.Y} all year.` : `${FERMAN_STATS[d.k][0]} yıl boyunca ${d.Y}'in altına düşmesin.`;
+  if (d.t === "ban") return [FERMAN_BANS[d.i].tr, FERMAN_BANS[d.i].en][L];
+  if (d.t === "person") return [FERMAN_PEOPLE[d.i].tr, FERMAN_PEOPLE[d.i].en][L];
+  return "";
+}
+function _fermanProgress(d, en) {
+  if (d.t === "target") return `${FERMAN_STATS[d.k][en ? 1 : 0].replace(/^the /, "")} ${Math.round(stats[d.k])}/${d.X}`;
+  if (d.t === "keep") return `${FERMAN_STATS[d.k][en ? 1 : 0].replace(/^the /, "")} ≥${d.Y}`;
+  return _fermanDemandOk(d) ? (en ? "kept" : "tutuldu") : (en ? "broken" : "bozuldu");
+}
+// decide() sonunda: "koru" talepleri için yılın en düşük değeri
+function _fermanTrack() {
+  if (!_ferman) return;
+  _ferman.demands.forEach(d => { if (d.t === "keep") d.min = Math.min(d.min, stats[d.k]); });
+  _renderFermanChip();
+}
+// advanceYear() başında (paywall kontrollerinden ÖNCE): biten yılın fermanına bakılır
+function _fermanCloseYear() {
+  if (!_ferman || _ferman.year !== year || isGameOver) return;
+  const ok = _ferman.demands.every(_fermanDemandOk);
+  const en = window.LANG === 'en';
+  _fermanTotalThisGame++;
+  let reward = "";
+  if (ok) {
+    _fermanStreak = 0;
+    sultanSabir = Math.min(100, sultanSabir + 12);
+    const total = _defterAddFerman();
+    reward = en ? "Sultan's patience +12 · 1 seal to the Ledger" : "Sultan'ın sabrı +12 · Deftere 1 mühür";
+    if (total % 3 === 0) { addAkce(1); reward += en ? " · +1 akce" : " · +1 akçe"; }
+  } else {
+    _fermanStreak++;
+    sultanSabir = Math.max(0, sultanSabir - 12);
+    reward = en ? "Sultan's patience −12" : "Sultan'ın sabrı −12";
+    if (_fermanStreak >= 2) { _fermanStreak = 0; forcedQueue.unshift(_getGazapCard()); reward += en ? " · The Sultan is enraged" : " · Sultan öfkeli"; }
+  }
+  _fermanEnqueue({ kind: "result", ok, reward, ferman: _ferman });
+  _ferman = null;
+  _renderFermanChip();
+  if (!ok) checkSultanSabir();
+}
+function _getGazapCard() {
+  return { id: "sultan_gazabi_" + cardsPlayed, character: "1-sultan", character_name: "Sultan", character_name_en: "The Sultan",
+    text: "İki yıldır fermanlarım yerde sürünüyor. Ya Divan'dan bir başını feda edersin ya da hazinem senin kesenden dolar.",
+    text_en: "For two years my decrees have been trampled. Either you sacrifice a head from the Divan, or my treasury is filled from your own purse.",
+    left_text: "Bir veziri feda et", left_text_en: "Sacrifice a vizier", right_text: "Kendi kesenden öde", right_text_en: "Pay from your purse",
+    left_effects: { saray: 6, "yeniçeri": -8, ulema: -6, hazine: 0 }, right_effects: { saray: 4, "yeniçeri": 0, ulema: 0, hazine: -14 },
+    left_flags_set: [], right_flags_set: [], required_flags: [], excluded_flags: [], weight: 1, category: "royal" };
+}
+function _fermanEnqueue(item) { _fermanQueue.push(item); if (!_fermanShowing) setTimeout(_fermanNext, 350); }
+function _fermanNext() {
+  const item = _fermanQueue.shift();
+  if (!item) { _fermanShowing = false; return; }
+  if (item.kind === "new" && (!_ferman || isGameOver)) { _fermanNext(); return; }
+  _fermanShowing = true;
+  _showFermanOverlay(item, () => { _fermanShowing = false; setTimeout(_fermanNext, 250); });
+}
+const _TUGRA_SVG = `<svg class="fm-tugra" viewBox="0 0 98 62" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linecap="round"><path d="M58 58V8" stroke-width="2.4"/><path d="M66 58V4" stroke-width="2.4"/><path d="M74 58V10" stroke-width="2.4"/><path d="M58 18c10-4 14 4 16-4" stroke-width="1.4"/><path d="M50 50C20 58 4 40 18 28c12-10 34 2 28 16-6 12-32 6-24-8" stroke-width="2"/><path d="M48 46c-18 6-30-6-20-12 8-4 18 4 12 10" stroke-width="1.5"/><path d="M40 58h52c4 0 4-6-2-6" stroke-width="2"/><path d="M80 52c4-10 10-8 12-2" stroke-width="1.4"/></g><circle cx="84" cy="34" r="2" fill="currentColor"/></svg>`;
+function _waxSeal(kind) {
+  // İnce, düzensiz kenarlı mum mühür. ok: kızıl mum + altın halka + "صح" (sahh: Osmanlı kâtiplerinin onay işareti)
+  // fail: kurumuş koyu mum, ortadan çatlak
+  // (50,50) merkezli, sabit "damla" sapmalarıyla düzensiz mum kenarı
+  const J = [3, -2, 4, 1, -3, 2, 5, -1, 2, -4, 3, 0, 4, -2, 1, 3, -3, 2, 0, 4, -1, 2, -2, 3];
+  const P = J.map((j, i) => { const a = i / J.length * Math.PI * 2, r = 43 + j * 0.55; return [50 + r * Math.cos(a), 50 + r * Math.sin(a)]; });
+  const M = P.map((p, i) => { const q = P[(i + 1) % P.length]; return [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; });
+  const f1 = (n) => n.toFixed(1);
+  const edge = `M${f1(M[0][0])} ${f1(M[0][1])} ` + P.map((_, i) => { const p = P[(i + 1) % P.length], m = M[(i + 1) % P.length]; return `Q${f1(p[0])} ${f1(p[1])} ${f1(m[0])} ${f1(m[1])}`; }).join(" ") + "Z";
+  if (kind === "ok") return `<svg class="fm-wax ok" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="wxg" cx="38%" cy="32%"><stop offset="0" stop-color="#d4473a"/><stop offset=".7" stop-color="#8a1d12"/><stop offset="1" stop-color="#5e110a"/></radialGradient></defs><path d="${edge}" fill="url(#wxg)"/><circle cx="50" cy="50" r="30" fill="none" stroke="#e8c84a" stroke-width="1.6"/><circle cx="50" cy="50" r="26" fill="none" stroke="#e8c84a" stroke-width=".6" stroke-dasharray="1.5 2"/><text x="50" y="60" text-anchor="middle" font-size="30" fill="#f3d98a" font-family="'Geeza Pro','Noto Naskh Arabic','Amiri',serif">صح</text></svg>`;
+  return `<svg class="fm-wax fail" viewBox="0 0 100 100" aria-hidden="true"><path d="${edge}" fill="#2b211c"/><circle cx="50" cy="50" r="30" fill="none" stroke="#6d5a48" stroke-width="1.4"/><path d="M50 8 44 30 54 44 46 60 52 74 48 94" fill="none" stroke="#0b0806" stroke-width="3" stroke-linejoin="round"/><path d="M54 44 66 50M46 60 34 64" stroke="#0b0806" stroke-width="1.6"/></svg>`;
+}
+function _showFermanOverlay(item, done) {
+  const en = window.LANG === 'en';
+  const f = item.ferman || _ferman;
+  if (!f) { done(); return; }
+  const FROM = { kanuni: ["KANUNÎ SULTAN SÜLEYMAN'DAN", "FROM SULEIMAN THE MAGNIFICENT"], yavuz: ["YAVUZ SULTAN SELİM'DEN", "FROM SELIM THE GRIM"], murad3: ["SULTAN III. MURAD'DAN", "FROM SULTAN MURAD III"] };
+  const fromTxt = (FROM[selectedSultan?.id] || FROM.kanuni)[en ? 1 : 0];
+  const intro = (FERMAN_INTROS[selectedSultan?.id] || FERMAN_INTROS.kanuni)[en ? 1 : 0];
+  const list = f.demands.map((d, i) => `<li><b>${["I", "II"][i]}.</b><span>${_fermanDemandText(d, en)}</span>${item.kind !== "new" ? `<em class="${_fermanDemandOk(d) ? "y" : "n"}">${_fermanDemandOk(d) ? "✓" : "✗"}</em>` : ""}</li>`).join("");
+  const ov = document.createElement("div");
+  ov.id = "ferman-overlay";
+  let body;
+  if (item.kind === "result") {
+    body = `<div class="fm-kick">${en ? `DECREE OF ${f.year}` : `${f.year}. YILIN FERMANI`}</div>
+      <ul class="fm-list">${list}</ul>
+      <div class="fm-verdict ${item.ok ? "ok" : "fail"}">${_waxSeal(item.ok ? "ok" : "fail")}
+        <div class="fm-vtext">${item.ok ? (en ? "FULFILLED" : "YERİNE GETİRİLDİ") : (en ? "NOT FULFILLED" : "YERİNE GETİRİLMEDİ")}</div>
+        <div class="fm-vsub">${item.reward}</div></div>
+      <button class="fm-btn" type="button">${en ? "CONTINUE" : "DEVAM"}</button>`;
+  } else {
+    const canReroll = item.kind === "new" && !f.rerolled;
+    body = `${_TUGRA_SVG}<div class="fm-from">${fromTxt}</div>
+      <p class="fm-intro">${intro}</p>
+      <ul class="fm-list">${list}</ul>
+      <div class="fm-stakes"><div class="ok">${en ? "If fulfilled" : "Yerine gelirse"}<b>${en ? "Patience +12 · 1 seal" : "Sabır +12 · 1 mühür"}</b></div><div class="no">${en ? "If not" : "Gelmezse"}<b>${en ? "Patience −12" : "Sabır −12"}</b></div></div>
+      ${item.kind === "view" ? `<div class="fm-prog">${f.demands.map(d => _fermanProgress(d, en)).join(" · ")}</div>` : ""}
+      <button class="fm-btn" type="button">${item.kind === "view" ? (en ? "CLOSE" : "KAPAT") : (en ? "AS YOU COMMAND" : "BAŞ ÜSTÜNE")}</button>
+      ${canReroll ? `<button class="fm-reroll" type="button">${en ? "Ask for another decree" : "Başka ferman iste"} · 1 ${AKCE_COIN_SVG}</button><div class="fm-status"></div>` : ""}`;
+  }
+  ov.innerHTML = `<div class="fm-scroll ${item.kind}"><div class="fm-rod"></div><div class="fm-paper">${body}</div><div class="fm-rod"></div></div>`;
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+  try { if (item.kind !== "view") (item.kind === "result" && !item.ok) ? Haptics.statNegative() : Haptics.letterArrival(); } catch (e) {}
+  if (item.kind === "result") setTimeout(() => ov.querySelector(".fm-verdict")?.classList.add("stamped"), 650);
+  const close = () => { ov.classList.remove("on"); setTimeout(() => { ov.remove(); done(); }, 320); };
+  ov.querySelector(".fm-btn").onclick = close;
+  const rr = ov.querySelector(".fm-reroll");
+  if (rr) rr.onclick = () => {
+    const st = ov.querySelector(".fm-status");
+    if (!spendAkce(1)) { if (st) st.textContent = en ? "Not enough akce." : "Akçe yetmiyor."; return; }
+    updateAkceUI();
+    _ferman = { year, demands: _fermanPick(year), rerolled: true };
+    _renderFermanChip();
+    ov.remove(); _showFermanOverlay({ kind: "new" }, done);
+  };
+}
+function _renderFermanChip() {
+  const game = document.getElementById("game"); if (!game) return;
+  let chip = document.getElementById("ferman-chip");
+  if (!_ferman || isGameOver) { chip?.remove(); game.classList.remove("has-ferman"); return; }
+  if (!chip) {
+    chip = document.createElement("button"); chip.id = "ferman-chip"; chip.type = "button";
+    chip.addEventListener("click", () => { if (_ferman && !_fermanShowing) { _fermanShowing = true; _showFermanOverlay({ kind: "view" }, () => { _fermanShowing = false; }); } });
+    const sub = document.getElementById("dynamic-subtitle");
+    if (sub && sub.parentNode) sub.insertAdjacentElement("afterend", chip); else game.appendChild(chip);
+  }
+  const en = window.LANG === 'en', d = _ferman.demands;
+  const allOk = d.every(_fermanDemandOk);
+  chip.innerHTML = `<span class="fc-k">${en ? "DECREE" : "FERMAN"}</span><span class="fc-v">${_fermanProgress(d[0], en)}${d.length > 1 ? ` <i>+1</i>` : ""}</span><span class="fc-dot ${allOk ? "y" : "n"}"></span>`;
+  game.classList.add("has-ferman");
+}
+
+// ── Vezirler Defteri: kalıcı kayıt (Defter ekranı ayrı) ──
+const DEFTER_KEY = "sadrazam_defter";
+function _defterGet() { try { const d = JSON.parse(localStorage.getItem(DEFTER_KEY) || "{}"); return { seals: d.seals || 0, fermans: d.fermans || 0, pages: Array.isArray(d.pages) ? d.pages : [], deaths: Array.isArray(d.deaths) ? d.deaths : [] }; } catch (e) { return { seals: 0, fermans: 0, pages: [], deaths: [] }; } }
+function _defterSet(d) { try { localStorage.setItem(DEFTER_KEY, JSON.stringify(d)); } catch (e) {} }
+function _defterAddFerman() { const d = _defterGet(); d.fermans++; d.seals++; _defterSet(d); _fermanDoneThisGame++; return d.fermans; }
+let _fermanDoneThisGame = 0, _fermanTotalThisGame = 0;
+
 function hasAdvisor(id) {
   return selectedAdvisors.some(a => a.id === id);
 }
@@ -7586,6 +7796,7 @@ function decide(dir) {
 
   applyEffects(currentCard[dir + "_effects"] || {});
   if (isGameOver) return;
+  _fermanTrack();
 
   // Yeni karakterlerin özel etkileri
   if (currentCard.id === "genc_hain_ipucu" && dir === "right" && !traitorRevealed) {
@@ -8106,6 +8317,7 @@ window.addEventListener("touchend",  () => onEnd());
 
 // ── Yıl Geçişi ───────────────────────────────────────────────────
 function advanceYear() {
+  _fermanCloseYear(); // biten yılın fermanı — paywall/sınır kontrollerinden önce
   // Paywall daha önce reddedildiyse: bir daha hiç paywall çıkmaz — bunun yerine
   // her oyun 2. yılın sonunda "ölümle" biter (Tam Sürüm alınana kadar kalıcı).
   // Bu ölüm kesin olmalı: normal triggerGameOver() İkinci Şans (reklam/akçe) teklifi
