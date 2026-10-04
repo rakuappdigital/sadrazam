@@ -9352,9 +9352,9 @@ function _actuallyTriggerGameOver(reason, cause) {
 // Kullanıcının ürettiği çerçevesiz, sinematik görseller (assets/deaths/death-<sebep>.jpg).
 // Resim 8 sn'de yaklaşır; başlık, ölüm metni ve tarih alttan belirir; dokununca ölüm ekranı.
 const DEATH_SCENE_KEYS = ["saray_0", "saray_100", "yeniceri_0", "yeniceri_100", "ulema_0", "ulema_100", "hazine_0", "hazine_100",
-  "saglik", "azil", "sultan_guc", "padisah_red", "sehzade", "free_limit"];
+  "saglik", "azil", "sultan_guc", "padisah_red", "sehzade", "free_limit", "emeklilik"];
 // Kendi görseli olmayan sebepler: en yakın sahne (başlık kendi adıyla kalır)
-const DEATH_SCENE_ALIAS = { yanlis_oda: "sultan_guc", emeklilik: "free_limit" };
+const DEATH_SCENE_ALIAS = { yanlis_oda: "sultan_guc" };
 function _deathSceneImage(key) { return DEATH_SCENE_KEYS.includes(key) ? key : (DEATH_SCENE_ALIAS[key] || "saray_0"); }
 function _playDeathScene(reason, key, onDone, onFail) {
   const pre = new Image();
