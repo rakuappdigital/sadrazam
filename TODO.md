@@ -1,6 +1,48 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 4 Ekim 2026 ← BURADAN DEVAM
+## SIRADAKİ — v1.6.0 / build 40 YÜKLENDİ (4 Ekim 2026) ← BURADAN DEVAM
+
+**Durum:** 1.6.0 (build 40) App Store Connect'e yüklendi — Delivery UUID
+`aca17f91-6674-4633-8afe-35fa0b4b020d`. ASC ayarlarını (görseller, metinler, IAP) kullanıcı
+kendisi yaptı; incelemeye gönderimi kullanıcı yapacak. Kullanıcıdan beklenen: `fullnoads`
+IAP'ı 1.6.0'a eklenmiş olmalı + RevenueCat'e import. GitHub'a push YAPILMADI (onay bekliyor).
+Yenilikler + promotional text: `~/Desktop/yenilikler-1.6.txt`; TR/EN ekran görüntüleri:
+`~/Desktop/appstore-1.6/TR|EN`.
+
+**İlk yükleme reddi ve çözümü:** altool 90328 "dosya adında geçersiz karakter". `www/` ve
+`ios/App/App/public/` içinde, eski bir oturumda zsh'a dosya listesini tek yol olarak veren
+`mkdir -p`'den kalma, adı `game.js assets/divan-bg.jpg …\nassets` olan BOŞ iç içe klasörler
+vardı (git'te izlenmiyordu). Silindi. **Kural:** build öncesi `ios/App/App/public` içinde
+`[A-Za-z0-9._-]` dışı ad var mı tara (CLAUDE.md §8b'de komut).
+
+### 1.6.0'da neler var (hepsi main'de, commit'ler: dbacde1 → 99b6131)
+- **Görseller:** 94 kart görseli kullanıcının yeni çizimleriyle (yanlardan eşit kırpma, 3:4);
+  10 dönem karakteri + 8 yeni karakter + 5 diplomasi muadili portresi; ölüm/son sahneleri.
+- **Dönemler:** IV. Murad (6 mühür) ve III. Ahmed (15 mühür); 35 dönem kartı; Harem Nüfuzu /
+  Sultan'ın Gözü / Halkın Öfkesi sayaçları; Kanunî'ye Matrakçı Nasuh.
+- **Yıl Sonu ekranı:** yıl dönümü tek ekranda, hiçbir pencere kendiliğinden kapanmaz
+  (kullanıcı kuralı); vergi reformu çift gelme hatası düzeltildi; özel kartlar dağıtıldı.
+- **Müzik:** menu5/menu6 yalnız menüde, oyun5/oyun6 yalnız oyunda (fade aynen).
+- **Görünüş:** Hakkında 2B (Divan salonu + canlı rakamlar + kullanıcının metni + Puan Ver /
+  Görüş Yaz), font Alegreya (3B), ana ekranda tuğralı amblem (4A, kompakt), v1.6.0 etiketi.
+- **Hafıza kartları:** karakterler 15–40 kart önceki kararı sorar (sınav, yüzleşme, Rakip
+  Vezir'in tuzağı, etkisiz kedi); oyun başına ≤3; Hafızası Kuvvetli başarımı.
+- **Kart tekrarı:** 88 yeni kart (tek kartlı 10 karaktere 4'er + 8 yeni karakter 6'şar),
+  en sık 35 karta ikişer sahne varyantı. Simülasyon: 4. oyunda yeni içerik %43 → %55.
+- **Market:** Usturlap 3, Kum Saati 2, Mehter Kösü 3, Lale Soğanı 3, Mühürlü Zarf 2 akçe;
+  kozmetikler Çini Kart Çerçevesi 8, Sadrazam Kaftanı 6, Hattat Kalemi 5 akçe.
+- **Diplomasi:** 5 muadil (Venedik, Safevi, Habsburg, Fransa, Moskova), itibar, mektup/tehdit,
+  nadir 3 turlu görüşme, antlaşmalar, Divan Halkası'nda Dış İlişkiler, 4 başarım.
+- **Düzeltmeler:** Koleksiyoncu başarımı hiç açılmıyordu; "Fetvayı erteleyın" yazımı.
+- **Test:** 26 grup (scratchpad) + para/akçe testi (88 kontrol: keseler, Tam Sürüm, Reklamsız,
+  paket, Hoşgeldin, geri yükleme, tüm akçe harcamaları) Chromium+WebKit, TR+EN, ses açık/kapalı.
+
+### Sonraki fikirler (kullanıcı onayı yok, istenirse)
+- 52 "kör" kartın dengelenmesi (uyarı kalsın; 200'er oyun önce/sonra simülasyon).
+- Antlaşmaların Miras olarak bir sonraki saltanata taşınması (demoda önerildi, yapılmadı).
+- Kozmetik çerçeve seçimi şu an Market'te; istenirse Ayarlar'a da kısayol.
+
+## (TAMAMLANDI) 4 Ekim 2026 sabah durumu — 1.5.0 yayında iken
 
 1.5.0 YAYINDA. main'de BUILD ALINMAMIŞ çok şey var (1.5.1 adayı): başarım düzeltmeleri,
 ücretsiz 2 yıl akışı + 3. yıl kilidi, Tam+Reklamsız paketi, yeni paywall + ortak mühür,

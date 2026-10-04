@@ -626,6 +626,16 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
 
+- **v1.6.0 / build 40 (4 Ekim 2026, yüklendi, Delivery UUID `aca17f91-6674-4633-8afe-35fa0b4b020d`)** —
+  dönemler, Yıl Sonu, hafıza kartları, 88 yeni kart, market eşyaları, kozmetikler, diplomasi
+  (§3g). ASC ayarlarını kullanıcı yaptı; `fullnoads` IAP sürüme eklenmeli / RevenueCat'e import.
+  **Build öncesi ZORUNLU kontrol** (ilk yükleme 90328 ile reddedildi: www/ ve public/ içinde
+  zsh'ın tek yol sandığı listeden kalma, adında `\n` olan boş klasörler vardı):
+  ```bash
+  python3 -c "import os,re;print([os.path.join(r,f) for r,d,fs in os.walk('ios/App/App/public') for f in d+fs if not re.fullmatch(r'[A-Za-z0-9._-]+',f)])"
+  ```
+  Boş liste değilse build alma. zsh'ta dosya listelerini her zaman dizi olarak geçir.
+
 - **v1.5.0 / build 29 (30 Eylül 2026, yüklendi, Delivery UUID `583a6571-7d53-4aa3-8f1d-ced35cc921c8`)** — build 28 + ATT düzeltmesi
   (App Store 2.1 reddi: iOS/iPadOS 27'de ATT penceresi görünmedi). İzin artık
   uygulama görünür + 2,5 sn sonra, AdMob başlatılmadan ÖNCE soruluyor
