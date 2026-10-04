@@ -5652,3 +5652,41 @@ html, body {
 .era-toast.on { opacity: 1; transform: translate(-50%, 0); }
 .era-toast.good { color: #7fd197; }
 .era-toast.bad { color: #ff8a70; }
+
+/* ── Yıl Sonu (4 Ekim 2026) ── */
+#yil-sonu { position: fixed; inset: 0; z-index: 270; display: flex; align-items: center; justify-content: center; padding: calc(env(safe-area-inset-top, 0px) + 18px) 20px calc(env(safe-area-inset-bottom, 0px) + 18px);
+  background: radial-gradient(ellipse at 50% 38%, #2a1d0c, #06050a 72%); opacity: 0; transition: opacity 0.45s ease; overflow-y: auto; -webkit-tap-highlight-color: transparent; }
+#yil-sonu.on { opacity: 1; }
+#yil-sonu .ys-in { width: 100%; max-width: 340px; display: flex; flex-direction: column; align-items: center; text-align: center; margin: auto; }
+#yil-sonu .ys-in > * { opacity: 0; transform: translateY(8px); transition: opacity 0.5s ease, transform 0.5s ease; }
+#yil-sonu.s1 .ys-a1, #yil-sonu.s2 .ys-a2, #yil-sonu.s3 .ys-a3, #yil-sonu.s4 .ys-a4, #yil-sonu.s5 .ys-a5, #yil-sonu.s6 .ys-a6, #yil-sonu.s6 .ys-a6b, #yil-sonu.s7 .ys-a7 { opacity: 1; transform: none; }
+#yil-sonu .ys-a1 { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px; color: rgba(240,230,208,0.6); }
+#yil-sonu .ys-a2 { font-family: 'Cinzel Decorative', 'Cinzel', serif; font-size: 58px; line-height: 1; color: var(--gold-light, #e8c84a); margin-top: 6px; text-shadow: 0 0 22px rgba(232,200,74,0.35); }
+#yil-sonu .ys-a2 small { display: block; font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1.6px; color: var(--gold, #c9a227); margin-top: 7px; text-shadow: none; }
+#yil-sonu .ys-a3 { font-family: 'Cinzel', serif; font-size: 16px; color: #f0e6d0; margin-top: 10px; }
+#yil-sonu .ys-a4 { list-style: none; padding: 0; margin: 14px 0 0; font-family: 'IM Fell English', serif; font-size: 13.5px; line-height: 1.4; color: rgba(240,230,208,0.85); display: grid; gap: 6px; text-align: left; width: 100%; }
+#yil-sonu .ys-a4 li::before { content: "◆"; color: var(--gold, #c9a227); font-size: 8px; margin-right: 7px; vertical-align: 2px; }
+#yil-sonu .ys-a4 li b { font-family: 'Cinzel', serif; font-weight: 600; font-size: 11.5px; color: var(--gold-light, #e8c84a); }
+#yil-sonu .ys-a4 li.h { font-style: italic; color: #f0e6d0; }
+#yil-sonu .ys-a5 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 16px; width: 100%; }
+#yil-sonu .ys-a5 div { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1px; color: rgba(240,230,208,0.55); display: grid; gap: 3px; padding: 7px 0; border-radius: 5px; background: rgba(0,0,0,0.3); border: 1px solid rgba(201,162,39,0.18); }
+#yil-sonu .ys-a5 b { font-size: 16px; color: #f0e6d0; letter-spacing: 0; }
+#yil-sonu .ys-a5 b.up { color: #7fd197; }
+#yil-sonu .ys-a5 b.dn { color: #ff8a78; }
+#yil-sonu .ys-a6 { margin-top: 16px; display: flex; align-items: center; gap: 10px; width: 100%; background: rgba(236,220,182,0.93); color: #2a1a0c; border-radius: 6px; padding: 8px 12px; font-family: 'IM Fell English', serif; font-size: 13px; text-align: left; }
+#yil-sonu .ys-a6.fail { background: rgba(190,178,150,0.9); }
+#yil-sonu .ys-a6 svg { width: 46px; height: 46px; flex-shrink: 0; }
+#yil-sonu .ys-a6 b { display: block; font-family: 'Cinzel', serif; font-size: 10.5px; letter-spacing: 1px; margin-bottom: 2px; }
+#yil-sonu .ys-a6b { margin-top: 10px; display: grid; gap: 4px; }
+#yil-sonu .ys-stn { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.5px; color: #7fd197; }
+#yil-sonu .ys-a7 { margin-top: 20px; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; color: #1a1006; background: linear-gradient(180deg, #e8c84a, #c9a227); border: none; padding: 12px 26px; border-radius: 5px; cursor: pointer; box-shadow: 0 4px 16px rgba(201,162,39,0.3); }
+#yil-sonu .ys-a7:disabled { opacity: 0.7; }
+@media (max-height: 700px) {
+  #yil-sonu .ys-a2 { font-size: 46px; }
+  #yil-sonu .ys-a4 { font-size: 12.5px; margin-top: 10px; }
+  #yil-sonu .ys-a5 { margin-top: 12px; }
+  #yil-sonu .ys-a6 { margin-top: 12px; }
+  #yil-sonu .ys-a7 { margin-top: 14px; }
+}
+#yil-sonu .ys-a6 .fm-wax { width: 46px; height: 46px; opacity: 0; transform: scale(2.2) rotate(-14deg); }
+#yil-sonu.s6 .ys-a6 .fm-wax { opacity: 1; transform: scale(1) rotate(-8deg); transition-delay: 0.25s; }

@@ -3557,6 +3557,7 @@ function startGame() {
   document.getElementById("ferman-chip")?.remove();
   relPoints = {}; _relRescued = {}; _relKomploAt = {}; _relKomploDone = {}; _divanYear = 0; _divanUsed = [];
   _eraReset();
+  _ysReset();
   _endState = _endFresh();
   _agedSeenThisGame = new Set();
   _stampMeta = new Map();
@@ -4097,7 +4098,7 @@ function saveGameState() {
       timedUsedYear: _timedUsedYear,
       ferman: _ferman, fermanStreak: _fermanStreak, fermanDone: _fermanDoneThisGame, fermanTotal: _fermanTotalThisGame,
       relPoints, relRescued: _relRescued, relKomploAt: _relKomploAt, relKomploDone: _relKomploDone, divanYear: _divanYear, divanUsed: _divanUsed,
-      era: _eraState,
+      era: _eraState, ys: { s1: _ysSnap1, s5: _ysSnap5, def: _ysDeferred, last: _ysLastYear },
       endState: _endState,
       chronicle,
       v: 3
@@ -4212,6 +4213,7 @@ function loadGameState(s) {
   setTimeout(_renderFermanChip, 0);
   relPoints = s.relPoints || {}; _relRescued = s.relRescued || {}; _relKomploAt = s.relKomploAt || {}; _relKomploDone = s.relKomploDone || {};
   _eraReset(s.era);
+  _ysReset(s.ys);
   _divanYear = s.divanYear || 0; _divanUsed = s.divanUsed || [];
   _endState = s.endState ? { ..._endFresh(), ...s.endState } : _endFresh();
   chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
@@ -4462,6 +4464,7 @@ function getEventCards() {
 
 function getNextCard() {
   checkScheduledCards();
+  _ysReleaseDeferred();
   if (forcedQueue.length) return forcedQueue.shift();
 
   // Arc kontrolü
@@ -6423,6 +6426,7 @@ function tryPadisahZiyareti() {
   if (isGameOver) return;
   if (cardsPlayed < _padisahZiyaretiNext) return;
   if (year < 3) return; // İlk 3 yıl gelmesin
+  if (cardsPlayed % CARDS_PER_YEAR < 3) return; // Yıl Sonu'nun hemen ardından değil
   _padisahZiyaretiNext = cardsPlayed + Math.round(90 * (0.75 + Math.random() * 0.5));
   _padisahZiyaretiCount++;
   showPadisahZiyareti();
@@ -6915,12 +6919,13 @@ function _timeoutEffects(c) {
 function _fusePaused() {
   if (document.hidden) return true;
   if (_settOv && _settOv.style.display === 'flex') return true;
-  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay, #divan-oturumu, .info-panel-overlay, #rel-rescue-overlay");
+  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay, #divan-oturumu, .info-panel-overlay, #rel-rescue-overlay, #yil-sonu, #ending-overlay");
 }
 function _maybeStartFuse(c) {
   _stopFuse();
   const mode = _timedSetting();
   if (mode === 'off' || !_isCrisisCard(c) || _timedUsedYear === year || isGameOver) return;
+  if (cardsPlayed % CARDS_PER_YEAR === 0) return; // yeni yılın ilk kartı (Yıl Sonu'ndan hemen sonra) fitilsiz
   _timedUsedYear = year;
   const total = TIMED_BASE_MS * (TIMED_DIFF[difficultyId] || 1) * (mode === 'slow' ? 1.5 : 1);
   const r = card.getBoundingClientRect();
@@ -7130,7 +7135,8 @@ function _fermanCloseYear() {
     reward = en ? "Sultan's patience −12" : "Sultan'ın sabrı −12";
     if (_fermanStreak >= 2) { _fermanStreak = 0; forcedQueue.unshift(_getGazapCard()); reward += en ? " · The Sultan is enraged" : " · Sultan öfkeli"; }
   }
-  _fermanEnqueue({ kind: "result", ok, reward, ferman: _ferman });
+  if (_ysCur) _ysCur.ferman = { ok, reward };
+  else _fermanEnqueue({ kind: "result", ok, reward, ferman: _ferman });
   _ferman = null;
   _renderFermanChip();
   if (!ok) checkSultanSabir();
@@ -7143,14 +7149,19 @@ function _getGazapCard() {
     left_effects: { saray: 6, "yeniçeri": -8, ulema: -6, hazine: 0 }, right_effects: { saray: 4, "yeniçeri": 0, ulema: 0, hazine: -14 },
     left_flags_set: [], right_flags_set: [], required_flags: [], excluded_flags: [], weight: 1, category: "royal" };
 }
-function _fermanEnqueue(item) { _fermanQueue.push(item); if (!_fermanShowing) setTimeout(_fermanNext, 350); }
+let _fermanKickT = 0;
+function _fermanKick(ms) { if (_fermanShowing || _fermanKickT) return; _fermanKickT = setTimeout(() => { _fermanKickT = 0; _fermanNext(); }, ms); }
+function _fermanEnqueue(item) { _fermanQueue.push(item); _fermanKick(350); }
 function _fermanNext() {
+  if (_fermanShowing) return; // bir pencere açık: kapanınca kuyruk kendisi ilerler
   const item = _fermanQueue.shift();
   if (!item) { _fermanShowing = false; return; }
   if (item.kind === "new" && (!_ferman || isGameOver)) { _fermanNext(); return; }
   _fermanShowing = true;
-  const after = () => { _fermanShowing = false; setTimeout(_fermanNext, 250); };
+  const after = () => { _fermanShowing = false; _fermanKick(250); };
   if (item.kind === "ending") { _showEndingOverlay(item.id, after); return; }
+  if (item.kind === "yearend") { if (item.skip || isGameOver) { _fermanShowing = false; _fermanNext(); return; } _showYearEnd(item, after); return; }
+  if (item.kind === "call") { _fermanShowing = false; if (!isGameOver) item.fn(); _fermanNext(); return; }
   _showFermanOverlay(item, after);
 }
 const _TUGRA_SVG = `<svg class="fm-tugra" viewBox="0 0 98 62" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linecap="round"><path d="M58 58V8" stroke-width="2.4"/><path d="M66 58V4" stroke-width="2.4"/><path d="M74 58V10" stroke-width="2.4"/><path d="M58 18c10-4 14 4 16-4" stroke-width="1.4"/><path d="M50 50C20 58 4 40 18 28c12-10 34 2 28 16-6 12-32 6-24-8" stroke-width="2"/><path d="M48 46c-18 6-30-6-20-12 8-4 18 4 12 10" stroke-width="1.5"/><path d="M40 58h52c4 0 4-6-2-6" stroke-width="2"/><path d="M80 52c4-10 10-8 12-2" stroke-width="1.4"/></g><circle cx="84" cy="34" r="2" fill="currentColor"/></svg>`;
@@ -7226,7 +7237,7 @@ function _renderFermanChip() {
   if (!_ferman || isGameOver) { chip?.remove(); game.classList.remove("has-ferman"); return; }
   if (!chip) {
     chip = document.createElement("button"); chip.id = "ferman-chip"; chip.type = "button";
-    chip.addEventListener("click", () => { if (_ferman && !_fermanShowing) { _fermanShowing = true; _showFermanOverlay({ kind: "view" }, () => { _fermanShowing = false; }); } });
+    chip.addEventListener("click", () => { if (_ferman && !_fermanShowing) { _fermanShowing = true; _showFermanOverlay({ kind: "view" }, () => { _fermanShowing = false; _fermanKick(250); }); } });
     const sub = document.getElementById("dynamic-subtitle");
     if (sub && sub.parentNode) sub.insertAdjacentElement("afterend", chip); else game.appendChild(chip);
   }
@@ -7652,7 +7663,8 @@ function _endStationDone(id, idx) {
   if (p[idx] || d.end.done.includes(id)) return;
   p[idx] = true; _defterSet(d);
   const e = ENDINGS.find(x => x.id === id), en = window.LANG === 'en';
-  _showEndToast(en ? `Path of ${e.en} · Station ${idx ? "II" : "I"} complete` : `${e.tr} yolu · Durak ${idx ? "II" : "I"} tamam`);
+  const txt = en ? `Path of ${e.en} · Station ${idx ? "II" : "I"} complete` : `${e.tr} yolu · Durak ${idx ? "II" : "I"} tamam`;
+  if (_ysCur) _ysCur.stations.push(txt); else _showEndToast(txt);
 }
 function _showEndToast(txt) {
   const game = document.getElementById("game"); if (!game) return;
@@ -7777,6 +7789,117 @@ function askRetirement() {
   };
 }
 
+// ── Yıl Sonu (4 Ekim 2026) ─────────────────────────────────────────────
+// Yıl dönümünde art arda açılan pencereler (ferman sonucu, durak bildirimleri,
+// 5. yıllarda Yıl Özeti kartı, paywall) tek bir ekranda birleşti. Sıra ferman
+// kuyruğu üzerinden: Yıl Sonu → (varsa) Son → (ücretsiz 2. yıl) paywall → yeni
+// ferman. Hiçbir pencere kendiliğinden kapanmaz; Yıl Sonu kendi düğmesini bekler.
+// Dönümde biriken özel kartlar (_ysDefer) birkaç kart sonraya dağıtılır.
+let _ysCur = null;          // advanceYear sürerken doldurulan ekran verisi
+let _ysSnap1 = null, _ysSnap5 = null; // yıl / beş yıl başındaki barlar
+let _ysDeferred = [];       // [{ at, card }]
+let _ysLastYear = 0;        // ekranı gösterilen son yıl (satın alma sonrası ikinci çağrı için)
+function _ysReset(saved) {
+  const o = saved && typeof saved === "object" ? saved : {};
+  _ysCur = null; _ysSnap1 = o.s1 || null; _ysSnap5 = o.s5 || null;
+  _ysDeferred = Array.isArray(o.def) ? o.def.filter(d => d && d.card && typeof d.at === "number") : [];
+  _ysLastYear = o.last || 0;
+  document.getElementById("yil-sonu")?.remove();
+}
+function _ysStart() {
+  const item = { kind: "yearend", endedYear: year, stations: [], ferman: null };
+  _fermanQueue.push(item); // önce Yıl Sonu, sonra bu dönümde sıraya girenler
+  return item;
+}
+function _ysAfter(fn) {
+  if (_ysCur) _fermanEnqueue({ kind: "call", fn }); else fn();
+}
+function _ysDefer(card, n) { _ysDeferred.push({ at: cardsPlayed + n, card }); }
+function _ysReleaseDeferred() {
+  if (!_ysDeferred.length) return;
+  const due = _ysDeferred.filter(d => cardsPlayed >= d.at);
+  if (!due.length) return;
+  _ysDeferred = _ysDeferred.filter(d => cardsPlayed < d.at);
+  due.forEach(d => forcedQueue.push(d.card));
+}
+function _ysModalOpen() {
+  if (_fermanShowing || _fermanKickT || _fermanQueue.length) return true; // pencereler arası boşluk da sayılır
+  return !!document.querySelector("#yil-sonu, #ferman-overlay, #ending-overlay, #sultan-event-overlay, #paywall-screen.visible, #free-limit-overlay, #death-scene, #divan-overlay, #divan-oturumu, #culus-overlay, #miras-overlay");
+}
+function _ysFinish() {
+  const item = _ysCur; _ysCur = null;
+  if (!item) return;
+  const ey = item.endedYear, base = (selectedSultan && selectedSultan.stats) || stats;
+  const five = ey > 0 && ey % 5 === 0;
+  const from = five ? (_ysSnap5 || base) : (_ysSnap1 || base);
+  item.five = five;
+  item.d = {}; Object.keys(stats).forEach(k => { item.d[k] = Math.round((stats[k] ?? 50) - (from[k] ?? 50)); });
+  item.hy = hicriYear;
+  item.lines = chronicle.filter(e => e.y === ey).sort((a, b) => b.sc - a.sc).slice(0, 3);
+  if (ey === _ysLastYear || isGameOver) item.skip = true; else _ysLastYear = ey;
+  _ysSnap1 = { ...stats };
+  if (five) _ysSnap5 = { ...stats };
+  _fermanKick(350);
+}
+const YS_NAMES = { // [artı, eksi] × [tr, en]
+  saray:      [["İhtişam Yılı", "Year of Splendour"], ["Entrika Yılı", "Year of Intrigue"]],
+  "yeniçeri": [["Kılıç Yılı", "Year of the Sword"], ["Kazan Kaldırma Yılı", "Year of Unrest"]],
+  ulema:      [["Takva Yılı", "Year of Piety"], ["Fitne Yılı", "Year of Discord"]],
+  hazine:     [["Bereket Yılı", "Year of Plenty"], ["Kıtlık Yılı", "Year of Want"]],
+};
+function _ysYearName(d, en) {
+  let best = null, mag = 0;
+  for (const [k, v] of Object.entries(d)) if (YS_NAMES[k] && Math.abs(v) > mag) { mag = Math.abs(v); best = k; }
+  if (!best || mag < 8) return en ? "Year of Calm" : "Huzur Yılı";
+  return YS_NAMES[best][d[best] > 0 ? 0 : 1][en ? 1 : 0];
+}
+function _showYearEnd(item, done) {
+  document.getElementById("yil-sonu")?.remove();
+  const en = window.LANG === 'en', ey = item.endedYear;
+  const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  const greg = Math.round(item.hy * 0.970224 + 621.5643);
+  const sub = item.five
+    ? (en ? `AD ${greg} · YEARS ${Math.max(1, ey - 4)}–${ey}` : `M. ${greg} · ${Math.max(1, ey - 4)}–${ey}. YILLAR`)
+    : (en ? `AD ${greg} · YEAR ${ey} COMPLETE` : `M. ${greg} · ${ey}. YIL TAMAM`);
+  const lines = item.lines.length
+    ? item.lines.map(e => `<li${e.k === "crisis" || e.k === "knot" ? ' class="h"' : ""}><b>${esc(en ? e.ne : e.n)}</b> — ${esc(en ? e.te : e.t)}</li>`).join("")
+    : `<li class="h">${en ? "A quiet year in the Divan." : "Divan sakin bir yıl geçirdi."}</li>`;
+  const SL = [["saray", "SARAY", "PALACE"], ["yeniçeri", "ORDU", "ARMY"], ["ulema", "ULEMA", "CLERGY"], ["hazine", "HAZİNE", "TREASURY"]];
+  const deltas = SL.map(([k, tr, enL]) => { const v = item.d[k] || 0; return `<div>${en ? enL : tr}<b class="${v > 0 ? "up" : v < 0 ? "dn" : ""}">${v > 0 ? "+" + v : v < 0 ? "−" + Math.abs(v) : "0"}</b></div>`; }).join("");
+  const f = item.ferman;
+  const fm = f ? `<div class="ys-a6 ${f.ok ? "ok" : "fail"}">${_waxSeal(f.ok ? "ok" : "fail")}<span><b>${f.ok ? (en ? "DECREE FULFILLED" : "FERMAN YERİNE GETİRİLDİ") : (en ? "DECREE FAILED" : "FERMAN YERİNE GETİRİLEMEDİ")}</b>${esc(f.reward)}</span></div>` : "";
+  const st = item.stations.map(t => `<div class="ys-stn">✦ ${esc(t)}</div>`).join("");
+  const goesOn = !isPaywalled && !_fermanQueue.some(q => q.kind === "ending" || q.kind === "call");
+  const btn = goesOn ? (en ? "NEW DECREE ›" : "YENİ FERMAN ›") : (en ? "CONTINUE ›" : "DEVAM ›");
+  const ov = document.createElement("div");
+  ov.id = "yil-sonu";
+  ov.innerHTML = `<div class="ys-in">
+    <div class="ys-a1">${item.five ? (en ? "FIVE YEARS HAVE PASSED" : "BEŞ YILIN SONU") : (en ? "ANOTHER YEAR HAS PASSED" : "BİR YIL DAHA GEÇTİ")}</div>
+    <div class="ys-a2">${item.hy}<small>${sub}</small></div>
+    <div class="ys-a3">— ${_ysYearName(item.d, en)} —</div>
+    <ul class="ys-a4">${lines}</ul>
+    <div class="ys-a5">${deltas}</div>
+    ${fm}${st ? `<div class="ys-a6b">${st}</div>` : ""}
+    <button type="button" class="ys-a7">${btn}</button></div>`;
+  document.body.appendChild(ov);
+  if (window.playYearAdvance) { /* yıl sesi advanceYear'da zaten çaldı */ }
+  const steps = ["s1", "s2", "s3", "s4", "s5", "s6", "s7"];
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const timers = [];
+  const showAll = () => { timers.forEach(clearTimeout); steps.forEach(c => ov.classList.add(c)); };
+  requestAnimationFrame(() => {
+    ov.classList.add("on");
+    if (reduce) showAll(); else steps.forEach((c, i) => timers.push(setTimeout(() => ov.classList.add(c), 200 + i * 340)));
+  });
+  ov.addEventListener("click", (ev) => { if (!ev.target.closest(".ys-a7")) showAll(); });
+  const b = ov.querySelector(".ys-a7");
+  b.onclick = () => {
+    b.disabled = true; showAll();
+    ov.classList.remove("on");
+    setTimeout(() => { ov.remove(); done(); }, 320);
+  };
+}
+
 // ── Dönemler (4 Ekim 2026) ─────────────────────────────────────────────
 // Her sultanın dönemi kendi kart setini getirir (cards.json "era" alanı). Dönem
 // kartları normal havuzda değildir; her kartta ERA_PICK_CHANCE ile ayrı çekilir,
@@ -7797,7 +7920,7 @@ function _eraDef() { return (selectedSultan && ERA_DEFS[selectedSultan.id]) || n
 function _eraReset(saved) {
   const def = _eraDef();
   _eraState = (saved && typeof saved === "object")
-    ? { m: Math.max(0, Math.min(100, +saved.m || 0)), crisisAt: typeof saved.crisisAt === "number" ? saved.crisisAt : -999 }
+    ? { m: Math.max(0, Math.min(100, +saved.m || 0)), crisisAt: typeof saved.crisisAt === "number" ? saved.crisisAt : -999, yc: saved.yc }
     : { m: def && def.meter ? def.start : 0, crisisAt: -999 };
   _renderEraChip();
 }
@@ -7853,6 +7976,8 @@ function _eraOnDecision(card, dir) {
   _renderEraChip();
 }
 function _eraYearClose() {
+  if (_eraState.yc === year) return;
+  _eraState.yc = year;
   if (selectedSultan && selectedSultan.id === "ahmed3") { _eraMeterAdd(5); _renderEraChip(); }
 }
 function _renderEraChip() {
@@ -7935,6 +8060,8 @@ function gainItem(itemId, persistent) {
 function showItemUnlockAnimation(itemId) {
   const itm = ITEMS[itemId];
   if (!itm) return;
+  if (isGameOver) return;
+  if (_ysModalOpen()) { setTimeout(() => showItemUnlockAnimation(itemId), 500); return; } // pencere kapanınca
 
   // Overlay — karartma
   const overlay = document.createElement("div");
@@ -7962,6 +8089,8 @@ function showItemUnlockAnimation(itemId) {
 function showItemInfoPopup(itemId) {
   const itm = ITEMS[itemId];
   if (!itm) return;
+  if (isGameOver) return;
+  if (_ysModalOpen()) { setTimeout(() => showItemInfoPopup(itemId), 500); return; } // Yıl Sonu / ferman kapanınca
 
   const _isENiip = window.LANG === 'en';
   const _itmEN = (_isENiip && window.EN_ITEMS) ? window.EN_ITEMS[itemId] : null;
@@ -9232,6 +9361,10 @@ window.addEventListener("touchend",  () => onEnd());
 
 // ── Yıl Geçişi ───────────────────────────────────────────────────
 function advanceYear() {
+  _ysCur = _ysStart();
+  try { _advanceYearInner(); } finally { _ysFinish(); }
+}
+function _advanceYearInner() {
   _fermanCloseYear(); // biten yılın fermanı — paywall/sınır kontrollerinden önce
   _endYearClose();    // kader yolu durakları + son kontrolü (aynı sebeple önce)
   _eraYearClose();
@@ -9243,12 +9376,12 @@ function advanceYear() {
       && localStorage.getItem('sadrazam_paywall_declined') === '1'
       && (year + 1) > DECLINED_YEAR_LIMIT) {
     isPaywalled = true;
-    showFreeLimitPopup();
+    _ysAfter(showFreeLimitPopup);
     return;
   }
   if (FREEMIUM_ENABLED && !isPaywalled && (year + 1) > FREE_YEAR_LIMIT && !isFullVersionUnlocked()) {
     isPaywalled = true;
-    showPaywallScreen();
+    _ysAfter(() => showPaywallScreen());
     return;
   }
   year++;
@@ -9276,7 +9409,7 @@ function advanceYear() {
   // Sultan mektupları kaldırıldı — sultan kartları showSultanEventCard ile yönetiliyor
 
   // Yıllık event kartı
-  const eventCards = getEventCards();
+  const eventCards = getEventCards().filter(c => c.id !== 'event_vergi_reformu');
   if (eventCards.length > 0) {
     const ev = eventCards[Math.floor(Math.random() * eventCards.length)];
     forcedQueue.push(ev);
@@ -9298,19 +9431,19 @@ function advanceYear() {
     );
     if (sultanSpecific.length > 0) {
       const pick = sultanSpecific[Math.floor(Math.random() * sultanSpecific.length)];
-      forcedQueue.push(pick);
+      _ysDefer(pick, 6);
     }
   }
 
   // 5 yılda bir vergi ödülü event'i
   if (year % 5 === 0) {
     const vergiEvent = allCards.find(c => c.id === 'event_vergi_reformu');
-    if (vergiEvent) forcedQueue.unshift(vergiEvent);
+    if (vergiEvent) _ysDefer(vergiEvent, 3);
   }
 
   // Divan Sahnesi — yıl 5, 10, 15, 20
   if ([5, 10, 15, 20].includes(year)) {
-    forcedQueue.push({
+    _ysDefer({
       id: 'divan_sahnesi_' + year,
       type: 'easter',
       easter_type: 'divan_sahnesi',
@@ -9320,24 +9453,11 @@ function advanceYear() {
       button: null,
       stat_effect: null,
       _divan_year: year,
-    });
+    }, 4);
   }
 
-  // 5 yılda bir yıl özeti kartı (vergi event'inden sonra sıraya girer)
-  if (year % 5 === 0 && year > 0) {
-    forcedQueue.push({
-      id: 'year_summary_' + year,
-      type: 'easter',
-      easter_type: 'year_summary',
-      character: 'year-summary',
-      character_name: '',
-      text: '',
-      button: null,
-      stat_effect: null,
-      _snap_stats: { ...stats },
-      _snap_year: year,
-    });
-  }
+  // 5 yılda bir Yıl Özeti kartı kaldırıldı (4 Ekim 2026): Yıl Sonu ekranı 5. yıllarda
+  // beş yılın bar değişimlerini gösteriyor.
 
   // Tarihsel olaylar (sultan_specific olmayan, genel)
   const histCards = allCards.filter(c =>
@@ -9347,7 +9467,7 @@ function advanceYear() {
     !playCounts[c.id]
   );
   if (histCards.length > 0 && Math.random() < 0.25) {
-    forcedQueue.push(histCards[Math.floor(Math.random() * histCards.length)]);
+    _ysDefer(histCards[Math.floor(Math.random() * histCards.length)], 8);
   }
 
   // ── ÖZELLİK 1: MÜTTEFİK FLAG'LERİNİ GÜNCELLE ───────────────────
@@ -9849,7 +9969,7 @@ function _recordChronicle(c, dir, newFlags) {
   if (!k) return;
   const tr = c[dir + "_text"], en = c[dir + "_text_en"];
   if (!tr) return;
-  chronicle.push({ hy: hicriYear, s: getCurrentSeason(), k, sc,
+  chronicle.push({ hy: hicriYear, y: year, s: getCurrentSeason(), k, sc,
     n: c.character_name || "", ne: c.character_name_en || c.character_name || "", t: tr, te: en || tr });
   if (chronicle.length > CHRONICLE_MAX) { // en düşük puanlı en eskiyi at
     let drop = 0; chronicle.forEach((e, i) => { if (e.sc < chronicle[drop].sc) drop = i; });
