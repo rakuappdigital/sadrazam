@@ -51,16 +51,16 @@
       "left_text": "Teşekkür et, alma",
       "right_text": "Minnetle kabul et",
       "left_effects": {
-        "saray": 4,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": 5,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 10,
+        "saray": 8,
         "yeniçeri": -3,
-        "ulema": 0,
-        "hazine": 9
+        "ulema": -2,
+        "hazine": 8
       },
       "left_flags_set": [],
       "right_flags_set": [
@@ -370,7 +370,7 @@
       "left_text": "Sert olma",
       "right_text": "Gereken yapılsın",
       "left_effects": {
-        "saray": 0,
+        "saray": -3,
         "yeniçeri": 5,
         "ulema": 2,
         "hazine": 0
@@ -634,7 +634,8 @@
       "right_text_en": "If you see fit",
       "investigate_text_en": "",
       "speech_left_en": "This is not the path of God, Pasha.",
-      "speech_right_en": "So sharia commands — rightly done."
+      "speech_right_en": "So sharia commands — rightly done.",
+      "arz": true
     },
     {
       "id": "seyhulislam_vakıf",
@@ -724,7 +725,8 @@
           "text": "Hesapları üç kez topladım, Paşam: sene sonunda açık veriyoruz. Ordunun payından mı kesilsin, yoksa vergi mi artsın?",
           "text_en": "I have added the accounts three times, Pasha: we will end the year in deficit. Shall we cut the army's share, or raise taxes?"
         }
-      ]
+      ],
+      "arz": true
     },
     {
       "id": "defterdar_vergi_tahsil",
@@ -908,7 +910,8 @@
       "speech_left_en": "You will regret this, my lord.",
       "speech_right_en": "The state has found safety.",
       "triggers_on_right": "gumruk_artisi_tepki",
-      "trigger_delay": 10
+      "trigger_delay": 10,
+      "arz": true
     },
     {
       "id": "valide_evlilik",
@@ -947,7 +950,8 @@
       "right_text_en": "May it be blessed",
       "investigate_text_en": "",
       "speech_left_en": "You should listen to your mother, Pasha.",
-      "speech_right_en": "A wise decision — may God be pleased."
+      "speech_right_en": "A wise decision — may God be pleased.",
+      "arz": true
     },
     {
       "id": "valide_harem_harcaması",
@@ -1005,13 +1009,13 @@
       "left_text": "Ulema'dan seçin",
       "right_text": "Acem hocayı alın",
       "left_effects": {
-        "saray": 2,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 7,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 3,
+        "saray": 5,
         "yeniçeri": 0,
         "ulema": -5,
         "hazine": 0
@@ -1041,7 +1045,8 @@
           "text": "Şehzadenin hocası emekliye ayrıldı. Yerine iki aday var: biri ulemanın gözdesi, öbürü Acem sarayında şehzadeler yetiştirmiş biri.",
           "text_en": "The prince's tutor has retired. Two candidates remain: one is the clergy's favourite, the other once raised princes at the Persian court."
         }
-      ]
+      ],
+      "arz": true
     },
     {
       "id": "valide_cariyer_şüphesi",
@@ -1096,7 +1101,7 @@
       "left_text": "Mühürlü kalsın",
       "right_text": "Açın okuyalım",
       "left_effects": {
-        "saray": 4,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 4,
         "hazine": 0
@@ -1124,7 +1129,8 @@
       "right_text_en": "Open it and read it",
       "investigate_text_en": "",
       "speech_left_en": "You should listen to your mother, Pasha.",
-      "speech_right_en": "A wise decision — may God be pleased."
+      "speech_right_en": "A wise decision — may God be pleased.",
+      "arz": true
     },
     {
       "id": "kaptan_korsan",
@@ -1235,8 +1241,8 @@
       "left_text": "Resmî yoldan gidin",
       "right_text": "Gizli harekâta onay",
       "left_effects": {
-        "saray": 3,
-        "yeniçeri": 0,
+        "saray": 2,
+        "yeniçeri": -4,
         "ulema": 4,
         "hazine": 0
       },
@@ -1263,7 +1269,8 @@
       "right_text_en": "Approve the covert operation",
       "investigate_text_en": "",
       "speech_left_en": "The seas are unforgiving, Grand Vizier.",
-      "speech_right_en": "The fleet is ready, awaiting your orders."
+      "speech_right_en": "The fleet is ready, awaiting your orders.",
+      "arz": true
     },
     {
       "id": "kaptan_fırtına_hasarı",
@@ -1326,9 +1333,9 @@
       "left_text": "Reddediyoruz",
       "right_text": "Müzakereye açığız",
       "left_effects": {
-        "saray": 5,
-        "yeniçeri": 0,
-        "ulema": 6,
+        "saray": 3,
+        "yeniçeri": -3,
+        "ulema": 5,
         "hazine": 0
       },
       "right_effects": {
@@ -1415,10 +1422,10 @@
       "left_text": "Arabuluculuğa gerek yok",
       "right_text": "Masaya oturun",
       "left_effects": {
-        "saray": 3,
+        "saray": 2,
         "yeniçeri": 4,
-        "ulema": 2,
-        "hazine": 0
+        "ulema": 0,
+        "hazine": -4
       },
       "right_effects": {
         "saray": -2,
@@ -1454,9 +1461,9 @@
       "left_text": "Gizli pakt istemiyoruz",
       "right_text": "Müzakereye başlayın",
       "left_effects": {
-        "saray": 3,
-        "yeniçeri": 2,
-        "ulema": 5,
+        "saray": 2,
+        "yeniçeri": -3,
+        "ulema": 4,
         "hazine": 0
       },
       "right_effects": {
@@ -1497,14 +1504,14 @@
       "right_text": "Takası gerçekleştirin",
       "left_effects": {
         "saray": 2,
-        "yeniçeri": 4,
+        "yeniçeri": -4,
         "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 5,
+        "saray": 3,
         "yeniçeri": 6,
-        "ulema": 4,
+        "ulema": 2,
         "hazine": -5
       },
       "left_flags_set": [],
@@ -1535,10 +1542,10 @@
       "left_text": "Hayali anlaşma kabul edilmez",
       "right_text": "Şartları dinleyin",
       "left_effects": {
-        "saray": 4,
+        "saray": 3,
         "yeniçeri": 0,
-        "ulema": 5,
-        "hazine": 0
+        "ulema": 4,
+        "hazine": -3
       },
       "right_effects": {
         "saray": -3,
@@ -1613,13 +1620,13 @@
       "left_text": "Kulağa bile almayın",
       "right_text": "Araştırın",
       "left_effects": {
-        "saray": 3,
+        "saray": -2,
         "yeniçeri": 0,
         "ulema": 4,
         "hazine": 0
       },
       "right_effects": {
-        "saray": -2,
+        "saray": 4,
         "yeniçeri": 0,
         "ulema": -6,
         "hazine": 0
@@ -1692,16 +1699,16 @@
       "left_text": "Güvenmiyorum, reddediyorum",
       "right_text": "Geçici ittifak kurun",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": -2,
+        "saray": 3,
         "yeniçeri": 0,
-        "ulema": 0,
-        "hazine": 5
+        "ulema": -3,
+        "hazine": 4
       },
       "left_flags_set": [],
       "right_flags_set": [
@@ -1734,15 +1741,15 @@
       "left_text": "Soğukkanlı kalın",
       "right_text": "Divan'da yanıt verin",
       "left_effects": {
-        "saray": -4,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 4,
+        "saray": 5,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": -3,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -1847,9 +1854,9 @@
       "left_text": "Rüşveti geri çevirin",
       "right_text": "Affı değerlendirin",
       "left_effects": {
-        "saray": 4,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 3,
+        "ulema": 4,
         "hazine": 0
       },
       "right_effects": {
@@ -2123,9 +2130,9 @@
       "left_text": "Söylemeyin, bilmek istemiyorum",
       "right_text": "Dinliyorum",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 2,
         "hazine": 0
       },
       "right_effects": {
@@ -2163,16 +2170,16 @@
       "left_text": "Denenmiş ilaçlar kullanın",
       "right_text": "Deneyin, sonucu bildirin",
       "left_effects": {
-        "saray": 2,
+        "saray": -2,
         "yeniçeri": 0,
         "ulema": 4,
         "hazine": 0
       },
       "right_effects": {
-        "saray": -2,
+        "saray": 4,
         "yeniçeri": 0,
         "ulema": -4,
-        "hazine": -4
+        "hazine": -3
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -2226,7 +2233,8 @@
       "right_text_en": "Give it to the Sultan's man",
       "investigate_text_en": "",
       "speech_left_en": "The Sipahi have no patience, Pasha.",
-      "speech_right_en": "Your army is ready and eager."
+      "speech_right_en": "Your army is ready and eager.",
+      "arz": true
     },
     {
       "id": "sipahi_erzak_yokluğu",
@@ -2360,14 +2368,14 @@
       "left_text": "Sert olma",
       "right_text": "Gerekli disiplini uygula",
       "left_effects": {
-        "saray": 0,
+        "saray": -3,
         "yeniçeri": 4,
         "ulema": 0,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 2,
-        "yeniçeri": -2,
+        "saray": 3,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
@@ -2777,8 +2785,8 @@
       "left_effects": {
         "saray": 0,
         "yeniçeri": 0,
-        "ulema": 2,
-        "hazine": 3
+        "ulema": 3,
+        "hazine": -3
       },
       "right_effects": {
         "saray": 3,
@@ -2877,7 +2885,7 @@
       "left_text": "Zindan yeter, sert yöntem yok",
       "right_text": "Gerekeni yapın",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 4,
         "hazine": 0
@@ -2916,15 +2924,15 @@
       "left_text": "Dokunmayın",
       "right_text": "Gösterin",
       "left_effects": {
-        "saray": 4,
+        "saray": -2,
         "yeniçeri": 0,
         "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": -2,
+        "saray": 5,
         "yeniçeri": 0,
-        "ulema": -3,
+        "ulema": -4,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -2956,8 +2964,8 @@
       "left_text": "Boşa harcama yapmayın",
       "right_text": "Ajanı yerleştirin",
       "left_effects": {
-        "saray": 2,
-        "yeniçeri": 0,
+        "saray": 0,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 4
       },
@@ -2998,8 +3006,8 @@
       "left_text": "Hemen tasfiye edin",
       "right_text": "Yanlış bilgiyle kullanın",
       "left_effects": {
-        "saray": 4,
-        "yeniçeri": 0,
+        "saray": 3,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
@@ -3078,7 +3086,8 @@
           "text": "Çarşıda bir duvara yazı asılmış: “Vergi bizi yedi, sıra Divan'da.” Halk öfkeli, Paşam. Bir adım atılmazsa bu yazılar çoğalır.",
           "text_en": "A notice has been nailed to a wall in the bazaar: “The taxes devoured us; the Divan is next.” The people are angry, Pasha. If nothing is done, more notices will follow."
         }
-      ]
+      ],
+      "arz": true
     },
     {
       "id": "halk_ekmek_fiyatı",
@@ -3182,7 +3191,7 @@
       "left_text": "Bu yıl herkes öder",
       "right_text": "Kısmi muafiyet verin",
       "left_effects": {
-        "saray": 2,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 0,
         "hazine": 6
@@ -3447,9 +3456,9 @@
       "left_text": "Geçirmeyin",
       "right_text": "Ben görüşürüm, Sultan'a değil",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
@@ -3828,7 +3837,8 @@
       "right_text_en": "Grant permission under supervision",
       "investigate_text_en": "",
       "speech_left_en": "Once the cauldron is raised, there is no return.",
-      "speech_right_en": "The rebellion is quelled — for now."
+      "speech_right_en": "The rebellion is quelled — for now.",
+      "arz": true
     },
     {
       "id": "isyan_tövbeli",
@@ -4068,10 +4078,10 @@
       "left_text": "Köyde kalmanız daha iyi",
       "right_text": "İstanbul kapıları herkese açık",
       "left_effects": {
-        "saray": 0,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 2,
-        "hazine": 3
+        "hazine": 4
       },
       "right_effects": {
         "saray": 2,
@@ -4148,16 +4158,16 @@
       "left_text": "Millet sistemi böyle işler",
       "right_text": "Oranı dengeleyin",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 4,
         "hazine": 4
       },
       "right_effects": {
-        "saray": 3,
+        "saray": 4,
         "yeniçeri": 0,
         "ulema": -4,
-        "hazine": -6
+        "hazine": -5
       },
       "left_flags_set": [],
       "right_flags_set": [
@@ -4186,7 +4196,8 @@
           "text": "Rum esnafı aynı dükkân için Müslüman komşusundan fazla vergi ödüyor. Mahallede kırgınlık büyüyor, Paşam.",
           "text_en": "Greek tradesmen pay more tax than their Muslim neighbours for the same shop. Resentment is growing in the quarter, Pasha."
         }
-      ]
+      ],
+      "arz": true
     },
     {
       "id": "rum_din_baskı",
@@ -4278,13 +4289,13 @@
         "saray": 4,
         "yeniçeri": 0,
         "ulema": 3,
-        "hazine": 0
+        "hazine": -3
       },
       "right_effects": {
         "saray": -3,
         "yeniçeri": 0,
         "ulema": -2,
-        "hazine": 0
+        "hazine": 5
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -4353,8 +4364,8 @@
       "left_text": "Teşekkür, ama bedelli bilgi almayız",
       "right_text": "Ne istediğini sorun",
       "left_effects": {
-        "saray": 3,
-        "yeniçeri": 2,
+        "saray": 2,
+        "yeniçeri": -3,
         "ulema": 2,
         "hazine": 0
       },
@@ -4392,7 +4403,7 @@
       "left_text": "Kural herkese eşit",
       "right_text": "Dosyayı yeniden inceleyin",
       "left_effects": {
-        "saray": 0,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 2,
         "hazine": 4
@@ -4480,13 +4491,13 @@
       "left_effects": {
         "saray": 0,
         "yeniçeri": 0,
-        "ulema": 2,
-        "hazine": 0
+        "ulema": 3,
+        "hazine": -3
       },
       "right_effects": {
-        "saray": 2,
+        "saray": 3,
         "yeniçeri": 0,
-        "ulema": 3,
+        "ulema": -2,
         "hazine": -2
       },
       "left_flags_set": [],
@@ -4610,7 +4621,7 @@
         "saray": 3,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 3
+        "hazine": -3
       },
       "right_effects": {
         "saray": -3,
@@ -4693,7 +4704,7 @@
         "saray": 2,
         "yeniçeri": 0,
         "ulema": 2,
-        "hazine": 0
+        "hazine": -3
       },
       "right_effects": {
         "saray": 4,
@@ -4730,9 +4741,9 @@
       "right_text": "Masaya oturun",
       "left_effects": {
         "saray": 3,
-        "yeniçeri": 5,
+        "yeniçeri": 4,
         "ulema": 3,
-        "hazine": 0
+        "hazine": -3
       },
       "right_effects": {
         "saray": -3,
@@ -4770,13 +4781,13 @@
       "right_text": "İnceleme komisyonu kurun",
       "left_effects": {
         "saray": 4,
-        "yeniçeri": 3,
+        "yeniçeri": -3,
         "ulema": 4,
         "hazine": 0
       },
       "right_effects": {
         "saray": -4,
-        "yeniçeri": -3,
+        "yeniçeri": 4,
         "ulema": -4,
         "hazine": 0
       },
@@ -4809,7 +4820,7 @@
       "right_text": "Gizli koşulları dinleyin",
       "left_effects": {
         "saray": 5,
-        "yeniçeri": 3,
+        "yeniçeri": -4,
         "ulema": 3,
         "hazine": 0
       },
@@ -4852,15 +4863,15 @@
       "right_text": "Takası gerçekleştirin",
       "left_effects": {
         "saray": 2,
-        "yeniçeri": 3,
+        "yeniçeri": -3,
         "ulema": 2,
-        "hazine": 5
+        "hazine": 6
       },
       "right_effects": {
         "saray": 4,
         "yeniçeri": 6,
-        "ulema": 4,
-        "hazine": 0
+        "ulema": 3,
+        "hazine": -3
       },
       "left_flags_set": [],
       "right_flags_set": [
@@ -4890,9 +4901,9 @@
       "left_text": "Dokunmayın, elçi geri yollansın",
       "right_text": "Mektubu açın inceleyin",
       "left_effects": {
-        "saray": 2,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
@@ -4969,9 +4980,9 @@
       "right_text": "Anlaşılan payı verin",
       "left_effects": {
         "saray": 2,
-        "yeniçeri": 3,
+        "yeniçeri": -4,
         "ulema": 2,
-        "hazine": 4
+        "hazine": 5
       },
       "right_effects": {
         "saray": 3,
@@ -5088,10 +5099,10 @@
       "left_text": "Devlete teslim edin",
       "right_text": "Kendiniz görüşün",
       "left_effects": {
-        "saray": 5,
-        "yeniçeri": 2,
+        "saray": 4,
+        "yeniçeri": -3,
         "ulema": 3,
-        "hazine": 9
+        "hazine": 7
       },
       "right_effects": {
         "saray": -3,
@@ -5326,9 +5337,9 @@
       "left_text": "Henüz erken",
       "right_text": "Layık birini gönderin",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
@@ -5442,13 +5453,13 @@
       "right_text": "Sizi araç edindiler, uyarın",
       "left_effects": {
         "saray": -3,
-        "yeniçeri": 0,
-        "ulema": -2,
+        "yeniçeri": 3,
+        "ulema": 0,
         "hazine": 0
       },
       "right_effects": {
         "saray": 3,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 2,
         "hazine": 0
       },
@@ -5601,9 +5612,9 @@
       "right_text": "Genişlet",
       "left_effects": {
         "saray": 3,
-        "yeniçeri": 2,
+        "yeniçeri": -3,
         "ulema": 4,
-        "hazine": 8
+        "hazine": 6
       },
       "right_effects": {
         "saray": -2,
@@ -5643,9 +5654,9 @@
       "left_text": "Çok riskli, vazgeçin",
       "right_text": "Harekâtı onaylayın",
       "left_effects": {
-        "saray": 4,
-        "yeniçeri": 3,
-        "ulema": 5,
+        "saray": 3,
+        "yeniçeri": -4,
+        "ulema": 4,
         "hazine": 0
       },
       "right_effects": {
@@ -5689,10 +5700,10 @@
       "left_text": "Kalıcı bağı reddediyorum",
       "right_text": "Büyükelçiliği onaylayın",
       "left_effects": {
-        "saray": 6,
-        "yeniçeri": 4,
-        "ulema": 8,
-        "hazine": 0
+        "saray": 4,
+        "yeniçeri": 3,
+        "ulema": 6,
+        "hazine": -4
       },
       "right_effects": {
         "saray": 5,
@@ -6321,10 +6332,10 @@
       "left_text": "Sarayı destekle",
       "right_text": "Halkın yanında dur",
       "left_effects": {
-        "saray": 8,
+        "saray": 7,
         "yeniçeri": 3,
-        "ulema": 2,
-        "hazine": 0
+        "ulema": 0,
+        "hazine": -4
       },
       "right_effects": {
         "saray": -10,
@@ -6395,7 +6406,8 @@
       "right_text_en": "Continue",
       "investigate_text_en": "",
       "speech_left_en": "Shadows speak in silence.",
-      "speech_right_en": "The right decision — knowledge is power."
+      "speech_right_en": "The right decision — knowledge is power.",
+      "denge_muaf": "hikâye"
     },
     {
       "id": "sultan_mektup_1",
@@ -6766,7 +6778,8 @@
       "right_text_en": "Declare the victory",
       "investigate_text_en": "",
       "speech_left_en": "Wisdom is sometimes silence.",
-      "speech_right_en": "Victory announces itself!"
+      "speech_right_en": "Victory announces itself!",
+      "denge_muaf": "ödül"
     },
     {
       "id": "savaş_barış",
@@ -6854,7 +6867,8 @@
       "right_text_en": "Use it as a diplomatic lever",
       "investigate_text_en": "",
       "speech_left_en": "Knowledge is the most powerful weapon.",
-      "speech_right_en": "We will use it when the time comes."
+      "speech_right_en": "We will use it when the time comes.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "kışla_sonuç",
@@ -7078,7 +7092,8 @@
       "right_text_en": "Grant broader privileges",
       "investigate_text_en": "",
       "speech_left_en": "Balance is the greatest achievement.",
-      "speech_right_en": "Opportunities pass when you wait, Pasha."
+      "speech_right_en": "Opportunities pass when you wait, Pasha.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "medrese_etkisi",
@@ -7197,7 +7212,8 @@
       "right_text_en": "Invest in infrastructure",
       "investigate_text_en": "",
       "speech_left_en": "Caution is worth gold.",
-      "speech_right_en": "Stone upon stone — that is how a state is built."
+      "speech_right_en": "Stone upon stone — that is how a state is built.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "yeniceri_sadık_dost",
@@ -7240,7 +7256,8 @@
       "right_text_en": "I always trust you",
       "investigate_text_en": "",
       "speech_left_en": "Drawing a boundary is also a form of security.",
-      "speech_right_en": "A word is more durable than a sword."
+      "speech_right_en": "A word is more durable than a sword.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "valide_teşekkür",
@@ -7283,7 +7300,8 @@
       "right_text_en": "I am grateful",
       "investigate_text_en": "",
       "speech_left_en": "Do not embarrass us, Pasha.",
-      "speech_right_en": "Loyalty does not go unrewarded."
+      "speech_right_en": "Loyalty does not go unrewarded.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "sultan_sabırsızlığı",
@@ -7296,7 +7314,7 @@
       "left_effects": {
         "saray": 8,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": -3,
         "hazine": 0
       },
       "right_effects": {
@@ -7363,7 +7381,8 @@
       "right_text_en": "Keep him close",
       "investigate_text_en": "",
       "speech_left_en": "When the tree grows, so does its shadow.",
-      "speech_right_en": "Family bonds are state bonds."
+      "speech_right_en": "Family bonds are state bonds.",
+      "arz": true
     },
     {
       "id": "event_vergi_reformu",
@@ -7401,7 +7420,8 @@
       "right_text_en": "Record it",
       "investigate_text_en": "",
       "speech_left_en": "The state endures, Pasha.",
-      "speech_right_en": "Numbers do not lie."
+      "speech_right_en": "Numbers do not lie.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "event_ticaret_geliri",
@@ -7439,7 +7459,8 @@
       "right_text_en": "Transfer to the treasury",
       "investigate_text_en": "",
       "speech_left_en": "Trade is the vein, Pasha.",
-      "speech_right_en": "The state takes its share."
+      "speech_right_en": "The state takes its share.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "kanuni_viyana_seferi",
@@ -7524,7 +7545,8 @@
       "right_text_en": "Emphasize customary law",
       "investigate_text_en": "",
       "speech_left_en": "God's law is supreme.",
-      "speech_right_en": "The state keeps the law alive."
+      "speech_right_en": "The state keeps the law alive.",
+      "arz": true
     },
     {
       "id": "yavuz_misir_seferi",
@@ -7565,7 +7587,8 @@
       "right_text_en": "Full support for the campaign",
       "investigate_text_en": "",
       "speech_left_en": "Haste makes waste.",
-      "speech_right_en": "Think of Egypt's gold!"
+      "speech_right_en": "Think of Egypt's gold!",
+      "arz": true
     },
     {
       "id": "yavuz_şii_meselesi",
@@ -7606,7 +7629,8 @@
       "right_text_en": "Issue a firm fatwa",
       "investigate_text_en": "",
       "speech_left_en": "Justice, not vengeance.",
-      "speech_right_en": "The Sultan's patience must not overflow."
+      "speech_right_en": "The Sultan's patience must not overflow.",
+      "arz": true
     },
     {
       "id": "murad_harem_entrikası",
@@ -7647,7 +7671,8 @@
       "right_text_en": "Begin an investigation",
       "investigate_text_en": "",
       "speech_left_en": "Do not add fuel to the fire.",
-      "speech_right_en": "Palace order is necessary for all."
+      "speech_right_en": "Palace order is necessary for all.",
+      "arz": true
     },
     {
       "id": "murad_safevi_savaşı",
@@ -7688,7 +7713,8 @@
       "right_text_en": "Launch the Safavid campaign",
       "investigate_text_en": "",
       "speech_left_en": "Every war has its price.",
-      "speech_right_en": "Tabriz will be ours!"
+      "speech_right_en": "Tabriz will be ours!",
+      "arz": true
     },
     {
       "id": "ilişki_rakip_valide",
@@ -7699,15 +7725,15 @@
       "left_text": "Casusları devreye sokun",
       "right_text": "Sultanla görüşün",
       "left_effects": {
-        "saray": -3,
+        "saray": 4,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": -4
+        "hazine": -5
       },
       "right_effects": {
-        "saray": 7,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": 4,
         "hazine": 0
       },
       "left_flags_set": [
@@ -7817,7 +7843,7 @@
         "saray": 2,
         "yeniçeri": 0,
         "ulema": 3,
-        "hazine": 4
+        "hazine": -4
       },
       "right_effects": {
         "saray": -2,
@@ -7965,7 +7991,8 @@
       "right_text_en": "Invest in the army and public works",
       "investigate_text_en": "",
       "speech_left_en": "Saving is the foundation of wealth.",
-      "speech_right_en": "He who spends, gains, Pasha."
+      "speech_right_en": "He who spends, gains, Pasha.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "tarih_tuna_seferi",
@@ -8008,7 +8035,8 @@
       "right_text_en": "Go to war",
       "investigate_text_en": "",
       "speech_left_en": "Peace brings gain, Pasha.",
-      "speech_right_en": "History loves its heroes."
+      "speech_right_en": "History loves its heroes.",
+      "arz": true
     },
     {
       "id": "tarih_istanbul_yangını",
@@ -8663,7 +8691,8 @@
       "right_text_en": "Carry out the decree",
       "investigate_text_en": "Does this order truly come directly from the Sultan, or is it part of a palace intrigue?",
       "speech_left_en": "You will regret it, Pasha.",
-      "speech_right_en": "This is how the state stands."
+      "speech_right_en": "This is how the state stands.",
+      "arz": true
     },
     {
       "id": "osmanlı_kadisi_1",
@@ -8979,7 +9008,8 @@
       "right_text_en": "Keep the document",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "arz": true
     },
     {
       "id": "osmanlı_kadisi_2",
@@ -9177,8 +9207,8 @@
       "left_effects": {
         "saray": 3,
         "yeniçeri": 0,
-        "ulema": 0,
-        "hazine": 2
+        "ulema": -3,
+        "hazine": 0
       },
       "right_effects": {
         "saray": -4,
@@ -9253,14 +9283,14 @@
       "left_text": "Böyle bir yol yoktur",
       "right_text": "İletebilirsiniz",
       "left_effects": {
-        "saray": -3,
+        "saray": 4,
         "yeniçeri": -4,
         "ulema": -2,
         "hazine": 0
       },
       "right_effects": {
-        "saray": -2,
-        "yeniçeri": 6,
+        "saray": -4,
+        "yeniçeri": 5,
         "ulema": 3,
         "hazine": 0
       },
@@ -9375,11 +9405,11 @@
         "saray": 0,
         "yeniçeri": 0,
         "ulema": -3,
-        "hazine": 0
+        "hazine": 3
       },
       "right_effects": {
-        "saray": 3,
-        "yeniçeri": 2,
+        "saray": 2,
+        "yeniçeri": -3,
         "ulema": 4,
         "hazine": 5
       },
@@ -9472,7 +9502,8 @@
       "right_text_en": "Remind the Sultan",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "arz": true
     },
     {
       "id": "cellat_aile",
@@ -9520,7 +9551,7 @@
       "left_text": "Maaş göreve göredir",
       "right_text": "Görev, hazır beklemektir",
       "left_effects": {
-        "saray": 0,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 2,
         "hazine": 4
@@ -9725,9 +9756,9 @@
         "hazine": 0
       },
       "right_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 5,
-        "ulema": 2,
+        "ulema": 3,
         "hazine": 0
       },
       "left_flags_set": [
@@ -9760,9 +9791,9 @@
       "left_text": "Adil vergiyi ödeyin",
       "right_text": "Anlayış gösteririm",
       "left_effects": {
-        "saray": 0,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 3,
+        "ulema": 2,
         "hazine": 7
       },
       "right_effects": {
@@ -9837,13 +9868,13 @@
         "saray": -5,
         "yeniçeri": -3,
         "ulema": 0,
-        "hazine": 0
+        "hazine": 6
       },
       "right_effects": {
         "saray": 5,
-        "yeniçeri": 4,
+        "yeniçeri": 3,
         "ulema": 0,
-        "hazine": 0
+        "hazine": -4
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -9985,13 +10016,13 @@
         "saray": -3,
         "yeniçeri": -3,
         "ulema": 0,
-        "hazine": 3
+        "hazine": 5
       },
       "right_effects": {
         "saray": 5,
         "yeniçeri": 4,
         "ulema": 0,
-        "hazine": 5
+        "hazine": -5
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -10119,7 +10150,8 @@
       "right_text_en": "Grant your approval",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "arz": true
     },
     {
       "id": "hekimbasi_salgın",
@@ -10364,8 +10396,8 @@
       "left_text": "Hemen tutun",
       "right_text": "Kullanın, sonra tasfiye edin",
       "left_effects": {
-        "saray": 3,
-        "yeniçeri": 3,
+        "saray": 4,
+        "yeniçeri": -4,
         "ulema": 0,
         "hazine": 0
       },
@@ -10783,10 +10815,10 @@
         "hazine": 9
       },
       "right_effects": {
-        "saray": 3,
+        "saray": 4,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 6
+        "hazine": -3
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -10966,13 +10998,13 @@
       "left_text": "Mevcut sisteme güvenin",
       "right_text": "Denetim başlatın",
       "left_effects": {
-        "saray": -3,
+        "saray": 3,
         "yeniçeri": 0,
         "ulema": 0,
         "hazine": -5
       },
       "right_effects": {
-        "saray": 4,
+        "saray": -4,
         "yeniçeri": 0,
         "ulema": 2,
         "hazine": 8
@@ -11029,7 +11061,8 @@
       "right_text_en": "Apply a temporary tax",
       "investigate_text_en": "",
       "speech_left_en": "",
-      "speech_right_en": ""
+      "speech_right_en": "",
+      "arz": true
     },
     {
       "id": "valide_cariye",
@@ -11192,16 +11225,16 @@
       "left_text": "Hediyeyi alın, imtiyazı vermeyin",
       "right_text": "Her ikisini kabul edin",
       "left_effects": {
-        "saray": 2,
-        "yeniçeri": 0,
-        "ulema": 0,
-        "hazine": 5
-      },
-      "right_effects": {
         "saray": -3,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 9
+        "hazine": 6
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 8
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -11269,7 +11302,7 @@
         "saray": 3,
         "yeniçeri": 2,
         "ulema": 0,
-        "hazine": 0
+        "hazine": -3
       },
       "right_effects": {
         "saray": -4,
@@ -11340,16 +11373,16 @@
       "left_text": "İç meselelerini kendiniz çözün",
       "right_text": "Bölüğü ayırın",
       "left_effects": {
-        "saray": -2,
-        "yeniçeri": -4,
+        "saray": -4,
+        "yeniçeri": 3,
         "ulema": 0,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 3,
-        "yeniçeri": 5,
+        "saray": 4,
+        "yeniçeri": -3,
         "ulema": 0,
-        "hazine": 0
+        "hazine": -2
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -11531,13 +11564,13 @@
       "right_text": "Rahmet buyurun, ferman çıksın",
       "left_effects": {
         "saray": -4,
-        "yeniçeri": -3,
+        "yeniçeri": 4,
         "ulema": -5,
         "hazine": 0
       },
       "right_effects": {
         "saray": 5,
-        "yeniçeri": 0,
+        "yeniçeri": -4,
         "ulema": 9,
         "hazine": 0
       },
@@ -11834,15 +11867,15 @@
       "left_text": "Bu bir yerel meseledir",
       "right_text": "İmamı görevine iade edin",
       "left_effects": {
-        "saray": -4,
+        "saray": 3,
         "yeniçeri": 0,
         "ulema": -7,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 2,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 9,
+        "ulema": 8,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -12013,7 +12046,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "You will regret this, sir.",
-      "speech_right_en": "The state is now safe."
+      "speech_right_en": "The state is now safe.",
+      "arz": true
     },
     {
       "id": "defterdar_vakif_geliri",
@@ -12066,13 +12100,13 @@
       "left_text": "Tüccarı gücendirmeyin",
       "right_text": "Vergiyi uygulayın",
       "left_effects": {
-        "saray": -2,
+        "saray": 3,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": -8
+        "hazine": -6
       },
       "right_effects": {
-        "saray": 2,
+        "saray": -4,
         "yeniçeri": 0,
         "ulema": 0,
         "hazine": 11
@@ -12093,7 +12127,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "You will regret this, sir.",
-      "speech_right_en": "The state is now safe."
+      "speech_right_en": "The state is now safe.",
+      "arz": true
     },
     {
       "id": "valide_sehzade_lalası",
@@ -12104,15 +12139,15 @@
       "left_text": "Valide'nin önerdiği atsın",
       "right_text": "Ben uygun birini belirleyeyim",
       "left_effects": {
-        "saray": 7,
+        "saray": 6,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": -3,
         "hazine": 0
       },
       "right_effects": {
         "saray": -5,
-        "yeniçeri": 0,
-        "ulema": 0,
+        "yeniçeri": 2,
+        "ulema": 4,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -12131,7 +12166,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "One must listen to his mother, Pasha.",
-      "speech_right_en": "A wise decision — may God be pleased."
+      "speech_right_en": "A wise decision — may God be pleased.",
+      "arz": true
     },
     {
       "id": "valide_rakip_kadin",
@@ -12220,13 +12256,13 @@
       "left_effects": {
         "saray": -6,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 7,
+        "saray": 6,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": -3,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -12283,7 +12319,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "The seas are unforgiving, Grand Vizier.",
-      "speech_right_en": "The fleet is ready and awaits your orders."
+      "speech_right_en": "The fleet is ready and awaits your orders.",
+      "arz": true
     },
     {
       "id": "kaptan_amele_isyani",
@@ -12370,13 +12407,13 @@
       "left_text": "Fidye ödeyin",
       "right_text": "Karşılıklı esir takas edin",
       "left_effects": {
-        "saray": 2,
+        "saray": 3,
         "yeniçeri": 6,
         "ulema": 0,
-        "hazine": -10
+        "hazine": -8
       },
       "right_effects": {
-        "saray": 5,
+        "saray": -3,
         "yeniçeri": 7,
         "ulema": 0,
         "hazine": 0
@@ -12435,7 +12472,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "This refusal means war, Pasha.",
-      "speech_right_en": "My country is grateful."
+      "speech_right_en": "My country is grateful.",
+      "arz": true
     },
     {
       "id": "elci_din_azinlik",
@@ -12448,8 +12486,8 @@
       "left_effects": {
         "saray": 4,
         "yeniçeri": 0,
-        "ulema": 5,
-        "hazine": 0
+        "ulema": 4,
+        "hazine": -4
       },
       "right_effects": {
         "saray": -4,
@@ -12484,10 +12522,10 @@
       "left_text": "Anlaşmaya gerek yok",
       "right_text": "Anlaşmayı müzakere edelim",
       "left_effects": {
-        "saray": 3,
+        "saray": 2,
         "yeniçeri": 4,
         "ulema": 0,
-        "hazine": 0
+        "hazine": -4
       },
       "right_effects": {
         "saray": 5,
@@ -12523,7 +12561,7 @@
       "right_text": "Muafiyeti kabul edin, bilgiyi alın",
       "left_effects": {
         "saray": 2,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
@@ -12560,9 +12598,9 @@
       "left_text": "Teklifinizi dinlemeyeceğim",
       "right_text": "Nedir bu teklif?",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
@@ -12676,14 +12714,14 @@
       "left_effects": {
         "saray": -3,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 5,
+        "saray": 4,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 0
+        "hazine": -4
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -12750,15 +12788,15 @@
       "left_text": "Sırrına bakma, infazı yap",
       "right_text": "Dinleyin önce, sonra karar",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 6,
+        "saray": 5,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": -3,
         "hazine": 4
       },
       "left_flags_set": [],
@@ -12826,7 +12864,7 @@
       "left_text": "İstanbul'dan teyit isteyin",
       "right_text": "Emri şimdi uygulayın",
       "left_effects": {
-        "saray": 2,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 5,
         "hazine": 0
@@ -12984,10 +13022,10 @@
         "hazine": 2
       },
       "right_effects": {
-        "saray": 4,
+        "saray": 3,
         "yeniçeri": 0,
-        "ulema": 2,
-        "hazine": 7
+        "ulema": -3,
+        "hazine": 6
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -13055,7 +13093,7 @@
       "right_text": "Doğu sınırına gönderin",
       "left_effects": {
         "saray": 3,
-        "yeniçeri": 3,
+        "yeniçeri": -4,
         "ulema": 0,
         "hazine": 0
       },
@@ -13271,7 +13309,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "Poetry too is a weapon — remember that.",
-      "speech_right_en": "You have inspired me, Pasha."
+      "speech_right_en": "You have inspired me, Pasha.",
+      "arz": true
     },
     {
       "id": "sairi_hiciv_tespiti",
@@ -13326,10 +13365,10 @@
         "hazine": 3
       },
       "right_effects": {
-        "saray": 4,
+        "saray": 3,
         "yeniçeri": 0,
-        "ulema": 0,
-        "hazine": 9
+        "ulema": -3,
+        "hazine": 8
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -13438,15 +13477,15 @@
       "left_text": "Loncalar kendi çözümleri",
       "right_text": "Arabulucu göndereyim",
       "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "right_effects": {
         "saray": -3,
         "yeniçeri": 0,
         "ulema": 3,
-        "hazine": 0
-      },
-      "right_effects": {
-        "saray": 5,
-        "yeniçeri": 0,
-        "ulema": 2,
         "hazine": 3
       },
       "left_flags_set": [],
@@ -13476,16 +13515,16 @@
       "left_text": "Operasyonu koruyun, ajanı bırakın",
       "right_text": "Ajanı kurtarın",
       "left_effects": {
-        "saray": 5,
-        "yeniçeri": 0,
+        "saray": 4,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": -3
       },
       "right_effects": {
         "saray": -3,
-        "yeniçeri": 0,
+        "yeniçeri": 4,
         "ulema": 0,
-        "hazine": -8
+        "hazine": -6
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -13515,7 +13554,7 @@
       "right_text": "Sahte bilgiyi sızdırın",
       "left_effects": {
         "saray": 3,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
@@ -13628,10 +13667,10 @@
       "left_text": "Vergi oranını koruyun",
       "right_text": "Esnaf vergisini indirin",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 8
+        "hazine": 7
       },
       "right_effects": {
         "saray": 5,
@@ -13655,7 +13694,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "The people's patience is running out, Pasha.",
-      "speech_right_en": "The people pray for you — may God be pleased."
+      "speech_right_en": "The people pray for you — may God be pleased.",
+      "arz": true
     },
     {
       "id": "halk_su_sorunu_yeni",
@@ -13710,7 +13750,7 @@
         "hazine": 0
       },
       "right_effects": {
-        "saray": 4,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 4,
         "hazine": 0
@@ -13780,9 +13820,9 @@
       "left_text": "Serbest bırakın, takip edin",
       "right_text": "Gözaltında tutun, sorgulayın",
       "left_effects": {
-        "saray": 2,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
@@ -13818,15 +13858,15 @@
       "left_text": "Sessizce arayın, Valide'ye bildirmeyin",
       "right_text": "Valide Sultan'a haber verin",
       "left_effects": {
-        "saray": 3,
+        "saray": 2,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": -3,
         "hazine": 0
       },
       "right_effects": {
         "saray": -4,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 3,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -13856,15 +13896,15 @@
       "left_text": "Açmayın, doğrudan teslim edin",
       "right_text": "Açıp okuyun, sonra teslim edin",
       "left_effects": {
-        "saray": 4,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": -3,
+        "saray": 4,
         "yeniçeri": 0,
-        "ulema": -2,
+        "ulema": -4,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -14008,16 +14048,16 @@
       "left_text": "Toplu duayı kısıtlayın",
       "right_text": "Duaya izin verin",
       "left_effects": {
-        "saray": -5,
+        "saray": -4,
         "yeniçeri": 0,
-        "ulema": -8,
-        "hazine": 0
+        "ulema": -6,
+        "hazine": 4
       },
       "right_effects": {
         "saray": 4,
         "yeniçeri": 0,
-        "ulema": 10,
-        "hazine": 0
+        "ulema": 8,
+        "hazine": -5
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -14123,13 +14163,13 @@
       "right_text": "Git, dikkatli ol",
       "left_effects": {
         "saray": -2,
-        "yeniçeri": -5,
+        "yeniçeri": 3,
         "ulema": 0,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 7,
-        "yeniçeri": 3,
+        "saray": 6,
+        "yeniçeri": -4,
         "ulema": 0,
         "hazine": 0
       },
@@ -14162,14 +14202,14 @@
       "left_effects": {
         "saray": -2,
         "yeniçeri": -6,
-        "ulema": 0,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 8,
-        "yeniçeri": 7,
+        "saray": 7,
+        "yeniçeri": 4,
         "ulema": 0,
-        "hazine": 0
+        "hazine": -4
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -14312,7 +14352,7 @@
       "left_text": "Askerlik zorunludur, bekleyin",
       "right_text": "Muafiyet değerlendirin",
       "left_effects": {
-        "saray": 2,
+        "saray": -3,
         "yeniçeri": 5,
         "ulema": 0,
         "hazine": 0
@@ -14353,10 +14393,10 @@
         "saray": 2,
         "yeniçeri": 0,
         "ulema": 3,
-        "hazine": 3
+        "hazine": -3
       },
       "right_effects": {
-        "saray": 4,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 2,
         "hazine": 7
@@ -14388,10 +14428,10 @@
       "left_text": "Yeni kiliseye izin yok",
       "right_text": "Mevcut kiliseyi genişletin, izin verin",
       "left_effects": {
-        "saray": 3,
+        "saray": 2,
         "yeniçeri": 0,
-        "ulema": 6,
-        "hazine": 0
+        "ulema": 5,
+        "hazine": -4
       },
       "right_effects": {
         "saray": 5,
@@ -14428,8 +14468,8 @@
       "left_effects": {
         "saray": 2,
         "yeniçeri": 0,
-        "ulema": 5,
-        "hazine": 0
+        "ulema": 4,
+        "hazine": -3
       },
       "right_effects": {
         "saray": 5,
@@ -14464,16 +14504,16 @@
       "left_text": "Mahkeme kararı kesindir",
       "right_text": "Davayı gözden geçirin",
       "left_effects": {
-        "saray": 3,
-        "yeniçeri": 0,
-        "ulema": -3,
-        "hazine": 0
-      },
-      "right_effects": {
-        "saray": 4,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 4,
         "hazine": 0
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -4,
+        "hazine": 3
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -14502,10 +14542,10 @@
       "left_text": "Vergi oranı geçerlidir",
       "right_text": "Oranı inceleyin, düzeltin",
       "left_effects": {
-        "saray": 2,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 4,
-        "hazine": 7
+        "hazine": 6
       },
       "right_effects": {
         "saray": 6,
@@ -14619,7 +14659,7 @@
         "saray": 2,
         "yeniçeri": 0,
         "ulema": 4,
-        "hazine": 4
+        "hazine": -4
       },
       "right_effects": {
         "saray": 3,
@@ -14733,7 +14773,7 @@
         "saray": 2,
         "yeniçeri": 0,
         "ulema": 4,
-        "hazine": 2
+        "hazine": -4
       },
       "right_effects": {
         "saray": 4,
@@ -14770,13 +14810,13 @@
       "left_effects": {
         "saray": -3,
         "yeniçeri": 0,
-        "ulema": -3,
+        "ulema": 3,
         "hazine": -4
       },
       "right_effects": {
-        "saray": 5,
+        "saray": 4,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": -4,
         "hazine": 4
       },
       "left_flags_set": [],
@@ -14882,13 +14922,13 @@
       "left_text": "Şimdi takas yapmayız",
       "right_text": "Esir teatisini kabul edin",
       "left_effects": {
-        "saray": 2,
+        "saray": 3,
         "yeniçeri": -4,
         "ulema": 0,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 8,
         "ulema": 0,
         "hazine": 0
@@ -14921,7 +14961,7 @@
       "right_text": "Teşekkür edin, casusun izini sürün",
       "left_effects": {
         "saray": 3,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
@@ -14959,7 +14999,7 @@
       "right_text": "Minnetle kabul edin",
       "left_effects": {
         "saray": 3,
-        "yeniçeri": 3,
+        "yeniçeri": -4,
         "ulema": 4,
         "hazine": 0
       },
@@ -14985,7 +15025,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "The Shah will not forgive this, Pasha.",
-      "speech_right_en": "Peace benefits both sides."
+      "speech_right_en": "Peace benefits both sides.",
+      "arz": true
     },
     {
       "id": "korsan_liman_statü",
@@ -14997,9 +15038,9 @@
       "right_text": "Limanı resmileştirin",
       "left_effects": {
         "saray": 2,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 0,
-        "hazine": 5
+        "hazine": 3
       },
       "right_effects": {
         "saray": -3,
@@ -15073,9 +15114,9 @@
       "right_text": "Önceki anlaşmaya sadık kalın",
       "left_effects": {
         "saray": 3,
-        "yeniçeri": 0,
+        "yeniçeri": -4,
         "ulema": 0,
-        "hazine": 8
+        "hazine": 7
       },
       "right_effects": {
         "saray": -3,
@@ -15148,15 +15189,15 @@
       "left_text": "Toplantıya izin yok",
       "right_text": "İzin verin, gözetim altında",
       "left_effects": {
-        "saray": -2,
+        "saray": 3,
         "yeniçeri": 0,
         "ulema": -5,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 6,
+        "ulema": 5,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -15327,7 +15368,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "Youth is impatient — I know.",
-      "speech_right_en": "I will give my life for the state."
+      "speech_right_en": "I will give my life for the state.",
+      "arz": true
     },
     {
       "id": "genc_büyük_hata_yeni",
@@ -15340,13 +15382,13 @@
       "left_effects": {
         "saray": -4,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 3,
         "hazine": -5
       },
       "right_effects": {
-        "saray": 3,
+        "saray": 2,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": -4,
         "hazine": -3
       },
       "left_flags_set": [],
@@ -15376,13 +15418,13 @@
       "left_text": "Görmezden gelin",
       "right_text": "Genç Paşa'yı uyarın",
       "left_effects": {
-        "saray": -4,
+        "saray": 3,
         "yeniçeri": -4,
         "ulema": 0,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 4,
+        "saray": -3,
         "yeniçeri": 3,
         "ulema": 2,
         "hazine": 0
@@ -15415,14 +15457,14 @@
       "right_text": "Rehberlik edin, zaman ayırın",
       "left_effects": {
         "saray": -2,
-        "yeniçeri": 0,
+        "yeniçeri": 3,
         "ulema": 0,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 5,
-        "yeniçeri": 0,
-        "ulema": 2,
+        "saray": 4,
+        "yeniçeri": -3,
+        "ulema": 0,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -15490,13 +15532,13 @@
       "left_text": "Ücret artışı yok, ya devam ya çekil",
       "right_text": "Ek ödemeyi onaylayın",
       "left_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 0,
         "hazine": 4
       },
       "right_effects": {
-        "saray": 2,
+        "saray": 3,
         "yeniçeri": 0,
         "ulema": 0,
         "hazine": -6
@@ -15555,7 +15597,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "You will regret it, Pasha.",
-      "speech_right_en": "The state stands this way."
+      "speech_right_en": "The state stands this way.",
+      "arz": true
     },
     {
       "id": "avcı_ittifak_teklifi",
@@ -15566,8 +15609,8 @@
       "left_text": "Teklifi reddedin, devam edin",
       "right_text": "Teklifi kabul edin, bizi bilgilendirmeye devam",
       "left_effects": {
-        "saray": 6,
-        "yeniçeri": 0,
+        "saray": 5,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
@@ -15631,7 +15674,8 @@
       "investigate_text": "",
       "investigate_text_en": "",
       "speech_left_en": "Justice must be blind.",
-      "speech_right_en": "The state must always win."
+      "speech_right_en": "The state must always win.",
+      "arz": true
     },
     {
       "id": "kadi_rüşvet_iddiası",
@@ -15644,13 +15688,13 @@
       "left_effects": {
         "saray": -2,
         "yeniçeri": 0,
-        "ulema": -4,
+        "ulema": 4,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 5,
+        "saray": 4,
         "yeniçeri": 0,
-        "ulema": 4,
+        "ulema": -4,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -15682,11 +15726,11 @@
       "left_effects": {
         "saray": 4,
         "yeniçeri": 0,
-        "ulema": 3,
-        "hazine": 0
+        "ulema": 2,
+        "hazine": -3
       },
       "right_effects": {
-        "saray": 3,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 5,
         "hazine": 0
@@ -15721,7 +15765,7 @@
         "saray": 5,
         "yeniçeri": 0,
         "ulema": 3,
-        "hazine": 0
+        "hazine": -4
       },
       "right_effects": {
         "saray": -4,
@@ -15759,13 +15803,13 @@
         "saray": 3,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 0
+        "hazine": -4
       },
       "right_effects": {
-        "saray": -2,
+        "saray": -3,
         "yeniçeri": 0,
-        "ulema": 0,
-        "hazine": -4
+        "ulema": 3,
+        "hazine": 0
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -15795,13 +15839,13 @@
       "right_text": "İzin verin, çift taraf oynayın",
       "left_effects": {
         "saray": 3,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
       "right_effects": {
         "saray": -3,
-        "yeniçeri": 0,
+        "yeniçeri": 4,
         "ulema": 0,
         "hazine": 0
       },
@@ -15833,7 +15877,7 @@
       "right_text": "Planları al, riske gir",
       "left_effects": {
         "saray": 2,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
@@ -15872,7 +15916,7 @@
       "left_effects": {
         "saray": 3,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": -3,
         "hazine": 0
       },
       "right_effects": {
@@ -15946,16 +15990,16 @@
       "left_text": "Sultan'a ulaştırmam mümkün değil",
       "right_text": "Dilekçeyi Sultan'a iletiyorum",
       "left_effects": {
-        "saray": -4,
+        "saray": 3,
         "yeniçeri": 0,
-        "ulema": 3,
+        "ulema": -3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 5,
+        "saray": -2,
         "yeniçeri": 0,
         "ulema": 4,
-        "hazine": 0
+        "hazine": -3
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -16022,13 +16066,13 @@
       "left_text": "Yetkisiz müdahale etmeyin",
       "right_text": "Yetkiyi verin, arabuluculuk yapsın",
       "left_effects": {
-        "saray": -3,
-        "yeniçeri": 0,
-        "ulema": 2,
+        "saray": 3,
+        "yeniçeri": -3,
+        "ulema": 0,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 4,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 4,
         "hazine": 0
@@ -16060,13 +16104,13 @@
       "left_text": "İncelemeyi reddediyorum",
       "right_text": "Kitapları ulema incelesin",
       "left_effects": {
-        "saray": -2,
+        "saray": 2,
         "yeniçeri": 0,
-        "ulema": -7,
+        "ulema": -6,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 3,
+        "saray": -2,
         "yeniçeri": 0,
         "ulema": 6,
         "hazine": 0
@@ -16429,7 +16473,8 @@
       "right_text_en": "Reinvest it in the fleet",
       "investigate_text_en": "",
       "speech_left_en": "The state comes first, Pasha.",
-      "speech_right_en": "Strength at sea brings peace on land."
+      "speech_right_en": "Strength at sea brings peace on land.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "kaptan_intikam",
@@ -16519,7 +16564,8 @@
       "right_text_en": "Turn this into a lasting friendship",
       "investigate_text_en": "",
       "speech_left_en": "Trust is the foundation of trade.",
-      "speech_right_en": "Let friendship endure, Pasha."
+      "speech_right_en": "Let friendship endure, Pasha.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "elci_intikam",
@@ -16609,7 +16655,8 @@
       "right_text_en": "I appreciate this loyalty",
       "investigate_text_en": "",
       "speech_left_en": "Healing comes before loyalty.",
-      "speech_right_en": "Your health is the state's health, Pasha."
+      "speech_right_en": "Your health is the state's health, Pasha.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "hekimbasi_intikam",
@@ -16699,7 +16746,8 @@
       "right_text_en": "Gladly accept the contribution",
       "investigate_text_en": "",
       "speech_left_en": "Let your conscience rest easy, Pasha.",
-      "speech_right_en": "Trade grows on mutual trust."
+      "speech_right_en": "Trade grows on mutual trust.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "tuccar_intikam",
@@ -16789,7 +16837,8 @@
       "right_text_en": "I am listening — tell me",
       "investigate_text_en": "",
       "speech_left_en": "Ignorance is also a choice, Pasha.",
-      "speech_right_en": "Your trust was not wasted."
+      "speech_right_en": "Your trust was not wasted.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "casus_intikam",
@@ -17187,7 +17236,8 @@
       "left_text_en": "Keep the fleet in port for now",
       "right_text_en": "Sail out for a show of force in the Mediterranean",
       "speech_left_en": "Patience is also a strategy, Pasha.",
-      "speech_right_en": "To be seen at sea is to rule it."
+      "speech_right_en": "To be seen at sea is to rule it.",
+      "denge_muaf": "ödül"
     },
     {
       "left_flags_set": [
@@ -17232,7 +17282,8 @@
       "left_text_en": "One is enough for now",
       "right_text_en": "Approve the second darüşşifa as well",
       "speech_left_en": "Even one was a revolution, Pasha.",
-      "speech_right_en": "As healing grows, so does the state."
+      "speech_right_en": "As healing grows, so does the state.",
+      "denge_muaf": "ödül"
     },
     {
       "left_flags_set": [],
@@ -17407,9 +17458,9 @@
       "left_text": "Mesafeli durun",
       "right_text": "Teklifini kabul edin",
       "left_effects": {
-        "saray": 2,
+        "saray": -2,
         "yeniçeri": 0,
-        "ulema": 1,
+        "ulema": 2,
         "hazine": 0
       },
       "right_effects": {
@@ -17483,16 +17534,16 @@
       "left_text": "Gerek yok, açıkça hareket edin",
       "right_text": "Evet, o kapıyı aralayın",
       "left_effects": {
-        "saray": 2,
+        "saray": -2,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 3,
         "hazine": 0
       },
       "right_effects": {
-        "saray": 10,
+        "saray": 8,
         "yeniçeri": 0,
-        "ulema": 0,
-        "hazine": 6
+        "ulema": -3,
+        "hazine": 4
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -17517,9 +17568,9 @@
       "left_text": "Sultan'a bırakın",
       "right_text": "Sert bir ders verilsin",
       "left_effects": {
-        "saray": 1,
+        "saray": 2,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": -2,
         "hazine": 0
       },
       "right_effects": {
@@ -17552,7 +17603,7 @@
         "saray": 3,
         "yeniçeri": 0,
         "ulema": 2,
-        "hazine": 0
+        "hazine": -2
       },
       "right_effects": {
         "saray": -1,
@@ -17678,7 +17729,7 @@
       "right_text": "Fırsatı değerlendirin",
       "left_effects": {
         "saray": 0,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 2
       },
@@ -17781,7 +17832,7 @@
       "left_text": "Geleneksel tasarımda kalın",
       "right_text": "Yeni tasarıma onay verin",
       "left_effects": {
-        "saray": 0,
+        "saray": -2,
         "yeniçeri": 2,
         "ulema": 1,
         "hazine": 0
@@ -17816,7 +17867,7 @@
         "saray": 2,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 0
+        "hazine": -2
       },
       "right_effects": {
         "saray": -1,
@@ -17909,8 +17960,8 @@
       "left_text": "İstihbaratı reddedin",
       "right_text": "Bilgiyi alıp iyiliği yapın",
       "left_effects": {
-        "saray": 0,
-        "yeniçeri": 0,
+        "saray": 1,
+        "yeniçeri": -2,
         "ulema": 0,
         "hazine": 0
       },
@@ -17948,7 +17999,7 @@
         "saray": 0,
         "yeniçeri": 0,
         "ulema": 3,
-        "hazine": 0
+        "hazine": -2
       },
       "right_effects": {
         "saray": 2,
@@ -17977,7 +18028,7 @@
       "left_text": "Soğuk bir vedayla yolcu edin",
       "right_text": "Onurlu bir törenle uğurlayın",
       "left_effects": {
-        "saray": 0,
+        "saray": -2,
         "yeniçeri": 0,
         "ulema": 0,
         "hazine": 1
@@ -18009,10 +18060,10 @@
       "left_text": "Şimdilik göz yumun",
       "right_text": "Derhal soruşturma açın",
       "left_effects": {
-        "saray": 0,
+        "saray": 1,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 1
+        "hazine": -2
       },
       "right_effects": {
         "saray": -2,
@@ -18043,8 +18094,8 @@
       "left_effects": {
         "saray": 1,
         "yeniçeri": 0,
-        "ulema": 1,
-        "hazine": 0
+        "ulema": 2,
+        "hazine": -2
       },
       "right_effects": {
         "saray": 0,
@@ -18170,7 +18221,8 @@
       "character_name_en": "Chief Accountant",
       "text_en": "The chief accountant wants to audit the palace's own spending too: \"Austerity must begin with everyone, Grand Vizier — including the Sultan's own retinue.\"",
       "left_text_en": "Keep the palace exempt from the audit",
-      "right_text_en": "Grant full authority for the audit"
+      "right_text_en": "Grant full authority for the audit",
+      "arz": true
     },
     {
       "id": "muhasip_terfi_talebi",
@@ -18181,7 +18233,7 @@
       "left_text": "Mevcut görevinde bırakın",
       "right_text": "Terfisini onaylayın",
       "left_effects": {
-        "saray": 0,
+        "saray": -2,
         "yeniçeri": 0,
         "ulema": 0,
         "hazine": 2
@@ -18214,7 +18266,7 @@
       "right_text": "Akınlara onay verin",
       "left_effects": {
         "saray": 2,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
@@ -18278,7 +18330,7 @@
       "right_text": "Baskına izin verin",
       "left_effects": {
         "saray": 1,
-        "yeniçeri": 0,
+        "yeniçeri": -2,
         "ulema": 0,
         "hazine": 0
       },
@@ -18376,7 +18428,7 @@
       "right_text": "İttifakı kurun",
       "left_effects": {
         "saray": 2,
-        "yeniçeri": 0,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 0
       },
@@ -18410,7 +18462,7 @@
         "saray": 2,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 0
+        "hazine": -3
       },
       "right_effects": {
         "saray": -2,
@@ -18439,13 +18491,13 @@
       "left_text": "Eşit dağıtın",
       "right_text": "Kıdeme göre dağıtın",
       "left_effects": {
-        "saray": 2,
+        "saray": -2,
         "yeniçeri": 0,
-        "ulema": 1,
+        "ulema": 2,
         "hazine": 0
       },
       "right_effects": {
-        "saray": -1,
+        "saray": 2,
         "yeniçeri": 0,
         "ulema": 0,
         "hazine": -2
@@ -18471,16 +18523,16 @@
       "left_text": "Hayır, usule uygun ilerleyin",
       "right_text": "Kaynağı sessizce kabul edin",
       "left_effects": {
-        "saray": 1,
+        "saray": -2,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": 2,
         "hazine": 0
       },
       "right_effects": {
         "saray": 3,
         "yeniçeri": 0,
-        "ulema": 0,
-        "hazine": 8
+        "ulema": -3,
+        "hazine": 6
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -18505,10 +18557,10 @@
       "left_text": "Kıdemli birine verin",
       "right_text": "Terfiyi onaylayın",
       "left_effects": {
-        "saray": 1,
+        "saray": -1,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 0
+        "hazine": 1
       },
       "right_effects": {
         "saray": 3,
@@ -18572,13 +18624,13 @@
         "saray": 2,
         "yeniçeri": 0,
         "ulema": 1,
-        "hazine": 0
+        "hazine": -2
       },
       "right_effects": {
-        "saray": 2,
+        "saray": 1,
         "yeniçeri": 0,
-        "ulema": 0,
-        "hazine": -1
+        "ulema": -1,
+        "hazine": 3
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -18601,16 +18653,16 @@
       "left_text": "Her zamanki gibi olsun",
       "right_text": "Yeni çekirdeği dene",
       "left_effects": {
-        "saray": 0,
+        "saray": 1,
         "yeniçeri": 0,
-        "ulema": -2,
+        "ulema": -1,
         "hazine": 0
       },
       "right_effects": {
         "saray": 0,
         "yeniçeri": 0,
-        "ulema": 3,
-        "hazine": 0
+        "ulema": 2,
+        "hazine": -2
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -18675,13 +18727,13 @@
       "left_effects": {
         "saray": 0,
         "yeniçeri": -2,
-        "ulema": 0,
+        "ulema": 2,
         "hazine": 0
       },
       "right_effects": {
         "saray": 0,
         "yeniçeri": 3,
-        "ulema": 0,
+        "ulema": -2,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -18751,9 +18803,9 @@
         "hazine": 0
       },
       "right_effects": {
-        "saray": 0,
+        "saray": -1,
         "yeniçeri": 0,
-        "ulema": 2,
+        "ulema": 3,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -18823,7 +18875,7 @@
         "hazine": 0
       },
       "right_effects": {
-        "saray": 0,
+        "saray": -1,
         "yeniçeri": 0,
         "ulema": 3,
         "hazine": 0
@@ -18861,7 +18913,7 @@
       "right_effects": {
         "saray": 2,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": -2,
         "hazine": 0
       },
       "left_flags_set": [],
@@ -20145,8 +20197,8 @@
       "left_text": "Bilgiyi saklayın",
       "right_text": "Budin'e takviye gönderin",
       "left_effects": {
-        "saray": 3,
-        "yeniçeri": 0,
+        "saray": 2,
+        "yeniçeri": -3,
         "ulema": 0,
         "hazine": 3
       },
@@ -21255,7 +21307,8 @@
       "right_text_en": "Reward the granary scribe",
       "investigate_text_en": "",
       "speech_left_en": "The Divan's most loyal servant!",
-      "speech_right_en": "The scribe is grateful, Pasha."
+      "speech_right_en": "The scribe is grateful, Pasha.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "yanlis_adam_casus",
@@ -21435,7 +21488,8 @@
       "right_text_en": "Share them with the sailors",
       "investigate_text_en": "",
       "speech_left_en": "The treasury will fill.",
-      "speech_right_en": "The sailors bless you!"
+      "speech_right_en": "The sailors bless you!",
+      "denge_muaf": "ödül"
     },
     {
       "id": "leonardo_kopru_sonuc",
@@ -21480,7 +21534,8 @@
       "right_text_en": "Tax the crossing",
       "investigate_text_en": "",
       "speech_left_en": "The bazaar thanks you.",
-      "speech_right_en": "The bridge pays for itself."
+      "speech_right_en": "The bridge pays for itself.",
+      "denge_muaf": "ödül"
     },
     {
       "id": "muneccim_fal_1",
@@ -21566,7 +21621,8 @@
       "right_text_en": "Look, then",
       "investigate_text_en": "",
       "speech_left_en": "The stars do not sulk, Pasha. They wait.",
-      "speech_right_en": "Let me fetch my astrolabe."
+      "speech_right_en": "Let me fetch my astrolabe.",
+      "denge_muaf": "özel"
     },
     {
       "id": "celali_1",
@@ -21801,7 +21857,8 @@
       "right_text_en": "Sign the deeds",
       "investigate_text_en": "",
       "speech_left_en": "I will not forget this, Pasha.",
-      "speech_right_en": "The sanjak is in your debt."
+      "speech_right_en": "The sanjak is in your debt.",
+      "arz": true
     },
     {
       "id": "celali_sancakbeyi_hirs",
@@ -23044,6 +23101,9 @@
       "left_text": "Panik yaratma",
       "right_text": "Hazırlansın",
       "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
         "hazine": 3
       },
       "right_effects": {
@@ -23353,7 +23413,8 @@
             "hazine": -14
           }
         ]
-      }
+      },
+      "denge_muaf": "dönem"
     },
     {
       "id": "era_pat_ekmek",
@@ -23497,6 +23558,9 @@
       "left_text": "Gerek yok",
       "right_text": "Talime katılsın",
       "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
         "hazine": 2
       },
       "right_effects": {
@@ -23841,7 +23905,7 @@
       "left_text": "Gerek yok",
       "right_text": "Satın alın",
       "left_effects": {
-        "saray": 0,
+        "saray": -2,
         "yeniçeri": 0,
         "ulema": 0,
         "hazine": 2
@@ -23969,7 +24033,7 @@
       "left_text": "Bizim lâlemiz yeter",
       "right_text": "Soğanları alın",
       "left_effects": {
-        "saray": 0,
+        "saray": -3,
         "yeniçeri": 0,
         "ulema": 2,
         "hazine": 2
@@ -24135,7 +24199,7 @@
         "hazine": 0
       },
       "right_effects": {
-        "saray": 0,
+        "saray": -2,
         "yeniçeri": 4,
         "ulema": 1,
         "hazine": 0
@@ -24566,7 +24630,8 @@
       "character_name_en": "Royal Sword-Bearer",
       "text_en": "The Sultan wishes to go hunting. The hunt needs new bows and falcons. How large a budget?",
       "left_text_en": "A modest hunt",
-      "right_text_en": "Make it magnificent"
+      "right_text_en": "Make it magnificent",
+      "arz": true
     },
     {
       "id": "asci_zehir",
@@ -24673,7 +24738,7 @@
       "left_text": "Gülüp geçin",
       "right_text": "Protesto edin",
       "left_effects": {
-        "saray": 1,
+        "saray": -1,
         "yeniçeri": 0,
         "ulema": 1,
         "hazine": 0
@@ -24986,7 +25051,8 @@
       "character_name_en": "Head Gardener",
       "text_en": "The Sultan's imperial barge is worn out; of its fourteen pairs of oars, half are cracked. Without a new one, the Sultan will be shamed before the people.",
       "left_text_en": "Make do this year",
-      "right_text_en": "Build a new one"
+      "right_text_en": "Build a new one",
+      "arz": true
     },
     {
       "id": "bostanci_sadakat",
@@ -25094,7 +25160,7 @@
       "right_text": "Benim adımla çalınsın",
       "left_effects": {
         "saray": 3,
-        "yeniçeri": 1,
+        "yeniçeri": -2,
         "ulema": 0,
         "hazine": 0
       },
@@ -25671,14 +25737,14 @@
       "left_effects": {
         "saray": -1,
         "yeniçeri": 0,
-        "ulema": 1,
+        "ulema": 2,
         "hazine": 0
       },
       "right_effects": {
         "saray": 3,
         "yeniçeri": 0,
-        "ulema": 1,
-        "hazine": 1
+        "ulema": -1,
+        "hazine": 0
       },
       "left_flags_set": [],
       "right_flags_set": [],
@@ -25701,7 +25767,7 @@
       "left_text": "Sakalar yeter",
       "right_text": "Tulumba getirtin",
       "left_effects": {
-        "saray": 0,
+        "saray": -2,
         "yeniçeri": 0,
         "ulema": 2,
         "hazine": 1
@@ -25935,7 +26001,7 @@
       "left_effects": {
         "saray": 0,
         "yeniçeri": 0,
-        "ulema": 0,
+        "ulema": -1,
         "hazine": 1
       },
       "right_effects": {
@@ -25965,10 +26031,10 @@
       "left_text": "Eski fiyattan",
       "right_text": "İstediği verilsin",
       "left_effects": {
-        "saray": 1,
+        "saray": -1,
         "yeniçeri": 0,
         "ulema": 0,
-        "hazine": 0
+        "hazine": 1
       },
       "right_effects": {
         "saray": 3,
@@ -26093,7 +26159,7 @@
       "left_text": "Sessizce düzelt",
       "right_text": "Ulemaya bildir",
       "left_effects": {
-        "saray": 1,
+        "saray": -1,
         "yeniçeri": 0,
         "ulema": 2,
         "hazine": 0
@@ -26317,9 +26383,9 @@
       "left_text": "Kendin için iste",
       "right_text": "Sadrazamı övsün",
       "left_effects": {
-        "saray": 1,
+        "saray": -1,
         "yeniçeri": 0,
-        "ulema": 1,
+        "ulema": 2,
         "hazine": 0
       },
       "right_effects": {
