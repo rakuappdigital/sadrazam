@@ -1,19 +1,17 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 1.7 çekirdek main'de, BUILD ALINMADI (5 Ekim 2026) ← BURADAN DEVAM
+## SIRADAKİ — 1.7 main'de, BUILD ALINMADI (5 Ekim 2026, 2. tur) ← BURADAN DEVAM
 
-Kullanıcının 5 maddesi (Çağ Planı: https://claude.ai/artifact/5T1k9DvNNHeZnuvTXNg6Z5). Ayrıntı CLAUDE.md §3h.
-- YAPILDI: Tahkik + Arz, kart dengesi (218 seçenek, `tools/denge.py` build öncesi), lanet → Kayırma
-  Dengesi, Tam Sürüm = reklamsız + paket satıştan kalktı, ölçüm (analytics.js), Pargalı yan görevi.
-  Testler: scratchpad t/ (cag_test + 26 grup) hepsi geçti; 5 grup yeni kurallara göre güncellendi.
-- KULLANICIDAN BEKLENEN:
-  1. **Asırlar** (temel hedef: 5 tarih düğümü — Mısır 1517, Viyana 1529, Beylerbeyi 1589, Bağdat 1638,
-     Patrona Halil 1730; "Senin Osmanlın" finali) — ONAY bekliyor, kod yok.
-  2. TelemetryDeck hesabı + App ID → `analytics.js` APP_ID. ASC gizlilik etiketine "Kullanım Verisi ·
-     Ürün Etkileşimi · bağlantısız · izleme yok" eklenmeli.
-  3. ASC: `fullnoads` IAP'ı incelemeden çek / sürüme ekleme. Tam Sürüm IAP açıklamasına "reklamsız" ekle.
-  4. Reklamsız (₺59,99) ayrı ürünü: gizlensin mi, alanlara Tam Sürüm de açılsın mı? (ürünler kalsın dendi)
-- Build öncesi: sürüm 1.7.0, `python3 tools/denge.py` 0 hata, privacy.html'e ölçüm paragrafı.
+Rapor: https://claude.ai/artifact/5T1k9DvNNHeZnuvTXNg6Z5. Ayrıntı CLAUDE.md §3h ve §3h-2.
+- YAPILDI: Tahkik + Arz, kart dengesi + `tools/denge.py`, Kayırma Dengesi, Tam Sürüm = reklamsız,
+  Reklamsız Market'te GİZLİ, ölçüm CANLI (TelemetryDeck, namespace com.sadrazam; test sinyali 200),
+  privacy.html'e ölçüm bölümü, Pargalı yan görevi, **Asırlar** (5 tarih düğümü, Devletin Kaderi).
+- ASC: `fullnoads` incelemeden çekildi (READY_TO_SUBMIT, adı "KULLANILMIYOR"); Apple silmeye izin
+  vermiyor (409). 1.6.0 sürümü ASC'de DEVELOPER_REJECTED (kullanıcı geri çekmiş) — 1.7 ile gidilecek.
+- KULLANICIDAN BEKLENEN: fiyat kararı (önerim Tam Sürüm ₺59,99, Hoşgeldin ₺69,99; ASC'den ben
+  değiştirebilirim), 1.7.0 build + inceleme onayı, ASC gizlilik etiketine "Kullanım Verisi · Ürün
+  Etkileşimi · bağlantısız · izleme yok", Tam Sürüm IAP açıklamasına "reklamsız". GitHub push onayı.
+- Build öncesi: MARKETING_VERSION 1.7.0, intro-footer v1.7.0, `python3 tools/denge.py` 0 hata.
 
 ## SIRADAKİ — v1.6.0 / build 40 YÜKLENDİ (4 Ekim 2026) (önceki)
 
