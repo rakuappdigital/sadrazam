@@ -135,6 +135,7 @@ const RewardedAds = (() => {
   };
 
   const show = async (onReward, onCancel, onShow) => {
+    try { window.Analytics?.track('ad_shown', { kind: 'rewarded' }); } catch (e) {} // ölçüm; reklam akışını etkilemez
     if (!_cap) { // web/tarayıcı geliştirme ortamı — native AdMob yok
       _showSimulatedAd(onReward, onCancel);
       return;
