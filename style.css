@@ -5781,3 +5781,11 @@ html, body {
 @media (prefers-reduced-motion: reduce) { .cag-toast { transition: none; } }
 #pargali-letter .pl-kicker { font-family: 'Alegreya SC', serif; font-size: 10px; letter-spacing: 2.5px; color: #8a5a14; text-align: center; margin-bottom: 2px; }
 #pargali-letter .pl-hint { display: block; margin-top: 3px; font-style: italic; color: rgba(90,16,16,.72); }
+/* Kısa ekranlarda ödeme ekranı (5 Ekim 2026: 4. madde REKLAMSIZ eklendi) — tamamı kaydırmadan sığsın */
+@media (max-height: 700px) {
+  #paywall-panel { padding: 22px 22px 18px; gap: 8px; }
+  #paywall-values { gap: 5px; margin: 2px 0; }
+  .pwv small { font-size: 12px; line-height: 1.25; }
+  #paywall-tiles { margin: 4px 0 2px; }
+  .pw-tile { padding: 10px 8px 8px; gap: 4px; }
+}

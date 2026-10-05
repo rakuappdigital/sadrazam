@@ -65,6 +65,10 @@ tam otomatik yapılır. **Her archive öncesi build numarasını artır** (aynı
 versiyon+build ASC'de zaten varsa upload reddedilir).
 
 ```bash
+# 0) ZORUNLU denetimler — biri hata verirse build ALMA
+python3 tools/denge.py          # kart dengesi (baskın/bedelsiz/etkisiz kart, biçim) — çıkış kodu 1 = hata
+node --check game.js && node --check analytics.js
+
 # 1) Versiyon/build güncelle (gerekirse)
 sed -i '' 's/CURRENT_PROJECT_VERSION = ESKİ;/CURRENT_PROJECT_VERSION = YENİ;/g; s/MARKETING_VERSION = ESKİ;/MARKETING_VERSION = YENİ;/g' ios/App/App.xcodeproj/project.pbxproj
 
@@ -347,6 +351,45 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
 - Test sarmalayıcısı `pw.js` göreve başlama sahnesini otomatik geçer (`test_keep_culus=1` kapatır).
 - Prompt dosyaları: `~/Desktop/olumler`, `~/Desktop/yeni` (10 karakter + divan-salonu),
   `~/Desktop/sonlar` (7 son + emeklilik).
+
+## 3h. 5 Ekim 2026 — çekirdek (1.7): Kayırma Dengesi, Tahkik, Arz, kart dengesi, ölçüm
+
+- **Kayırma Dengesi** eski LANET kuralının yerini aldı (aynı YÖNE 3 kaydırma → 4 güç −5 artık YOK).
+  `checkCurse(dir)` (ad korundu, decide'da `_timeout`/`_noCurse` olmayan kartlarda): seçilen tarafın
+  en büyük artısı olan zümre `_favOf`; son `FAV_WINDOW`=4 kararın `FAV_NEED`=3'ünde aynı zümre →
+  `triggerCurse(f)`: öteki üç güç −`FAV_COST`=6 ("DİVAN BÖLÜNDÜ"). 2. kayırmada `_showCurseWhisper(f)` +
+  barda `.fav-warn`. Kalibrasyon: scratchpad sim2.py (rastgele oyunda medyan 38 → 41 kart; eski lanet
+  zorluğun büyük kısmını taşıyordu — değerleri düşürme). `cursedEver` ve başarım kimlikleri
+  (curse_master/no_curse/sabir_imtihani) aynı; adları "Divanı Bölen / Adil Vezir".
+- **Tahkik** `setupTahkikBtn` (dealNext normal kart, `#tahkik-btn` kartın SAĞ üst köşesi; büyüteç
+  `#investigate-btn` SOL üstte, ona DOKUNULMADI). Yılda `TAHKIK_PER_YEAR`=3 hak (+1 Casuslar Başı
+  Müttefik), `_tahkikYearStart` advanceYear'da. Kullanınca sabır −2 (Şemsi −1), iki seçenekte
+  `getEffectPreviewHTML` (Usturlap ile aynı görünüm), `_tahkikCard` → `_previewOn` true.
+- **Arz** cards.json `"arz": true` (38 büyük devlet kararı). `setupArzChip` (`#arz-chip`, pointer-events
+  none, kabul olasılığı `_arzChance`: sabır ≥60 %85, ≥30 %65, altı %45). `decide()` EN BAŞTA
+  `dir = _arzResolve(currentCard, dir)`: reddedilirse öbür taraf uygulanır, `_arzPending`'e sonuç
+  (8–15 kart), `_arzDue` enjeksiyon bloğunda `arz_sonuc` easter kartı (haklıysan sabır +8 Saray +3,
+  değilsen sabır +3). Reddedilen kararlar hafızaya (`_memOnDecision`) YAZILMAZ. İlk 2 Arz'da açıklama.
+- Kayıt: `cag: _cagSave()` / `_cagReset(s.cag)`; startGame `_cagReset(null)`. Bildirim `_cagToast`
+  (`.cag-toast`, satır kırar; `.rel-toast` tek satırdı).
+- **Kart dengesi**: 218 seçenek yeniden yazıldı (baskın ve bedelsiz seçenekler). 22 kart bilerek ödül
+  veren sonuç kartı → `"denge_muaf": "ödül"`. **`tools/denge.py` her build öncesi (§2 adım 0).**
+  Yeni kart eklerken: her seçenekte en az bir güç düşmeli; gizli sonuç (bayrak/zincir/arc/dönem/eşya)
+  taşıyan taraf istisna sayılır (uyarı). Bugün: 662 karar kartı, 606 gerçek ikilem, 0 hata.
+- **Tam Sürüm = reklamsız** `isAdFreeUnlocked()` → `sadrazam_noads==='1' || isFullVersionUnlocked()`.
+  Tam Sürüm + Reklamsız paketi (`fullnoads`) SATIŞTAN KALDIRILDI: `_bundleAvailable()` hep false;
+  sahiplik kontrolleri duruyor. Ödeme ekranında 4. madde REKLAMSIZ (`paywall.v4t/v4d`). Reklamsız ürünü
+  ayrıca satılmaya devam ediyor; Tam Sürüm sahibine Market'te "TAM SÜRÜMDE" yazar.
+- **Ölçüm** `analytics.js` (TelemetryDeck, game.js'ten ÖNCE yüklenir). `APP_ID` yer tutucuyken HİÇ ağ
+  isteği yok. game.js'te `_an(type, payload)` (try/catch, beklemez). Olaylar: session_start,
+  game_start, card_decided (%15 örnek; ms, tahkik, arz), investigate_used, arz_result, favor_triggered,
+  year_end, game_over, paywall_shown, purchase, ad_shown (interstitial + rewardedads.js), settings_changed,
+  secret_progress, ending. Web'de `isTestMode: true`. Pano: dashboard.telemetrydeck.com.
+- **Pargalı yan görevi**: `PARGALI_CONDITIONS` başına `ilk` (18. kart) — herkes ilk sayfayı alır;
+  mektupta eksik sayfalar için `PARGALI_HINTS` ipuçları, başlıkta YAN GÖREV.
+- Testler (scratchpad t/): `cag_test.js` (Tahkik, Kayırma, Arz, kayıt, Tam Sürüm reklamsız, paket yok,
+  ödeme ekranı, Pargalı, ölçüm açık/kapalı + ağ hatası; Chromium+WebKit, TR/EN, ses açık/kapalı).
+  fx/bundle/money/pw_new/mem testleri yeni kurallara göre güncellendi.
 
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 

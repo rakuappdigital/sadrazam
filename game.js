@@ -9385,8 +9385,8 @@ function setupTahkikBtn(c, leftTxt, rightTxt) {
     updateStatUI();
     _renderTahkikChoices(c);
     btn.classList.add("hidden");
-    _cagToast(en ? `<b>THE SCRIBE INQUIRED</b><span>Each choice shows which powers rise and fall. ${_tahkikLeft} left this year · Sultan's patience −${pen}</span>`
-                 : `<b>KÂTİP TAHKİK ETTİ</b><span>Seçeneklerin hangi gücü artırıp azalttığı görünüyor. Bu yıl ${_tahkikLeft} hak kaldı · Sultan'ın sabrı −${pen}</span>`, 3400);
+    _cagToast(en ? `<b>THE SCRIBE INQUIRED</b><span>Drag the card a little: under each choice you will see which powers rise ▲ and fall ▼. ${_tahkikLeft} left this year · Sultan's patience −${pen}</span>`
+                 : `<b>KÂTİP TAHKİK ETTİ</b><span>Kartı hafifçe sürükle: her seçeneğin altında hangi gücün artıp ▲ azaldığı ▼ görünür. Bu yıl ${_tahkikLeft} hak kaldı · Sultan'ın sabrı −${pen}</span>`, 4200);
     _an("investigate_used", { card: c.id, left: _tahkikLeft, year });
     checkSultanSabir();
   };
@@ -9605,7 +9605,7 @@ function decide(dir) {
   if (isGameOver) return;
   _relOnDecision(currentCard, dir);
   _eraOnDecision(currentCard, dir);
-  _memOnDecision(currentCard, dir);
+  if (dir === _advisedDir) _memOnDecision(currentCard, dir); // Sultan'ın reddettiği Arz oyuncunun kararı değil: hafıza kartı onu sormasın
   _dipOnDecision(currentCard, dir);
   if (isGameOver) return;
   _fermanTrack();
