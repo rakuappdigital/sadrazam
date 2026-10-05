@@ -3502,6 +3502,7 @@ function showSultanScreen() {
     }
     const era = ERA_DEFS[s.id];
     if (era) btn.querySelector(".sc-name").insertAdjacentHTML("afterend", `<div class="sc-era">${window.LANG === 'en' ? era.en : era.tr}</div>`);
+    btn.querySelector(".sc-desc")?.insertAdjacentHTML("afterend", _asirBadge(s.id));
     btn.onclick = () => {
       document.querySelectorAll(".sultan-card").forEach(el => el.classList.remove("selected"));
       btn.classList.add("selected");
@@ -6139,6 +6140,7 @@ function _mucizeGain(ratioOthers, ratioHazine, ulemaBonus) {
 }
 
 function getEasterChoices(c) {
+  if (Array.isArray(c._choices)) return c._choices; // Asırlar düğüm kartları kendi seçeneklerini taşır
   const t = c.easter_type, id = String(c.id || "");
   const C = _easterChoice;
   if (t === "kedi") return [
@@ -9461,14 +9463,259 @@ function _arzResultCard(x) {
       updateStatUI();
     } };
 }
-function _cagSave() { return { fav: _favHist, tk: _tahkikLeft, arz: _arzPending }; }
+function _cagSave() { return { fav: _favHist, tk: _tahkikLeft, arz: _arzPending, asir: _asirSave() }; }
 function _cagReset(s) {
   _favHist = (s && Array.isArray(s.fav)) ? s.fav.slice(-FAV_WINDOW) : [];
   _tahkikLeft = (s && typeof s.tk === "number") ? s.tk : TAHKIK_PER_YEAR;
   _arzPending = (s && Array.isArray(s.arz)) ? s.arz.filter(x => x && typeof x.at === "number") : [];
   _tahkikCard = null; _tahkikTexts = null;
   _favMark(null);
+  _asirReset(s ? s.asir : null);
+  if (!s) _asirStartBonus(); // yeni saltanat: önceki dönemlerin tarih düğümü mirası
 }
+
+// ── Asırlar: Devletin Kaderi (5 Ekim 2026) ─────────────────────────
+// Oyunun temel hedefi. Her sultanın döneminde bir TARİH DÜĞÜMÜ var; oyuncu o yıla hazırlıklı
+// ulaşıp düğümü çözerse tarih değişir (ya da tarihteki zafer tekrarlanır). Sonuç kalıcıdır
+// (localStorage sadrazam_asirlar) ve sonraki dönemlerin başlangıcını etkiler. Beş düğüm de
+// sonuçlanınca "Senin Osmanlın" açılır (menüde DEVLETİN KADERİ).
+// YENİ BİR KATMAN: mevcut kart akışına dokunmaz. Kancalar: decide() enjeksiyon bloğunda
+// _asirTick(), _advanceYearInner'da _asirYearClose(), getEasterChoices'ta c._choices,
+// _cagSave/_cagReset (kayıt + başlangıç mirası), sultan ekranında rozet, menüde #btn-asir.
+// Düğüm kartları "easter" tipi özel kartlardır (decide()'dan geçmez: kayırma/arz/ilişki yok).
+const ASIR_KEY = "sadrazam_asirlar";
+const ASIR_AT_CARD = 10; // düğüm yılının kaçıncı kartında başlar
+const ASIR_STAT = { saray: ["Saray", "Palace"], "yeniçeri": ["Ordu", "Army"], ulema: ["Ulema", "Clergy"], hazine: ["Hazine", "Treasury"], sabir: ["Sultan'ın sabrı", "Sultan's patience"] };
+const ASIR_KNOTS = [
+  { id: "misir", sultan: "yavuz", y: 2, cal: 1517, hist: "win",
+    tr: "Mısır Seferi", en: "The Egyptian Campaign",
+    intro: ["Sultan Selim haritayı önüne serdi: “Memlük zayıf. İkinci yılın bitmeden Ridaniye'deyiz. Çölü geçecek bir ordu ve onu besleyecek bir hazine istiyorum, Sadrazam.”",
+            "Sultan Selim spread the map before you: “The Mamluks are weak. Before your second year ends we will be at Ridaniye. I want an army that can cross the desert and a treasury to feed it, Grand Vizier.”"],
+    prep: [["yeniçeri", ">=", 55], ["hazine", ">=", 45], ["sabir", ">=", 35]],
+    cards: [
+      { ch: "2-yeniceri", t: ["Sina çölü önümüzde, Paşam. Su kafilesi ağır ve yavaş. Onu mu bekleyelim, yoksa hızla mı geçelim?", "The Sinai lies ahead, my Pasha. The water caravan is heavy and slow. Do we wait for it, or cross fast?"],
+        a: ["Su kafilesini bekleyin", "Wait for the water caravan", { hazine: -4 }], b: ["Hızla geçin", "Cross fast", { "yeniçeri": -3 }] },
+      { ch: "6-kaptan-i-derya", t: ["Donanma İskenderiye'yi denizden sarabilir. Ama o zaman Rodos şövalyeleri arkamızda kalır.", "The fleet can close Alexandria from the sea. But then the Knights of Rhodes are left behind us."],
+        a: ["Donanma Mısır'a", "Send the fleet to Egypt", { saray: -3 }], b: ["Donanma Rodos'u gözlesin", "Let the fleet watch Rhodes", { ulema: 2 }] },
+    ],
+    win: ["Ridaniye'de Memlük ordusu dağıldı. Kutsal emanetler İstanbul'a yola çıktı. Tarih, yazıldığı gibi tekrarlandı.", "The Mamluk army broke at Ridaniye. The sacred relics set out for Istanbul. History repeated itself as written."],
+    lose: ["Çöl orduyu yuttu. Kahire Memlük'te kaldı; hilafet bu kez İstanbul'a gelmeyecek.", "The desert swallowed the army. Cairo stayed Mamluk; this time the caliphate will not come to Istanbul."],
+    frag: { good: ["Yavuz'un ordusu Kahire'ye girdi; hilafet İstanbul'a taşındı.", "Selim's army entered Cairo; the caliphate moved to Istanbul."],
+            bad: ["Mısır hiç alınamadı; hilafet Kahire'de kaldı.", "Egypt was never taken; the caliphate stayed in Cairo."] },
+    bonus: { good: ["ulema", 3], bad: ["hazine", -3] } },
+  { id: "viyana", sultan: "kanuni", y: 4, cal: 1529, hist: "loss",
+    tr: "Viyana Önlerinde", en: "Before Vienna",
+    intro: ["Sultan Süleyman: “Mohaç bitti. Dördüncü yılında Viyana surlarının önünde olacağız. Bu kez kış bizi geri çevirmesin, Sadrazam.”",
+            "Sultan Süleyman: “Mohács is done. In your fourth year we will stand before the walls of Vienna. This time the winter must not turn us back, Grand Vizier.”"],
+    prep: [["yeniçeri", ">=", 60], ["hazine", ">=", 50], ["saray", ">=", 40]],
+    cards: [
+      { ch: "2-yeniceri", t: ["Yağmur yolları çamura çevirdi, Paşam. Ağır toplar geride kalıyor.", "The rain has turned the roads to mud, my Pasha. The heavy guns are falling behind."],
+        a: ["Topları bekleyin", "Wait for the guns", { hazine: -5 }], b: ["Topsuz ilerleyin, lağım kazarız", "Advance without them, we will mine the walls", { "yeniçeri": -3 }] },
+      { ch: "4-defterdar", t: ["Kuşatma uzarsa ulufe biter. Askere ganimet sözü mü verelim, yoksa hazineden mi ödeyelim?", "If the siege drags on, the pay runs out. Do we promise the troops plunder, or pay from the treasury?"],
+        a: ["Hazineden ödeyin", "Pay from the treasury", { hazine: -6 }], b: ["Ganimet sözü verin", "Promise plunder", { ulema: -3 }] },
+    ],
+    win: ["Viyana'nın kapıları ekim sonunda açıldı. Habsburg sarayı Prag'a çekildi. Tarih değişti.", "The gates of Vienna opened at the end of October. The Habsburg court withdrew to Prague. History has changed."],
+    lose: ["İlk kar düştüğünde kuşatma kaldırıldı. Tarihteki gibi: Viyana bu kez de düşmedi.", "When the first snow fell, the siege was lifted. As in history: Vienna did not fall."],
+    frag: { good: ["Viyana 1529'da düştü; Orta Avrupa'nın kapısı açıldı.", "Vienna fell in 1529; the gate to Central Europe opened."],
+            bad: ["Viyana 1529'da düşmedi, tıpkı tarihteki gibi.", "Vienna did not fall in 1529, just as in history."] },
+    bonus: { good: ["hazine", 4] } },
+  { id: "beylerbeyi", sultan: "murad3", y: 4, cal: 1589, hist: "loss",
+    tr: "Beylerbeyi Vakası", en: "The Beylerbeyi Incident",
+    intro: ["III. Murad: “Hazine sıkışık, Sadrazam. Defterdar ulufeyi ayarı düşük akçeyle ödemeyi öneriyor. Dördüncü yılında ödeme günü gelecek.” Tarihte bu gün, ilk büyük yeniçeri isyanıyla bitti.",
+            "Murad III: “The treasury is tight, Grand Vizier. The Treasurer proposes paying the troops in debased coin. Pay day comes in your fourth year.” In history, that day ended in the first great Janissary revolt."],
+    prep: [["hazine", ">=", 55], ["yeniçeri", ">=", 45], ["era", "<=", 60]],
+    cards: [
+      { ch: "4-defterdar", t: ["Kasada eksik var, Paşam. Akçenin gümüşünü azaltırsak ulufe tamam olur.", "The coffers fall short, my Pasha. If we thin the silver in the akçe, the pay will be complete."],
+        a: ["Ayarı bozmayın, saray masrafını kısın", "Keep the coin pure, cut palace spending", { saray: -5 }], b: ["Ayarı düşük akçeyi basın", "Mint the debased coin", { hazine: 4 }] },
+      { ch: "2-yeniceri", t: ["Ocak, Beylerbeyi Mehmed Paşa'nın kellesini istiyor. Akçeyi o bozdu diyorlar.", "The corps demands the head of Mehmed Pasha, the Beylerbeyi. They say he debased the coin."],
+        a: ["Ağalarla bizzat konuşun", "Speak with the officers yourself", { saray: -3 }], b: ["Paşayı teslim edin", "Hand the Pasha over", { "yeniçeri": 4, ulema: -3 }] },
+    ],
+    win: ["Ulufe tam ayarlı akçeyle ödendi. Kazanlar kalkmadı; Beylerbeyi Vakası tarihe hiç geçmedi. Tarih değişti.", "The troops were paid in pure coin. The cauldrons were never overturned; the Beylerbeyi Incident never entered history. History has changed."],
+    lose: ["Ocak saraya yürüdü, Beylerbeyi'nin kellesi istendi. Tarihteki gibi: ilk büyük yeniçeri isyanı yaşandı.", "The corps marched on the palace and took the Beylerbeyi's head. As in history: the first great Janissary revolt broke out."],
+    frag: { good: ["1589'da akçe bozulmadı; Ocak saraya hiç yürümedi.", "In 1589 the coin was not debased; the corps never marched on the palace."],
+            bad: ["1589'da akçe bozuldu ve ilk büyük yeniçeri isyanı çıktı.", "In 1589 the coin was debased and the first great Janissary revolt broke out."] },
+    bonus: { good: ["yeniçeri", 4] } },
+  { id: "bagdat", sultan: "murad4", y: 4, cal: 1638, hist: "win",
+    tr: "Bağdat", en: "Baghdad",
+    intro: ["IV. Murad: “Bağdat on beş yıldır Acem'in elinde. Dördüncü yılında sancağımı surlarına dikeceğim. Gevşeklik görürsem kelleni alırım, Sadrazam.”",
+            "Murad IV: “Baghdad has been in Persian hands for fifteen years. In your fourth year I will plant my banner on its walls. If I see slackness, I will have your head, Grand Vizier.”"],
+    prep: [["yeniçeri", ">=", 60], ["hazine", ">=", 45], ["sabir", ">=", 40]],
+    cards: [
+      { ch: "11-sipahi_agasi", t: ["Surlar kalın, Paşam. Gedik açılınca topyekûn mu saldıralım, yoksa kuşatmayı uzatıp şehri aç mı bırakalım?", "The walls are thick, my Pasha. Once a breach opens, do we storm with everything, or prolong the siege and starve the city?"],
+        a: ["Gedikten topyekûn hücum", "Storm the breach with everything", { "yeniçeri": -5 }], b: ["Kuşatmayı uzatın", "Prolong the siege", { hazine: -4 }] },
+      { ch: "2-yeniceri", t: ["Sultan hücumun önünde bizzat yürümek istiyor, Paşam.", "The Sultan wants to lead the assault himself, my Pasha."],
+        a: ["Yanında siz de yürüyün", "March beside him", { ulema: -2 }], b: ["Sultan'ı geride tutmaya çalışın", "Try to keep the Sultan back", { saray: -3 }] },
+    ],
+    win: ["Bağdat surlarına sancak dikildi. Kasr-ı Şirin'le çizilen sınır iki yüz yıl değişmeyecek. Tarih tekrarlandı.", "The banner rose over the walls of Baghdad. The border drawn at Qasr-e Shirin will hold for two hundred years. History repeated itself."],
+    lose: ["Hücum geri püskürtüldü; Bağdat Safevi'de kaldı. Doğu sınırı yıllarca kan kaybedecek.", "The assault was thrown back; Baghdad stayed Safavid. The eastern border will bleed for years."],
+    frag: { good: ["Bağdat 1638'de geri alındı; doğu sınırı iki asır sustu.", "Baghdad was retaken in 1638; the eastern border fell silent for two centuries."],
+            bad: ["Bağdat 1638'de alınamadı; doğu sınırı kanamaya devam etti.", "Baghdad was not taken in 1638; the eastern border kept bleeding."] },
+    bonus: { good: ["saray", 3], bad: ["yeniçeri", -3] } },
+  { id: "patrona", sultan: "ahmed3", y: 4, cal: 1730, hist: "loss",
+    tr: "Patrona Halil", en: "Patrona Halil",
+    intro: ["III. Ahmed: “Saadabad'da lale şenlikleri sürsün, Sadrazam.” Çarşıda bir hamam tellağının adı dolaşıyor: Patrona Halil. Tarihte bu isyan, Lale Devri'nin sadrazamının canına mal oldu.",
+            "Ahmed III: “Let the tulip feasts at Saadabad go on, Grand Vizier.” In the bazaar a bathhouse attendant's name is going around: Patrona Halil. In history this revolt cost the Tulip Era's Grand Vizier his life."],
+    prep: [["era", "<", 50], ["yeniçeri", ">=", 45], ["hazine", ">=", 40]],
+    cards: [
+      { ch: "patrona-halil", t: ["Çarşı kapandı, Paşam. Patrona Halil ve adamları Bayezid Meydanı'nda toplanıyor.", "The bazaar has shut, my Pasha. Patrona Halil and his men are gathering in Bayezid Square."],
+        a: ["Şenlikleri durdurun, esnafın vergisini indirin", "Stop the feasts, lower the guilds' taxes", { saray: -6 }], b: ["Bostancıları gönderin", "Send the palace guards", { "yeniçeri": -3 }] },
+      { ch: "2-yeniceri", t: ["Ocağın bir kısmı isyancılara katılmak üzere. Ulufelerini hemen ödersek dururlar.", "Part of the corps is about to join the rebels. If we pay them now, they will stay."],
+        a: ["Ulufeyi hemen ödeyin", "Pay them at once", { hazine: -6 }], b: ["Elebaşılara af çıkarın", "Pardon the ringleaders", { ulema: -3 }] },
+    ],
+    win: ["Patrona Halil'in kalabalığı dağıldı, Lale Devri sürdü. Matbaa susmadı; Lale Devri'nin sadrazamı yatağında öldü. Tarih değişti.", "Patrona Halil's crowd dispersed and the Tulip Era went on. The printing press was not silenced; the Tulip Era's Grand Vizier died in his bed. History has changed."],
+    lose: ["İsyancılar sadrazamın kellesini istedi. Sultan seni bu kez feda etmedi, ama Lale Devri tarihteki gibi bitti.", "The rebels demanded the Grand Vizier's head. This time the Sultan did not sacrifice you, but the Tulip Era ended as in history."],
+    frag: { good: ["1730'da Patrona isyanı bastırıldı; Lale Devri ve matbaa sürdü.", "In 1730 the Patrona revolt was put down; the Tulip Era and the press went on."],
+            bad: ["1730'da Lale Devri, tarihteki gibi Patrona Halil'le bitti.", "In 1730 the Tulip Era ended with Patrona Halil, as in history."] },
+    bonus: {} },
+];
+const ASIR_ORDER = ASIR_KNOTS.map(k => k.sultan);
+let _asirRun = null; // { k, intro, started, stage, prep, score, done }
+
+function _asirGet() { try { const d = JSON.parse(localStorage.getItem(ASIR_KEY) || "{}"); return (d && typeof d === "object") ? { knots: d.knots || {}, finalSeen: !!d.finalSeen } : { knots: {}, finalSeen: false }; } catch (e) { return { knots: {}, finalSeen: false }; } }
+function _asirSet(d) { try { localStorage.setItem(ASIR_KEY, JSON.stringify(d)); } catch (e) {} }
+function _asirGood(r) { return r === "kept" || r === "changed"; }
+function _asirKnotFor(sultanId) { return ASIR_KNOTS.find(k => k.sultan === sultanId) || null; }
+// Bu saltanatta oynanacak düğüm: çözülmemiş ya da kötü bitmiş (yeniden denenebilir)
+function _asirActiveKnot() {
+  if (!selectedSultan || isPasaMode) return null;
+  const k = _asirKnotFor(selectedSultan.id); if (!k) return null;
+  const r = _asirGet().knots[k.id];
+  return (r && _asirGood(r.r)) ? null : k;
+}
+function _asirVal(key) {
+  if (key === "sabir") return Math.round(sultanSabir);
+  if (key === "era") return Math.round((_eraState && _eraState.m) || 0);
+  return Math.round(stats[key] ?? 0);
+}
+function _asirCondOk(c) { const v = _asirVal(c[0]); return c[1] === ">=" ? v >= c[2] : c[1] === "<=" ? v <= c[2] : v < c[2]; }
+function _asirCondLabel(c, en) {
+  const def = _eraDef && _eraDef();
+  const nm = c[0] === "era" ? ((def && def.meter) ? (en ? def.meter[1] : def.meter[0]) : "?") : ASIR_STAT[c[0]][en ? 1 : 0];
+  const nmFmt = c[0] === "era" ? nm.charAt(0) + nm.slice(1).toLocaleLowerCase(en ? "en" : "tr") : nm;
+  const sign = c[1] === ">=" ? "≥" : c[1] === "<=" ? "≤" : "<";
+  return `${nmFmt} ${_asirVal(c[0])}/${sign}${c[2]} ${_asirCondOk(c) ? "✓" : "✗"}`;
+}
+function _asirPrepLine(k, en) { return k.prep.map(c => _asirCondLabel(c, en)).join(" · "); }
+
+// Kayıt (kayıt dosyasına _cagSave içinden yazılır)
+function _asirSave() { return _asirRun; }
+function _asirReset(saved) {
+  if (saved && typeof saved === "object" && saved.k) { _asirRun = saved; return; }
+  const k = _asirActiveKnot();
+  _asirRun = k ? { k: k.id, intro: false, started: false, stage: 0, prep: 0, score: 0, done: false } : null;
+}
+// Göreve başlarken önceki dönemlerin sonuçlarından gelen miras (yalnız sonraki dönemlere)
+function _asirStartBonus() {
+  if (!selectedSultan || isPasaMode) return;
+  const idx = ASIR_ORDER.indexOf(selectedSultan.id); if (idx <= 0) return;
+  const d = _asirGet();
+  for (const k of ASIR_KNOTS.slice(0, idx)) {
+    const r = d.knots[k.id]; if (!r) continue;
+    const b = _asirGood(r.r) ? k.bonus.good : k.bonus.bad;
+    if (b && stats[b[0]] !== undefined) stats[b[0]] = Math.max(10, Math.min(90, stats[b[0]] + b[1]));
+  }
+}
+
+function _asirCard(k, idx) {
+  const en = window.LANG === 'en', L = (p) => en ? p[1] : p[0];
+  const base = { type: "easter", easter_type: "asir", _asir: idx, id: `asir_${k.id}_${idx}_${cardsPlayed}`, stat_effect: null };
+  if (idx === "intro") return { ...base, character: "1-sultan", character_name: (en ? "Knot of History · " : "Tarih Düğümü · ") + `${L([k.tr, k.en])} ${k.cal}`,
+    text: L(k.intro) + (en ? ` Prepare: ${_asirPrepLine(k, true)}.` : ` Hazırlık: ${_asirPrepLine(k, false)}.`),
+    button: en ? "AS YOU COMMAND" : "BAŞ ÜSTÜNE", stat_effect: () => { if (_asirRun) _asirRun.intro = true; } };
+  if (idx === 0) return { ...base, character: "1-sultan", character_name: `${L([k.tr, k.en])} · ${k.cal}`,
+    text: en ? `The hour has come. Your preparation: ${_asirPrepLine(k, true)}. Two decisions remain.` : `Vakit geldi. Hazırlığın: ${_asirPrepLine(k, false)}. Geriye iki karar kaldı.`,
+    button: en ? "TO THE FIELD" : "SEFERE", stat_effect: () => {
+      if (!_asirRun) return; _asirRun.prep = k.prep.filter(_asirCondOk).length; _asirRun.stage = 1; forcedQueue.unshift(_asirCard(k, 1)); } };
+  if (idx === 1 || idx === 2) {
+    const cd = k.cards[idx - 1];
+    const pick = (good, fx) => () => { if (!_asirRun) return; if (good) _asirRun.score++; _asirRun.stage = idx + 1; forcedQueue.unshift(_asirCard(k, idx + 1)); };
+    return { ...base, character: cd.ch, character_name: `${L([k.tr, k.en])} · ${k.cal}`, text: L(cd.t), button: "",
+      _choices: [_easterChoice(cd.a[0], cd.a[1], { fx: cd.a[2], run: pick(true) }), _easterChoice(cd.b[0], cd.b[1], { fx: cd.b[2], run: pick(false) })] };
+  }
+  // idx 3: sonuç
+  const total = (_asirRun ? _asirRun.prep + _asirRun.score : 0);
+  const ok = total >= 4 || (total === 3 && Math.random() < 0.5);
+  const res = ok ? (k.hist === "win" ? "kept" : "changed") : (k.hist === "win" ? "lost" : "history");
+  const tail = en ? ` (Preparation ${_asirRun ? _asirRun.prep : 0}/3 · decisions ${_asirRun ? _asirRun.score : 0}/2)` : ` (Hazırlık ${_asirRun ? _asirRun.prep : 0}/3 · kararlar ${_asirRun ? _asirRun.score : 0}/2)`;
+  return { ...base, character: "1-sultan", character_name: `${L([k.tr, k.en])} · ${k.cal}`, text: L(ok ? k.win : k.lose) + tail,
+    button: ok ? (en ? "HISTORY IS WRITTEN" : "TARİH YAZILDI") : (en ? "SO BE IT" : "KADER BÖYLEYMİŞ"),
+    stat_effect: () => {
+      if (ok) { sultanSabir = Math.min(100, sultanSabir + 10); stats.saray = Math.min(95, stats.saray + 5); showStatDelta("saray", 5); }
+      else { sultanSabir = Math.max(5, sultanSabir - 8); }
+      updateStatUI();
+      const d = _asirGet(); const prev = d.knots[k.id];
+      d.knots[k.id] = { r: res, n: ((prev && prev.n) || 0) + 1 }; _asirSet(d);
+      if (_asirRun) { _asirRun.stage = 4; _asirRun.done = true; }
+      _an("asir", { knot: k.id, result: res, prep: _asirRun ? _asirRun.prep : 0, score: _asirRun ? _asirRun.score : 0, year });
+      _asirMenuLabel();
+      const n = ASIR_KNOTS.filter(x => d.knots[x.id]).length;
+      if (n === ASIR_KNOTS.length) showItemToast(en ? "All five knots of history are tied. Read “Your Ottoman Empire” in the menu." : "Beş düğüm de bağlandı. “Senin Osmanlın” menüde seni bekliyor.");
+    } };
+}
+function _asirQueued() { return forcedQueue.some(c => c && c.easter_type === "asir") || (currentCard && currentCard.easter_type === "asir"); }
+// decide() enjeksiyon bloğunda çağrılır
+function _asirTick() {
+  if (!_asirRun || _asirRun.done || isPasaMode) return;
+  const k = ASIR_KNOTS.find(x => x.id === _asirRun.k); if (!k) return;
+  if (_asirQueued()) return;
+  // kayıttan dönüşte yarım kalan düğüm sahnesi kaldığı yerden sürer (kuyruk kayda yalnız kimlikle yazılır)
+  if (_asirRun.started) { if (_asirRun.stage < 4) forcedQueue.unshift(_asirCard(k, _asirRun.stage)); return; }
+  if (!_asirRun.intro && cardsPlayed >= 2 && year <= k.y) { forcedQueue.push(_asirCard(k, "intro")); return; }
+  if (year === k.y && (cardsPlayed % CARDS_PER_YEAR) >= ASIR_AT_CARD) { _asirRun.started = true; _asirRun.intro = true; forcedQueue.unshift(_asirCard(k, 0)); }
+}
+// Yıl Sonu ekranına hazırlık satırı
+function _asirYearClose() {
+  if (!_asirRun || _asirRun.done || isPasaMode || !_ysCur) return;
+  const k = ASIR_KNOTS.find(x => x.id === _asirRun.k); if (!k || year >= k.y) return;
+  const en = window.LANG === 'en', left = k.y - year;
+  _ysCur.stations.push(en ? `${k.en} ${k.cal} · ${left} year${left > 1 ? "s" : ""} left · ${_asirPrepLine(k, true)}`
+                          : `${k.tr} ${k.cal} · ${left} yıl kaldı · ${_asirPrepLine(k, false)}`);
+}
+function _asirBadge(sultanId) {
+  const k = _asirKnotFor(sultanId); if (!k) return "";
+  const en = window.LANG === 'en', r = _asirGet().knots[k.id];
+  const st = !r ? (en ? "unresolved" : "çözülmedi") : ({ kept: en ? "history repeated ✓" : "tarih tekrarlandı ✓", changed: en ? "history changed ✓" : "tarih değişti ✓",
+    lost: en ? "lost · retry" : "kaybedildi · yeniden dene", history: en ? "as in history · retry" : "tarihteki gibi · yeniden dene" })[r.r];
+  return `<div class="sc-knot">${en ? "Knot" : "Düğüm"}: ${en ? k.en : k.tr} ${k.cal} · ${st}</div>`;
+}
+function _asirMenuLabel() {
+  const b = document.getElementById("btn-asir"); if (!b) return;
+  const n = ASIR_KNOTS.filter(x => _asirGet().knots[x.id]).length, en = window.LANG === 'en';
+  const l = b.querySelector(".asir-lbl"); if (l) l.textContent = (en ? "FATE OF THE EMPIRE " : "DEVLETİN KADERİ ") + `${n}/${ASIR_KNOTS.length}`;
+}
+function showAsirlar() {
+  if (document.getElementById("asir-overlay")) return;
+  const en = window.LANG === 'en', d = _asirGet(), L = (p) => en ? p[1] : p[0];
+  const sname = (id) => { const s = SULTANS.find(x => x.id === id); const e = (en && window.EN_SULTANS && window.EN_SULTANS[id]) || {}; return e.name || (s ? s.name : id); };
+  const stTxt = { kept: en ? "History repeated" : "Tarih tekrarlandı", changed: en ? "History changed" : "Tarih değişti", lost: en ? "Lost" : "Kaybedildi", history: en ? "As in history" : "Tarihteki gibi" };
+  const rows = ASIR_KNOTS.map(k => {
+    const r = d.knots[k.id];
+    const cls = !r ? "open" : _asirGood(r.r) ? "good" : "bad";
+    const cond = k.prep.map(c => { const def = ERA_DEFS[k.sultan]; const em = def && def.meter ? L(def.meter) : "?"; const nm = c[0] === "era" ? em.charAt(0) + em.slice(1).toLocaleLowerCase(en ? "en" : "tr") : ASIR_STAT[c[0]][en ? 1 : 0]; return `${nm} ${c[1] === ">=" ? "≥" : c[1] === "<=" ? "≤" : "<"}${c[2]}`; }).join(" · ");
+    return `<div class="as-row ${cls}"><div class="as-yr">${k.cal}</div><div class="as-body"><b>${L([k.tr, k.en])}</b><span class="as-who">${sname(k.sultan)} · ${en ? `year ${k.y}` : `${k.y}. yıl`}${k.y <= FREE_YEAR_LIMIT ? (en ? " · free" : " · ücretsiz") : ""}</span>
+      <span class="as-st">${r ? stTxt[r.r] : (en ? "Unresolved" : "Çözülmedi")}</span><span class="as-cond">${en ? "Prepare" : "Hazırlık"}: ${cond}</span></div></div>`;
+  }).join("");
+  const n = ASIR_KNOTS.filter(k => d.knots[k.id]).length;
+  let fin = "";
+  if (n === ASIR_KNOTS.length) {
+    const good = ASIR_KNOTS.filter(k => _asirGood(d.knots[k.id].r)).length;
+    const verdict = good === 5 ? (en ? "You lifted the Sublime State above its history." : "Devlet-i Aliyye'yi tarihinin üstüne çıkardın.")
+      : good >= 3 ? (en ? "You bent history, but did not break it." : "Tarihi büktün, ama kırmadın.")
+      : (en ? "In your hands too, history walked its known road." : "Tarih, senin elinde de bildiği yoldan yürüdü.");
+    fin = `<div class="as-final"><div class="as-ft">${en ? "YOUR OTTOMAN EMPIRE" : "SENİN OSMANLIN"}</div>${ASIR_KNOTS.map(k => `<p>${L(_asirGood(d.knots[k.id].r) ? k.frag.good : k.frag.bad)}</p>`).join("")}<p class="as-verdict">${verdict}</p>
+      <p class="as-note">${en ? "A knot that ended badly can be played again with its Sultan." : "Kötü biten bir düğüm, o sultanla yeniden oynanabilir."}</p></div>`;
+  }
+  const el = document.createElement("div"); el.id = "asir-overlay";
+  el.innerHTML = `<div id="asir-panel"><div class="as-kicker">${en ? "THE MAIN GOAL" : "ASIL HEDEF"}</div><div class="as-title">${en ? "FATE OF THE EMPIRE" : "DEVLETİN KADERİ"}</div>
+    <p class="as-lead">${en ? "Every Sultan's reign hides a knot of history. Reach its year prepared and decide well: change what was lost, repeat what was won." : "Her sultanın saltanatında bir tarih düğümü var. O yıla hazırlıklı ulaş, doğru karar ver: kaybedileni değiştir, kazanılanı tekrarla."}</p>
+    <div class="as-sub">${n}/${ASIR_KNOTS.length}</div>${rows}${fin}<button class="as-close" type="button">${en ? "Close" : "Kapat"}</button></div>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add("visible"));
+  el.querySelector(".as-close").onclick = () => { el.classList.remove("visible"); setTimeout(() => el.remove(), 220); };
+  if (n === ASIR_KNOTS.length && !d.finalSeen) { d.finalSeen = true; _asirSet(d); }
+}
+document.getElementById("btn-asir")?.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showAsirlar(); });
+_asirMenuLabel();
 
 // ── Karar ─────────────────────────────────────────────────────────
 let _cardShownAt = 0;
@@ -9770,6 +10017,7 @@ function decide(dir) {
     }
     // Arz: Sultan'ın reddettiği tavsiyelerin sonucu
     _arzDue();
+    _asirTick(); // Asırlar: tarih düğümü
     // Savaş Sonucu: gecikme dolunca askeri güce göre zafer ya da yenilgi kartı gelir
     if (_savasSonucSchedule && cardsPlayed >= _savasSonucSchedule.afterCardsPlayed) {
       _savasSonucSchedule = null;
@@ -10146,6 +10394,7 @@ function _advanceYearInner() {
   _fermanCloseYear(); // biten yılın fermanı — paywall/sınır kontrollerinden önce
   _endYearClose();    // kader yolu durakları + son kontrolü (aynı sebeple önce)
   _eraYearClose();
+  _asirYearClose(); // Asırlar: Yıl Sonu'na düğüm hazırlığı satırı
   // Paywall daha önce reddedildiyse: bir daha hiç paywall çıkmaz — bunun yerine
   // her oyun 2. yılın sonunda "ölümle" biter (Tam Sürüm alınana kadar kalıcı).
   // Bu ölüm kesin olmalı: normal triggerGameOver() İkinci Şans (reklam/akçe) teklifi

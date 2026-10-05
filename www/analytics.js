@@ -14,9 +14,14 @@
 // CARD_SAMPLE oranı gönderilir; geri kalan olaylar oyun/yıl başına birkaç tanedir
 // (oyun başına ortalama ~15 olay).
 (function () {
-  const APP_ID = "TELEMETRYDECK_APP_ID_BURAYA"; // TelemetryDeck > uygulama > Ayarlar > App ID
-  const ENABLED = APP_ID !== "TELEMETRYDECK_APP_ID_BURAYA";
-  const ENDPOINT = "https://nom.telemetrydeck.com/v2/";
+  const APP_ID = "F3B8B209-FB1A-4FAB-B53D-5FB4DE179E3D"; // TelemetryDeck > uygulama > Ayarlar > App ID
+  const NAMESPACE = "com.sadrazam";                          // TelemetryDeck kuruluş namespace'i
+  const ENDPOINT = "https://nom.telemetrydeck.com/v2/namespace/" + NAMESPACE + "/";
+  // Yerel geliştirme/test sunucusunda (http://localhost) gönderim YOK — testler gerçek panoya ve kotaya
+  // yazmasın. DİKKAT: iOS uygulaması da capacitor://localhost'ta çalışır; onu isNative() ayırır.
+  // Testte bilerek açmak için localStorage.sadrazam_an_test = "1".
+  const LOCAL_DEV = (() => { try { return !window.Capacitor?.isNativePlatform?.() && /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && localStorage.getItem("sadrazam_an_test") !== "1"; } catch (e) { return true; } })();
+  const ENABLED = APP_ID !== "TELEMETRYDECK_APP_ID_BURAYA" && !LOCAL_DEV;
   const SALT = "sadrazam-divan-1520";
   const CARD_SAMPLE = 0.15;      // kart kararlarının yaklaşık %15'i gönderilir
   const FLUSH_MS = 20000;        // en geç 20 sn'de bir gönder

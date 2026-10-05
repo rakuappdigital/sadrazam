@@ -391,6 +391,31 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   ödeme ekranı, Pargalı, ölçüm açık/kapalı + ağ hatası; Chromium+WebKit, TR/EN, ses açık/kapalı).
   fx/bundle/money/pw_new/mem testleri yeni kurallara göre güncellendi.
 
+### 3h-2. 5 Ekim 2026 (2. tur): Asırlar, Reklamsız gizli, ölçüm canlı
+
+- **Asırlar (oyunun TEMEL HEDEFİ)** game.js `ASIR_KNOTS` (5 düğüm: misir/yavuz 2. yıl, viyana/kanuni,
+  beylerbeyi/murad3, bagdat/murad4, patrona/ahmed3 — hepsi 4. yıl). Kalıcı: localStorage
+  `sadrazam_asirlar` {knots:{id:{r: kept|changed|lost|history, n}}, finalSeen}. Saltanat durumu
+  `_asirRun` (kayıtta `cag.asir`). Akış: 2. karttan sonra giriş kartı (hedef + hazırlık şartları) →
+  düğüm yılının `ASIR_AT_CARD`=10. kartında sahne: SEFERE → 2 seçim kartı → sonuç (hazırlık 0–3 +
+  karar 0–2; ≥4 başarı, 3'te %50). Kartlar `easter_type:"asir"`, seçimler `c._choices`
+  (getEasterChoices'ın İLK satırı). decide() enjeksiyon bloğunda `_asirTick()` (kayıttan dönüşte yarım
+  sahneyi yeniden kuyruğa koyar — forcedQueue kayda yalnız kimlikle yazılır). `_asirYearClose()` Yıl
+  Sonu'na hazırlık satırı. `_asirStartBonus()` yeni saltanatta ÖNCEKİ dönemlerin sonucundan miras
+  (_cagReset(null) içinde). Sultan ekranında `.sc-knot` rozeti, menüde `#btn-asir` → `showAsirlar()`
+  (5/5 olunca "Senin Osmanlın"). Kötü biten düğüm aynı sultanla yeniden oynanır; iyi biten bir daha
+  gelmez. Paşa modunda düğüm yok. Test: scratchpad t/asir_test.js.
+- **Reklamsız Market'te GİZLİ** (`#market-noads.gone`, kullanıcı kararı: yalnız Tam Sürüm avantajı).
+  Kod/ürün duruyor; geri açmak için index.html'de `gone` sınıfını kaldır.
+- **fullnoads IAP** (6818863680): inceleme gönderimi iptal edildi, ürün READY_TO_SUBMIT, adı
+  "KULLANILMIYOR - Tam+Reklamsiz". Apple API ile silmeye izin vermiyor (409). Sürüme EKLEME.
+- **Ölçüm canlı**: APP_ID `F3B8B209-FB1A-4FAB-B53D-5FB4DE179E3D`, namespace `com.sadrazam`
+  (adres `nom.telemetrydeck.com/v2/namespace/com.sadrazam/`). Yerel test sunucusunda (localhost, native
+  değil) gönderim KAPALI; testte açmak için `localStorage.sadrazam_an_test="1"`. iOS da
+  capacitor://localhost kullanır — onu `isNativePlatform()` ayırır, bu ayrımı bozma.
+  privacy.html'de "Anonymous Usage Analytics" bölümü var; ASC gizlilik etiketi: Kullanım Verisi ·
+  Ürün Etkileşimi · bağlantısız · izleme yok.
+
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 
 - **Dönemler** `ERA_DEFS`, `_eraState` (kayıtta `era`), `_eraPick` (getNextCard'da, %30, ayrı kanal;

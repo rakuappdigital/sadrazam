@@ -1603,6 +1603,7 @@ html, body {
 #noads-buy-btn:active, #bundle-buy-btn:active { transform: scale(0.95); }
 /* Tam Sürüm + Reklamsız paketi (3 Ekim 2026) */
 #market-bundle.gone { display: none; }
+#market-noads.gone { display: none; }
 #bundle-card { border-color: var(--gold-light); box-shadow: 0 0 26px rgba(232,200,74,0.22), inset 0 1px 0 rgba(232,200,74,0.18); }
 #bundle-compare { margin-top: 4px; font-family: 'Alegreya SC', serif; font-size: 11px; display: flex; gap: 6px; align-items: center; }
 #bundle-compare s { color: rgba(240,230,208,0.5); }
@@ -5789,3 +5790,31 @@ html, body {
   #paywall-tiles { margin: 4px 0 2px; }
   .pw-tile { padding: 10px 8px 8px; gap: 4px; }
 }
+
+/* ── Asırlar: Devletin Kaderi (5 Ekim 2026) ── */
+.sultan-card .sc-knot { font-family: 'Alegreya', serif; font-style: italic; font-size: 11.5px; line-height: 1.3; color: var(--gold-light); opacity: .85; margin: 3px 0 2px; }
+#asir-overlay { position: fixed; inset: 0; z-index: 900; display: flex; align-items: center; justify-content: center; padding: 18px; background: rgba(3,2,8,.82); opacity: 0; transition: opacity .22s; }
+#asir-overlay.visible { opacity: 1; }
+#asir-panel { width: 100%; max-width: 380px; max-height: 88vh; overflow-y: auto; background: linear-gradient(180deg, #e3d4ad, #EBDFC2 10%, #EBDFC2 90%, #e3d4ad); color: #3B2A14; border-radius: 8px; padding: 18px 18px 10px; box-shadow: 0 18px 44px rgba(0,0,0,.7), inset 0 0 50px rgba(120,80,30,.25); }
+#asir-panel .as-kicker { font-family: 'Alegreya SC', serif; font-size: 10px; letter-spacing: 2.5px; color: #8a5a14; text-align: center; }
+#asir-panel .as-title { font-family: 'Alegreya SC', serif; font-size: 17px; letter-spacing: 3px; color: #5a1010; text-align: center; }
+#asir-panel .as-lead { font-family: 'Alegreya', serif; font-size: 13.5px; line-height: 1.4; text-align: center; margin: 6px 0 4px; }
+#asir-panel .as-sub { font-family: 'Alegreya SC', serif; font-size: 11px; letter-spacing: 2px; color: #7a4a10; text-align: center; margin: 2px 0 8px; }
+#asir-panel .as-row { display: flex; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(90,60,20,.22); }
+#asir-panel .as-yr { font-family: 'Alegreya SC', serif; font-weight: 700; font-size: 17px; color: #8a5a14; min-width: 44px; }
+#asir-panel .as-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-family: 'Alegreya', serif; font-size: 13px; line-height: 1.3; }
+#asir-panel .as-body b { font-family: 'Alegreya SC', serif; font-size: 14px; color: #3B2A14; }
+#asir-panel .as-who { color: rgba(59,42,20,.7); font-size: 12px; }
+#asir-panel .as-st { font-family: 'Alegreya SC', serif; font-size: 11.5px; letter-spacing: .5px; }
+#asir-panel .as-row.good .as-st { color: #2c6e3f; }
+#asir-panel .as-row.bad .as-st { color: #8a2a1a; }
+#asir-panel .as-row.open .as-st { color: #7a4a10; }
+#asir-panel .as-cond { font-size: 11.5px; color: rgba(59,42,20,.65); font-style: italic; }
+#asir-panel .as-final { margin-top: 10px; padding-top: 10px; border-top: 2px solid rgba(90,16,16,.35); font-family: 'Alegreya', serif; font-size: 13.5px; line-height: 1.4; }
+#asir-panel .as-final p { margin: 0 0 6px; }
+#asir-panel .as-ft { font-family: 'Alegreya SC', serif; font-size: 14px; letter-spacing: 2.5px; color: #5a1010; text-align: center; margin-bottom: 6px; }
+#asir-panel .as-verdict { font-style: italic; color: #5a1010; text-align: center; }
+#asir-panel .as-note { font-size: 12px; color: rgba(59,42,20,.65); text-align: center; }
+#asir-panel .as-close { display: block; margin: 8px auto 4px; background: none; border: none; font-family: 'Alegreya', serif; font-size: 15px; color: #7a4a10; cursor: pointer; padding: 6px 16px; }
+/* Uzun menüde sürüm yazısı son düğmenin üstüne düşebiliyor — dokunuşu yutmasın */
+#intro-footer { pointer-events: none; }
