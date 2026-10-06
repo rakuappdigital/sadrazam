@@ -4990,8 +4990,9 @@ function dealNext() {
     _cpLoad.onload  = () => { cardImage.src = _cpLoad.src; cardImage.style.visibility = ""; };
     _cpLoad.onerror = () => { cardImage.style.visibility = "hidden"; };
     _cpLoad.src = "assets/characters/" + encodeURIComponent(key + ".jpg");
-    charName.textContent = c.character_name || "";
-    cardText.textContent = c.text || "";
+    const _enCh = window.LANG === 'en'; // şans kartı EN'de de Türkçe yazıyordu (6 Ekim 2026)
+    charName.textContent = (_enCh && c.character_name_en) || c.character_name || "";
+    cardText.textContent = (_enCh && c.text_en) || c.text || "";
     choiceLeft.style.opacity = "0";
     choiceRight.style.opacity = "0";
     overlayL.style.opacity = "0";
@@ -6731,8 +6732,9 @@ function showNegotiationCard(c) {
   const key = c.character || "";
   cardImage.src = "assets/characters/" + encodeURIComponent(key + ".jpg");
   cardImage.onerror = () => { cardImage.src = ""; };
-  charName.textContent = c.character_name || "";
-  cardText.textContent = c.text || "";
+  const _enNg = window.LANG === 'en'; // müzakere kartı EN'de de Türkçe yazıyordu (6 Ekim 2026)
+  charName.textContent = (_enNg && c.character_name_en) || c.character_name || "";
+  cardText.textContent = (_enNg && c.text_en) || c.text || "";
   choiceLeft.style.opacity  = "0";
   choiceRight.style.opacity = "0";
   overlayL.style.opacity = "0";
@@ -6751,7 +6753,7 @@ function showNegotiationCard(c) {
   c.negotiation_options.forEach(opt => {
     const btn = document.createElement("button");
     btn.className = "negot-btn";
-    btn.textContent = opt.label;
+    btn.textContent = (_enNg && opt.label_en) || opt.label;
     btn.style.cssText += ";cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;";
 
     btn.onclick = () => {
