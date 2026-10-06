@@ -1,5 +1,34 @@
 # Sadrazam — TODO
 
+## SIRADAKİ — 1.7.0 / build 43 incelemede (7 Ekim 2026) + BÜYÜK YAMA seçimleri ← BURADAN DEVAM
+
+**Durum:** 1.7.0 / **build 43** yüklendi (Delivery `023c907c-cd3d-4f8d-be4c-a6a97dca0bb2`), 1.7.0'a bağlanıp
+incelemeye gönderildi (asc_submit.py — sonucu aşağıya yazılacak). Push (e3dd76c) + Vercel deploy yapıldı.
+Build 42 hiç gönderilmedi (PREPARE_FOR_SUBMISSION'dayken 43 ile değiştirildi).
+
+**Build 43'te olanlar (6–7 Ekim):** reklam düzenlemesi (aşağıda), EN şans/müzakere kartları, metin düzeltmeleri ve
+arayüz düzeltmeleri S1–S8 + D1–D8 (commit ada0126; ayrıntı CLAUDE.md §3h-5):
+- S1 Duraklat: Devam Et en üstte (primary), "Oyunu bitir…" onaylı (gm-confirm), touchend'de silme yok.
+- S2 Duraklat'ta Müzik/Efektler (gm-mus / gm-sfx, Ayarlar'la aynı localStorage).
+- S3 Ana menü: #intro-footer akışta (absolute değil); @media max-height 880/740 sıkıştırma; SE'de her şey sığıyor.
+- S4 ::before görünmez dokunma alanları (☰, ferman çipi; büyüteç/Tahkik yalnız kart kenarına doğru).
+- S5 Nasıl Oynanır: 8 araç (howto.t_*), sticky altın başla düğmesi, klavye satırı html.native'de gizli.
+- S6 .negot-card (müzakerede portre küçük; dealNext başında ve letter-card ile birlikte temizlenir).
+- S7 _cagToast başlığın (header-row / ferman-chip) altında açılır.
+- S8 sultan kartı "SEÇİLDİ" rozeti (html[lang=en] → SELECTED), alt şerit geçişi.
+- D1 _btnFirstHint (ilk 3 görüş etiketi), D2 Deneyimli Mod + Promosyon kaldırıldı, previewMode HERKESE false
+  (Tahkik/Usturlap'ı işlevsiz kılıyordu), D3 başarım rozeti 0/N (.zero), D4 #restart-btn sticky,
+  D5 başarım sekmeleri 3×2 / 40px, D6 #scroll-hint (intro/akce/achievements, eşik 48px), D7 ikincil yazı opaklığı,
+  D8 Market sandık notu üstte + oyun içi dükkân .esya-note.
+- Testler: scratchpad ux_fix_test.js (136 kontrol ×2 tur), ad_test, long_test, death_test, native_ads_test (164),
+  fuzz 5 ayar × 600 adım — hepsi temiz.
+
+**BÜYÜK YAMA — öneri sayfası:** https://claude.ai/artifact/CzTskzKzTzQ4ExW21JKKtH
+(9 tasarım: G1 ana menü A/B/C, G2 duraklat A/B/C, G3 Market A/B/C — oyunun kendi style.css'iyle çizildi;
+A1–A10 akçe satışı, Y1–Y6 yönlendirme, K1–K8 keyif). Taslak üreticiler: scratchpad demo/gen.py, gen2.py.
+**Kullanıcı seçimi (7 Ekim):** G1 = A ("ama şu var" — notun devamı bekleniyor). Diğerleri bekleniyor.
+Önerim: G1-A · G2-B · G3-A · A1 A2 A3 A4 · Y1 Y2 · K1 K2 K3. Önce web demo, onaydan sonra oyuna.
+
 ## SIRADAKİ — 1.7.0 / build 42 (6 Ekim 2026 gece) ← BURADAN DEVAM
 
 **Durum:** 1.7.0 / **build 42** yüklendi (Delivery UUID `1056bc73-e8ed-4c42-a2b1-08efb521698c`, sürüm numarası

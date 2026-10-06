@@ -462,6 +462,19 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   (Şifa Otu), Tahkik.
 - Test: scratchpad `ad_test.js`, `long_test.js`, `native_ads_test.js` (E: oyun sonu reklamı, F: Tahkik).
 
+### 3h-5. 6–7 Ekim 2026: arayüz düzeltmeleri S1–S8, D1–D8 (build 43)
+
+- Duraklat (showGameMenu): gm-resume primary en üstte; gm-mus/gm-sfx; gm-quit → gm-confirm (gm-quit-yes doQuit).
+- Ana menü: #intro-footer akışta; kısa ekran sıkıştırması style.css sonunda (@media max-height 880 / 740).
+- Dokunma alanları: #game-menu-btn/#investigate-btn/#tahkik-btn/#ferman-chip ::before (bu öğelere başka ::before
+  ekleme). Büyüteç/Tahkik ::after D1 etiketi için kullanılıyor.
+- .negot-card: showNegotiationCard ekler; dealNext başında ve tüm letter-card temizliklerinde kalkar.
+- _cagToast konumu JS'te hesaplanır (header-row / ferman-chip alt kenarı + 6px).
+- previewMode (Deneyimli Mod) her açılışta false; ayarlarda yok. getEffectPreviewHTML yalnız Usturlap/Tahkik için.
+- #scroll-hint: initScrollHint (game.js sonu, Init'ten önce) — liste yalnız intro/akce/achievements.
+- Nasıl Oynanır: howto.t_*_t / _d çeviri anahtarları; html.native sınıfı howtoScreen tanımının yanında eklenir.
+- Test: scratchpad ux_fix_test.js.
+
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 
 - **Dönemler** `ERA_DEFS`, `_eraState` (kayıtta `era`), `_eraPick` (getNextCard'da, %30, ayrı kanal;
