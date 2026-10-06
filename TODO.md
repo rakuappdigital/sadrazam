@@ -1,6 +1,14 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 1.7 main'de, BUILD ALINMADI (5 Ekim 2026, 2. tur) ← BURADAN DEVAM
+## SIRADAKİ — 1.7 dünya yayını QA tamam, BUILD ALINMADI (6 Ekim 2026) ← BURADAN DEVAM
+
+QA turu (CLAUDE.md §3h-3): bütün test grupları + iPhone reklam/satın alma + 40 pencere × 3 boyut +
+otomatik oyun temiz. Kullanıcıdan beklenen: (1) App Store Connect'te App Privacy'ye "Usage Data →
+Product Interaction, not linked, no tracking" (API yok), (2) Tam Sürüm/Hoşgeldin IAP açıklamasına
+"reklamsız" (API 409, elle), (3) 1.7.0 build + inceleme onayı, (4) GitHub push onayı. Fiyatlar DEĞİŞMEYECEK
+(kullanıcı kararı). Ücretsiz oyuncuya geçiş reklamı sürüyor (Tam Sürüm/Reklamsız sahibine yok).
+
+## SIRADAKİ — 1.7 main'de, BUILD ALINMADI (5 Ekim 2026, 2. tur) (önceki)
 
 Rapor: https://claude.ai/artifact/5T1k9DvNNHeZnuvTXNg6Z5. Ayrıntı CLAUDE.md §3h ve §3h-2.
 - YAPILDI: Tahkik + Arz, kart dengesi + `tools/denge.py`, Kayırma Dengesi, Tam Sürüm = reklamsız,
