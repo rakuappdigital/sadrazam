@@ -3456,21 +3456,24 @@ function confirmAdvisor() {
   _maybeShowInterstitialThenStartGame();
 }
 
-// "OYUNA BAŞLA" tuşuna her basıldığında sayılır, HER 3. basışta bir geçiş
-// reklamı gösterilir. Reklam gösterilemese/hiç yüklenmemiş olsa bile
-// InterstitialAds.show() her koşulda callback'i çağırır — oyun asla
-// reklama bağlı kalıp bloklanmaz. Market'ten "Reklamsız" alındıysa hiç gösterilmez.
-const INTERSTITIAL_EVERY_N_GAMES = 3; // 27 Eylül 2026: 2 → 3 (kullanıcı isteği)
+// 6 Ekim 2026: geçiş reklamı artık oyun başında değil, HER oyun bitişinde
+// (_gameOverInterstitial, ölüm sahnesinden sonra). Sayaç yalnızca bilgi için tutuluyor.
 function _maybeShowInterstitialThenStartGame() {
-  if (isAdFreeUnlocked()) { startGame(); return; }
-  const n = parseInt(localStorage.getItem('sadrazam_start_count') || '0', 10) + 1;
-  localStorage.setItem('sadrazam_start_count', String(n));
-  if (typeof InterstitialAds !== 'undefined' && n % INTERSTITIAL_EVERY_N_GAMES === 0) {
-    _an("ad_shown", { kind: "interstitial" });
-    InterstitialAds.show(startGame);
-  } else {
-    startGame();
+  if (!isAdFreeUnlocked()) {
+    const n = parseInt(localStorage.getItem('sadrazam_start_count') || '0', 10) + 1;
+    localStorage.setItem('sadrazam_start_count', String(n));
   }
+  startGame();
+}
+
+// HER oyun bitişinde geçiş reklamı (kullanıcı isteği, 6 Ekim 2026; eskiden her 3 oyunda
+// bir, oyun başında). Tam Sürüm / Reklamsız sahibine hiç gösterilmez. Reklam hazır
+// değilse ya da gösterilemezse InterstitialAds.show() next'i hemen çağırır — ölüm
+// ekranı asla reklama bağlı kalıp bloklanmaz.
+function _gameOverInterstitial(next) {
+  if (isAdFreeUnlocked() || typeof InterstitialAds === 'undefined') { next(); return; }
+  _an("ad_shown", { kind: "interstitial" });
+  InterstitialAds.show(next);
 }
 
 // ── Sultan Seçim Ekranı ───────────────────────────────────────────
@@ -9351,6 +9354,44 @@ let _tahkikLeft = TAHKIK_PER_YEAR, _tahkikCard = null, _tahkikTexts = null;
 function _tahkikYearStart() {
   _tahkikLeft = TAHKIK_PER_YEAR + ((typeof relLevel === "function" && relLevel("14-casuslar_basi") >= 2) ? 1 : 0);
 }
+// Hak bitince yılda BİR kez ödüllü reklamla +1 Tahkik (6 Ekim 2026). Akçeyle satılan bir
+// şeyin yerine geçmez; sabır bedeli aynen düşer. Onay penceresi item-confirm-popup'ı
+// kullanır (açıkken kart kaydırma zaten kilitli, ölümde kaldırılıyor).
+let _tahkikAdYear = 0;
+function _offerTahkikAd(c, btn) {
+  const en = window.LANG === 'en';
+  document.getElementById("item-confirm-popup")?.remove();
+  const popup = document.createElement("div");
+  popup.id = "item-confirm-popup";
+  popup.className = "tahkik-ad";
+  popup.innerHTML = `
+    <div class="icp-name">${en ? "NO INQUIRIES LEFT" : "TAHKİK HAKKIN BİTTİ"}</div>
+    <div class="icp-desc">${en ? "Watch an ad and the Scribe opens one more file this year. The Sultan's patience still drops." : "Reklam izle, Kâtip bu yıl bir dosya daha açsın. Sultan'ın sabrı yine düşer."}</div>
+    <div class="icp-btns">
+      <button class="icp-use">${en ? "Watch Ad · +1" : "Reklam İzle · +1"}</button>
+      <button class="icp-cancel">${en ? "Cancel" : "Vazgeç"}</button>
+    </div>`;
+  document.getElementById("game")?.appendChild(popup);
+  const use = popup.querySelector(".icp-use");
+  popup.querySelector(".icp-cancel").onclick = (e) => { e.stopPropagation(); popup.remove(); };
+  use.onclick = (e) => {
+    e.stopPropagation();
+    use.disabled = true;
+    RewardedAds.show(() => {
+      popup.remove();
+      if (isGameOver) return;
+      _tahkikAdYear = year;
+      _tahkikLeft++;
+      _an("investigate_ad", { year });
+      if (currentCard === c) btn.onclick(); // hakkı hemen bu kartta kullan
+      else _cagToast(en ? "<b>+1 INQUIRY</b><span>Use it on any card this year.</span>" : "<b>+1 TAHKİK</b><span>Bu yıl dilediğin kartta kullan.</span>", 2600);
+    }, () => {
+      use.disabled = false;
+      const d = popup.querySelector(".icp-desc");
+      if (d) d.textContent = en ? "The ad could not be shown." : "Reklam gösterilemedi.";
+    });
+  };
+}
 function _tahkikEligible(c) {
   return !!c && !c.type && !c._mem && !c._timeout && c.character !== "1-sultan" && !!c.left_effects && !!c.right_effects;
 }
@@ -9372,6 +9413,10 @@ function setupTahkikBtn(c, leftTxt, rightTxt) {
     card.appendChild(btn);
   }
   _tahkikTexts = { c, l: leftTxt, r: rightTxt };
+  // Önceki kartta açık kalmış Tahkik reklam teklifi yeni kartta kalmasın (reklam
+  // ekrandaysa ödül yine verilir — RewardedAds callback'i bu pencereye bağlı değil)
+  const oldOffer = document.querySelector("#item-confirm-popup.tahkik-ad");
+  if (oldOffer && !oldOffer.querySelector(".icp-use:disabled")) oldOffer.remove();
   const shownAlready = window.previewMode || _usturlapShownFor(c) || _tahkikCard === c;
   if (!_tahkikEligible(c) || shownAlready) { btn.classList.add("hidden"); btn.onclick = null; return; }
   const en = window.LANG === 'en';
@@ -9384,6 +9429,7 @@ function setupTahkikBtn(c, leftTxt, rightTxt) {
     if (e) e.stopPropagation();
     if (isAnimating || currentCard !== c) return;
     if (_tahkikLeft <= 0) {
+      if (_tahkikAdYear !== year && typeof RewardedAds !== 'undefined') { _offerTahkikAd(c, btn); return; }
       _cagToast(en ? "<b>NO INQUIRIES LEFT</b><span>The Scribe can open three files a year.</span>"
                    : "<b>TAHKİK HAKKIN BİTTİ</b><span>Kâtip yılda üç dosya açabilir.</span>", 2600);
       return;
@@ -9471,10 +9517,11 @@ function _arzResultCard(x) {
       updateStatUI();
     } };
 }
-function _cagSave() { return { fav: _favHist, tk: _tahkikLeft, arz: _arzPending, asir: _asirSave() }; }
+function _cagSave() { return { fav: _favHist, tk: _tahkikLeft, tka: _tahkikAdYear, arz: _arzPending, asir: _asirSave() }; }
 function _cagReset(s) {
   _favHist = (s && Array.isArray(s.fav)) ? s.fav.slice(-FAV_WINDOW) : [];
   _tahkikLeft = (s && typeof s.tk === "number") ? s.tk : TAHKIK_PER_YEAR;
+  _tahkikAdYear = (s && typeof s.tka === "number") ? s.tka : 0;
   _arzPending = (s && Array.isArray(s.arz)) ? s.arz.filter(x => x && typeof x.at === "number") : [];
   _tahkikCard = null; _tahkikTexts = null;
   _favMark(null);
@@ -10647,7 +10694,8 @@ function _actuallyTriggerGameOver(reason, cause) {
   // Ölüm sahnesi (4 Ekim 2026): HER ölüm tam ekran sahneyle biter. Eski portre
   // sinematiği (son kartın büyüyüp solması) kullanıcı isteğiyle kaldırıldı; görsel bir
   // sebepten yüklenemezse doğrudan ölüm ekranına geçilir.
-  _playDeathScene(reason, _deathCause, () => showGameOver(reason), () => setTimeout(() => showGameOver(reason), 400));
+  const toGameOver = () => _gameOverInterstitial(() => showGameOver(reason));
+  _playDeathScene(reason, _deathCause, toGameOver, () => setTimeout(toGameOver, 400));
 }
 
 // ── Ölüm sahnesi (4 Ekim 2026) ──

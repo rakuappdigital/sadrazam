@@ -18,6 +18,15 @@ const RewardedAds = (() => {
   let _ready = false;     // initialize() + ATT tamamlandı, native çağrı yapılabilir
   let _adLoaded = false;  // gerçek bir reklam yüklendi ve gösterilmeyi bekliyor
   let _loading = false;   // prepareRewardVideoAd() hâlâ devam ediyor
+  let _loadedAt = 0;      // reklamın yüklendiği an (bayatlık kontrolü)
+
+  // Google yüklenen reklamı ~1 saat sonra geçersiz sayar; bayat reklam
+  // açılmayabilir ya da gösterim sayılmaz. 55 dakikayı geçen reklam atılıp
+  // yenisi istenir (uygulamaya dönüşte, dakikada bir ve göstermeden önce).
+  const STALE_MS = 55 * 60 * 1000;
+  const _dropIfStale = () => {
+    if (_adLoaded && Date.now() - _loadedAt > STALE_MS) { _adLoaded = false; prepare(); }
+  };
 
   // App Store reddi (30 Eylül 2026, 1.5.0 build 28, iOS/iPadOS 27): ATT
   // penceresi incelemede hiç görünmedi. OLASI NEDEN (iOS 27'de doğrulanamadı):
@@ -59,7 +68,9 @@ const RewardedAds = (() => {
     // initialize() biter bitmez true oluyordu (reklam daha yüklenmeden), bu da
     // henüz hazır olmayan bir reklamı göstermeye çalışıp native tarafta
     // sessizce reddedilmesine yol açabiliyordu.
-    _cap.addListener("onRewardedVideoAdLoaded", () => { _adLoaded = true; _loading = false; });
+    _cap.addListener("onRewardedVideoAdLoaded", () => { _adLoaded = true; _loading = false; _loadedAt = Date.now(); });
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") _dropIfStale(); });
+    setInterval(_dropIfStale, 60000);
     // Yükleme başarısız olursa (ağ/doldurma sorunu) eskiden bir daha ASLA
     // yeniden denenmiyordu — kullanıcı bir daha o oturumda hiç reklam
     // göremiyor, dolayısıyla ne ödül ne de reklam geliri oluyordu. Şimdi
@@ -141,6 +152,7 @@ const RewardedAds = (() => {
       return;
     }
     const isEN = window.LANG === 'en';
+    _dropIfStale(); // bayatsa aşağıdaki "Reklam yükleniyor…" yolu tazesini bekler
 
     // Canlıda ASLA sahte reklam gösterilmez (eskiden reklam yüklenmemişse
     // "SİMÜLE REKLAM" gösterilip bedava ödül veriliyordu → AdMob'a gösterim
@@ -179,6 +191,7 @@ const RewardedAds = (() => {
     handles.push(...await Promise.all([
       _cap.addListener("onRewardedVideoAdShowed", () => {
         shown = true; clearTimeout(launchTimer);
+        try { window.Analytics?.track('ad_impression', { kind: 'rewarded' }); } catch (e) {} // gerçekten ekrana çıktı
         if (onShow) onShow();
       }),
       _cap.addListener("onRewardedVideoAdReward", () => { earned = true; }),

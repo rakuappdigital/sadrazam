@@ -4,8 +4,9 @@
 // GÜVENLİK KİLİDİ: gerçek Ad Unit ID girilmeden native AdMob SDK'sı hiç
 // çağrılmaz — rewardedads.js'teki aynı desen (bkz. o dosyadaki yorum).
 //
-// Ne zaman gösterilir: "Oyuna Başla" butonuna (confirmAdvisor(), game.js)
-// basıldığında, TEK YERDE sayılan bir sayaçla HER 3. seferde bir (game.js INTERSTITIAL_EVERY_N_GAMES). Reklam
+// Ne zaman gösterilir: HER oyun bitişinde, ölüm sahnesinden sonra ölüm
+// ekranından önce (game.js _gameOverInterstitial, 6 Ekim 2026). Tam Sürüm /
+// Reklamsız sahibine hiç gösterilmez, onlar için reklam istenmez bile. Reklam
 // başarısız olsa/hiç yüklenemese bile oyun ASLA bloklanmaz — show() her
 // koşulda onDone() çağırır.
 
@@ -21,11 +22,25 @@ const InterstitialAds = (() => {
   let _ready = false;     // initialize() tamamlandı, native çağrı yapılabilir
   let _adLoaded = false;  // gerçek bir reklam yüklendi ve gösterilmeyi bekliyor
   let _loading = false;   // prepareInterstitial() hâlâ devam ediyor
+  let _loadedAt = 0;      // reklamın yüklendiği an (bayatlık kontrolü)
+
+  // Google yüklenen reklamı ~1 saat sonra geçersiz sayar; bayat reklam
+  // açılmayabilir ya da gösterim sayılmaz. 55 dakikayı geçen reklam atılıp
+  // yenisi istenir (uygulamaya dönüşte ve dakikada bir kontrol edilir).
+  const STALE_MS = 55 * 60 * 1000;
+  const _dropIfStale = () => {
+    if (_adLoaded && Date.now() - _loadedAt > STALE_MS) { _adLoaded = false; prepare(); }
+  };
+  // Tam Sürüm / Reklamsız sahibine geçiş reklamı hiç gösterilmez → hiç
+  // istenmesin (boşa istek). isAdFreeUnlocked game.js'te tanımlı.
+  const _adFree = () => { try { return !!window.isAdFreeUnlocked?.(); } catch (e) { return false; } };
 
   const init = () => {
     if (!_cap) return; // ID girilmeden veya web/tarayıcıda hiç başlatılmaz
 
-    _cap.addListener("interstitialAdLoaded", () => { _adLoaded = true; _loading = false; });
+    _cap.addListener("interstitialAdLoaded", () => { _adLoaded = true; _loading = false; _loadedAt = Date.now(); });
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") _dropIfStale(); });
+    setInterval(_dropIfStale, 60000);
     // rewardedads.js'teki aynı gerçek sorun: yükleme başarısız olursa bir daha
     // hiç yeniden denenmezse o oturumda reklam gelirinin tamamı kaybolur.
     _cap.addListener("interstitialAdFailedToLoad", () => {
@@ -41,7 +56,7 @@ const InterstitialAds = (() => {
   };
 
   const prepare = () => {
-    if (!_cap || !_ready || _loading || _adLoaded) return;
+    if (!_cap || !_ready || _loading || _adLoaded || _adFree()) return;
     _loading = true;
     _cap.prepareInterstitial({ adId: INTERSTITIAL_AD_UNIT_ID }).catch((e) => {
       _loading = false;
@@ -61,6 +76,7 @@ const InterstitialAds = (() => {
   const LAUNCH_TIMEOUT_MS = 8000;
   const show = async (onDone) => {
     if (!_cap) { _showSimulatedAd(onDone); return; } // sadece web/geliştirme
+    _dropIfStale();
     if (!_ready || !_adLoaded) { prepare(); onDone(); return; }
 
     _adLoaded = false; // bu reklam artık tüketiliyor, tekrar hazır değil
@@ -81,7 +97,10 @@ const InterstitialAds = (() => {
       onDone();
     }
     handles.push(...await Promise.all([
-      _cap.addListener("interstitialAdShowed", () => { shown = true; clearTimeout(launchTimer); }),
+      _cap.addListener("interstitialAdShowed", () => {
+        shown = true; clearTimeout(launchTimer);
+        try { window.Analytics?.track('ad_impression', { kind: 'interstitial' }); } catch (e) {} // gerçekten ekrana çıktı
+      }),
       _cap.addListener("interstitialAdDismissed", finish),
       _cap.addListener("interstitialAdFailedToShow", finish),
     ]));

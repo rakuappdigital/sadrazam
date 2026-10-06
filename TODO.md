@@ -1,5 +1,20 @@
 # Sadrazam — TODO
 
+## 6 Ekim 2026 (akşam) — Reklam düzenlemesi (main, build YOK, push YOK)
+
+AdMob: 311 istek / 39 gösterim, eşleşme %100 → boş reklam yok; fark, her açılışta önceden
+yüklenip hiç gösterilmeyen reklamlardan. Yapılanlar (yalnız reklam dosyaları + 3 küçük game.js noktası):
+- **Geçiş reklamı HER oyun bitişinde** (kullanıcı isteği): ölüm sahnesi → reklam → ölüm ekranı
+  (`_gameOverInterstitial`). Oyun başındaki "her 3. Oyuna Başla" reklamı kaldırıldı.
+- Tam Sürüm / Reklamsız sahibine geçiş reklamı zaten yoktu; artık **istenmiyor da** (boşa istek).
+- 55 dk'yı geçen (bayat) reklam atılıp yenisi yükleniyor (Google ~1 saatte geçersiz sayar).
+- TelemetryDeck: `ad_impression` (reklam gerçekten ekrana çıktı) — `ad_shown` deneme sayısı olarak kaldı.
+- **Yeni ödüllü reklam: Tahkik** — hak bitince yılda 1 kez "Reklam İzle · +1" (sabır bedeli aynen; akçeyle
+  satılan bir şeyin yerine geçmez). Olay: `investigate_ad`.
+- Test: Chrome+WebKit × TR/EN (oyun sonu reklamı, Tam Sürüm'de yok, başlangıçta yok, Tahkik reklamı) +
+  ölüm sahnesi testi + ses on/off ilk kart/uzun oyun — hepsi geçti. Native reklam (gerçek AdMob) cihazda denenmedi.
+- Build 41 bu değişiklikleri İÇERMİYOR → ya 41 gönderilir ve bunlar 1.7.1 olur, ya build 42 alınıp 1.7.0'a bağlanır.
+
 ## SIRADAKİ — 1.7.0 (build 41) ASC'de, incelemeye gönderilmeye hazır (6 Ekim 2026) ← BURADAN DEVAM
 
 **Durum:** 1.7.0 / build 41 yüklendi (Delivery UUID `f9bed195-688d-4f4b-ba07-177ee8f26d3f`, işlendi: VALID).
@@ -55,7 +70,7 @@ GitHub'a push YAPILMADI (onay bekliyor).
   (kod ve ASC ürünü duruyor). `fullnoads` paketi: inceleme iptal edildi, ASC'de "KULLANILMIYOR" adıyla
   READY_TO_SUBMIT (silinemiyor), oyunda hiç görünmüyor. **Fiyatlar değişmeyecek** (kullanıcı kararı;
   analiz: Apple eşleştirmesi $2,99 = ₺149,99, Tam Sürüm ₺29,99 → net ₺16,62).
-- Ücretsiz oyuncuya her 3 oyunda bir geçiş reklamı sürüyor; Tam Sürüm / Reklamsız sahibine yok.
+- Ücretsiz oyuncuya her 3 oyunda bir geçiş reklamı sürüyor; Tam Sürüm / Reklamsız sahibine yok. (6 Ekim akşam: artık HER oyun bitişinde, bkz. en üst)
 
 **5. Ölçüm (TelemetryDeck)**
 - `analytics.js`, App ID `F3B8B209-FB1A-4FAB-B53D-5FB4DE179E3D`, namespace `com.sadrazam`. 15 olay (oyun,
