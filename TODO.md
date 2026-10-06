@@ -1,21 +1,59 @@
 # Sadrazam — TODO
 
-## 6 Ekim 2026 (akşam) — Reklam düzenlemesi (main, build YOK, push YOK)
+## SIRADAKİ — 1.7.0 / build 42 (6 Ekim 2026 gece) ← BURADAN DEVAM
 
-AdMob: 311 istek / 39 gösterim, eşleşme %100 → boş reklam yok; fark, her açılışta önceden
-yüklenip hiç gösterilmeyen reklamlardan. Yapılanlar (yalnız reklam dosyaları + 3 küçük game.js noktası):
-- **Geçiş reklamı HER oyun bitişinde** (kullanıcı isteği): ölüm sahnesi → reklam → ölüm ekranı
-  (`_gameOverInterstitial`). Oyun başındaki "her 3. Oyuna Başla" reklamı kaldırıldı.
-- Tam Sürüm / Reklamsız sahibine geçiş reklamı zaten yoktu; artık **istenmiyor da** (boşa istek).
-- 55 dk'yı geçen (bayat) reklam atılıp yenisi yükleniyor (Google ~1 saatte geçersiz sayar).
-- TelemetryDeck: `ad_impression` (reklam gerçekten ekrana çıktı) — `ad_shown` deneme sayısı olarak kaldı.
-- **Yeni ödüllü reklam: Tahkik** — hak bitince yılda 1 kez "Reklam İzle · +1" (sabır bedeli aynen; akçeyle
-  satılan bir şeyin yerine geçmez). Olay: `investigate_ad`.
-- Test: Chrome+WebKit × TR/EN (oyun sonu reklamı, Tam Sürüm'de yok, başlangıçta yok, Tahkik reklamı) +
-  ölüm sahnesi testi + ses on/off ilk kart/uzun oyun — hepsi geçti. Native reklam (gerçek AdMob) cihazda denenmedi.
-- Build 41 bu değişiklikleri İÇERMİYOR → ya 41 gönderilir ve bunlar 1.7.1 olur, ya build 42 alınıp 1.7.0'a bağlanır.
+**Durum:** 1.7.0 / **build 42** yüklendi (Delivery UUID `1056bc73-e8ed-4c42-a2b1-08efb521698c`, sürüm numarası
+DEĞİŞMEDİ). Build 41 ile bekleyen inceleme gönderimi (`0e4bf5b5-…`, 6 Ekim 01:26) **iptal edildi**; build 42
+işlendi (VALID) ve 1.7.0.a bağlandı; sürüm durumu PREPARE_FOR_SUBMISSION. **İncelemeye yeniden gönderim kullanıcıda.**
+Gönderimde yalnız sürüm vardı, IAP yoktu (oyunun kullandığı tüm IAP'lar APPROVED; `fullnoads` / `akce30start`
+SEÇİLMEMELİ). GitHub push (d1765a1) ve Vercel deploy yapıldı, canlıda yeni reklam kodu doğrulandı.
 
-## SIRADAKİ — 1.7.0 (build 41) ASC'de, incelemeye gönderilmeye hazır (6 Ekim 2026) ← BURADAN DEVAM
+**Yayından sonra bakılacaklar:**
+1. AdMob: gösterim / istek oranı yükselmeli (eskiden 39/311 ≈ %12,5). Reklam birimine göre böl.
+2. TelemetryDeck: `ad_impression` (gerçek gösterim) ile AdMob gösterimini karşılaştır; `investigate_ad` kaç kez.
+3. Gerçek cihazda: ölüm → geçiş reklamı → ölüm ekranı; Tam Sürüm'de reklam yok; Tahkik reklamı.
+4. Oyun sonu reklamı oyuncuyu kaçırıyor mu (oturum başına oyun sayısı, ertesi gün dönüş) — gerekirse sıklığı düşür.
+
+### 6 Ekim 2026 (akşam) — Reklam analizi ve düzenlemesi (commit ef3b991, d1765a1)
+
+**Analiz (AdMob ekranı: 311 istek, 39 gösterim, eşleşme %100, ₺47,44):**
+- Boş reklam DÖNMÜYOR (eşleşme %100). Kodda gösterimi yutan bir hata yok.
+- Fark "hep hazır tutma"dan: her açılışta 1 ödüllü + 1 geçiş reklamı yükleniyordu; geçiş reklamı yalnız her
+  3. "Oyuna Başla"da, ödüllü reklam yalnız isteğe bağlı gösterildiği için yüklenenlerin çoğu kullanılmadan
+  uygulama kapanıyordu (gösterilme oranı ≈ %12,5).
+- Tam Sürüm sahibi geçiş reklamı zaten görmüyordu (5 Ekim'den beri) ama reklam ona da yükleniyordu (boşa istek).
+- Yüklenen reklam ~1 saat sonra geçersiz oluyor; kod bunu bilmediği için uzun oturumda gösterim kaybı olabiliyordu.
+- `ad_shown` olayı reklam açılmadan (deneme anında) gönderildiği için gerçek gösterim sayısı ölçülemiyordu.
+
+**Eklenenler / değişenler:**
+- **Geçiş reklamı HER oyun bitişinde** (kullanıcı isteği; eskiden her 3 oyunda bir, oyun başında):
+  ölüm sahnesi → reklam → ölüm ekranı (`_gameOverInterstitial`). Oyun başında artık reklam yok.
+  Reklam hazır değilse/açılmazsa ölüm ekranı hemen gelir — oyun reklama asla bağlı kalmaz.
+- **Tam Sürüm / Reklamsız sahibine reklam hiç istenmiyor** (yalnız gösterilmemesi değil).
+- **Bayat reklam yenileme**: 55 dk'yı geçen reklam atılıp yenisi yükleniyor (uygulamaya dönüşte, dakikada
+  bir ve göstermeden önce) — iki reklam türünde de.
+- **Ölçüm**: yeni `ad_impression` olayı (reklam gerçekten ekrana çıkınca); `ad_shown` deneme sayısı olarak kaldı.
+- **Yeni ödüllü reklam — Tahkik**: yılın 3 hakkı bitince yılda 1 kez "Reklam İzle · +1". İzlenirse hak o kartta
+  hemen kullanılır, Sultan'ın sabrı yine düşer. Akçeyle satılan bir şeyin yerine geçmez. Kayıtta (`cag.tka`).
+  Olay `investigate_ad`. Ödüllü reklam yerleri artık 5: İkinci Şans, günlük hediye, Kâtibin Notu/Müneccim,
+  Kritik An (Şifa Otu), Tahkik.
+
+**Bulunan ve düzeltilen sorunlar:**
+- Tam Sürüm sahibine açılışta yine de geçiş reklamı isteniyordu (yukarıda).
+- Bu düzeltmenin ilk halinde yarış durumu: reklam modülü game.js yüklenmeden sahipliği soruyordu → kayıtlı
+  Tam Sürüm sahibinde bile 1 istek gidiyordu. Sahiplik artık doğrudan kayıttan da okunuyor (sahte iPhone testi buldu).
+- Tahkik teklifi açıkken kart değişirse izlenen reklamın ödülü kaybolabilirdi → ödül yine verilir, sonraki karta
+  "+1 TAHKİK" bildirimi; eski karttaki teklif penceresi yeni kartta kapanır.
+- Bayat (1 saati geçen) reklamın açılmaması / gösterimin sayılmaması (yukarıda).
+
+**Bilinen küçük durum:** temiz kurulumda Tam Sürüm sahibine açılışta en fazla 1 istek gidebilir (sahiplik
+RevenueCat'ten reklam isteğinden sonra geliyor); sonraki açılışlarda yok.
+
+**Testler (hepsi geçti):** `ad_test.js` 24 (Chrome+WebKit × TR/EN), `native_ads_test.js` 164 (sahte iPhone: AdMob
+olay sıraları, gösterilemedi/yüklenemedi/uzun reklam, İkinci Şans/günlük hediye/Kâtip/Kritik An, oyun sonu reklamı,
+Tahkik reklamı), ölüm sahnesi testi, `long_test.js` (ses açık/kapalı ilk kart + uzun oyun). Gerçek AdMob cihazda denenmedi.
+
+## (ESKİ) 1.7.0 (build 41) — 6 Ekim'de incelemeye gönderilmişti, build 42 için gönderim iptal edildi
 
 **Durum:** 1.7.0 / build 41 yüklendi (Delivery UUID `f9bed195-688d-4f4b-ba07-177ee8f26d3f`, işlendi: VALID).
 ASC'de geri çekilmiş 1.6.0 sürüm kaydı **1.7.0** yapıldı ve build 41 bağlandı (17 dil yerelleştirmesi duruyor).
