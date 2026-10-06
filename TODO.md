@@ -15,6 +15,11 @@ GitHub'a push YAPILMADI (onay bekliyor).
   + 5 iPad 12.9"); diğer 14 dil birincil dilin görsellerini gösterir — artık İngilizce. Yeni dile görsel
   eklenirse o dil kendi görselini kullanır.
 - ASC'nin yeni arayüzünde görseller ilk bakışta görünmeyebilir; API'de hepsi COMPLETE.
+- **Gizlilik politikası URL'si** de-DE ve ja'da eksikti (inceleme engeli) → API ile eklendi; 17 dilin hepsi
+  `https://sadrazam-web.vercel.app/privacy.html`.
+- **Canlı privacy.html eskiydi** ("No first-party analytics") → Vercel'e deploy edildi (6 Ekim, kullanıcı onaylı);
+  canlıda "Anonymous Usage Analytics" + TelemetryDeck, Last updated: October 2026. Aynı deploy web/test
+  sürümünü de 1.7 koduna güncelledi (web'den gelen ölçüm olayları isTestMode=true).
 
 **Açık kalanlar:**
 1. (İsteğe bağlı) Tam Sürüm / Hoşgeldin IAP açıklamasına "reklamsız / ad-free" — ASC arayüzünden elle (API 409).
