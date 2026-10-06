@@ -1,16 +1,25 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 1.7.0 (build 41) ASC'YE YÜKLENDİ, sürüme bağlandı (6 Ekim 2026) ← BURADAN DEVAM
+## SIRADAKİ — 1.7.0 (build 41) ASC'de, incelemeye gönderilmeye hazır (6 Ekim 2026) ← BURADAN DEVAM
 
 **Durum:** 1.7.0 / build 41 yüklendi (Delivery UUID `f9bed195-688d-4f4b-ba07-177ee8f26d3f`, işlendi: VALID).
 ASC'de geri çekilmiş 1.6.0 sürüm kaydı **1.7.0** yapıldı ve build 41 bağlandı (17 dil yerelleştirmesi duruyor).
-**İncelemeye GÖNDERİLMEDİ** — gönderimi kullanıcı yapacak. GitHub'a push YAPILMADI (onay bekliyor).
+**İncelemeye gönderim kullanıcıda** (6 Ekim son kontrol: PREPARE_FOR_SUBMISSION, açık gönderim yok, oyunun
+kullandığı tüm IAP'lar APPROVED). Gönderirken `fullnoads` ve `akce30start` SEÇİLMEMELİ (ikisi de kullanılmıyor).
+GitHub'a push YAPILMADI (onay bekliyor).
 
-**Kullanıcının elle yapması gerekenler (API izin vermiyor):**
-1. ASC → App Privacy → Data Types: **Usage Data → Product Interaction** · amaç Analytics · Not linked · Not tracking.
-2. (İsteğe bağlı) Tam Sürüm / Hoşgeldin IAP açıklamasına "reklamsız / ad-free" (ACTIVE localization → API 409).
-3. 1.7.0 "What's New" metni (17 dilde 1.6 metni duruyor) — güncellenmeli.
-4. TelemetryDeck panosunda appVersion **1.6.0** olan olayları ele (5 Ekim test turundan sahte veri).
+**6 Ekim sonrası ASC durumu (kullanıcı yaptı / doğrulandı):**
+- App Privacy: Usage Data → Product Interaction ZATEN ekli (amaç Analytics, not linked, not tracking olmalı).
+- "What's New": 1.6 metni bırakıldı — 1.6 hiç yayınlanmadığı için 1.7'yi de kapsıyor (kullanıcı kararı).
+- **Birincil dil tr → en-US yapıldı** (kullanıcı). Sebep: ekran görüntüleri yalnız tr / en-US / ar-SA'da (5 iPhone 6.7"
+  + 5 iPad 12.9"); diğer 14 dil birincil dilin görsellerini gösterir — artık İngilizce. Yeni dile görsel
+  eklenirse o dil kendi görselini kullanır.
+- ASC'nin yeni arayüzünde görseller ilk bakışta görünmeyebilir; API'de hepsi COMPLETE.
+
+**Açık kalanlar:**
+1. (İsteğe bağlı) Tam Sürüm / Hoşgeldin IAP açıklamasına "reklamsız / ad-free" — ASC arayüzünden elle (API 409).
+2. TelemetryDeck panosunda appVersion **1.6.0** olan olayları ele (5 Ekim test turundan sahte veri).
+3. GitHub push onayı.
 
 ### 5–6 Ekim 2026'da tek oturumda yapılanlar (ayrıntı: CLAUDE.md §3h, §3h-2, §3h-3)
 
