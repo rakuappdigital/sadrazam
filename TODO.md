@@ -3,7 +3,8 @@
 ## SIRADAKİ — 1.7.0 / build 43 incelemede (7 Ekim 2026) + BÜYÜK YAMA seçimleri ← BURADAN DEVAM
 
 **Durum:** 1.7.0 / **build 43** yüklendi (Delivery `023c907c-cd3d-4f8d-be4c-a6a97dca0bb2`), 1.7.0'a bağlanıp
-incelemeye gönderildi (asc_submit.py — sonucu aşağıya yazılacak). Push (e3dd76c) + Vercel deploy yapıldı.
+incelemeye gönderildi: WAITING_FOR_REVIEW (7 Ekim 01:14 TR). Not: build 43'te export compliance boş kalmıştı
+(usesNonExemptEncryption) → API ile false yapıldı (önceki build'lerle aynı); yeni build'lerde bunu kontrol et. Push (e3dd76c) + Vercel deploy yapıldı.
 Build 42 hiç gönderilmedi (PREPARE_FOR_SUBMISSION'dayken 43 ile değiştirildi).
 
 **Build 43'te olanlar (6–7 Ekim):** reklam düzenlemesi (aşağıda), EN şans/müzakere kartları, metin düzeltmeleri ve
@@ -26,7 +27,12 @@ arayüz düzeltmeleri S1–S8 + D1–D8 (commit ada0126; ayrıntı CLAUDE.md §3
 **BÜYÜK YAMA — öneri sayfası:** https://claude.ai/artifact/CzTskzKzTzQ4ExW21JKKtH
 (9 tasarım: G1 ana menü A/B/C, G2 duraklat A/B/C, G3 Market A/B/C — oyunun kendi style.css'iyle çizildi;
 A1–A10 akçe satışı, Y1–Y6 yönlendirme, K1–K8 keyif). Taslak üreticiler: scratchpad demo/gen.py, gen2.py.
-**Kullanıcı seçimi (7 Ekim):** G1 = A ("ama şu var" — notun devamı bekleniyor). Diğerleri bekleniyor.
+**Kullanıcı seçimi (7 Ekim):**
+- G1 = A, ama "İlerlemen" kutucuklarıyla Tam Sürümü Aç arasında boşluk kalıyor; kutucuklar büyütülebilir →
+  bunun için 3 alternatif daha istendi.
+- G2 = B (uygula).
+- G3 = A beğenildi ama "geliştirilebilir" → A'ya benzer 3 seçenek daha istendi.
+- Akçe satışı listesi anlaşılmadı ("birini mi seçmeliyim?") → önce açıklama, sonra hepsi birlikte yapılacak.
 Önerim: G1-A · G2-B · G3-A · A1 A2 A3 A4 · Y1 Y2 · K1 K2 K3. Önce web demo, onaydan sonra oyuna.
 
 ## SIRADAKİ — 1.7.0 / build 42 (6 Ekim 2026 gece) ← BURADAN DEVAM
