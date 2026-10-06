@@ -6,6 +6,11 @@
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>tr</string>
+	</array>
 	<key>CFBundleDisplayName</key>
         <string>Sadrazam</string>
 	<key>CFBundleExecutable</key>
@@ -59,6 +64,6 @@
 		</dict>
 	</array>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>Bu kimlik, sana daha ilgili reklamlar göstermek için kullanılacaktır.</string>
+	<string>This identifier will be used to show you ads that are more relevant to you.</string>
 </dict>
 </plist>

@@ -18,9 +18,11 @@
   const NAMESPACE = "com.sadrazam";                          // TelemetryDeck kuruluş namespace'i
   const ENDPOINT = "https://nom.telemetrydeck.com/v2/namespace/" + NAMESPACE + "/";
   // Yerel geliştirme/test sunucusunda (http://localhost) gönderim YOK — testler gerçek panoya ve kotaya
-  // yazmasın. DİKKAT: iOS uygulaması da capacitor://localhost'ta çalışır; onu isNative() ayırır.
+  // yazmasın. Ayrım ADRES ŞEMASIYLA yapılır: iOS uygulaması capacitor://localhost'ta çalışır (http değil);
+  // testler ise http://localhost'ta ve çoğu zaman sahte bir "native" ortamla koşar — isNativePlatform()'a
+  // güvenme (5 Ekim 2026'da sahte native testler bu yüzden gerçek panoya yazdı).
   // Testte bilerek açmak için localStorage.sadrazam_an_test = "1".
-  const LOCAL_DEV = (() => { try { return !window.Capacitor?.isNativePlatform?.() && /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && localStorage.getItem("sadrazam_an_test") !== "1"; } catch (e) { return true; } })();
+  const LOCAL_DEV = (() => { try { return /^https?:$/.test(location.protocol) && /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && localStorage.getItem("sadrazam_an_test") !== "1"; } catch (e) { return true; } })();
   const ENABLED = APP_ID !== "TELEMETRYDECK_APP_ID_BURAYA" && !LOCAL_DEV;
   const SALT = "sadrazam-divan-1520";
   const CARD_SAMPLE = 0.15;      // kart kararlarının yaklaşık %15'i gönderilir
@@ -106,5 +108,5 @@
   } catch (e) {}
 
   window.Analytics = { track, card, flush, enabled: ENABLED };
-  track("session_start", {});
+  setTimeout(() => track("session_start", {}), 0); // dil (translations.js) belirlendikten sonra
 })();

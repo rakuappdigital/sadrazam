@@ -868,7 +868,21 @@ window.EN_ITEM_GRANT_CONDITIONS = {
 
 // ── i18n Çekirdek Fonksiyonları ───────────────────────────────────
 
-window.LANG = localStorage.getItem('sadrazam_lang') || 'tr';
+// Dil (5 Ekim 2026, dünya yayını): kayıtlı seçim varsa o. Yoksa:
+//  - daha önce oynamış (sadrazam_* verisi olan) oyuncu → 'tr' (1.5.0'a kadar varsayılan buydu; kimsenin dili değişmesin)
+//  - yeni kurulum → cihazın BİRİNCİ dili Türkçe ise 'tr', değilse 'en'
+// Seçim hemen kaydedilir; Ayarlar'dan her zaman değiştirilebilir.
+window.LANG = (() => {
+  try {
+    const saved = localStorage.getItem('sadrazam_lang');
+    if (saved === 'tr' || saved === 'en') return saved;
+    const veteran = Object.keys(localStorage).some(k => k.startsWith('sadrazam_') && k !== 'sadrazam_web_access' && k !== 'sadrazam_tdid');
+    const first = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+    const lang = veteran ? 'tr' : (first.startsWith('tr') ? 'tr' : 'en');
+    localStorage.setItem('sadrazam_lang', lang);
+    return lang;
+  } catch (e) { return 'tr'; }
+})();
 
 // Basit string veya fonksiyon döndürür
 window.t = function(key) {

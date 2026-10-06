@@ -5818,3 +5818,27 @@ html, body {
 #asir-panel .as-close { display: block; margin: 8px auto 4px; background: none; border: none; font-family: 'Alegreya', serif; font-size: 15px; color: #7a4a10; cursor: pointer; padding: 6px 16px; }
 /* Uzun menüde sürüm yazısı son düğmenin üstüne düşebiliyor — dokunuşu yutmasın */
 #intro-footer { pointer-events: none; }
+
+/* 5 Ekim 2026 — KÜÇÜK EKRAN KİLİDİ DÜZELTMESİ: Divan Halkası (11 satır) ve Kader Yolları (7 son)
+   iPhone SE/8 (375×667) ekranından uzundu; Kapat düğmesi ekranın altında kalıyor, pencere
+   kaydırılamıyordu → oyuncu kapatamıyordu. Kutu artık en fazla ekran kadar, içi kayar. */
+.rr-box, .ip-box { max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.rr-box > *, .ip-box > * { flex-shrink: 0; }
+
+/* 5 Ekim 2026 — KÜÇÜK EKRAN: ortalanmış + kaydırılabilir kapsayıcı, uzun içeriğin ÜSTÜNÜ ekran dışına
+   itiyordu (Market'in bakiye/kozmetik/eşya bölümü SE boyutunda erişilemezdi). Güvenli ortalama:
+   kapsayıcı üstten hizalar, iç panel margin:auto ile ortalanır; sığmazsa baştan sona kayar. */
+#akce-screen { align-items: flex-start; -webkit-overflow-scrolling: touch; }
+#akce-panel { margin: auto; }
+#settings-overlay { align-items: flex-start; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 0; }
+#settings-box { margin: auto; }
+#akce-screen { padding-block: 24px; }
+/* 5 Ekim 2026 — sultan/danışman/başarımlar ekranları içeriği dikey ortalıyor + kayıyordu (paylaşılan
+   #id kuralı justify-content:center). 1.6'da sultan listesi uzayınca içerik ekrana sığmaz oldu: başlık
+   üstte kesiliyor, başarımlar ortadan açılıyor, üst kısma kaydırarak bile ulaşılamıyordu. Güvenli ortalama. */
+#sultan-screen.selection-screen, #advisor-screen.selection-screen, #achievements-screen.selection-screen { justify-content: flex-start; }
+#sultan-screen > .selection-content, #advisor-screen > .selection-content, #achievements-screen > .selection-content { margin-top: auto; margin-bottom: auto; }
+/* Ana menü de aynı paylaşılan kuralla dikey ortalanıp kayıyordu; menü uzayınca (Devletin Kaderi düğmesi)
+   üstteki tuğra küçük ekranda kesiliyordu. */
+#intro-screen { justify-content: flex-start; }
+#intro-content { margin-top: auto; margin-bottom: auto; }

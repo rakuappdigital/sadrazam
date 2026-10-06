@@ -1699,9 +1699,10 @@ const EASTER_CARDS = {
     type: "easter",
     easter_type: "kedi",
     character: "easter-kedi",
-    character_name: "Saray Kedisi",
+    character_name: "Saray Kedisi", character_name_en: "The Palace Cat",
     text: "Topkapı'nın meşhur kedisi divanı bastı ve kararname tomarını devirdi.",
-    button: "ÂLÂ",
+    text_en: "Topkapı's famous cat stormed the Divan and knocked over the scroll of decrees.",
+    button: "ÂLÂ", button_en: "SPLENDID",
     stat_effect: () => {
       const statKeys = Object.keys(stats);
       const target = statKeys[Math.floor(Math.random() * statKeys.length)];
@@ -1716,9 +1717,10 @@ const EASTER_CARDS = {
     type: "easter",
     easter_type: "yanlis",
     character: "easter-yanlis",
-    character_name: "Yanlış Adam",
+    character_name: "Yanlış Adam", character_name_en: "The Wrong Man",
     text: "Yanlış odaya girdim efendim, özür dilerim.",
-    button: "DEVRÜL KARŞIMDAN",
+    text_en: "I walked into the wrong room, my lord. My apologies.",
+    button: "DEVRÜL KARŞIMDAN", button_en: "OUT OF MY SIGHT",
     stat_effect: null
   },
   kehanet: {
@@ -1726,9 +1728,10 @@ const EASTER_CARDS = {
     type: "easter",
     easter_type: "kehanet",
     character: "25-deli_dervis",
-    character_name: "Deli Derviş",
+    character_name: "Deli Derviş", character_name_en: "The Mad Dervish",
     text: "Bu imparatorluk 1453 yıl sonra sona erecek, Paşam.",
-    button: "YIKIL ZINNIK!",
+    text_en: "This empire will end in 1453 years, my Pasha.",
+    button: "YIKIL ZINNIK!", button_en: "BEGONE, MADMAN!",
     stat_effect: null
   },
   pargali: {
@@ -1736,9 +1739,10 @@ const EASTER_CARDS = {
     type: "easter",
     easter_type: "pargali",
     character: "pargali-ibrahim",
-    character_name: "Pargalı İbrahim Paşa",
+    character_name: "Pargalı İbrahim Paşa", character_name_en: "Pargalı Ibrahim Pasha",
     text: "Sen beni unuttun mu, Süleyman?.. Topkapı'nın koridorları hâlâ beni biliyor.",
-    button: "PARGALI?",
+    text_en: "Have you forgotten me, Süleyman?.. The corridors of Topkapı still know me.",
+    button: "PARGALI?", button_en: "PARGALI?",
     stat_effect: null
   }
 };
@@ -3432,7 +3436,7 @@ document.getElementById("restart-btn").addEventListener("click", restartGame);
 
 // ── Sultan Seçim — Global Fonksiyonlar ───────────────────────────
 function confirmSultan() {
-  if (!selectedSultan) { alert("Lütfen bir sultan seçin."); return; }
+  if (!selectedSultan) { alert(window.LANG === 'en' ? "Please choose a Sultan." : "Lütfen bir sultan seçin."); return; }
   if (window.playSelectConfirm) playSelectConfirm();
   sultanScreen.classList.add("hidden");
   showAdvisorScreen();
@@ -3446,7 +3450,7 @@ function backToSultan() {
   showSultanScreen();
 }
 function confirmAdvisor() {
-  if (selectedAdvisors.length !== 2) { alert("Lütfen tam olarak 2 danışman seçin."); return; }
+  if (selectedAdvisors.length !== 2) { alert(window.LANG === 'en' ? "Please choose exactly 2 advisors." : "Lütfen tam olarak 2 danışman seçin."); return; }
   if (window.playSelectConfirm) playSelectConfirm();
   advisorScreen.classList.add("hidden");
   _maybeShowInterstitialThenStartGame();
@@ -4162,14 +4166,15 @@ function checkResumeAvailable() {
     const s = JSON.parse(raw);
     if (!s.v || s.v < 2) { clearSave(); return; }
     // Resume banner göster
+    const _enR = window.LANG === 'en';
     const banner = document.createElement('div');
     banner.id = 'resume-banner';
     banner.innerHTML = `
       <div id="resume-content">
-        <div id="resume-text">Kayıtlı oyun: <strong>${s.year}. Yıl · ${HICRI_MONTHS[s.hicriMonth % 12]} ${s.hicriYear}</strong></div>
+        <div id="resume-text">${_enR ? "Saved game" : "Kayıtlı oyun"}: <strong>${_enR ? `Year ${s.year}` : `${s.year}. Yıl`} · ${(_enR && window.EN_HICRI_MONTHS ? window.EN_HICRI_MONTHS : HICRI_MONTHS)[s.hicriMonth % 12]} ${s.hicriYear}</strong></div>
         <div id="resume-btns">
-          <button id="resume-btn">DEVAM ET</button>
-          <button id="resume-discard">Yeni Oyun</button>
+          <button id="resume-btn">${_enR ? "CONTINUE" : "DEVAM ET"}</button>
+          <button id="resume-discard">${_enR ? "New Game" : "Yeni Oyun"}</button>
         </div>
       </div>`;
     document.body.appendChild(banner);
@@ -5410,8 +5415,9 @@ function showEasterCard(c) {
   preload.onerror = () => { cardImage.style.visibility = "hidden"; };
   preload.src = imgPath;
 
-  charName.textContent = c.character_name || "";
-  cardText.textContent = c.text || "";
+  const _enE = window.LANG === 'en'; // sabit sürpriz kartların EN alanları (5 Ekim 2026)
+  charName.textContent = (_enE && c.character_name_en) || c.character_name || "";
+  cardText.textContent = (_enE && c.text_en) || c.text || "";
   choiceLeft.style.opacity = "0";
   choiceRight.style.opacity = "0";
   overlayL.style.opacity = "0";
@@ -5451,7 +5457,7 @@ function showEasterCard(c) {
     easterBtn.id = "easter-action-btn";
     document.getElementById("card-bottom").appendChild(easterBtn);
   }
-  easterBtn.textContent = c.easter_type === "yanlis_idam" ? "İDAM EDİN!" : (c.button || "DEVAM");
+  easterBtn.textContent = c.easter_type === "yanlis_idam" ? (_enE ? "EXECUTE HIM!" : "İDAM EDİN!") : ((_enE && c.button_en) || c.button || (_enE ? "CONTINUE" : "DEVAM"));
   easterBtn.className = "easter-btn " + (c.easter_type || "");
   easterBtn.classList.remove("hidden");
 
@@ -6478,7 +6484,7 @@ function triggerYanlisIdam() {
   setTimeout(() => {
     bloodEl.remove();
     deathCharacterKey = "easter-yanlis";
-    triggerGameOver("O 'yanlış oda' hikayesi sona erdi. Kimliğini öğrendiler — ve seni de.", "yanlis_oda");
+    triggerGameOver(window.LANG === 'en' ? "That 'wrong room' story is over. They learned who he was — and who you are." : "O 'yanlış oda' hikayesi sona erdi. Kimliğini öğrendiler — ve seni de.", "yanlis_oda");
   }, 2200);
 }
 
@@ -6631,8 +6637,9 @@ function showLetterCard(c) {
   cardImage.src = "assets/characters/" + encodeURIComponent(key + ".jpg");
   cardImage.onerror = () => { cardImage.src = ""; };
 
-  charName.textContent = c.character_name || "Sultan";
-  cardText.textContent = c.text || "";
+  const _enL = window.LANG === 'en'; // 5 Ekim 2026: mektuplar EN'de de Türkçe görünüyordu (1.5.0'dan beri)
+  charName.textContent = (_enL && c.character_name_en) || c.character_name || "Sultan";
+  cardText.textContent = (_enL && c.text_en) || c.text || "";
   choiceLeft.textContent  = "";
   choiceRight.textContent = "";
   choiceLeft.style.opacity  = "0";
@@ -6658,6 +6665,7 @@ function showLetterCard(c) {
   if (devamBtn) {
     devamBtn.classList.remove("hidden");
     devamBtn.style.display = "";
+    devamBtn.textContent = _enL ? "CONTINUE →" : "DEVAM →";
   }
 
   window._letterDevamCard = c;
@@ -8635,7 +8643,7 @@ function showItemUnlockAnimation(itemId) {
   overlay.innerHTML = `
     <div id="iu-glow"></div>
     <img id="iu-img" src="${itm.icon}" alt="${itm.name}">
-    <div id="iu-label">YENİ EŞYA</div>`;
+    <div id="iu-label">${window.LANG === 'en' ? "NEW ITEM" : "YENİ EŞYA"}</div>`;
   document.body.appendChild(overlay);
 
   // Ses + haptik
@@ -8927,7 +8935,7 @@ function executeItem(slotIndex, item) {
     playerItems[slotIndex] = null;
     playerItemExpiry[slotIndex] = null;
     updateItemBar();
-    showItemToast(item.name + " — +" + 20 + " " + lowestStat[0]);
+    showItemToast(_nm + " — +20 " + ((_STAT_NAMES[lowestStat[0]] || [lowestStat[0], lowestStat[0]])[_en ? 1 : 0]));
     Haptics.statPositive();
     return;
   }
@@ -8935,7 +8943,7 @@ function executeItem(slotIndex, item) {
     playerItems[slotIndex] = null;
     playerItemExpiry[slotIndex] = null;
     updateItemBar();
-    showItemToast(item.name + " — Kart geçildi");
+    showItemToast(_nm + (_en ? " — card skipped" : " — Kart geçildi"));
     card.style.opacity = "0";
     setTimeout(dealNext, 300);
     return;
@@ -8948,7 +8956,7 @@ function executeItem(slotIndex, item) {
   } else {
     activeItemIndex = slotIndex;
     pendingItemEffect = item.effect;
-    showItemToast(item.name + " — Sonraki karar için hazır");
+    showItemToast(_nm + (_en ? " — ready for your next decision" : " — Sonraki karar için hazır"));
     // Kart üzerinde aktif gösterge
     card.style.boxShadow = `0 0 0 2px ${item.color || "var(--gold)"}, 0 8px 40px rgba(0,0,0,0.8)`;
   }
@@ -9118,7 +9126,7 @@ function checkSultanSabir() {
   if (isGameOver) return;
   if (sultanSabir <= 0 && _relTryRescue("sabir", 0)) return;
   if (sultanSabir <= 0) {
-    triggerGameOver("Sultan seni azletti. Hac yolculuğuna — sürgün olarak — gönderildin.", "azil");
+    triggerGameOver(window.LANG === 'en' ? "The Sultan dismissed you. You were sent on pilgrimage — as an exile." : "Sultan seni azletti. Hac yolculuğuna — sürgün olarak — gönderildin.", "azil");
   } else if (sultanSabir >= 85 && !_sultanWarningShown) {
     _sultanWarningShown = true;
     showGucUyarisi();
@@ -9182,7 +9190,7 @@ function triggerSultanGucOlumu() {
           eyeEl.remove();
           showHangingAnimation(() => {
             _sultanGucCinematicActive = false;
-            triggerGameOver("Sarayın en güçlü sadrazamıydın. Bu yüzden urganı iki cellat getirdi.", "sultan_guc");
+            triggerGameOver(window.LANG === 'en' ? "You were the most powerful Grand Vizier in the palace. That is why two executioners brought the bowstring." : "Sarayın en güçlü sadrazamıydın. Bu yüzden urganı iki cellat getirdi.", "sultan_guc");
           });
         }, 500);
       }
@@ -9716,6 +9724,7 @@ function showAsirlar() {
 }
 document.getElementById("btn-asir")?.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showAsirlar(); });
 _asirMenuLabel();
+try { const _st = document.querySelector("#card-stamp i"); if (_st) _st.textContent = window.LANG === 'en' ? "RESULT" : "SONUÇ"; } catch (e) {}
 
 // ── Karar ─────────────────────────────────────────────────────────
 let _cardShownAt = 0;
@@ -9748,7 +9757,7 @@ function decide(dir) {
       triggerSultanRage(rageOvl, () => {
         rageOvl.remove();
         showExecutionAnimation(() => {
-          triggerGameOver("Sen bana nasıl karşı gelirsin BRE DEYYUS! — Son sözlerin bunlar oldu.", "padisah_red");
+          triggerGameOver(window.LANG === 'en' ? "How dare you defy me, you scoundrel! — Those were the last words you heard." : "Sen bana nasıl karşı gelirsin BRE DEYYUS! — Son sözlerin bunlar oldu.", "padisah_red");
         });
       });
     }
@@ -10763,6 +10772,13 @@ function showGameOver(reason) {
 function getDynamicDeathTitle(reason) {
   const isEN = window.LANG === 'en';
   if (_deathCause === "emeklilik") return isEN ? "AN HONOURABLE FAREWELL" : "ONURLU VEDA";
+  // EN metinlerde Türkçe anahtar kelime yok: başlığı ölüm sebebinden seç (TR davranışı aynen kalır)
+  if (isEN) {
+    const byCause = { saray_0: "EXECUTION ORDER ARRIVED", padisah_red: "EXECUTION ORDER ARRIVED", sultan_guc: "MIDNIGHT'S END",
+      yeniceri_100: "THE THRONE HAS FALLEN", yeniceri_0: "ISTANBUL HAS FALLEN", ulema_0: "THE PEOPLE RISE",
+      hazine_0: "THE TREASURY IS EMPTY", azil: "THE DISMISSAL ORDER" };
+    if (byCause[_deathCause]) return byCause[_deathCause];
+  }
   if (reason.includes("idam"))                                    return isEN ? "EXECUTION ORDER ARRIVED"              : "İDAM FERMANI GELDİ";
   if (reason.includes("cellat"))                                  return isEN ? "MIDNIGHT'S END"                       : "GECE YARISI SONU";
   if (reason.includes("isyan") || reason.includes("Yeniçeri"))    return isEN ? "THE THRONE HAS FALLEN"                : "TAHT DEVRİLDİ";
@@ -11075,7 +11091,7 @@ function getShareText() {
   const _enS = (_isENshare && window.EN_SULTANS && selectedSultan) ? window.EN_SULTANS[selectedSultan.id] : null;
   const sultanName = _enS ? _enS.name : (selectedSultan ? selectedSultan.name : "Sultan");
   if (_isENshare) {
-    return `I survived ${year} years in Divan: Sadrazam during the reign of ${sultanName}! How long can YOU last? 🗡️\n\nDownload on the App Store!\nhttps://apps.apple.com/tr/app/divan-sadrazam/id6783881003`;
+    return `I survived ${year} years in Divan: Sadrazam during the reign of ${sultanName}! How long can YOU last? 🗡️\n\nDownload on the App Store!\nhttps://apps.apple.com/app/id6783881003`;
   }
   return `Divan: Sadrazam'da ${sultanName} döneminde ${year} yıl ayakta kalabildim! Sen kaç yıl dayanabilirsin? 🗡️\n\nApp Store'dan İndir!\nhttps://apps.apple.com/tr/app/divan-sadrazam/id6783881003`;
 }
@@ -11231,7 +11247,7 @@ async function shareFerman() {
   });
 
   // Alt imza
-  drawText("App Store'dan İndir · apps.apple.com/tr/app/divan-sadrazam/id6783881003", 1040, 11, "rgba(201,162,39,0.3)");
+  drawText(_isENferman ? "Download on the App Store · apps.apple.com/app/id6783881003" : "App Store'dan İndir · apps.apple.com/tr/app/divan-sadrazam/id6783881003", 1040, 11, "rgba(201,162,39,0.3)");
 
   // Paylaş
   canvas.toBlob(async (blob) => {

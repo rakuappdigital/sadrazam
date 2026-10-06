@@ -416,6 +416,35 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   privacy.html'de "Anonymous Usage Analytics" bölümü var; ASC gizlilik etiketi: Kullanım Verisi ·
   Ürün Etkileşimi · bağlantısız · izleme yok.
 
+### 3h-3. 5 Ekim 2026 (3. tur): dünya yayını kalite kontrolü — bulunan ve düzeltilen hatalar
+
+- **Dil**: ilk açılışta cihazın BİRİNCİ dili Türkçe ise TR, değilse HER ZAMAN EN (kullanıcı kuralı).
+  translations.js başında; daha önce oynamış (sadrazam_* verisi olan) oyuncu TR'de kalır. iOS'ta
+  Info.plist CFBundleLocalizations [en, tr] + pbxproj knownRegions'a tr eklendi. Simülatörde doğrulandı
+  (sistem dili Almanca → EN, Türkçe → TR). Testte simülatörde ESKİ veri kalırsa "eski oyuncu" sayılır.
+- **ATT izin metni** Info.plist'te İngilizce (varsayılan), `tr.lproj/InfoPlist.strings` Türkçe,
+  `en.lproj/InfoPlist.strings` İngilizce (pbxproj'a PBXVariantGroup olarak eklendi; derleme doğrulandı).
+- **EN sızıntıları düzeltildi**: Sultan mektupları (1.5.0'dan beri EN'de TR'ydi; showLetterCard text_en),
+  mektup DEVAM düğmesi, sabit sürpriz kartlar (EASTER_CARDS *_en alanları; showEasterCard okur),
+  4 sabit ölüm metni + EN ölüm başlığı _deathCause'tan, eşya bildirimleri, "YENİ EŞYA", sonuç damgası,
+  kayıtlı oyun bandı, sultan/danışman seçim uyarıları, paylaşım bağlantısı (EN: apps.apple.com/app/id…).
+- **Küçük ekran kilitleri** (CSS, dosya sonunda): `.ip-box/.rr-box` en fazla ekran kadar + içi kayar
+  (Divan Halkası 375×667'de Kapat düğmesi ekran dışındaydı → oyun kilitleniyordu); Market, Ayarlar,
+  sultan/danışman/başarımlar ve ana menü "ortalanmış + kaydırılabilir" kapsayıcıda üstü kesiliyordu →
+  güvenli ortalama (kapsayıcı flex-start, iç panel margin:auto). Paylaşılan #id kuralını sınıfla ezmeye
+  çalışma (özgüllük) — #id ile yaz.
+- **Ölçüm testleri gerçek panoya yazmasın**: analytics.js LOCAL_DEV adres ŞEMASINA bakar (http(s)://localhost
+  → kapalı; iOS capacitor:// → açık). pw.js test sarmalayıcısı telemetrydeck isteklerini engeller.
+  5 Ekim'de bundan önce bir test turu appVersion 1.6.0 ile sahte olay gönderdi (panoda 1.6.0'ı ele).
+- **Reklamsız ürünü** App Store'da var ama Market'te gizli; Tam Sürüm/Hoşgeldin IAP açıklamaları ASC
+  API ile değiştirilemiyor (ACTIVE localization 409) — elle. App Privacy etiketi API'de yok — elle.
+- **Test grupları (scratchpad t/)**: `nativefake.js` (sahte iPhone: AdMob olay sırası senaryoları, RevenueCat,
+  Haptics), `native_ads_test.js` (günlük hediye/İkinci Şans/Kâtip/Kritik An × ok/noreward/failshow/
+  reject/noload/loadfail1/long/nodismiss + geçiş reklamı), `native_iap_test.js` (her ürün, iptal/hata,
+  geri yükleme, promosyon, yeniden kurulum, ürün yok, ücretsiz sınır), `overlay_fit_test.js` (40 pencere
+  × 320/375/390 genişlik: her düğmeye ulaşılabiliyor mu), `fuzz_test.js` (rastgele gerçek oyun: hata,
+  takılma, değişmez, 404, EN sızıntısı), `an_guard_test.js`.
+
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 
 - **Dönemler** `ERA_DEFS`, `_eraState` (kayıtta `era`), `_eraPick` (getNextCard'da, %30, ayrı kanal;
