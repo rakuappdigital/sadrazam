@@ -2256,6 +2256,8 @@ const titleLabel     = document.getElementById("title-label");
 
 const introScreen      = document.getElementById("intro-screen");
 const howtoScreen      = document.getElementById("howto-screen");
+// S5: telefonda klavye satırı gizli (html.native)
+try { if (window.Capacitor?.isNativePlatform?.()) document.documentElement.classList.add("native"); } catch (e) {}
 const gameScreen       = document.getElementById("game");
 const sultanScreen     = document.getElementById("sultan-screen");
 const advisorScreen    = document.getElementById("advisor-screen");
@@ -2279,7 +2281,11 @@ window.musicEnabled = localStorage.getItem('sadrazam_music') !== 'off';
 window.sfxEnabled   = localStorage.getItem('sadrazam_sfx')   !== 'off';
 
 // ── Deneyimli Mod (opsiyonel etki önizlemesi) — varsayılan KAPALI ──
-window.previewMode = localStorage.getItem('sadrazam_preview_mode') === 'on';
+// D2 (6 Ekim 2026): Deneyimli Mod ayarlardan kaldırıldı (Tahkik / Usturlap / Tahkik reklamını işlevsiz
+// kılıyordu: açıkken her kartta yön bedava görünüyor, Tahkik düğmesi hiç çıkmıyordu). Daha önce açmış
+// oyuncu kapatamaz hale gelmesin diye herkes için kapalı. Kod yolları (previewMode) duruyor.
+window.previewMode = false;
+try { localStorage.setItem('sadrazam_preview_mode', 'off'); } catch (e) {}
 
 // ── Zorluk Kademeleri — varsayılan "normal" mevcut dengeyi bire bir korur ──
 let difficultyId = localStorage.getItem('sadrazam_difficulty') || 'normal';
@@ -4905,6 +4911,7 @@ function dealNext() {
   _hideAgeOverlay(); card.style.removeProperty("--age-f");
   _hideConsequenceStamp();
   _setSideTabs(null); // özel (butonlu) kartlarda kenar sekmeleri gizli
+  card.classList.remove("negot-card"); // S6: müzakere görünümü yalnız o kartta
   _hideInvestigateBtn();   // özel kart tiplerinde önceki kartın soruşturma düğmesi kalmasın
   _hideTahkikBtn(); _hideArzChip();
   _hideEasterChoices();
@@ -4997,7 +5004,7 @@ function dealNext() {
     choiceRight.style.opacity = "0";
     overlayL.style.opacity = "0";
     overlayR.style.opacity = "0";
-    card.classList.remove("letter-card");
+    card.classList.remove("letter-card", "negot-card");
     card.classList.add("no-swipe");
     const invBtn = document.getElementById("investigate-btn");
     if (invBtn) invBtn.classList.add("hidden");
@@ -5121,7 +5128,7 @@ function dealNext() {
   overlayR.style.opacity = "0";
 
   // Mektup stili kaldır
-  card.classList.remove("letter-card");
+  card.classList.remove("letter-card", "negot-card");
 
   // Soruşturma düğmesi (gizli hain adaylarının kartlarında + investigate_text olan kartlarda)
   setupInvestigateBtn(c, displayText);
@@ -5222,6 +5229,17 @@ function _hideInvestigateBtn() {
   if (b) { b.classList.add("hidden"); b.onclick = null; }
 }
 
+// D1 (6 Ekim 2026): kart üstündeki iki düğme ilk 3 görünüşünde altında kısa bir etiketle belirir
+function _btnFirstHint(btn, key, label) {
+  btn.classList.remove("hinted");
+  let n = 0; try { n = parseInt(localStorage.getItem(key) || "0", 10); } catch (e) {}
+  if (n >= 3) return;
+  try { localStorage.setItem(key, String(n + 1)); } catch (e) {}
+  btn.setAttribute("data-hint", label);
+  btn.classList.add("hinted");
+  clearTimeout(btn._hintT);
+  btn._hintT = setTimeout(() => btn.classList.remove("hinted"), 3600);
+}
 function setupInvestigateBtn(c, displayText) {
   let btn = document.getElementById("investigate-btn");
   if (!btn) {
@@ -5250,6 +5268,7 @@ function setupInvestigateBtn(c, displayText) {
   let counted = false; // aynı kart sayaca en fazla bir kez yazar (eskiden her tıklama sayılıyordu)
   setIcon(false);
   btn.classList.remove("hidden");
+  _btnFirstHint(btn, "sadrazam_hint_inv", isEN ? "Investigate" : "Soruştur");
   btn.onclick = (e) => {
     if (e) e.stopPropagation();
     if (isInvestigating) {
@@ -5426,7 +5445,7 @@ function showEasterCard(c) {
   choiceRight.style.opacity = "0";
   overlayL.style.opacity = "0";
   overlayR.style.opacity = "0";
-  card.classList.remove("letter-card");
+  card.classList.remove("letter-card", "negot-card");
   card.classList.add("no-swipe");
 
   // Pargalı ghost efekti
@@ -6701,7 +6720,7 @@ function handleLetterDevam(_skipEasterEgg) {
   if (devamBtn) devamBtn.classList.add("hidden");
 
   const c = window._letterDevamCard;
-  card.classList.remove("letter-card");
+  card.classList.remove("letter-card", "negot-card");
   card.classList.remove("no-swipe");
 
   if (c) {
@@ -6740,7 +6759,8 @@ function showNegotiationCard(c) {
   overlayL.style.opacity = "0";
   overlayR.style.opacity = "0";
 
-  card.classList.remove("letter-card");
+  card.classList.remove("letter-card", "negot-card");
+  card.classList.add("negot-card"); // S6: portre küçülür, 3 seçenek + eşya kutuları ekranda kalır
   const btn = document.getElementById("investigate-btn");
   if (btn) btn.classList.add("hidden");
 
@@ -8758,6 +8778,7 @@ function showEsyaDukkani() {
       <div id="esya-title">${isENes ? "ITEM SHOP" : "EŞYA DÜKKANI"}</div>
       <div id="esya-divider"></div>
       <div id="esya-balance">${isENes ? "Balance" : "Bakiye"}: <span class="akce-balance-display">${getAkceBalance()}</span> ${AKCE_COIN_SVG}</div>
+      <div class="esya-note">${isENes ? "Items bought here go straight into your slots (if all three are full, the oldest is replaced)." : "Buradan aldığın eşya hemen kutuna konur (üç kutu da doluysa en eskisinin yerini alır)."}</div>
       <div id="esya-list">${rowsHtml}</div>
       <button id="esya-close-btn" class="intro-btn ghost">${isENes ? "Close" : "Kapat"}</button>
     </div>`;
@@ -9343,6 +9364,14 @@ function _cagToast(html, ms) {
   const game = document.getElementById("game"); if (!game) return;
   document.querySelectorAll(".cag-toast").forEach(x => x.remove());
   const t = document.createElement("div"); t.className = "cag-toast"; t.setAttribute("aria-live", "polite"); t.innerHTML = html;
+  // S7 (6 Ekim 2026): üst satırı (yıl, ☰, ferman çipi) asla örtmesin — küçük ekranda sabit 54px'te
+  // yılın ve menü düğmesinin üstüne biniyordu. Başlığın o anki alt kenarının hemen altında açılır.
+  try {
+    const g = game.getBoundingClientRect();
+    const low = ["header-row", "ferman-chip"].map(id => document.getElementById(id))
+      .filter(el => el && el.offsetParent).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
+    if (low > 0) t.style.top = Math.round(low - g.top + 6) + "px";
+  } catch (e) {}
   game.appendChild(t); requestAnimationFrame(() => t.classList.add("on"));
   setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, ms || 3200);
 }
@@ -9426,6 +9455,7 @@ function setupTahkikBtn(c, leftTxt, rightTxt) {
   btn.classList.toggle("empty", _tahkikLeft <= 0);
   btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v3h3M9 11h6M9 14h6M9 17h4"/></svg><span class="tk-n">${_tahkikLeft}</span>`;
   btn.title = en ? `Inquiry (${_tahkikLeft} left this year)` : `Tahkik (bu yıl ${_tahkikLeft} hak)`;
+  _btnFirstHint(btn, "sadrazam_hint_tk", en ? "Inquiry" : "Tahkik");
   btn.setAttribute("aria-label", btn.title);
   btn.onclick = (e) => {
     if (e) e.stopPropagation();
@@ -11385,15 +11415,11 @@ function _settUpdateUI() {
   const _sfxOn = (() => { try { return localStorage.getItem('sadrazam_season_fx') !== 'off'; } catch (e) { return true; } })();
   document.getElementById('sett-season-on').classList.toggle('active', _sfxOn);
   document.getElementById('sett-season-off').classList.toggle('active', !_sfxOn);
-  document.getElementById('sett-preview-on').classList.toggle('active', window.previewMode === true);
-  document.getElementById('sett-preview-off').classList.toggle('active', window.previewMode !== true);
   const isEN = window.LANG === 'en';
   document.getElementById('sett-mus-on').textContent  = isEN ? 'On'  : 'Açık';
   document.getElementById('sett-mus-off').textContent = isEN ? 'Off' : 'Kapalı';
   document.getElementById('sett-sfx-on').textContent  = isEN ? 'On'  : 'Açık';
   document.getElementById('sett-sfx-off').textContent = isEN ? 'Off' : 'Kapalı';
-  document.getElementById('sett-preview-on').textContent  = isEN ? 'On'  : 'Açık';
-  document.getElementById('sett-preview-off').textContent = isEN ? 'Off' : 'Kapalı';
   document.getElementById('sett-season-on').textContent  = isEN ? 'On'  : 'Açık';
   document.getElementById('sett-season-off').textContent = isEN ? 'Off' : 'Kapalı';
   const _tm = _timedSetting();
@@ -11421,7 +11447,7 @@ document.getElementById('sett-season-off').addEventListener('click', () => { try
 ['normal', 'slow', 'off'].forEach(k => document.getElementById('sett-timed-' + k)?.addEventListener('click', () => { try { localStorage.setItem('sadrazam_timed', k); } catch (e) {} if (k === 'off') _stopFuse(); _settUpdateUI(); }));
 document.getElementById('sett-lang-tr').addEventListener('click', () => { setLang('tr'); _settUpdateUI(); window.applyI18nHTML && window.applyI18nHTML(); });
 document.getElementById('sett-lang-en').addEventListener('click', () => { setLang('en'); _settUpdateUI(); window.applyI18nHTML && window.applyI18nHTML(); });
-document.getElementById('sett-preview-on').addEventListener('click',  () => {
+document.getElementById('sett-preview-on')?.addEventListener('click',  () => {
   const enable = () => { window.previewMode = true; localStorage.setItem('sadrazam_preview_mode','on'); _settUpdateUI(); };
   if (window.previewMode === true) return;
   let seen = false; try { seen = localStorage.getItem('sadrazam_preview_intro_seen') === '1'; } catch (e) {}
@@ -11438,7 +11464,7 @@ document.getElementById('sett-preview-on').addEventListener('click',  () => {
     onContinue: () => { try { localStorage.setItem('sadrazam_preview_intro_seen', '1'); } catch (e) {} enable(); },
   });
 });
-document.getElementById('sett-preview-off').addEventListener('click', () => { window.previewMode = false; localStorage.setItem('sadrazam_preview_mode','off'); _settUpdateUI(); });
+document.getElementById('sett-preview-off')?.addEventListener('click', () => { window.previewMode = false; localStorage.setItem('sadrazam_preview_mode','off'); _settUpdateUI(); });
 document.getElementById('sett-promo-btn')?.addEventListener('click', async () => {
   const isEN = window.LANG === 'en';
   const status = document.getElementById('sett-promo-status');
@@ -11634,14 +11660,25 @@ function showGameMenu() {
     <div id="game-menu-box">
       <div id="game-menu-title">${isENMenu ? "PAUSED" : "DURAKLAT"}</div>
       <div id="game-menu-divider"></div>
+      <button class="game-menu-option primary" id="gm-resume">${isENMenu ? "CONTINUE" : "DEVAM ET"}</button>
       ${_canRetire() ? `<button class="game-menu-option" id="gm-retire">${isENMenu ? "ASK TO RETIRE" : "EMEKLİLİĞİNİ İSTE"}</button>` : ""}
       <button class="game-menu-option secondary" id="gm-halka">${isENMenu ? "DIVAN CIRCLE" : "DİVAN HALKASI"}</button>
       <button class="game-menu-option secondary" id="gm-journal">${isENMenu ? "VIZIER'S JOURNAL" : "VEZİRLİK GÜNLÜĞÜ"}</button>
       <button class="game-menu-option secondary" id="gm-harita">${isENMenu ? "IMPERIAL MAP" : "İMPARATORLUK HARİTASI"}</button>
       <button class="game-menu-option secondary" id="gm-kodeks">${isENMenu ? "IMPERIAL CODEX" : "OSMANLI KODEKSİ"}</button>
       ${AKCE_SYSTEM_ENABLED ? `<button class="game-menu-option secondary" id="gm-esya">${isENMenu ? "ITEM SHOP" : "EŞYA DÜKKANI"}</button>` : ""}
-      <button class="game-menu-option danger" id="gm-quit">${isENMenu ? "END GAME" : "OYUNU BİTİR"}</button>
-      <button class="game-menu-option secondary" id="gm-resume">${isENMenu ? "CONTINUE" : "DEVAM ET"}</button>
+      <div class="gm-sound">
+        <button class="gm-snd" id="gm-mus"><span>${isENMenu ? "Music" : "Müzik"}</span><b></b></button>
+        <button class="gm-snd" id="gm-sfx"><span>${isENMenu ? "Effects" : "Efektler"}</span><b></b></button>
+      </div>
+      <button class="gm-quit-link" id="gm-quit">${isENMenu ? "End game…" : "Oyunu bitir…"}</button>
+      <div class="gm-confirm hidden" id="gm-confirm">
+        <div class="gm-confirm-t">${isENMenu ? "End this reign? Your progress in it will be lost." : "Saltanatı bitirmek istiyor musun? Bu saltanattaki ilerlemen silinir."}</div>
+        <div class="gm-confirm-b">
+          <button class="game-menu-option secondary" id="gm-quit-no">${isENMenu ? "CANCEL" : "VAZGEÇ"}</button>
+          <button class="game-menu-option danger" id="gm-quit-yes">${isENMenu ? "END" : "BİTİR"}</button>
+        </div>
+      </div>
     </div>`;
   document.body.appendChild(overlay);
 
@@ -11676,8 +11713,44 @@ function showGameMenu() {
 
   const doResume = () => { if (!document.body.contains(overlay)) return; overlay.remove(); };
 
-  document.getElementById("gm-quit").addEventListener("click",    doQuit);
-  document.getElementById("gm-quit").addEventListener("touchend", doQuit, { passive: true });
+  // S1 (6 Ekim 2026): "Oyunu bitir" artık onay ister; kayıt ancak "BİTİR" ile silinir.
+  // Eskiden tek dokunuşta (touchend dahil) siliniyordu ve "Devam Et"in hemen üstündeydi.
+  const confirmEl = document.getElementById("gm-confirm");
+  document.getElementById("gm-quit").addEventListener("click", () => {
+    confirmEl.classList.remove("hidden");
+    document.getElementById("gm-quit").classList.add("hidden");
+    confirmEl.scrollIntoView({ block: "nearest" });
+  });
+  document.getElementById("gm-quit-no").addEventListener("click", () => {
+    confirmEl.classList.add("hidden");
+    document.getElementById("gm-quit").classList.remove("hidden");
+  });
+  document.getElementById("gm-quit-yes").addEventListener("click", doQuit);
+
+  // S2: oyun içinden müzik / efekt (Ayarlar ile aynı kayıt ve davranış)
+  const isENs = isENMenu;
+  const sndUI = () => {
+    const on = (v) => v !== false;
+    document.querySelector("#gm-mus b").textContent = on(window.musicEnabled) ? (isENs ? "On" : "Açık") : (isENs ? "Off" : "Kapalı");
+    document.querySelector("#gm-sfx b").textContent = on(window.sfxEnabled) ? (isENs ? "On" : "Açık") : (isENs ? "Off" : "Kapalı");
+    document.getElementById("gm-mus").classList.toggle("off", window.musicEnabled === false);
+    document.getElementById("gm-sfx").classList.toggle("off", window.sfxEnabled === false);
+  };
+  document.getElementById("gm-mus").addEventListener("click", () => {
+    const next = window.musicEnabled === false;
+    window.musicEnabled = next;
+    localStorage.setItem('sadrazam_music', next ? 'on' : 'off');
+    if (next) playGameMusic(); else stopAllMusic();
+    sndUI(); _an("settings_changed", { music: next ? 'on' : 'off', where: 'pause' });
+  });
+  document.getElementById("gm-sfx").addEventListener("click", () => {
+    const next = window.sfxEnabled === false;
+    window.sfxEnabled = next;
+    localStorage.setItem('sadrazam_sfx', next ? 'on' : 'off');
+    sndUI(); _an("settings_changed", { sfx: next ? 'on' : 'off', where: 'pause' });
+  });
+  sndUI();
+
   document.getElementById("gm-resume").addEventListener("click",    doResume);
   document.getElementById("gm-resume").addEventListener("touchend", doResume, { passive: true });
   overlay.addEventListener("click", e => { if (e.target === overlay) doResume(); });
@@ -11708,7 +11781,7 @@ function renderAchievementsScreen(filterTier) {
 
   // Intro badge
   const badge = document.getElementById("ach-count-badge");
-  if (badge) badge.textContent = `${count}/${total}`;
+  if (badge) { badge.textContent = `${count}/${total}`; badge.classList.toggle("zero", count === 0); }
 
   // Filter tabs
   document.querySelectorAll(".ach-tab").forEach(tab => {
@@ -11768,7 +11841,32 @@ document.getElementById("btn-ach-back")?.addEventListener("click", () => {
 (function initAchBadge() {
   const unlocked = JSON.parse(localStorage.getItem("sadrazam_achievements") || "[]");
   const badge = document.getElementById("ach-count-badge");
-  if (badge && unlocked.length > 0) badge.textContent = `${unlocked.length}/${ACHIEVEMENTS.length}`;
+  // D3 (6 Ekim 2026): hiç başarım yokken boş altın kutu bir "—" gibi görünüyordu; sayı hep yazılır
+  if (badge) { badge.textContent = `${unlocked.length}/${ACHIEVEMENTS.length}`; badge.classList.toggle("zero", unlocked.length === 0); }
+})();
+
+// D6 (6 Ekim 2026): uzun ekranlarda "aşağıda daha var" ipucu — yalnız ekran en üstteyken ve
+// gerçekten aşağıda içerik varken; dokunmayı engellemez (pointer-events: none).
+(function initScrollHint() {
+  const ids = ["intro-screen", "akce-screen", "achievements-screen"];
+  const hint = document.createElement("div");
+  hint.id = "scroll-hint";
+  hint.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  document.body.appendChild(hint);
+  const check = () => {
+    let show = false;
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (!el || el.classList.contains("hidden") || getComputedStyle(el).display === "none") continue;
+      if (el.scrollHeight - el.scrollTop - el.clientHeight <= 48) continue; // yalnız sürüm yazısı taşıyorsa ipucu yok
+      const top = document.elementFromPoint(innerWidth / 2, innerHeight - 30);
+      if (top && el.contains(top)) { show = true; break; }
+    }
+    hint.classList.toggle("on", show);
+  };
+  document.addEventListener("scroll", check, true);
+  window.addEventListener("resize", check);
+  setInterval(check, 700);
 })();
 
 // ── Init ──────────────────────────────────────────────────────────

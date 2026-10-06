@@ -202,13 +202,6 @@
           <button class="sett-opt" id="sett-timed-off">Kapalı</button>
         </div>
       </div>
-      <div class="sett-row">
-        <span class="sett-label" data-i18n="sett.preview">Deneyimli Mod</span>
-        <div class="sett-toggle">
-          <button class="sett-opt" id="sett-preview-on">Açık</button>
-          <button class="sett-opt" id="sett-preview-off">Kapalı</button>
-        </div>
-      </div>
       <div class="sett-divider"></div>
       <div class="sett-label" style="text-align:center;margin-bottom:8px" data-i18n="sett.language">Dil</div>
       <div class="sett-lang-row">
@@ -216,8 +209,6 @@
         <button class="sett-lang-btn" id="sett-lang-en">English</button>
       </div>
       <div class="sett-divider"></div>
-      <button class="sett-promo-btn" id="sett-promo-btn" data-i18n="sett.promo_btn" disabled>PROMOSYON KODU</button>
-      <div id="sett-promo-status"></div>
       <button class="sett-about-btn" id="sett-about-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01" stroke-linecap="round"/></svg>
         <span data-i18n="sett.about_btn">HAKKINDA</span>
@@ -296,14 +287,69 @@
       </div>
 
       <div class="howto-section">
-        <p class="howto-body" data-i18n="howto.body2">
-          Kartı <strong>sola kaydır</strong> ya da ← tuşuna bas → <em>Hayır</em><br/>
-          Kartı <strong>sağa kaydır</strong> ya da → tuşuna bas → <em>Evet</em><br/>
-          Her 24 kartta bir yıl geçer. Hazine her yıl azalır.
-        </p>
+        <p class="howto-kicker" data-i18n="howto.tools_title">SADRAZAMIN ARAÇLARI</p>
       </div>
+      <div class="howto-stats howto-tools">
+        <div class="howto-stat">
+          <svg class="hstat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg>
+          <div>
+            <strong data-i18n="howto.t_swipe_t">Karar</strong>
+            <span data-i18n="howto.t_swipe_d">Kartı <b>sola</b> ya da <b>sağa</b> kaydır. Kaydırırken kenarda seçeneğin adı görünür; bırakınca karar verilir. Her 24 kartta bir yıl geçer.</span>
+          </div>
+        </div>
+        <div class="howto-stat">
+          <svg class="hstat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M6 3.5h9.5L19 7v13.5H6z"/><path d="M15.5 3.5V7H19M9 11h7M9 14h7M9 17h4"/></svg>
+          <div>
+            <strong data-i18n="howto.t_ferman_t">Padişah Fermanı</strong>
+            <span data-i18n="howto.t_ferman_d">Her yıl Sultan bir ferman verir. Yıl sonunda yerine getirirsen Sultan'ın sabrı artar ve Vezirler Defteri'ne mühür kazanırsın.</span>
+          </div>
+        </div>
+        <div class="howto-stat">
+          <svg class="hstat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v3h3M9 11h6M9 14h6M9 17h4"/></svg>
+          <div>
+            <strong data-i18n="howto.t_tahkik_t">Tahkik</strong>
+            <span data-i18n="howto.t_tahkik_d">Kartın sağ üstündeki dosya. Seçeneklerin hangi gücü artırıp azalttığını gösterir. Yılda 3 hak; her kullanım Sultan'ın sabrını biraz düşürür.</span>
+          </div>
+        </div>
+        <div class="howto-stat">
+          <svg class="hstat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9 5.5-.8z"/></svg>
+          <div>
+            <strong data-i18n="howto.t_arz_t">Arz</strong>
+            <span data-i18n="howto.t_arz_d">“ARZ” yazan büyük kararları Sultan verir, sen tavsiye edersin. Sabrı yüksekse seni dinler; dinlemezse öbür seçenek uygulanır.</span>
+          </div>
+        </div>
+        <div class="howto-stat">
+          <svg class="hstat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>
+          <div>
+            <strong data-i18n="howto.t_soru_t">Soruştur</strong>
+            <span data-i18n="howto.t_soru_d">Bazı kişilerin arasında gizli bir hain var. Kartın sol üstündeki büyüteçle soruşturabilirsin.</span>
+          </div>
+        </div>
+        <div class="howto-stat">
+          <svg class="hstat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M12 4v16M5 8h14M5 8l-2.5 6h5zM19 8l-2.5 6h5z"/></svg>
+          <div>
+            <strong data-i18n="howto.t_denge_t">Kayırma Dengesi</strong>
+            <span data-i18n="howto.t_denge_d">Son 4 kararının 3'ünde aynı zümreyi kayırırsan öteki üçü kırılır. Herkesi sırayla gözet.</span>
+          </div>
+        </div>
+        <div class="howto-stat">
+          <svg class="hstat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+          <div>
+            <strong data-i18n="howto.t_sihhat_t">Sıhhat</strong>
+            <span data-i18n="howto.t_sihhat_d">Dört güç dengedeyken sıhhatin toparlanır, uçlara kayarsa azalır. Sıfırlanırsa saltanat biter.</span>
+          </div>
+        </div>
+        <div class="howto-stat">
+          <svg class="hstat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="4" y="7" width="16" height="12" rx="1.5"/><path d="M9 7V5h6v2"/></svg>
+          <div>
+            <strong data-i18n="howto.t_esya_t">Eşyalar</strong>
+            <span data-i18n="howto.t_esya_d">Alttaki üç kutudaki eşyalar zor anda kurtarır. Kutuya dokunarak kullanırsın.</span>
+          </div>
+        </div>
+      </div>
+      <p class="howto-body howto-keys" id="howto-keys" data-i18n="howto.keys">Bilgisayarda ← ve → tuşlarıyla da karar verebilirsin.</p>
 
-      <button id="btn-play-now" class="intro-btn" data-i18n="btn.play_now">ANLADIM, BAŞLAYALIM</button>
+      <button id="btn-play-now" class="intro-btn primary" data-i18n="btn.play_now">ANLADIM, BAŞLAYALIM</button>
       <button id="btn-howto-back" class="intro-btn ghost" data-i18n="btn.back">← GERİ</button>
     </div>
   </div>
@@ -558,8 +604,8 @@
 
       <section id="market-items" class="market-section">
         <div class="market-section-head"><span data-i18n="market.items_head">EŞYALAR</span></div>
-        <div id="market-items-list"></div>
         <div id="market-items-stash"></div>
+        <div id="market-items-list"></div>
       </section>
 
       <section id="market-akce" class="market-section">
