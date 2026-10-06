@@ -8,6 +8,32 @@ işlendi (VALID) ve 1.7.0.a bağlandı; sürüm durumu PREPARE_FOR_SUBMISSION. *
 Gönderimde yalnız sürüm vardı, IAP yoktu (oyunun kullandığı tüm IAP'lar APPROVED; `fullnoads` / `akce30start`
 SEÇİLMEMELİ). GitHub push (d1765a1) ve Vercel deploy yapıldı, canlıda yeni reklam kodu doğrulandı.
 
+**Build 42'den SONRA yapılanlar (commit d0257b4 — build'de YOK, push/deploy YOK, bir sonraki build'e girer):**
+- EN: şans kartları (5) ve müzakere kartları (2) İngilizce oyunda Türkçe yazıyordu → metin, karakter adı,
+  6 seçenek çevirisi (`label_en`). Fuzz testi buldu.
+- Metin: ödeme ekranı/Market "Oyun başında geçiş reklamı yok" → "Saltanat bitince çıkan geçiş reklamı yok"
+  (TR+EN). Build 42'de eski metin var (yanlış ama zararsız).
+- Metin: Nasıl Oynanır "Her 10 kartta bir yıl" → 24 (TR+EN; CARDS_PER_YEAR = 24).
+
+**Oynanış doğrulaması (6 Ekim gece):** fuzz testi 4 ayar × 600 adım (Chrome/TR/Tam, WebKit/EN/Tam — 6. yıl,
+WebKit/TR/sahte iPhone, Chrome/EN/ücretsiz) → hata, takılma, kural ihlali yok. Tek bulgu yukarıdaki EN sızıntısı.
+
+**SIRADAKİ OTURUM — Arayüz (UX) incelemesi, kullanıcı seçimi bekleniyor:**
+Rapor: https://claude.ai/artifact/ERTHhhCRCeftPAci2mk6BL (27 ekran × 390×844 / 375×667, ölçümlü).
+Kullanıcı kod verecek (ör. "S1 · S2 · G2"). Özet:
+- S1 KRİTİK: Duraklat'ta "Oyunu Bitir" ONAYSIZ kaydı siliyor (`doQuit` → clearSave, touchend'de de) ve
+  "Devam Et"in hemen üstünde. S2: oyun içinden ses/müzik kapatılamıyor (Duraklat'ta Ayarlar yok).
+- S3: ana menü iPhone SE'de 195 px taşıyor (Market/Hediye/Ayarlar/Tam Sürüm görünmüyor), `#intro-footer`
+  (absolute bottom) düğmelerin üstüne biniyor. S4: ☰ 36×36, büyüteç 36×36, Tahkik 46×36, ferman çipi 25 px —
+  görünmez dokunma alanı 44'e. S5: Nasıl Oynanır eksik (ferman/Tahkik/Arz/eşya yok), klavye satırı, düğme görünmüyor.
+  S6: müzakere kartı eşya kutularını ekrandan itiyor. S7: SE'de ilk Arz açıklaması yıl+☰'yi örtüyor.
+  S8: sultan seçiminde sabit düğmeler son kartı örtüyor.
+- G1 ana menü (OYNA + mod seçici + 2×2 ilerleme + alt şerit), G2 Duraklat (devam üstte, ses, korumalı çıkış),
+  G3 Market sekmeleri (Akçe/Eşyalar/Kozmetik, üstte ✕, "+ AL"). D1–D8 küçük dokunuşlar.
+- Önerilen sıra: 1.7.1 küçük (S1 S2 S4 S7 D2 D3) → 1.7.1 orta (S3 S6 S8 D4 D5 D6) → 1.8 (G1 G2 G3 S5 D1 D7 D8;
+  önce web demo). Mekanik/kural/fiyat/reklam DEĞİŞMEZ; #game ve kart kaydırma CSS'ine dokunma.
+- Ekran görüntüsü betiği: scratchpad `ux_shots.js` (yeniden yazılabilir; ölçüm `measure.json`).
+
 **Yayından sonra bakılacaklar:**
 1. AdMob: gösterim / istek oranı yükselmeli (eskiden 39/311 ≈ %12,5). Reklam birimine göre böl.
 2. TelemetryDeck: `ad_impression` (gerçek gösterim) ile AdMob gösterimini karşılaştır; `investigate_ad` kaç kez.
