@@ -1,0 +1,60 @@
+SADRAZAM — ÖLÜM SAHNELERİ (13 görsel)
+=====================================
+
+NASIL KULLANILIR
+- Her görsel için: ORTAK STİL satırı + o sahnenin satırı birlikte verilir.
+- Dikey 3:4 oran (ör. 1080x1440 ya da daha büyük). Ben 1080x1440 JPEG'e çeviririm.
+- Dosyayı aşağıdaki DOSYA ADI ile bu klasöre koy (uzantı .png ya da .jpg olabilir).
+- Görselde YAZI/HARF olmasın (başlığı oyun yazıyor).
+
+ORTAK STİL (her prompt'un başına ekle):
+Flat illustrated Ottoman miniature style, bold dark ink outlines, rich lapis blue, crimson, emerald and gold palette, full-bleed scene that fills the entire canvas edge to edge, NO border, NO frame, NO decorative margin, dramatic candle or torch lighting, solemn cinematic mood, main subject in the upper two thirds, calm and dark lower third with little detail, no gore, no text, no letters, vertical 3:4 composition.
+
+NOT: Kartlardaki portrelerle aynı çizim dili, ama ÇERÇEVESİZ. Sahne tam ekran gösterilecek,
+yavaşça yaklaşacak ve alt üçte bire başlık + metin yazılacak. Çerçeve çıkarsa tekrar üret
+ya da "remove the border" diye düzelttir.
+
+
+1) DOSYA ADI: death-saray_0        BAŞLIK: İdam Fermanı
+A red-sealed execution firman lying on a dark marble floor beside an empty vizier turban, the silhouette of an executioner filling a doorway, a single candle guttering.
+
+2) DOSYA ADI: death-saray_100      BAŞLIK: Tahtın Gölgesi
+The grand vizier's long shadow falling across the empty Ottoman throne, the Sultan watching through a latticed kafes window, cold moonlight.
+
+3) DOSYA ADI: death-yeniceri_0     BAŞLIK: Dağılan Ordu
+An abandoned janissary camp at dusk, torn banners and overturned tents, enemy torches approaching distant city walls.
+
+4) DOSYA ADI: death-yeniceri_100   BAŞLIK: Kazan Kalktı
+Janissaries overturning their great soup cauldrons in a torchlit square as a sign of revolt, raised fists, the palace gate in the background.
+
+5) DOSYA ADI: death-ulema_0        BAŞLIK: Hutbede Okunmayan Ad
+A crowded mosque courtyard, an imam on the minbar, the crowd turning in anger toward a lone robed figure at the gate.
+
+6) DOSYA ADI: death-ulema_100      BAŞLIK: Şeyhülislam'ın Divanı
+The Şeyhülislam standing in the Divan hall raising a fatwa scroll, viziers bowing, the grand vizier's cushion left empty.
+
+7) DOSYA ADI: death-hazine_0       BAŞLIK: İflas
+An empty treasury vault with open empty chests and a few scattered copper coins, unpaid soldiers pounding on the iron gate.
+
+8) DOSYA ADI: death-hazine_100     BAŞLIK: Zimmet
+Palace guards with torches discovering chests overflowing with gold, an open ledger, the Sultan's hand pointing in accusation.
+
+9) DOSYA ADI: death-saglik         BAŞLIK: Son Nefes
+The vizier lying on a divan bed, physician's herbs and an hourglass with its last grains, a window onto the Bosphorus at dawn.
+
+10) DOSYA ADI: death-azil          BAŞLIK: Hac Yolu Sürgünü
+A lone rider with a small caravan leaving Istanbul at dawn, domes and minarets behind, an empty desert road ahead.
+
+11) DOSYA ADI: death-sultan_guc    BAŞLIK: İki Cellat
+Two executioners carrying a silk bowstring down a long dark palace corridor, an ornate vizier kaftan hanging on a hook.
+
+12) DOSYA ADI: death-padisah_red   BAŞLIK: Sultan'ın Gazabı
+The Sultan rising from his throne in fury, guards drawing swords, a toppled coffee tray on the carpet.
+
+13) DOSYA ADI: death-sehzade       BAŞLIK: Şehzadenin Hamlesi
+A young prince on horseback surrounded by armed supporters, a gloved hand taking the vizier's seal from a table.
+
+(İsteğe bağlı) 14) DOSYA ADI: death-free_limit   BAŞLIK: Mühür Geri Döndü
+The imperial seal resting on a velvet cushion before the throne, morning light, calm and quiet, no people visible.
+
+Not: "Yanlış Oda" ölümü için yeni görsel gerekmez, mevcut görsel kullanılır.

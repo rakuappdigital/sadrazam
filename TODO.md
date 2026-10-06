@@ -1,12 +1,75 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 1.7 dünya yayını QA tamam, BUILD ALINMADI (6 Ekim 2026) ← BURADAN DEVAM
+## SIRADAKİ — 1.7.0 (build 41) ASC'YE YÜKLENDİ, sürüme bağlandı (6 Ekim 2026) ← BURADAN DEVAM
 
-QA turu (CLAUDE.md §3h-3): bütün test grupları + iPhone reklam/satın alma + 40 pencere × 3 boyut +
-otomatik oyun temiz. Kullanıcıdan beklenen: (1) App Store Connect'te App Privacy'ye "Usage Data →
-Product Interaction, not linked, no tracking" (API yok), (2) Tam Sürüm/Hoşgeldin IAP açıklamasına
-"reklamsız" (API 409, elle), (3) 1.7.0 build + inceleme onayı, (4) GitHub push onayı. Fiyatlar DEĞİŞMEYECEK
-(kullanıcı kararı). Ücretsiz oyuncuya geçiş reklamı sürüyor (Tam Sürüm/Reklamsız sahibine yok).
+**Durum:** 1.7.0 / build 41 yüklendi (Delivery UUID `f9bed195-688d-4f4b-ba07-177ee8f26d3f`, işlendi: VALID).
+ASC'de geri çekilmiş 1.6.0 sürüm kaydı **1.7.0** yapıldı ve build 41 bağlandı (17 dil yerelleştirmesi duruyor).
+**İncelemeye GÖNDERİLMEDİ** — gönderimi kullanıcı yapacak. GitHub'a push YAPILMADI (onay bekliyor).
+
+**Kullanıcının elle yapması gerekenler (API izin vermiyor):**
+1. ASC → App Privacy → Data Types: **Usage Data → Product Interaction** · amaç Analytics · Not linked · Not tracking.
+2. (İsteğe bağlı) Tam Sürüm / Hoşgeldin IAP açıklamasına "reklamsız / ad-free" (ACTIVE localization → API 409).
+3. 1.7.0 "What's New" metni (17 dilde 1.6 metni duruyor) — güncellenmeli.
+4. TelemetryDeck panosunda appVersion **1.6.0** olan olayları ele (5 Ekim test turundan sahte veri).
+
+### 5–6 Ekim 2026'da tek oturumda yapılanlar (ayrıntı: CLAUDE.md §3h, §3h-2, §3h-3)
+
+**Analiz** — Oyun 66/100 puanlandı; Çağ Planı raporu: https://claude.ai/artifact/5T1k9DvNNHeZnuvTXNg6Z5
+(5 zaaf: çekirdek özgünlük, karar gerilimi, hikâye/hedef, gelir modeli, ölçüm).
+
+**1. Çekirdek mekanik** (decide() akışına dokunmadan)
+- **Tahkik**: kartın sağ üstünde, yılda 3 hak (+1 Casuslar Başı Müttefik), sabır −2; iki seçeneğin etki
+  yönünü gösterir (sürükleyince). Büyüteç/gizli hain sistemi aynen duruyor.
+- **Arz**: 38 büyük karar (`"arz": true`); Sultan sabra göre kabul/ret (%85/%65/%45); ret → öbür taraf
+  uygulanır, 8–15 kart sonra "haklı çıktın/Sultan haklıydı" kartı. Reddedilen karar hafızaya yazılmaz.
+- **Lanet kaldırıldı → Kayırma Dengesi**: son 4 kararın 3'ünde aynı zümre kayrılırsa öteki üçü −6.
+  Benzetimle eski zorluğa kalibre (rastgele oyun medyanı 38 → 40 kart). Başarım kimlikleri aynı.
+
+**2. Karar gerilimi**
+- 218 seçenek yeniden yazıldı; gerçek ikilem 451 → **606/662**. 22 ödül kartı `"denge_muaf"`.
+- `tools/denge.py` her build öncesi zorunlu (CLAUDE.md §2 adım 0); 0 hata.
+- Not: ilk raporda "198 bedelsiz" yazdı, doğrusu 134 (+54 baskın, 3 etkisiz).
+
+**3. Asırlar (oyunun temel hedefi) + Pargalı yan görevi**
+- 5 tarih düğümü: Mısır 1517 (Yavuz, 2. yıl, ücretsiz), Viyana 1529, Beylerbeyi 1589, Bağdat 1638,
+  Patrona Halil 1730 (4. yıl). Hazırlık şartları + 2 karar → kalıcı sonuç, sonraki dönemlere miras,
+  5/5'te "Senin Osmanlın". Menüde DEVLETİN KADERİ, sultan kartlarında düğüm rozeti, Yıl Sonu'nda satır.
+- Pargalı: ilk sayfa herkese 18. kartta, mektupta ipuçları ve YAN GÖREV başlığı.
+
+**4. Ürünler**
+- Tam Sürüm artık reklamsızı içeriyor (ödeme ekranında 4. madde). Reklamsız ürünü Market'te GİZLİ
+  (kod ve ASC ürünü duruyor). `fullnoads` paketi: inceleme iptal edildi, ASC'de "KULLANILMIYOR" adıyla
+  READY_TO_SUBMIT (silinemiyor), oyunda hiç görünmüyor. **Fiyatlar değişmeyecek** (kullanıcı kararı;
+  analiz: Apple eşleştirmesi $2,99 = ₺149,99, Tam Sürüm ₺29,99 → net ₺16,62).
+- Ücretsiz oyuncuya her 3 oyunda bir geçiş reklamı sürüyor; Tam Sürüm / Reklamsız sahibine yok.
+
+**5. Ölçüm (TelemetryDeck)**
+- `analytics.js`, App ID `F3B8B209-FB1A-4FAB-B53D-5FB4DE179E3D`, namespace `com.sadrazam`. 15 olay (oyun,
+  kart %15 örnek, yıl sonu, ölüm, ödeme ekranı, satın alma, reklam, Tahkik, Arz, kayırma, Asırlar…).
+  Pano: dashboard.telemetrydeck.com. Yerel test adresinde kapalı (http://localhost), iOS'ta açık.
+- privacy.html'e "Anonymous Usage Analytics" bölümü.
+
+**Dünya yayını QA (6 Ekim) — bulunan ve düzeltilen hatalar**
+- Dil: Türkçe olmayan her telefonda EN (kullanıcı kuralı), eski oyuncu TR kalır. Info.plist en/tr.
+- ATT izin metni İngilizce varsayılan + tr.lproj Türkçe (önceden herkese Türkçeydi).
+- EN'de Türkçe kalanlar: Sultan mektupları (1.5.0'dan beri), sürpriz kartlar, 4 ölüm metni + başlık,
+  eşya bildirimleri, YENİ EŞYA, kayıtlı oyun bandı, seçim uyarıları, paylaşım bağlantısı (EN: bölgesiz).
+- Küçük ekran kilidi: Divan Halkası kapatılamıyordu (SE/8). Market üstü, Ayarlar Kapat, sultan/başarımlar
+  ekranı başı, ana menü tuğrası kesiliyordu → güvenli ortalama (style.css sonu).
+- 1.5.0'dan beri değişmeyenler: rewardedads.js / interstitialads.js (yalnız ölçüm satırı), günlük hediye,
+  Game Center, haptics, sounds, RevenueCat paketi, Swift dosyaları.
+
+**Test (scratchpad t/ — oturum sonrası silinir; betikler CLAUDE.md §3h-3'te tarif edildi)**
+- 26 eski grup + cag + asir: hepsi geçti (5 grup yeni kurallara göre güncellendi).
+- native_ads (129 kontrol: 8 reklam senaryosu × 4 kullanım noktası + geçiş reklamı), native_iap (her ürün,
+  iptal/hata, geri yükleme, promosyon, yeniden kurulum, ürün yok, ücretsiz sınır): hepsi geçti.
+- overlay_fit: 40 pencere × 320/375/390 × WebKit/Chromium: her düğmeye ulaşılıyor.
+- fuzz (rastgele gerçek oyun): ~9.000 adım, 8. yıla kadar; hata/takılma/değer bozulması/404 yok.
+- Simülatör: sistem dili Almanca → EN, Türkçe → TR doğrulandı.
+
+**Sıradaki fikirler (onay yok):** Asırlar'a yeni dönemler (III. Selim 1807, II. Mahmud 1826, Tanzimat),
+4 dönem sonrası yeni sultanlar; ölçüm verisi geldikçe fiyat/ücretsiz sınır kararları; 52 "kör" kart
+yerine denetçi çıktısına göre dönemsel denge turu.
 
 ## SIRADAKİ — 1.7 main'de, BUILD ALINMADI (5 Ekim 2026, 2. tur) (önceki)
 

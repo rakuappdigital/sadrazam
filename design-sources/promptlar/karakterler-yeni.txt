@@ -1,0 +1,59 @@
+SADRAZAM — YENİ KARAKTER PORTRELERİ (10 görsel)
+===============================================
+
+NASIL KULLANILIR
+- Her görsel için: ORTAK STİL satırı + o karakterin satırı birlikte verilir.
+- Dikey 3:4 oran. Ben 1080 px JPEG'e çeviririm, gerekirse kenarları kırparım.
+- Dosyayı aşağıdaki DOSYA ADI ile bu klasöre koy (.png ya da .jpg).
+- Görselde YAZI/HARF olmasın.
+
+ORTAK STİL (her prompt'un başına ekle — mevcut portrelerle aynı dil):
+Flat illustrated Ottoman miniature-inspired character portrait, bold dark ink outlines, rich lapis blue, crimson, emerald, ochre and gold palette, ornate Iznik tile border frame with rumi floral motifs, half-length figure facing the viewer, background with objects that tell the character's role, warm candle light, no text, no letters, vertical 3:4 composition.
+
+
+DÖNEM: III. MURAD (Kadınlar Saltanatı)
+
+1) DOSYA ADI: takiyuddin           KİŞİ: Takiyüddin (müneccim, rasathane)
+An elderly Ottoman astronomer with a white beard and a tall felt cap, holding a brass astrolabe, a large armillary sphere and star charts behind him in the Istanbul observatory, telescope-like sighting tube by the window.
+
+2) DOSYA ADI: safiye-sultan        KİŞİ: Safiye Sultan (Haseki, sonra Valide)
+A poised Ottoman imperial consort in a jewelled crimson and gold kaftan with a pearl-strung headdress and veil, holding a sealed letter, harem lattice windows and a Venetian glass vase behind her, a knowing look.
+
+3) DOSYA ADI: esther-kira          KİŞİ: Esther Kira (harem kirası, tüccar kadın)
+A shrewd middle-aged Jewish merchant woman of 16th-century Istanbul in a dark blue robe and headscarf, holding a small jewel casket and a ledger, bolts of silk and a balance scale behind her.
+
+DÖNEM: IV. MURAD (Yasaklar)
+
+4) DOSYA ADI: kadizade             KİŞİ: Kadızade Mehmed (vaiz)
+A stern Ottoman preacher in a white turban and plain dark robe, raising one finger as he speaks from a wooden pulpit, an overturned coffee cup and a broken tobacco pipe at his feet.
+
+5) DOSYA ADI: koci-bey             KİŞİ: Koçi Bey (risale yazarı)
+A thoughtful Ottoman court scribe with a neat grey beard writing a treatise with a reed pen, stacks of bound manuscripts and an inkwell on a low desk, a single candle.
+
+DÖNEM: III. AHMED (Lale Devri)
+
+6) DOSYA ADI: patrona-halil        KİŞİ: Patrona Halil (isyan lideri)
+A rugged Albanian-born janissary in a patched uniform and simple cap, broad shoulders, an angry determined face, a crowd and torches in the street behind him, bare forearms.
+
+7) DOSYA ADI: ibrahim-muteferrika  KİŞİ: İbrahim Müteferrika (matbaa)
+An Ottoman scholar-printer in a tidy turban and green robe, holding a freshly printed page, a wooden printing press and metal type cases behind him, ink on his fingers.
+
+8) DOSYA ADI: nedim                KİŞİ: Nedim (şair)
+A young elegant Ottoman poet in a pale rose kaftan with a tulip tucked in his turban, holding a small book of verse, the Saadabad garden with tulip beds and a fountain behind him at dusk.
+
+9) DOSYA ADI: lale-tuccari         KİŞİ: Hollandalı lale tüccarı
+A plump Dutch merchant in a black coat with a wide white collar and a tall hat, proudly holding a rare striped tulip bulb in a velvet-lined box, crates of bulbs and a ledger of prices behind him.
+
+DÖNEM: KANUNÎ
+
+10) DOSYA ADI: matrakci-nasuh      KİŞİ: Matrakçı Nasuh (sefer minyatürcüsü)
+A versatile Ottoman polymath in a red kaftan and turban, painting a city-view miniature on a large sheet, a sword leaning on the table beside brushes and paint pots, a campaign tent behind him.
+
+
+EK — YAŞAYAN DİVAN ARKA PLANI (1 görsel)
+=======================================
+Kartın arkasında, bulanıklaştırılıp karartılarak kullanılacak. Kişi YOK, çerçeve YOK.
+Kart üstüne geleceği için ortası sade olsun; ışık üstten, tavandan.
+
+11) DOSYA ADI: divan-salonu
+Wide interior of the empty Ottoman Imperial Council hall (Kubbealtı) in Topkapı Palace, no people, low cushioned divan benches along the walls, a gilded latticed window high on the back wall, hanging oil lamps under a domed ceiling with Iznik tile panels, warm candle light from above, calm and quiet, the central area simple and uncluttered, full-bleed scene with NO border and NO frame, no text, vertical 3:4 composition. (Kart portrelerindeki çizim dilini kullan.)

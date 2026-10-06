@@ -1,0 +1,35 @@
+SADRAZAM — SON SAHNELERİ (7 görsel + 1 isteğe bağlı)
+====================================================
+
+Ölüm sahneleriyle AYNI dil (senin ürettiğin sinematik, çerçevesiz üslup). Ölüm sahnelerinden
+birini referans al. Bunlar zafer anları: ışık daha sıcak ve umutlu olsun.
+Son gelince oyun bitmiyor; görsel tam ekran arka plan olur, üstüne başlık ve nişan yazılır.
+Görsel gelmezse oyun madalyalı sade bir sahne gösterir (şu an öyle çalışıyor).
+
+ORTAK STİL:
+Cinematic painterly Ottoman scene, rich crimson, lapis, emerald and gold palette, warm golden hour or candle light, triumphant and dignified mood, full-bleed scene that fills the entire canvas, NO border, NO frame, main subject in the upper two thirds, darker calm lower third, no text, no letters, vertical 3:4 composition.
+
+1) DOSYA ADI: end-amire     SON: Hazine-i Amire
+The inner treasury of Topkapı glowing with ordered chests of gold and neatly stacked ledgers, a treasurer bowing beside a balanced scale, Genoese bankers waiting respectfully at the door.
+
+2) DOSYA ADI: end-fetih     SON: Fetihname
+Ottoman banners raised over a conquered fortress at dawn, janissaries cheering around their cauldrons, a victory scroll being unrolled.
+
+3) DOSYA ADI: end-kanun     SON: Kanun-ı Divan
+A calm Imperial Council hall in morning light, judges and viziers seated in order, a large book of law open on a lectern, doves at the window.
+
+4) DOSYA ADI: end-fetva     SON: Fetva Kalkanı
+A grand mosque courtyard at Friday prayer, the Şeyhülislam raising his hands in blessing, students of the madrasa holding endowment deeds.
+
+5) DOSYA ADI: end-valide    SON: Valide'nin Gölgesi
+The Valide Sultan standing at the gilded harem gate in candle light, extending her hand in gratitude, the young prince beside her.
+
+6) DOSYA ADI: end-rakip     SON: Rakibin Düşüşü
+An empty vizier's cushion in the Divan with a fallen turban beside it, the doors open to a bright corridor, a single quill on the floor.
+
+7) DOSYA ADI: end-pargali   SON: Pargalı'nın İzinde
+An old sealed letter on a dark desk beside a candle, a faint portrait of a grand vizier in the shadows behind, moonlight through a lattice window.
+
+(İsteğe bağlı) 8) DOSYA ADI: end-emeklilik   SON: Onurlu Veda (Emekliliğini İste)
+An elderly grand vizier sitting on the terrace of a wooden waterside mansion on the Bosphorus at sunset, a cup of coffee beside him, peaceful.
+(Bu gelmezse emeklilikte "Mühür Geri Döndü" görseli kullanılıyor.)
