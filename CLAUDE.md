@@ -445,6 +445,23 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   × 320/375/390 genişlik: her düğmeye ulaşılabiliyor mu), `fuzz_test.js` (rastgele gerçek oyun: hata,
   takılma, değişmez, 404, EN sızıntısı), `an_guard_test.js`.
 
+### 3h-4. 6 Ekim 2026 (akşam): reklam düzeni
+
+- **Geçiş reklamı HER oyun bitişinde** (kullanıcı isteği): `_actuallyTriggerGameOver` → ölüm sahnesi →
+  `_gameOverInterstitial(next)` → `showGameOver`. Oyun başında artık reklam YOK
+  (`_maybeShowInterstitialThenStartGame` yalnızca `sadrazam_start_count` sayar + startGame).
+  Tam Sürüm / Reklamsız sahibine hiç gösterilmez; `interstitialads.js` `prepare()` onlar için reklam
+  İSTEMEZ (`window.isAdFreeUnlocked`).
+- **Bayat reklam**: iki reklam dosyasında `STALE_MS` 55 dk — Google ~1 saatte geçersiz sayar; görünür
+  olunca, dakikada bir ve göstermeden önce `_dropIfStale` yenisini ister.
+- **Ölçüm**: `ad_shown` = deneme (eskisi gibi), `ad_impression` = native "Showed" geldi (gerçek gösterim).
+  AdMob gösterimiyle karşılaştırılacak olan `ad_impression`.
+- **Tahkik reklamı**: hak bitince yılda 1 kez `_offerTahkikAd` (item-confirm-popup, sınıf `tahkik-ad`),
+  izlenirse `_tahkikLeft++` ve kart hâlâ aynıysa hemen kullanılır; `_tahkikAdYear` kayıtta (`cag.tka`).
+- Ödüllü reklam yerleri (5): İkinci Şans, günlük Divan hediyesi, Kâtibin Notu/Müneccim, Kritik An
+  (Şifa Otu), Tahkik.
+- Test: scratchpad `ad_test.js`, `long_test.js`, `native_ads_test.js` (E: oyun sonu reklamı, F: Tahkik).
+
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 
 - **Dönemler** `ERA_DEFS`, `_eraState` (kayıtta `era`), `_eraPick` (getNextCard'da, %30, ayrı kanal;
@@ -573,7 +590,7 @@ dışarıda bir görsel üretici gerekmiyor.
   içinde iki bölüm var: **Reklamsız** (non-consumable
   `com.rakuappdigital.sadrazam.noads`, ₺59,99 / $1.99) ve **Akçe Keseleri**.
   Reklamsız alınınca `localStorage.sadrazam_noads='1'` →
-  `_maybeShowInterstitialThenStartGame()` geçiş reklamını hiç göstermez;
+  `_gameOverInterstitial()` geçiş reklamını hiç göstermez (6 Ekim'den beri oyun sonunda, §3h-4);
   İkinci Şans'taki ödüllü reklam isteğe bağlı olduğu için etkilenmez.
   RevenueCat'te ayrı entitlement YOK — sahiplik
   `customerInfo.allPurchasedProductIdentifiers`/`nonSubscriptionTransactions`

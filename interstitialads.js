@@ -32,8 +32,14 @@ const InterstitialAds = (() => {
     if (_adLoaded && Date.now() - _loadedAt > STALE_MS) { _adLoaded = false; prepare(); }
   };
   // Tam Sürüm / Reklamsız sahibine geçiş reklamı hiç gösterilmez → hiç
-  // istenmesin (boşa istek). isAdFreeUnlocked game.js'te tanımlı.
-  const _adFree = () => { try { return !!window.isAdFreeUnlocked?.(); } catch (e) { return false; } };
+  // istenmesin (boşa istek). isAdFreeUnlocked game.js'te tanımlı ama ilk hazırlık
+  // game.js yüklenmeden gelebilir → aynı bayraklar doğrudan okunur.
+  const _adFree = () => {
+    try {
+      if (typeof window.isAdFreeUnlocked === 'function') return !!window.isAdFreeUnlocked();
+      return localStorage.getItem('sadrazam_noads') === '1' || localStorage.getItem('sadrazam_full_unlocked') === '1';
+    } catch (e) { return false; }
+  };
 
   const init = () => {
     if (!_cap) return; // ID girilmeden veya web/tarayıcıda hiç başlatılmaz
