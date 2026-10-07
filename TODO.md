@@ -5,7 +5,7 @@
 **Durum:** 1.7.0 / **build 44** (Delivery `d00056a0-c76f-4bf0-a8eb-93d12c69e9f3`) yüklendi; kullanıcı build 43'ü
 incelemeden çekip 44'ü gönderdi → WAITING_FOR_REVIEW (gönderim d0ae70f2…). Export compliance API ile false yapıldı
 (yeni build'lerde HER SEFERİNDE kontrol et: usesNonExemptEncryption boş kalırsa gönderim 409 verir).
-**Push ve Vercel deploy YAPILMADI** (son commit'ler: fb71c05 büyük yama, G1-A1/G3-A2, c71ae08 build 44) — onay bekliyor.
+**Push + Vercel deploy yapıldı (7 Ekim, 3ab6a60); canlıda yeni kod doğrulandı.**
 
 **Build 44'te olanlar (43'e ek):**
 - Büyük yama (fb71c05): G2-B duraklat alt penceresi; A1 İkinci Şans'ta yerinde kese, A3 akçe göstergesi, A4 48 saatlik
