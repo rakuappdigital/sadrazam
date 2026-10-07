@@ -28,6 +28,10 @@ native_ads_test.js / death_test.js / fuzz — son tur sonucu sohbette. Gerçek c
 **Yayından sonra bakılacaklar:** AdMob gösterim/istek oranı; TelemetryDeck olayları: ad_impression, quick_pack,
 wallet_tap, starter_band_tap, cosmetic_buy, coach_tip, reign_title, investigate_ad.
 
+**Sonraki build için (7 Ekim fuzz bulgusu):** Başarımlar ekranında "← GERİ" yalnız 3.200 px'lik listenin EN ALTINDA
+(btn-ach-back) — geri dönmek için bütün listeyi kaydırmak gerekiyor; fuzz 60 adım orada kaldı. Öneri: sultan seçimindeki
+gibi alta yapışık (sticky) yap ya da üst köşeye ✕ ekle. Oyun hatası değil, kullanılabilirlik.
+
 **Uygulanmamış öneriler (kullanıcı seçmedi):** A2 ilk kese +%50, A6, A8, A10 · Y3 Y4 Y5 Y6 · K3 K5 K8.
 
 ## SIRADAKİ — 1.7.0 / build 43 incelemede (7 Ekim 2026) + BÜYÜK YAMA seçimleri ← BURADAN DEVAM
