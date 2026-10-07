@@ -3300,29 +3300,34 @@ html, body {
 #game-menu-btn:active { color: var(--gold); background: rgba(201,162,39,0.12); transform: translateY(-50%) scale(0.9); }
 
 #game-menu-overlay {
+  /* G2-B (7 Ekim 2026): alttan açılan pencere */
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0,0,0,0.72);
   z-index: 100;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   animation: fadeIn 0.2s ease;
 }
 #game-menu-box {
-  background: #0E0B1A;
+  background: linear-gradient(180deg, #14102a, #0E0B1A);
   border: 1px solid var(--gold-dim);
-  border-radius: 12px;
-  padding: 28px 24px;
-  max-width: 280px;
-  width: 90%;
-  max-height: 85vh;
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  padding: 10px 18px max(16px, env(safe-area-inset-bottom, 16px));
+  max-width: 480px;
+  width: 100%;
+  max-height: 92vh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
   text-align: center;
+  box-shadow: 0 -20px 50px rgba(0,0,0,0.6);
+  animation: gmUp 0.28s cubic-bezier(.2,.8,.2,1);
 }
+@keyframes gmUp { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
 #game-menu-title {
   font-family: 'Alegreya SC', serif;
   font-size: 14px;
@@ -5957,3 +5962,214 @@ html[lang="en"] .sultan-card.selected::after { content: 'SELECTED'; }
 
 /* D8 (6 Ekim 2026): oyun içi dükkân — eşyanın nereye gittiği */
 .esya-note { font-family: 'Alegreya', serif; font-style: italic; font-size: 12.5px; line-height: 1.4; color: rgba(240,230,208,0.72); text-align: center; margin: 2px 4px 8px; }
+
+/* G2-B duraklat penceresi parçaları */
+.gm-grab { width: 42px; height: 4px; border-radius: 2px; background: rgba(201,162,39,0.4); margin: 0 auto 2px; flex-shrink: 0; }
+.gm-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; text-align: left; }
+.gm-when { font-family: 'Alegreya', serif; font-style: italic; font-size: 12.5px; color: rgba(240,230,208,0.62); text-align: right; }
+.gm-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: left; }
+.gm-bar span { display: block; font-family: 'Alegreya SC', serif; font-size: 9.5px; letter-spacing: 1.4px; color: rgba(201,162,39,0.8); margin-bottom: 4px; }
+.gm-bar i { display: block; height: 5px; border-radius: 3px; background: rgba(201,162,39,0.15); overflow: hidden; }
+.gm-bar b { display: block; height: 100%; background: linear-gradient(90deg, #B38D1C, #E8C84A); }
+.gm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.gm-tile { min-height: 74px; border-radius: 10px; border: 1px solid rgba(201,162,39,0.28); background: rgba(201,162,39,0.05);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 6px 4px;
+  font-family: 'Alegreya SC', serif; font-size: 10px; letter-spacing: 1.2px; line-height: 1.15; color: rgba(201,162,39,0.88);
+  cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.gm-tile:active { background: rgba(201,162,39,0.14); }
+.gm-ic { width: 22px; height: 22px; color: var(--gold); display: block; }
+.gm-ic svg { width: 100%; height: 100%; display: block; }
+.game-menu-option.primary.gm-continue { background: linear-gradient(180deg, #E8C84A, #B38D1C); border-color: var(--gold-light); color: #1a1206; font-weight: 700; min-height: 54px; font-size: 14px; letter-spacing: 4px; box-shadow: 0 0 22px rgba(201,162,39,0.25); }
+#game-menu-box .gm-quit-link { margin-top: -2px; align-self: flex-start; }
+
+/* A1 (7 Ekim 2026): İkinci Şans'ta yerinde kese — oyunun mühür (.ferman) ve altın düğme (.mi-buy) dili */
+.qp-sep { display: flex; align-items: center; gap: 8px; font-family: 'Alegreya', serif; font-style: italic; font-size: 12.5px; color: rgba(240,230,208,0.55); }
+.qp-sep::before, .qp-sep::after { content: ''; flex: 1; height: 1px; background: rgba(201,162,39,0.25); }
+.qp-box { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--gold);
+  background: linear-gradient(90deg, rgba(201,162,39,0.14), rgba(107,26,26,0.25)); box-shadow: 0 0 18px rgba(201,162,39,0.25); text-align: left; }
+.qp-box .ferman.qp-seal { width: 58px; height: 58px; border-width: 2px; flex: 0 0 auto; margin: 0; }
+.qp-box .ferman.qp-seal .famt { font-size: 16px; transform: none; }
+.qp-box .ferman.qp-seal .funit { font-size: 7.5px; }
+.qp-info { flex: 1; min-width: 0; }
+.qp-info b { display: block; font-family: 'Alegreya SC', serif; font-size: 12.5px; letter-spacing: 1.4px; color: var(--gold-light); }
+.qp-info small { font-family: 'Alegreya', serif; font-style: italic; font-size: 12.5px; color: rgba(240,230,208,0.75); line-height: 1.3; }
+.qp-box .mi-buy.qp-buy { margin-left: auto; min-height: 44px; font-size: 14px; }
+.qp-status { font-family: 'Alegreya', serif; font-size: 13px; color: var(--gold-light); min-height: 0; text-align: center; }
+.qp-status:empty { display: none; }
+
+/* A9 (7 Ekim 2026): satın alma sonrası mühür töreni */
+#akce-ceremony { position: fixed; inset: 0; z-index: 9000; pointer-events: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: radial-gradient(circle at 50% 46%, rgba(8,6,18,0.55), rgba(8,6,18,0) 60%); opacity: 0; transition: opacity .25s ease; }
+#akce-ceremony.on { opacity: 1; }
+#akce-ceremony.out { opacity: 0; transition: opacity .4s ease; }
+#akce-ceremony .ferman.ac-seal { width: 108px; height: 108px; border-width: 3px; margin: 0; transform: scale(2.4) rotate(-14deg); opacity: 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,.6), 0 0 34px rgba(232,200,74,.35); }
+#akce-ceremony .ferman.ac-seal .famt { font-size: 30px; transform: none; }
+#akce-ceremony .ferman.ac-seal .funit { font-size: 10px; letter-spacing: 2px; }
+#akce-ceremony.on .ferman.ac-seal { animation: acStamp .5s cubic-bezier(.3,1.4,.5,1) .05s forwards; }
+#akce-ceremony .ac-ring { position: absolute; width: 108px; height: 108px; border-radius: 50%; border: 2px solid rgba(232,200,74,.7); opacity: 0; top: calc(50% - 54px - 22px); }
+#akce-ceremony.on .ac-ring { animation: acRing .7s ease-out .42s forwards; }
+#akce-ceremony .ac-bal { font-family: 'Alegreya SC', serif; font-size: 14px; letter-spacing: 2px; color: rgba(240,230,208,.85); background: rgba(14,11,26,.92); border: 1px solid var(--gold-dim); border-radius: 999px; padding: 6px 16px; opacity: 0; transform: translateY(6px); transition: opacity .3s .45s, transform .3s .45s; }
+#akce-ceremony .ac-bal b { color: var(--gold-light); font-size: 18px; font-weight: 500; font-variant-numeric: lining-nums tabular-nums; }
+#akce-ceremony.on .ac-bal { opacity: 1; transform: none; }
+@keyframes acStamp { 0% { transform: scale(2.4) rotate(-14deg); opacity: 0; } 60% { opacity: 1; } 100% { transform: scale(1) rotate(-4deg); opacity: 1; } }
+@keyframes acRing { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(2.1); } }
+@media (prefers-reduced-motion: reduce) { #akce-ceremony .ferman.ac-seal, #akce-ceremony.on .ferman.ac-seal { animation: none; transform: none; opacity: 1; } #akce-ceremony .ac-ring { display: none; } }
+
+/* A3 (7 Ekim 2026): ana menü akçe göstergesi — akışın dışında, sağ üst köşe */
+#intro-wallet { position: absolute; z-index: 4; top: max(14px, env(safe-area-inset-top, 14px)); right: 14px;
+  display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 4px 6px 4px 13px; border-radius: 999px;
+  border: 1px solid rgba(201,162,39,0.5); background: rgba(14,11,26,0.85); color: var(--gold-light);
+  font-family: 'Alegreya SC', serif; font-size: 15px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  font-variant-numeric: lining-nums tabular-nums; opacity: 0; animation: introFadeIn 1s ease 1.1s forwards; }
+#intro-wallet .iw-u { font-size: 9.5px; letter-spacing: 1.6px; opacity: 0.8; }
+#intro-wallet .iw-plus { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #E8C84A, #B38D1C); color: #1a1206; font-weight: 700; font-size: 17px; line-height: 1; }
+#intro-wallet:active { background: rgba(201,162,39,0.15); }
+
+/* A4 (7 Ekim 2026): Hoşgeldin Kesesi bandı — Tam Sürüm düğmesinin yerinde, aynı yükseklikte */
+.intro-btn.premium.starter-band { justify-content: flex-start; gap: 10px; padding: 6px 12px 6px 8px; letter-spacing: 0; text-transform: none;
+  border-color: rgba(196,52,43,0.7); background: linear-gradient(90deg, rgba(196,52,43,0.22), rgba(201,162,39,0.06)); }
+.starter-band .ferman.sb-seal { width: 34px; height: 34px; border-width: 1.5px; margin: 0; flex: 0 0 auto; box-shadow: 0 0 10px rgba(179,39,31,0.45); }
+.starter-band .ferman.sb-seal::before { inset: 3px; }
+.starter-band .ferman.sb-seal .famt { font-size: 11px; transform: none; }
+.starter-band .sb-t { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; text-align: left; }
+.starter-band .sb-t b { font-family: 'Alegreya SC', serif; font-weight: 700; font-size: 11px; letter-spacing: 1.6px; color: var(--gold-light); }
+.starter-band .sb-t small { font-family: 'Alegreya', serif; font-size: 11.5px; color: rgba(240,230,208,0.8); white-space: nowrap; }
+.starter-band .sb-tm { font-style: normal; color: #ff8a75; font-variant-numeric: lining-nums tabular-nums; }
+.starter-band .sb-p { flex: 0 0 auto; font-family: 'Alegreya SC', serif; font-weight: 700; font-size: 12.5px; color: #1a1206; background: linear-gradient(180deg, #E8C84A, #B38D1C); border-radius: 999px; padding: 6px 10px; }
+
+/* K1 (7 Ekim 2026): saltanat unvanı — ferman kâğıdı, oyunun mühür dili */
+#gameover-unvan { margin: 8px auto 2px; max-width: 320px; width: 100%; border-radius: 12px; padding: 16px 14px 14px; text-align: center; color: #2b1c0b;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.35), transparent 60%), linear-gradient(180deg, #efe0bb, #e3cf9e 60%, #d9c08a);
+  box-shadow: inset 0 0 36px rgba(120,80,20,.25), 0 8px 22px rgba(0,0,0,.5); border: 1px solid #c9a76a; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+#gameover-unvan .gu-kick { font-family: 'Alegreya SC', serif; font-size: 9.5px; letter-spacing: 2px; color: #7a2a12; line-height: 1.4; }
+#gameover-unvan .ferman.gu-seal { width: 52px; height: 52px; border-width: 2px; margin: 2px 0; }
+#gameover-unvan .ferman.gu-seal::before { inset: 4px; }
+#gameover-unvan .ferman.gu-seal .famt { font-size: 18px; transform: none; }
+#gameover-unvan .gu-title { font-family: 'Cinzel Decorative', serif; font-size: 19px; letter-spacing: 1px; color: #5a1d0e; line-height: 1.2; }
+#gameover-unvan .gu-quote { font-family: 'Alegreya', serif; font-style: italic; font-size: 13.5px; line-height: 1.45; color: #3a2a14; max-width: 280px; }
+#gameover-unvan .gu-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 100%; margin-top: 4px; }
+#gameover-unvan .gu-stats div { border: 1px solid rgba(122,42,18,.3); border-radius: 6px; padding: 4px 2px; font-family: 'Alegreya SC', serif; font-size: 8.5px; letter-spacing: .8px; color: #7a2a12; }
+#gameover-unvan .gu-stats b { display: block; font-size: 14px; color: #2b1c0b; letter-spacing: 0; font-variant-numeric: lining-nums tabular-nums; }
+
+/* Y2 (7 Ekim 2026): bir dahaki sefere + sıradaki hedef */
+#gameover-lesson { display: flex; flex-direction: column; gap: 8px; max-width: 320px; width: 100%; margin: 6px auto 2px; text-align: left; }
+#gameover-lesson .gl-les { display: flex; gap: 12px; padding: 11px 12px; border-radius: 10px; border: 1px solid rgba(201,162,39,.35); background: rgba(201,162,39,.06); }
+#gameover-lesson .gl-les img { width: 32px; height: 32px; object-fit: contain; flex: 0 0 auto; }
+#gameover-lesson .gl-ic { width: 26px; height: 26px; color: var(--gold); flex: 0 0 auto; display: block; }
+#gameover-lesson .gl-ic svg { width: 100%; height: 100%; display: block; }
+#gameover-lesson b { display: block; font-family: 'Alegreya SC', serif; font-size: 11px; letter-spacing: 1.6px; color: var(--gold-light); margin-bottom: 2px; font-weight: 600; }
+#gameover-lesson span { font-family: 'Alegreya', serif; font-size: 13.5px; line-height: 1.45; color: rgba(240,230,208,.86); }
+#gameover-lesson .gl-next { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 10px; border: 1px dashed rgba(201,162,39,.45); }
+#gameover-lesson .gl-next span { display: block; font-size: 14px; color: var(--text); }
+#gameover-lesson .gl-next small { display: block; font-family: 'Alegreya', serif; font-style: italic; font-size: 12.5px; color: rgba(240,230,208,.62); }
+
+/* A7 (7 Ekim 2026): kozmetik önizleme */
+#gameover-cosm { display: flex; gap: 12px; align-items: center; max-width: 320px; width: 100%; margin: 6px auto 2px; padding: 10px; border-radius: 12px; border: 1px solid rgba(201,162,39,.3); background: rgba(14,11,26,.7); text-align: left; }
+#gameover-cosm .cp-thumb { position: relative; flex: 0 0 auto; width: 74px; height: 96px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(201,162,39,.45); background: #1a1420 center / cover no-repeat; }
+#gameover-cosm .cp-death::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(5,3,12,.85)); }
+#gameover-cosm .cp-kaftan { position: absolute; z-index: 1; left: 50%; bottom: 8px; width: 40px; height: 40px; transform: translateX(-50%); filter: drop-shadow(0 0 8px rgba(232,200,74,.5)); }
+#gameover-cosm .cp-card img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+#gameover-cosm .cp-card::after { content: ""; position: absolute; inset: 0; padding: 5px; border-radius: inherit;
+  background: repeating-conic-gradient(from 45deg, #1b3f8f 0 25%, #f3efe2 0 50%) 0 0 / 10px 10px, #1b3f8f;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; }
+#gameover-cosm .cp-card::before { content: ""; position: absolute; z-index: 1; inset: 5px; border: 1px solid rgba(232,200,74,.9); border-radius: 4px; }
+#gameover-cosm .cp-gild { background: radial-gradient(ellipse at 50% 0%, rgba(232,200,74,.3), transparent 60%), linear-gradient(180deg, #f3e8cc, #e6d3a8); outline: 1px solid #b8892a; outline-offset: -6px; padding: 12px 10px; display: flex; flex-direction: column; gap: 6px; }
+#gameover-cosm .cp-dc { font-family: 'Cinzel Decorative', serif; font-size: 26px; line-height: .9; color: #9a1d12; }
+#gameover-cosm .cp-gild i { display: block; height: 3px; border-radius: 2px; background: rgba(90,60,20,.35); }
+#gameover-cosm .cp-gild i:nth-child(3) { width: 80%; } #gameover-cosm .cp-gild i:nth-child(5) { width: 60%; }
+#gameover-cosm .cp-info { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+#gameover-cosm .cp-kick { font-family: 'Alegreya SC', serif; font-size: 9.5px; letter-spacing: 1.6px; color: rgba(201,162,39,.8); }
+#gameover-cosm .cp-name { font-family: 'Alegreya SC', serif; font-weight: 700; font-size: 13px; color: var(--gold-light); }
+#gameover-cosm .cp-desc { font-family: 'Alegreya', serif; font-size: 12.5px; line-height: 1.35; color: rgba(240,230,208,.75); }
+#gameover-cosm .mi-buy.cp-buy { margin-top: 4px; min-height: 40px; }
+#gameover-cosm .cp-msg { font-family: 'Alegreya', serif; font-size: 12.5px; color: var(--gold-light); }
+#gameover-cosm .cp-msg:empty { display: none; }
+
+/* Y1 (7 Ekim 2026): bağlamsal ipucu — ışık tutulan öğe + kısa açıklama */
+#coach-overlay { position: fixed; inset: 0; z-index: 600; opacity: 0; transition: opacity .22s ease; touch-action: none; }
+#coach-overlay.on { opacity: 1; }
+#coach-overlay .coach-hole { position: fixed; border-radius: 12px; pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(4,3,10,0.78), 0 0 0 2px var(--gold), 0 0 26px rgba(232,200,74,0.55); animation: coachPulse 1.8s ease-in-out infinite; }
+@keyframes coachPulse { 0%, 100% { box-shadow: 0 0 0 9999px rgba(4,3,10,0.78), 0 0 0 2px var(--gold), 0 0 18px rgba(232,200,74,0.4); } 50% { box-shadow: 0 0 0 9999px rgba(4,3,10,0.78), 0 0 0 2px var(--gold-light), 0 0 30px rgba(232,200,74,0.7); } }
+#coach-overlay .coach-tip { position: fixed; left: 16px; right: 16px; max-width: 420px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--gold); border-radius: 12px;
+  padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 12px 34px rgba(0,0,0,0.7); transform: translateY(6px); transition: transform .25s ease; }
+#coach-overlay.on .coach-tip { transform: none; }
+#coach-overlay .coach-arrow { position: absolute; width: 14px; height: 14px; background: var(--card-bg); transform: rotate(45deg); }
+#coach-overlay .coach-tip.below .coach-arrow { top: -8px; border-left: 1px solid var(--gold); border-top: 1px solid var(--gold); }
+#coach-overlay .coach-tip.above .coach-arrow { bottom: -8px; border-right: 1px solid var(--gold); border-bottom: 1px solid var(--gold); }
+#coach-overlay .coach-tip b { font-family: 'Alegreya SC', serif; font-size: 13px; letter-spacing: 2px; color: var(--gold-light); font-weight: 600; }
+#coach-overlay .coach-tip p { margin: 0; font-family: 'Alegreya', serif; font-size: 14.5px; line-height: 1.45; color: rgba(240,230,208,0.9); }
+#coach-overlay .coach-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 2px; }
+#coach-overlay .coach-foot span { font-family: 'Alegreya', serif; font-style: italic; font-size: 12px; color: rgba(240,230,208,0.45); }
+#coach-overlay .coach-ok { min-height: 44px; padding: 0 18px; border-radius: 6px; border: 1px solid var(--gold-dim); background: transparent; color: var(--gold);
+  font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: 2px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#coach-overlay .coach-ok:active { background: rgba(201,162,39,0.14); }
+@media (prefers-reduced-motion: reduce) { #coach-overlay .coach-hole { animation: none; } }
+
+/* K2 (7 Ekim 2026): Kodeks albüm ilerlemesi */
+#kodeks-prog { height: 6px; border-radius: 3px; background: rgba(201,162,39,0.15); overflow: hidden; margin: 8px 0 2px; }
+#kodeks-prog i { display: block; height: 100%; background: linear-gradient(90deg, #B38D1C, #E8C84A); }
+#kodeks-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
+.kodeks-chip { min-height: 34px; font-family: 'Alegreya SC', serif; font-size: 11px; letter-spacing: 1px; color: rgba(201,162,39,0.8); background: transparent;
+  border: 1px solid var(--gold-dim); border-radius: 999px; padding: 4px 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.kodeks-chip.on { color: var(--gold); background: var(--gold-faint); border-color: var(--gold); }
+.kodeks-card { position: relative; }
+.kodeks-card.locked { opacity: 0.85; }
+.kodeks-silhouette { position: relative; overflow: hidden; border-style: solid; border-color: rgba(201,162,39,0.18); }
+.kodeks-silhouette img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; border-radius: 0; filter: brightness(0.07) sepia(1); }
+.kodeks-silhouette span { position: relative; font-family: 'Cinzel Decorative', serif; font-size: 20px; color: rgba(201,162,39,0.45); }
+.kodeks-card.new::before { content: 'YENİ'; position: absolute; z-index: 2; top: 4px; left: 4px; font-family: 'Alegreya SC', serif; font-size: 8.5px; letter-spacing: 1px;
+  background: var(--gold); color: #1a1405; border-radius: 3px; padding: 1px 4px; pointer-events: none; }
+html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
+#kodeks-note { margin: 10px 0 0; font-family: 'Alegreya', serif; font-style: italic; font-size: 12.5px; color: rgba(240,230,208,0.55); text-align: center; }
+.kodeks-card[hidden] { display: none; }
+
+/* K4 (7 Ekim 2026): çini kart arkası — yeni kart arka yüzünden dönerek açılır (yalnız görüntü) */
+#card-back { position: absolute; inset: 0; z-index: 30; pointer-events: none; border-radius: inherit; opacity: 0; visibility: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(8,6,18,0) 0 26%, rgba(8,6,18,0.35) 27% 29%, transparent 30%),
+    repeating-conic-gradient(from 45deg, #1b3f8f 0 25%, #f3efe2 0 50%) 0 0 / 22px 22px;
+  box-shadow: inset 0 0 0 7px #0E0B1A, inset 0 0 0 8px rgba(232,200,74,0.9), inset 0 0 40px rgba(0,0,0,0.45);
+  transform-origin: 50% 50%; backface-visibility: hidden; }
+#card-back .cb-medal { position: absolute; left: 50%; top: 50%; width: 46%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #1a1430, #0b0918 70%); border: 2px double var(--gold-light);
+  box-shadow: 0 0 0 6px rgba(14,11,26,0.85), 0 0 24px rgba(232,200,74,0.35); display: flex; align-items: center; justify-content: center; }
+#card-back .cb-medal img { width: 52%; height: auto; filter: drop-shadow(0 0 8px rgba(232,200,74,0.35)); }
+#card-back.flip { visibility: visible; animation: cardBackFlip .58s cubic-bezier(.45,.05,.35,1) forwards; }
+@keyframes cardBackFlip {
+  0%   { opacity: 1; transform: perspective(900px) rotateY(0deg); }
+  38%  { opacity: 1; transform: perspective(900px) rotateY(0deg); }
+  100% { opacity: 0; transform: perspective(900px) rotateY(90deg); visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) { #card-back, #card-back.flip { display: none; animation: none; } }
+
+/* K7 (7 Ekim 2026): başarım mühür töreni */
+.achievement-toast.ach-seal { flex-direction: row; align-items: center; gap: 14px; padding: 10px 18px 10px 12px; border-color: var(--tier, var(--gold));
+  background: linear-gradient(90deg, rgba(14,11,26,0.98), #0E0B1A); box-shadow: 0 6px 28px rgba(0,0,0,0.75), 0 0 22px color-mix(in srgb, var(--tier, #C9A227) 35%, transparent);
+  animation: achIn .35s cubic-bezier(.2,.9,.3,1.2), fadeOut .45s ease 2.9s forwards; max-width: calc(100vw - 32px); white-space: normal; }
+@keyframes achIn { from { opacity: 0; transform: translate(-50%, 18px) scale(.96); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+.achievement-toast.ach-seal .as-seal { position: relative; flex: 0 0 auto; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: var(--tier, #C9A227); /* eski iOS (color-mix yok) için yedek */
+  background: radial-gradient(circle at 38% 32%, color-mix(in srgb, var(--tier, #C9A227) 85%, #fff 15%), color-mix(in srgb, var(--tier, #C9A227) 55%, #000 45%) 72%);
+  border: 2px double var(--gold-light); box-shadow: 0 4px 12px rgba(0,0,0,0.6); transform: scale(2.2) rotate(-16deg); opacity: 0;
+  animation: asStamp .5s cubic-bezier(.3,1.4,.5,1) .18s forwards; }
+.achievement-toast.ach-seal .as-seal::before { content: ''; position: absolute; inset: 4px; border-radius: 50%; border: 1px solid rgba(255,240,200,0.45); }
+.achievement-toast.ach-seal .as-ic { position: relative; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #fff8e6; font-size: 20px; line-height: 1; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6)); }
+.achievement-toast.ach-seal .as-ic svg, .achievement-toast.ach-seal .as-ic .gi { width: 24px; height: 24px; }
+.achievement-toast.ach-seal .as-ring { position: absolute; left: 12px; top: 50%; width: 50px; height: 50px; margin-top: -25px; border-radius: 50%; border: 2px solid var(--tier, var(--gold)); opacity: 0; animation: asRing .8s ease-out .55s forwards; pointer-events: none; }
+.achievement-toast.ach-seal .as-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; text-align: left; }
+.achievement-toast.ach-seal .as-k { font-family: 'Alegreya SC', serif; font-size: 10px; letter-spacing: 2px; color: var(--tier, var(--gold)); white-space: nowrap; }
+.achievement-toast.ach-seal .as-n { font-family: 'Alegreya SC', serif; font-weight: 700; font-size: 15px; letter-spacing: .5px; color: var(--gold-light); }
+@keyframes asStamp { 0% { transform: scale(2.2) rotate(-16deg); opacity: 0; } 55% { opacity: 1; } 100% { transform: scale(1) rotate(-5deg); opacity: 1; } }
+@keyframes asRing { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(2); } }
+@media (prefers-reduced-motion: reduce) { .achievement-toast.ach-seal .as-seal { animation: none; transform: none; opacity: 1; } .achievement-toast.ach-seal .as-ring { display: none; } }
+
+/* K6 (7 Ekim 2026): Yıl Sonu'nda "Tarihte bu yıl" — yılın adıyla birlikte belirir */
+#yil-sonu .ys-tarih { max-width: 320px; margin: 10px auto 0; padding: 8px 12px; border-top: 1px solid rgba(201,162,39,0.25); border-bottom: 1px solid rgba(201,162,39,0.25);
+  font-family: 'Alegreya', serif; font-style: italic; font-size: 14px; line-height: 1.45; color: rgba(240,230,208,0.85); text-align: center;
+  opacity: 0; transform: translateY(6px); transition: opacity .5s ease, transform .5s ease; }
+#yil-sonu .ys-tarih span { display: block; font-style: normal; font-family: 'Alegreya SC', serif; font-size: 10.5px; letter-spacing: 2.5px; color: rgba(201,162,39,0.85); margin-bottom: 2px; }
+#yil-sonu.s3 .ys-tarih { opacity: 1; transform: none; }

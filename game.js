@@ -388,6 +388,30 @@ function _getSecondChanceOfferText() {
   return tier.text.replace("{year}", year);
 }
 
+// A1 (7 Ekim 2026): "akçe yetmiyor" anında aynı pencerede tek dokunuşla kese.
+// Yalnız mağaza ürünü gerçekten geldiyse (ya da test modunda) gösterilir; satın alma yine
+// purchaseAkcePack → processAkceTransactions yolundan geçer (tekilleştirme aynı).
+const QUICK_PACK_AMOUNT = 10;
+function _quickPackAvailable() {
+  if (!AKCE_SYSTEM_ENABLED) return false;
+  const pack = AKCE_PACKS.find(p => p.amount === QUICK_PACK_AMOUNT);
+  return !!pack && ((_rcReady && !!_akceProducts[pack.productId]) || !FREEMIUM_ENABLED);
+}
+function _quickPackPrice() {
+  const pack = AKCE_PACKS.find(p => p.amount === QUICK_PACK_AMOUNT);
+  return (pack && _akceProducts[pack.productId]?.priceString) || AKCE_FALLBACK_PRICES[QUICK_PACK_AMOUNT];
+}
+function _quickPackHTML(useCost) {
+  const en = window.LANG === 'en';
+  const left = Math.floor((QUICK_PACK_AMOUNT - useCost) / Math.max(1, useCost));
+  return `<div class="qp-sep">${en ? "or" : "ya da"}</div>
+    <div class="qp-box">
+      <div class="ferman qp-seal"><div class="famt">${QUICK_PACK_AMOUNT}</div><div class="funit">${en ? "AKCE" : "AKÇE"}</div></div>
+      <div class="qp-info"><b>${en ? `GET ${QUICK_PACK_AMOUNT} AKCE` : `${QUICK_PACK_AMOUNT} AKÇE AL`}</b><small>${en ? `Used right away · ${left} more chances left` : `Hemen kullanılır · ${left} şans daha kalır`}</small></div>
+      <button type="button" class="mi-buy qp-buy">${_quickPackPrice()}</button>
+    </div>
+    <div class="qp-status" aria-live="polite"></div>`;
+}
 function showSecondChanceOffer(reason) {
   const isEN = window.LANG === 'en';
   const adsLeft = SECOND_CHANCE_DAILY_AD_LIMIT - getSecondChanceAdsUsedToday();
@@ -405,9 +429,10 @@ function showSecondChanceOffer(reason) {
       <button id="second-chance-ad-btn" class="second-chance-btn"${adsLeft <= 0 ? " disabled" : ""}>
         🎬 ${isEN ? "Watch Ad" : "Reklam İzle"} <span class="sc-sub">(${adsLeft}/${SECOND_CHANCE_DAILY_AD_LIMIT})</span>
       </button>
-      ${AKCE_SYSTEM_ENABLED ? `<button id="second-chance-akce-btn" class="second-chance-btn">
+      ${AKCE_SYSTEM_ENABLED ? `<button id="second-chance-akce-btn" class="second-chance-btn"${(akce < SECOND_CHANCE_AKCE_COST && _quickPackAvailable()) ? " disabled" : ""}>
         🪙 ${isEN ? `Use ${SECOND_CHANCE_AKCE_COST} Akce` : `${SECOND_CHANCE_AKCE_COST} Akçe Kullan`} <span class="sc-sub">(${isEN ? "Balance" : "Bakiye"}: ${akce})</span>
       </button>` : ""}
+      ${(akce < SECOND_CHANCE_AKCE_COST && _quickPackAvailable()) ? _quickPackHTML(SECOND_CHANCE_AKCE_COST) : ""}
       <button id="second-chance-decline-btn" class="second-chance-btn ghost">${isEN ? "No, end the game" : "Hayır, oyunu bitir"}</button>
     </div>`;
   document.body.appendChild(overlay);
@@ -465,6 +490,32 @@ function showSecondChanceOffer(reason) {
       resolveSecondChance();
     };
   }
+  // A1: kese al → 2 akçe hemen harcanır → İkinci Şans. İptal/hata: düğmeler geri açılır.
+  const qp = overlay.querySelector(".qp-buy");
+  if (qp) qp.onclick = async () => {
+    if (_handled) return;
+    _handled = true;
+    lockButtons();
+    const ok = await purchaseAkcePack(QUICK_PACK_AMOUNT, overlay.querySelector(".qp-status"));
+    // Akçe hesaba (customerInfo gecikirse) birkaç saniye geç düşebilir: ikinci alım açılmasın, bekle
+    let spent = false;
+    for (let i = 0; ok && !spent && i < 8; i++) {
+      if (!document.body.contains(overlay)) break;
+      spent = spendAkce(SECOND_CHANCE_AKCE_COST);
+      if (!spent) await new Promise(r => setTimeout(r, 750));
+    }
+    if (spent) {
+      updateAkceUI();
+      _an("quick_pack", { where: "second_chance" });
+      // A9 töreni (2,2 sn) bitmeden kurtuluş yazısı çıkmasın — üst üste biniyordu
+      setTimeout(() => { closeOverlay(); _secondChanceUsedThisDeath = true; resolveSecondChance(); }, 2350);
+      return;
+    }
+    _handled = false;
+    overlay.querySelectorAll("button").forEach(b => { b.disabled = false; });
+    if (adsLeft <= 0) document.getElementById("second-chance-ad-btn").disabled = true;
+    if (getAkceBalance() < SECOND_CHANCE_AKCE_COST) document.getElementById("second-chance-akce-btn")?.setAttribute("disabled", "");
+  };
   document.getElementById("second-chance-decline-btn").onclick = () => {
     if (_handled) return;
     _handled = true;
@@ -2517,8 +2568,36 @@ function maybeShowStarterOffer() {
   if (seen || games < STARTER_AFTER_GAMES || !_starterAvailable()) return;
   if (introScreen.style.display === "none") return; // ana menüde değilsek bekle
   if (document.querySelector("#rating-overlay, #katib-overlay, #daily-gift-overlay")) return;
-  try { localStorage.setItem(STARTER_SEEN_KEY, "1"); } catch (e) {}
+  try { localStorage.setItem(STARTER_SEEN_KEY, "1"); if (!localStorage.getItem(STARTER_BAND_AT)) localStorage.setItem(STARTER_BAND_AT, String(Date.now())); } catch (e) {}
   showStarterOffer();
+}
+// A4 (7 Ekim 2026): teklif gösterildikten sonra 48 saat boyunca ana menüdeki "Tam Sürümü Aç"
+// düğmesi gerçek geri sayımlı Hoşgeldin Kesesi bandına dönüşür (aynı yer, aynı yükseklik — küçük
+// ekran sığması bozulmaz). Süre bitince ya da kese alınınca / Tam Sürüm açılınca eski düğme döner.
+const STARTER_BAND_AT = "sadrazam_starter_band_at", STARTER_BAND_MS = 48 * 3600 * 1000;
+function _starterBandLeft() {
+  let at = 0; try { at = +localStorage.getItem(STARTER_BAND_AT) || 0; } catch (e) {}
+  if (!at || !_starterAvailable()) return 0;
+  const left = at + STARTER_BAND_MS - Date.now();
+  return left > 0 ? left : 0;
+}
+function _updateStarterBand() {
+  const b = document.getElementById("btn-full-version"); if (!b) return;
+  if (b._orig == null) b._orig = b.innerHTML;
+  const left = _starterBandLeft(), on = left > 0, en = window.LANG === 'en';
+  if (on !== b.classList.contains("starter-band") || (on && b._lang !== window.LANG)) {
+    b.classList.toggle("starter-band", on);
+    b._lang = window.LANG;
+    b.innerHTML = on
+      ? `<span class="ferman sb-seal"><span class="famt">30</span></span><span class="sb-t"><b>${en ? "WELCOME POUCH" : "HOŞGELDİN KESESİ"}</b><small>${en ? "Full Version + 30 akce" : "Tam Sürüm + 30 akçe"} · <i class="sb-tm"></i></small></span><span class="sb-p">${_starterPrice()}</span>`
+      : b._orig;
+    if (!on && window.applyI18nHTML) window.applyI18nHTML();
+  }
+  if (on) {
+    const h = Math.floor(left / 3600000), m = Math.floor(left % 3600000 / 60000), sec = Math.floor(left % 60000 / 1000);
+    const tm = b.querySelector(".sb-tm");
+    if (tm) tm.textContent = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  }
 }
 function showStarterOffer() {
   const en = window.LANG === 'en';
@@ -2823,6 +2902,32 @@ function hideAkceScreen() {
   }
 }
 
+// A9 (7 Ekim 2026): satın alma sonrası mühür töreni — balmumu mühür basılır, bakiye sayaç gibi
+// dolar. Dokunmayı engellemez (pointer-events: none), 2,2 sn sonra kendiliğinden gider.
+function _akceCeremony(amount, from, to) {
+  document.getElementById("akce-ceremony")?.remove();
+  const en = window.LANG === 'en';
+  const el = document.createElement("div");
+  el.id = "akce-ceremony";
+  el.setAttribute("aria-live", "polite");
+  el.innerHTML = `<div class="ac-ring"></div><div class="ferman ac-seal"><div class="famt">+${amount}</div><div class="funit">${en ? "AKCE" : "AKÇE"}</div></div>
+    <div class="ac-bal">${en ? "Treasury" : "Hazinen"} <b>${from}</b> ${en ? "akce" : "akçe"}</div>`;
+  document.body.appendChild(el);
+  try { Haptics.achievement(); } catch (e) {}
+  const b = el.querySelector(".ac-bal b");
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const t0 = performance.now(), dur = reduce ? 1 : 900;
+  setTimeout(() => {
+    const tick = (t) => {
+      const k = Math.min(1, (t - t0 - 450) / dur);
+      if (k >= 0) b.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)));
+      if (k < 1 && document.body.contains(el)) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, 0);
+  requestAnimationFrame(() => el.classList.add("on"));
+  setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 400); }, 2200);
+}
 async function purchaseAkcePack(amount, statusEl) {
   const RC = window.RevenueCatPurchases;
   const status = statusEl || document.getElementById('akce-status');
@@ -2839,6 +2944,7 @@ async function purchaseAkcePack(amount, statusEl) {
     return;
   }
   if (status) status.textContent = isEN ? 'Processing…' : 'İşleniyor…';
+  const _balBefore = getAkceBalance();
   try {
     const result = await RC.purchaseStoreProduct({ product });
     // addAkce() doğrudan çağrılmıyor — processAkceTransactions() transactionIdentifier
@@ -2847,6 +2953,7 @@ async function purchaseAkcePack(amount, statusEl) {
     processAkceTransactions(result?.customerInfo);
     _an("purchase", { product: pack.starter ? "welcome" : "akce" + amount });
     if (window.playSelectConfirm) playSelectConfirm();
+    try { _akceCeremony(amount, _balBefore, Math.max(getAkceBalance(), _balBefore + amount)); } catch (e) {} // A9
     if (pack.starter) {
       _markStarterBought(); // customerInfo gecikse bile teklif bir daha çıkmasın
       // Hoşgeldin Kesesi Tam Sürüm'ü de açar — customerInfo gecikse bile hemen
@@ -3279,6 +3386,7 @@ function _onFullVersionBtnTap(e) {
   setTimeout(() => { _fullVersionBtnFired = false; }, 400);
 
   if (window.playButtonTap) playButtonTap();
+  if (_starterBandLeft() > 0) { _an("starter_band_tap", {}); showStarterOffer(); return; } // A4
   if (isFullVersionUnlocked()) {
     const isEN = window.LANG === 'en';
     showPaywallScreen(true);
@@ -5133,6 +5241,7 @@ function dealNext() {
   // Soruşturma düğmesi (gizli hain adaylarının kartlarında + investigate_text olan kartlarda)
   setupInvestigateBtn(c, displayText);
   setupTahkikBtn(c, _leftTxt, _rightTxt);
+  _coachCheckCard(c); // Y1
   setupArzChip(c);
   _cardShownAt = Date.now();
   setTimeout(maybeShowCriticalOffer, 650); // kart yerine oturduktan sonra
@@ -5287,7 +5396,23 @@ function setupInvestigateBtn(c, displayText) {
   };
 }
 
+// K4 (7 Ekim 2026): çini kart arkası — kartın İÇİNDE ayrı bir katman dönerek kaybolur; #card'ın
+// transform'una (kaydırma) dokunmaz, pointer-events: none. Hareketi azalt açıksa CSS'te kapalı.
+function _playCardBack() {
+  let back = document.getElementById("card-back");
+  if (!back) {
+    back = document.createElement("div");
+    back.id = "card-back";
+    back.setAttribute("aria-hidden", "true");
+    back.innerHTML = '<div class="cb-medal"><img src="assets/emblem-tugra.png" alt=""></div>';
+    card.appendChild(back);
+  }
+  back.classList.remove("flip");
+  void back.offsetWidth;
+  back.classList.add("flip");
+}
 function animateCardIn() {
+  try { _playCardBack(); } catch (e) {}
   card.style.transform = "translateY(40px)";
   card.style.opacity = "0";
   card.style.transition = "transform 0.4s ease, opacity 0.3s ease";
@@ -7024,7 +7149,7 @@ function _timeoutEffects(c) {
 function _fusePaused() {
   if (document.hidden) return true;
   if (_settOv && _settOv.style.display === 'flex') return true;
-  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay, #divan-oturumu, .info-panel-overlay, #rel-rescue-overlay, #yil-sonu, #ending-overlay, #dip-summit");
+  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay, #divan-oturumu, .info-panel-overlay, #rel-rescue-overlay, #yil-sonu, #ending-overlay, #dip-summit, #coach-overlay");
 }
 function _maybeStartFuse(c) {
   _stopFuse();
@@ -7963,6 +8088,46 @@ function _ysYearName(d, en) {
   if (!best || mag < 8) return en ? "Year of Calm" : "Huzur Yılı";
   return YS_NAMES[best][d[best] > 0 ? 0 : 1][en ? 1 : 0];
 }
+// K6 (7 Ekim 2026): "Tarihte bu yıl" — yalnız iyi belgelenmiş olaylar, yalnız kendi sultanının
+// döneminde, yalnız hesaplanan miladi yıl olayın yılına eşitse. Olayın gerçek yılı satırda yazar.
+// Bilerek DIŞARIDA: oyunda oynanan Devletin Kaderi düğümleri (1517, 1529, 1589, 1638, 1730),
+// oyuncunun sultanının ölümü/tahttan inişi ve gerçek sadrazamların idamı (oyuncu sadrazamdır).
+const TARIH_OLAYLARI = [
+  ["yavuz", 1514, "Çaldıran'da Safevi ordusu yenildi.", "The Safavid army was defeated at Chaldiran."],
+  ["yavuz", 1516, "Mercidabık'ta Memlük ordusu yenildi.", "The Mamluk army was defeated at Marj Dabiq."],
+  ["kanuni", 1521, "Belgrad fethedildi.", "Belgrade was conquered."],
+  ["kanuni", 1522, "Rodos, uzun bir kuşatmanın ardından teslim oldu.", "Rhodes surrendered after a long siege."],
+  ["kanuni", 1526, "Mohaç'ta Macar ordusu yenildi.", "The Hungarian army was defeated at Mohács."],
+  ["kanuni", 1532, "Alman Seferi'nde Güns kalesi kuşatıldı.", "On the German campaign the fortress of Güns (Kőszeg) was besieged."],
+  ["kanuni", 1534, "Irakeyn Seferi'nde Bağdat alındı.", "Baghdad was taken in the campaign of the Two Iraqs."],
+  ["kanuni", 1538, "Preveze'de Barbaros Hayreddin Paşa Haçlı donanmasını yendi.", "At Preveza, Barbarossa Hayreddin Pasha defeated the Holy League fleet."],
+  ["kanuni", 1541, "Budin, Osmanlı eyaleti oldu.", "Buda became an Ottoman province."],
+  ["kanuni", 1551, "Trablusgarp alındı.", "Tripoli in North Africa was taken."],
+  ["kanuni", 1553, "Şehzade Mustafa, Ereğli'de idam edildi.", "Prince Mustafa was executed at Ereğli."],
+  ["kanuni", 1555, "Safevilerle Amasya Antlaşması imzalandı.", "The Peace of Amasya was signed with the Safavids."],
+  ["kanuni", 1557, "Mimar Sinan'ın Süleymaniye Camii tamamlandı.", "Mimar Sinan's Süleymaniye Mosque was completed."],
+  ["kanuni", 1559, "Şehzade Bayezid, Konya'da Şehzade Selim'e yenildi.", "Prince Bayezid was defeated by Prince Selim near Konya."],
+  ["kanuni", 1565, "Malta kuşatması başarısız oldu.", "The Siege of Malta failed."],
+  ["murad3", 1577, "Takiyüddin'in İstanbul Rasathanesi kuruldu.", "Taqi al-Din's Istanbul Observatory was founded."],
+  ["murad3", 1578, "Safevilerle uzun bir savaş başladı.", "A long war with the Safavids began."],
+  ["murad3", 1580, "Rasathane yıktırıldı; İngiliz tüccarlarına ticaret ahidnamesi verildi.", "The observatory was demolished; English merchants were granted trading privileges."],
+  ["murad3", 1585, "Tebriz alındı.", "Tabriz was taken."],
+  ["murad3", 1590, "Safevilerle İstanbul Antlaşması imzalandı.", "The Treaty of Istanbul was signed with the Safavids."],
+  ["murad3", 1593, "Habsburglarla Uzun Savaş başladı.", "The Long War with the Habsburgs began."],
+  ["murad4", 1624, "Bağdat, Safevilerin eline geçti.", "Baghdad fell to the Safavids."],
+  ["murad4", 1633, "Büyük Cibali yangını; ardından kahvehaneler kapatıldı.", "The great Cibali fire; the coffeehouses were closed afterwards."],
+  ["murad4", 1635, "Revan Seferi'nde Revan alındı.", "Erivan was taken on the Erivan campaign."],
+  ["murad4", 1639, "Safevilerle Kasr-ı Şirin Antlaşması imzalandı.", "The Treaty of Qasr-e Shirin (Zuhab) was signed with the Safavids."],
+  ["ahmed3", 1709, "İsveç Kralı XII. Karl, Poltava yenilgisinden sonra Osmanlı topraklarına sığındı.", "King Charles XII of Sweden took refuge in Ottoman lands after Poltava."],
+  ["ahmed3", 1711, "Prut'ta Rus ordusu kuşatıldı; Prut Antlaşması imzalandı.", "The Russian army was surrounded on the Pruth; the Treaty of the Pruth was signed."],
+  ["ahmed3", 1715, "Mora geri alındı.", "The Morea was recovered."],
+  ["ahmed3", 1716, "Petervaradin'de Avusturya ordusuna yenilgi.", "Defeat by the Austrian army at Petrovaradin."],
+  ["ahmed3", 1717, "Belgrad, Avusturya'nın eline geçti.", "Belgrade fell to Austria."],
+  ["ahmed3", 1718, "Pasarofça Antlaşması imzalandı.", "The Treaty of Passarowitz was signed."],
+  ["ahmed3", 1720, "Yirmisekiz Çelebi Mehmed Efendi elçi olarak Paris'e gönderildi.", "Yirmisekiz Çelebi Mehmed Efendi was sent to Paris as ambassador."],
+  ["ahmed3", 1727, "İbrahim Müteferrika'ya matbaa izni verildi.", "İbrahim Müteferrika was granted permission to open a printing press."],
+  ["ahmed3", 1729, "Müteferrika matbaasında ilk kitap, Vankulu Lügati basıldı.", "The first book of Müteferrika's press, the Vankulu Dictionary, was printed."]
+];
 function _showYearEnd(item, done) {
   document.getElementById("yil-sonu")?.remove();
   const en = window.LANG === 'en', ey = item.endedYear;
@@ -7987,6 +8152,8 @@ function _showYearEnd(item, done) {
     <div class="ys-a1">${item.five ? (en ? "FIVE YEARS HAVE PASSED" : "BEŞ YILIN SONU") : (en ? "ANOTHER YEAR HAS PASSED" : "BİR YIL DAHA GEÇTİ")}</div>
     <div class="ys-a2">${item.hy}<small>${sub}</small></div>
     <div class="ys-a3">— ${_ysYearName(item.d, en)} —</div>
+    ${(() => { const ev = selectedSultan && !isPasaMode ? TARIH_OLAYLARI.find(e => e[0] === selectedSultan.id && e[1] === greg) : null;
+      return ev ? `<div class="ys-tarih"><span>${en ? "IN HISTORY" : "TARİHTE"} · ${ev[1]}</span>${esc(en ? ev[3] : ev[2])}</div>` : ""; })()}
     <ul class="ys-a4">${lines}</ul>
     <div class="ys-a5">${deltas}</div>
     ${fm}${st ? `<div class="ys-a6b">${st}</div>` : ""}
@@ -8654,6 +8821,7 @@ function gainItem(itemId, persistent) {
   playerItemExpiry[slot] = persistent ? null : 3; // kazanılan eşya 3 kart sonra tükenir
   updateItemBar();
   showItemUnlockAnimation(itemId);
+  if (!persistent) _coach("esya"); // Y1: kartlardan gelen ilk eşya
 }
 
 function showItemUnlockAnimation(itemId) {
@@ -9308,6 +9476,7 @@ function _favMark(k) {
 // decide() içinden, efektler uygulanmadan önce çağrılır (adı geriye dönük uyum için aynı)
 function checkCurse(dir) {
   const f = _favOf(currentCard && currentCard[dir + "_effects"]);
+  if (f && _reignFav[f] != null) _reignFav[f]++; // K1: saltanat unvanı için
   _favHist.push(f);
   if (_favHist.length > FAV_WINDOW) _favHist.shift();
   if (!f) { _favMark(null); return; }
@@ -9327,7 +9496,122 @@ function _showCurseWhisper(f) {
     : `Divan fısıldıyor: hep ${nm[0]} kazanıyor, ötekiler kıskanıyor…`;
   w.classList.remove("on"); void w.offsetWidth; w.classList.add("on");
   clearTimeout(w._t); w._t = setTimeout(() => w.classList.remove("on"), 3000);
+  _coachFav = f; _coach("kayirma"); // Y1
 }
+// ── Y1 (7 Ekim 2026): oynarken bir kerelik bağlamsal ipuçları ──────────────────────────
+// Altı an, her biri bir kez (localStorage sadrazam_coach): ferman çipi, Tahkik, Arz, kriz (bir güç
+// ≤20 ya da ≥80), ilk eşya, Kayırma uyarısı. İlgili öğeye ışık tutulur, tek kısa metin, "Anladım".
+// Kurallar: başka bir pencere / animasyon varken beklenir (kuyruk), bir kartta en fazla bir yeni
+// ipucu, ipucu açıkken kart sürüklenemez (katman tüm ekranı kaplar), fitil durur (_fusePaused),
+// klavye kararları engellenir (keydown). Kurallara ve sayılara dokunmaz.
+const COACH_KEY = "sadrazam_coach";
+const COACH_TIPS = {
+  ferman:  { sel: "#ferman-chip",
+             tr: ["BU YILIN FERMANI", "Sultan her yıl bir istekte bulunur. Yıl sonunda yerine getirirsen sabrı artar ve Vezirler Defteri'ne bir mühür kazanırsın. Çipe dokunarak ne kaldığını görebilirsin."],
+             en: ["THIS YEAR'S DECREE", "Each year the Sultan makes a demand. Fulfil it by year's end and his patience grows, and you earn a seal in the Viziers' Ledger. Tap the badge to see what is left."] },
+  tahkik:  { sel: "#tahkik-btn",
+             tr: ["TAHKİK", "Bu dosya, seçeneklerin hangi gücü artırıp azalttığını gösterir. Yılda 3 hak; her kullanım Sultan'ın sabrını biraz düşürür."],
+             en: ["INQUIRY", "This file shows which powers each choice raises or lowers. Three per year; each use costs a little of the Sultan's patience."] },
+  arz:     { sel: "#arz-chip",
+             tr: ["ARZ", "Bu büyük kararı Sultan verir, sen tavsiye edersin. Rozetteki oran seni dinleme ihtimali; Sultan'ın sabrı yükseldikçe artar. Dinlemezse öbür seçenek uygulanır."],
+             en: ["PETITION", "The Sultan makes this big decision; you only advise. The figure on the badge is the chance he follows you, and it rises with his patience. If he refuses, the other choice is applied."] },
+  kriz:    { sel: () => { const k = _coachCrisisKey(); return k ? document.querySelector(`.stat[data-stat="${FAV_BAR[k]}"]`) : null; },
+             tr: ["{S} TEHLİKEDE", "Bir güç 0'a ya da 100'e ulaşırsa saltanat biter. {S} {DIR}; bir süre onu {FIX} seçenekleri kolla."],
+             en: ["{S} IN DANGER", "If a power reaches 0 or 100, your reign ends. {S} is {DIR}; for a while, look for choices that {FIX} it."] },
+  esya:    { sel: () => document.querySelector("#item-bar .item-slot:not(.empty)") || document.getElementById("item-bar"),
+             tr: ["YENİ EŞYA", "Kazandığın eşya alttaki kutuya girdi. Kutuya dokunarak kullanırsın; kartlardan gelen eşya 3 kart içinde kullanılmazsa tükenir."],
+             en: ["NEW ITEM", "The item you earned went into a box at the bottom. Tap the box to use it; items from cards fade if not used within 3 cards."] },
+  kayirma: { sel: () => document.querySelector(".stat.fav-warn"),
+             tr: ["KAYIRMA DENGESİ", "Son kararlarında hep {F} kazandı. Bir kez daha kayırırsan öteki üç güç kırılır (−6). Bu kez bir başkasını gözet."],
+             en: ["BALANCE OF FAVOUR", "{F} has won your recent decisions. Favour them once more and the other three are offended (−6). Look after someone else this time."] },
+};
+let _coachPending = [], _coachTimer = null, _coachFav = null;
+function _coachSeenList() { try { const a = JSON.parse(localStorage.getItem(COACH_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+function _coachSeen(k) { return _coachSeenList().includes(k); }
+function _coachMark(k) { try { const a = _coachSeenList(); if (!a.includes(k)) { a.push(k); localStorage.setItem(COACH_KEY, JSON.stringify(a)); } } catch (e) {} }
+function _coachCrisisKey() {
+  for (const k of Object.keys(FAV_NAMES)) { const v = stats[k]; if (typeof v === "number" && (v <= 20 || v >= 80)) return k; }
+  return null;
+}
+function _coachBusy() {
+  if (isGameOver || isAnimating || isDragging) return true;
+  if (!gameScreen || gameScreen.classList.contains("hidden")) return true;
+  try { if (_fusePaused() || _ysModalOpen()) return true; } catch (e) {}
+  return !!document.querySelector("#coach-overlay, #tutorial-overlay, #sultan-event-overlay, #curse-overlay, #second-chance-overlay, #execution-overlay, #guc-uyarisi-overlay, .cag-toast.on");
+}
+function _coach(k) {
+  if (!COACH_TIPS[k] || _coachSeen(k) || _coachPending.includes(k)) return;
+  _coachPending.push(k);
+  _coachPump(0);
+}
+function _coachPump(tries) {
+  clearTimeout(_coachTimer);
+  if (!_coachPending.length) return;
+  if (_coachBusy()) {
+    if (tries < 40) _coachTimer = setTimeout(() => _coachPump(tries + 1), 500);
+    else _coachPending = [];
+    return;
+  }
+  const k = _coachPending.shift(), t = COACH_TIPS[k];
+  const el = typeof t.sel === "function" ? t.sel() : document.querySelector(t.sel);
+  if (!el || !el.getClientRects().length || el.classList.contains("hidden")) { _coachTimer = setTimeout(() => _coachPump(0), 50); return; }
+  _coachShow(k, t, el);
+}
+function _coachShow(k, t, el) {
+  const en = window.LANG === 'en';
+  let [title, text] = en ? t.en : t.tr;
+  if (k === "kriz") {
+    const s = _coachCrisisKey() || "hazine", low = (stats[s] ?? 50) <= 20, nm = FAV_NAMES[s] || FAV_NAMES.hazine;
+    const name = en ? nm[1].replace(/^the /, "") : nm[0];
+    const N = en ? name.charAt(0).toUpperCase() + name.slice(1) : name;
+    title = title.replace("{S}", N.toLocaleUpperCase(en ? "en" : "tr"));
+    text = text.replace(/\{S\}/g, N).replace("{DIR}", en ? (low ? "running low" : "running too high") : (low ? "çok düştü" : "çok yükseldi"))
+               .replace("{FIX}", en ? (low ? "raise" : "lower") : (low ? "yükselten" : "düşüren"));
+  }
+  if (k === "kayirma") {
+    const nm = FAV_NAMES[_coachFav] || FAV_NAMES.saray;
+    text = text.replace("{F}", en ? nm[1].charAt(0).toUpperCase() + nm[1].slice(1) : nm[0]);
+  }
+  _coachMark(k);
+  _an("coach_tip", { k });
+  const r = el.getBoundingClientRect(), pad = 6;
+  const ov = document.createElement("div");
+  ov.id = "coach-overlay"; ov.dataset.k = k;
+  ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", title);
+  const hx = Math.max(4, r.left - pad), hy = Math.max(4, r.top - pad), hw = Math.min(innerWidth - hx - 4, r.width + pad * 2), hh = r.height + pad * 2;
+  const below = (r.bottom + 220 < innerHeight) || r.top < 240;
+  ov.innerHTML = `<div class="coach-hole" style="left:${hx}px;top:${hy}px;width:${hw}px;height:${hh}px"></div>
+    <div class="coach-tip ${below ? "below" : "above"}" style="${below ? `top:${Math.round(hy + hh + 14)}px` : `bottom:${Math.round(innerHeight - hy + 14)}px`}">
+      <i class="coach-arrow" style="left:${Math.round(Math.min(innerWidth - 40, Math.max(28, hx + hw / 2 - 16)))}px"></i>
+      <b>${title}</b><p>${text}</p>
+      <div class="coach-foot"><span>${en ? "Shown only once" : "Yalnız bir kez"} · ${_coachSeenList().length} / 6</span><button type="button" class="coach-ok">${en ? "GOT IT" : "ANLADIM"}</button></div>
+    </div>`;
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+  const stop = (e) => { e.stopPropagation(); };
+  ["mousedown", "touchstart", "touchmove"].forEach(ev => ov.addEventListener(ev, stop, { passive: true }));
+  const close = () => {
+    if (!ov.isConnected) return;
+    ov.classList.remove("on");
+    setTimeout(() => { ov.remove(); _coachTimer = setTimeout(() => _coachPump(0), 400); }, 220);
+  };
+  ov.querySelector(".coach-ok").onclick = (e) => { e.stopPropagation(); if (window.playButtonTap) playButtonTap(); close(); };
+}
+// Kart ekrana gelince: en fazla BİR yeni ipucu sıraya girer (ilk uygun olan)
+function _coachCheckCard(c) {
+  if (!c || isGameOver) return;
+  setTimeout(() => {
+    if (isGameOver || currentCard !== c || _coachPending.length || document.getElementById("coach-overlay")) return;
+    const order = [
+      ["ferman", () => { const f = document.getElementById("ferman-chip"); return f && f.getClientRects().length; }],
+      ["arz", () => { const a = document.getElementById("arz-chip"); return a && !a.classList.contains("hidden"); }],
+      ["tahkik", () => { const b = document.getElementById("tahkik-btn"); return b && !b.classList.contains("hidden"); }],
+      ["kriz", () => !!_coachCrisisKey()],
+    ];
+    for (const [k, ok] of order) if (!_coachSeen(k) && ok()) { _coach(k); return; }
+  }, 900);
+}
+
 function triggerCurse(f) {
   cursedEver = true;
   Haptics.curseTriggered();
@@ -9496,7 +9780,7 @@ function setupArzChip(c) {
   chip.textContent = en ? `PETITION · ${pct}%` : `ARZ · %${pct}`;
   chip.classList.remove("hidden");
   let seen = 0; try { seen = parseInt(localStorage.getItem("sadrazam_arz_tip") || "0", 10); } catch (e) {}
-  if (seen < 2) {
+  if (seen < 2 && _coachSeen("arz")) { // Y1: ilk Arz'ı ışıklı ipucu anlatır; bildirim sonrakilerde
     try { localStorage.setItem("sadrazam_arz_tip", String(seen + 1)); } catch (e) {}
     setTimeout(() => { if (currentCard === c) _cagToast(en
       ? `<b>PETITION TO THE SULTAN</b><span>Here the Sultan decides; you only advise. The more patient he is, the likelier he follows you (now ${pct}%).</span>`
@@ -9549,9 +9833,11 @@ function _arzResultCard(x) {
       updateStatUI();
     } };
 }
-function _cagSave() { return { fav: _favHist, tk: _tahkikLeft, tka: _tahkikAdYear, arz: _arzPending, asir: _asirSave() }; }
+function _cagSave() { return { fav: _favHist, tk: _tahkikLeft, tka: _tahkikAdYear, arz: _arzPending, asir: _asirSave(), rf: _reignFav }; }
 function _cagReset(s) {
   _favHist = (s && Array.isArray(s.fav)) ? s.fav.slice(-FAV_WINDOW) : [];
+  _reignFav = { saray: 0, "yeniçeri": 0, ulema: 0, hazine: 0 };
+  if (s && s.rf && typeof s.rf === "object") for (const k of Object.keys(_reignFav)) if (typeof s.rf[k] === "number") _reignFav[k] = s.rf[k];
   _tahkikLeft = (s && typeof s.tk === "number") ? s.tk : TAHKIK_PER_YEAR;
   _tahkikAdYear = (s && typeof s.tka === "number") ? s.tka : 0;
   _arzPending = (s && Array.isArray(s.arz)) ? s.arz.filter(x => x && typeof x.at === "number") : [];
@@ -10450,6 +10736,7 @@ window.addEventListener("keydown", e => {
   // buna izin verirsek her tekrar keydown'ı ayrı bir kart kaydırmaya çalışır ve
   // "kendi kendine peş peşe kart kayması" hissi yaratır. Sadece gerçek ilk basışı işle.
   if (e.repeat) return;
+  if (document.getElementById("coach-overlay")) return; // Y1: ipucu açıkken karar yok
   // Sultan overlay açıkken ok tuşları sultana yönlendir
   if (document.getElementById("sultan-event-overlay")) {
     if (e.key === "ArrowRight" && window._sultanAccept) { e.preventDefault(); window._sultanAccept(); }
@@ -10692,7 +10979,7 @@ function triggerGameOver(reason, cause) {
   isGameOver = true;
   if (!_secondChanceOfferedThisGame) {
     const adsLeft = SECOND_CHANCE_DAILY_AD_LIMIT - getSecondChanceAdsUsedToday();
-    if (adsLeft > 0 || getAkceBalance() >= SECOND_CHANCE_AKCE_COST) {
+    if (adsLeft > 0 || getAkceBalance() >= SECOND_CHANCE_AKCE_COST || _quickPackAvailable()) { // A1: kese alınabiliyorsa da sun
       _secondChanceOfferedThisGame = true; // bu oyun boyunca bir daha teklif edilmeyecek
       showSecondChanceOffer(reason);
       return;
@@ -10838,6 +11125,11 @@ function showGameOver(reason) {
     _dl.innerHTML = `<span>${en ? "Recorded in the Viziers' Ledger" : "Vezirler Defteri'ne işlendi"}${_defterSealsThisGame ? ` · +${_defterSealsThisGame} ${en ? "seal" + (_defterSealsThisGame > 1 ? "s" : "") : "mühür"}` : ""}${_defterIhsanThisGame ? ` · +${_defterIhsanThisGame} ${en ? "akce gift" : "akçe ihsan"}` : ""}</span><button type="button">${en ? "OPEN THE LEDGER" : "DEFTERİ AÇ"}</button>`;
     _dl.querySelector("button").onclick = () => showDefter(0);
   }
+  // K1 / Y2 / A7 (7 Ekim 2026) — her biri kendi try içinde: biri hata verse ölüm ekranı yine açılır
+  let _goAfter = _dl;
+  try { _goAfter = _renderReignTitle(_goPanel, _goAfter) || _goAfter; } catch (e) { console.warn('[unvan]', e); }
+  try { _goAfter = _renderDeathLesson(_goPanel, _goAfter) || _goAfter; } catch (e) { console.warn('[ders]', e); }
+  try { _renderCosmPreview(_goPanel, _goAfter); } catch (e) { console.warn('[kozmetik]', e); }
   gameoverScreen.classList.add("visible");
 
   // Rating prompt — her 3. oyundan sonra, en az 2 yıl hayatta kaldıysa göster
@@ -10847,6 +11139,145 @@ function showGameOver(reason) {
   if (!alreadyRated && gamesPlayed % 3 === 0 && year >= 2) {
     setTimeout(() => showRatingPrompt(), 2500);
   }
+}
+
+// ── Ölüm ekranı ekleri (7 Ekim 2026): K1 saltanat unvanı · Y2 ders + sıradaki hedef · A7 kozmetik önizleme ──
+// Hepsi yalnız görüntü; kurallara, sayılara ve kayda (unvan dışında) dokunmaz.
+
+// K1: saltanat boyunca hangi zümrenin kayrıldığı (checkCurse içinde sayılır, kayıtta cag.rf)
+let _reignFav = { saray: 0, "yeniçeri": 0, ulema: 0, hazine: 0 };
+const REIGN_TITLES = {
+  saray:   { tr: "Sarayın Gölgesi", en: "Shadow of the Palace",
+             qtr: "Sultan'ın kulağı hep ondaydı; Divan onu saray adamı bildi.", qen: "The Sultan's ear was always his; the Divan knew him as a man of the palace." },
+  "yeniçeri": { tr: "Yeniçerinin Babası", en: "Father of the Janissaries",
+             qtr: "Ocak onu kendinden saydı; kazanlar onun adıyla kaynadı.", qen: "The Corps counted him as one of their own; the cauldrons boiled in his name." },
+  ulema:   { tr: "Ulemanın Dostu", en: "Friend of the Ulema",
+             qtr: "Medreseler ona dua etti; fetvalar hep onun yanında çıktı.", qen: "The madrasas prayed for him; every fatwa came down on his side." },
+  hazine:  { tr: "Hazinenin Bekçisi", en: "Keeper of the Treasury",
+             qtr: "Kasayı Divan'dan çok sevdi; ordu maaş bekledi, o defter tuttu.", qen: "He loved the treasury more than the Divan; the army waited for pay while he kept ledgers." },
+  denge:   { tr: "Divanın Terazisi", en: "Scales of the Divan",
+             qtr: "Kimseyi kayırmadı, kimseyi küstürmedi; terazinin iki kefesi hep eşitti.", qen: "He favoured no one and offended no one; the two pans of the scale stayed level." },
+  kisa:    { tr: "Kısa Mühür", en: "The Brief Seal",
+             qtr: "Mühür eline yeni değmişti ki geri alındı.", qen: "The seal had barely touched his hand before it was taken back." },
+};
+function _reignTitleId() {
+  const tot = Object.values(_reignFav).reduce((a, b) => a + b, 0);
+  if (tot < 10) return "kisa";
+  let best = null, bv = -1;
+  for (const [k, v] of Object.entries(_reignFav)) if (v > bv) { bv = v; best = k; }
+  return (bv / tot) >= 0.36 ? best : "denge";
+}
+function _renderReignTitle(panel, after) {
+  let el = document.getElementById("gameover-unvan");
+  if (!el) { el = document.createElement("div"); el.id = "gameover-unvan"; }
+  after.insertAdjacentElement("afterend", el);
+  const en = window.LANG === 'en', id = _reignTitleId(), t = REIGN_TITLES[id];
+  const sid = selectedSultan && selectedSultan.id;
+  const sName = sid ? ((en && window.EN_SULTANS && window.EN_SULTANS[sid]) ? window.EN_SULTANS[sid].name : selectedSultan.name) : "";
+  const st = (k) => Math.max(0, Math.min(100, Math.round(stats[k] ?? 0)));
+  const yrs = `${year} ${en ? (year === 1 ? "YEAR" : "YEARS") : "YIL"}`;
+  el.className = "gu-" + id;
+  el.innerHTML = `<div class="gu-kick">${en ? "YOUR TITLE" : "UNVANIN"}${sName ? " · " + sName.toLocaleUpperCase(en ? "en" : "tr") : ""} · ${yrs}</div>
+    <div class="ferman gu-seal"><div class="famt">${id === "denge" ? "⚖" : id === "kisa" ? "I" : "✦"}</div></div>
+    <div class="gu-title">${en ? t.en : t.tr}</div>
+    <div class="gu-quote">“${en ? t.qen : t.qtr}”</div>
+    <div class="gu-stats"><div><b>${st("saray")}</b>${en ? "PALACE" : "SARAY"}</div><div><b>${st("yeniçeri")}</b>${en ? "ARMY" : "ORDU"}</div><div><b>${st("ulema")}</b>${en ? "CLERGY" : "ULEMA"}</div><div><b>${st("hazine")}</b>${en ? "TREASURY" : "HAZİNE"}</div></div>`;
+  window._lastReignTitle = en ? t.en : t.tr;
+  _an("reign_title", { t: id, year });
+  return el;
+}
+
+// Y2: ölüm sebebine göre tek somut ders + Devletin Kaderi'nden sıradaki hedef
+const DEATH_LESSONS = {
+  saray_0:      ["Saray sıfıra indi: Sultan'ın güveni bitti. Saray 25'in altına inince Sultan'ın isteklerini kabul eden ve sarayı ödüllendiren seçenekleri tart.",
+                 "The Palace fell to zero: the Sultan's trust ran out. When the Palace drops below 25, weigh the choices that grant the Sultan's wishes and reward the court."],
+  saray_100:    ["Saray çok güçlendi ve tahtı gölgeledi. Saray 75'i geçince sarayı kısan, ordu ya da halktan yana seçenekleri kolla.",
+                 "The Palace grew too strong and overshadowed the throne. Above 75, look for choices that curb the court and side with the army or the people."],
+  yeniceri_0:   ["Ordu dağıldı. Ordu 25'in altına inince maaş, sefer ve ocak kararlarında yeniçeriden yana olanı seç; Mehter Kösü de burada kurtarır.",
+                 "The army scattered. Below 25, side with the Janissaries on pay, campaign and barracks decisions; the Kettle Drum also saves you here."],
+  yeniceri_100: ["Ocak fazla güçlendi ve kazan kaldırdı. Ordu 75'i geçince yeniçeriyi kısan seçenekleri seç.",
+                 "The Corps grew too strong and overturned the cauldrons. Above 75, pick the choices that rein in the Janissaries."],
+  ulema_0:      ["Ulema desteğini çekti. Ulema 25'in altına inince Şeyhülislam ve medrese kararlarında onlardan yana ol.",
+                 "The clergy withdrew their support. Below 25, side with the Şeyhülislam and the madrasas."],
+  ulema_100:    ["Ulema Divan'a hükmetti. Ulema 75'i geçince fetvaya değil devlete yaslanan seçenekleri seç.",
+                 "The clergy came to rule the Divan. Above 75, choose what leans on the state rather than the fatwa."],
+  hazine_0:     ["Hazine tükendi. Hazine 25'in altına inince vergi, inşaat ve sefer kararlarında Hazine'yi koruyan seçeneği tart; Tahkik burada işe yarar.",
+                 "The treasury ran dry. Below 25, weigh the choice that protects the Treasury on tax, building and campaign decisions; an Inquiry helps here."],
+  hazine_100:   ["Kasa taştı ve zimmetle suçlandın. Hazine 75'i geçince harcamayı seç: inşaat, maaş, sefer.",
+                 "The coffers overflowed and you were accused of embezzlement. Above 75, choose to spend: buildings, pay, campaigns."],
+  saglik:       ["Sıhhatin tükendi. Dört güç 35 ile 65 arasındayken sıhhat toparlanır; Hekimbaşı'nın dinlenme teklifini geri çevirme.",
+                 "Your health gave out. While all four powers stay between 35 and 65 your health recovers; don't turn down the Chief Physician's rest."],
+  azil:         ["Sultan'ın sabrı tükendi. Fermanı yerine getirmek sabrı artırır; Tahkik'i sabrı düşükken az kullan.",
+                 "The Sultan's patience ran out. Fulfilling his decree raises it; use Inquiries sparingly when patience is low."],
+  sultan_guc:   ["Sultan'ın gözünde fazla güçlendin: sabrı 100'e ulaştı. 85'te gelen uyarıdan sonra sabrı biraz harca; Tahkik bunu yapar.",
+                 "You grew too powerful in the Sultan's eyes: his patience reached 100. After the warning at 85, spend a little of it; an Inquiry does that."],
+  padisah_red:  ["Padişah'ın ziyaret isteğini geri çevirmek bu kez ölümcül oldu.",
+                 "Refusing the Sultan's visit proved fatal this time."],
+  sehzade:      ["Şehzadenin hamlesi tuttu. Meydan okumayı kabul etmek yazı turaydı; diğer seçenekler daha güvenliydi.",
+                 "The Prince's gambit worked. Accepting his challenge was a coin toss; the other options were safer."],
+};
+function _nextGoalHTML(en) {
+  const d = _asirGet();
+  const k = ASIR_KNOTS.find(x => !(d.knots[x.id] && _asirGood(d.knots[x.id].r)));
+  if (!k) return "";
+  const s = SULTANS.find(x => x.id === k.sultan);
+  const sName = s ? ((en && window.EN_SULTANS && window.EN_SULTANS[s.id]) ? window.EN_SULTANS[s.id].name : s.name) : "";
+  const lock = s && s.unlockSeals ? s.unlockSeals - _defterGet().seals : 0;
+  const done = ASIR_KNOTS.filter(x => d.knots[x.id] && _asirGood(d.knots[x.id].r)).length;
+  const sub = lock > 0
+    ? (en ? `${sName} · ${lock} more seals in the Ledger to unlock` : `${sName} · açmak için Defter'de ${lock} mühür daha`)
+    : (en ? `Reach year ${k.y} with ${sName}` : `${sName} ile ${k.y}. yıla ulaş`);
+  return `<div class="gl-next"><span class="gl-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M4 19h16M6 19V10l6-4.5 6 4.5v9M10 19v-5h4v5"/></svg></span>
+    <div><b>${en ? "NEXT GOAL" : "SIRADAKİ HEDEF"} · ${done}/${ASIR_KNOTS.length}</b><span>${en ? k.en : k.tr} ${k.cal}</span><small>${sub}</small></div></div>`;
+}
+function _renderDeathLesson(panel, after) {
+  let el = document.getElementById("gameover-lesson");
+  const en = window.LANG === 'en';
+  const les = DEATH_LESSONS[_deathCause];
+  const next = isPasaMode ? "" : _nextGoalHTML(en);
+  if (!les && !next) { el?.remove(); return null; }
+  if (!el) { el = document.createElement("div"); el.id = "gameover-lesson"; }
+  after.insertAdjacentElement("afterend", el);
+  const icon = { saray: "icon-saray", yeniceri: "icon-ordu", ulema: "icon-ulema", hazine: "icon-hazine" }[String(_deathCause || "").split("_")[0]];
+  el.innerHTML = (les ? `<div class="gl-les">${icon ? `<img src="assets/icons/${icon}.png" alt="">` : `<span class="gl-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v5M12 16.2h.01"/></svg></span>`}
+      <div><b>${en ? "NEXT TIME" : "BİR DAHAKİ SEFERE"}</b><span>${les[en ? 1 : 0]}</span></div></div>` : "") + next;
+  return el;
+}
+
+// A7: sahip olunmayan bir kozmetiği bu saltanatın kendi görüntüsüyle göster (ilk oyunda yok)
+function _renderCosmPreview(panel, after) {
+  let el = document.getElementById("gameover-cosm");
+  let games = 0; try { games = parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10); } catch (e) {}
+  const free = Object.keys(COSMETICS).filter(id => !_cosmOwned(id));
+  if (!AKCE_SYSTEM_ENABLED || games < 1 || !free.length) { el?.remove(); return; }
+  if (!el) { el = document.createElement("div"); el.id = "gameover-cosm"; }
+  after.insertAdjacentElement("afterend", el);
+  const en = window.LANG === 'en', id = free[games % free.length], c = COSMETICS[id];
+  const chr = (currentCard && currentCard.character && !String(currentCard.character).includes("/")) ? currentCard.character : "1-sultan";
+  const prev = id === "kaftan"
+    ? `<div class="cp-thumb cp-death" style="background-image:url('assets/deaths/death-${_deathSceneImage(_deathCause || "saray_0")}.jpg')"><img class="cosm-kaftan cp-kaftan" src="${c.icon}" alt=""></div>`
+    : id === "cini"
+      ? `<div class="cp-thumb cp-card cp-f-iznik"><img src="assets/characters/${encodeURIComponent(chr)}.jpg" alt="" onerror="this.src='assets/characters/1-sultan.jpg'"></div>`
+      : `<div class="cp-thumb cp-gild"><span class="cp-dc">${en ? "T" : "S"}</span><i></i><i></i><i></i><i></i></div>`;
+  el.innerHTML = `${prev}<div class="cp-info"><div class="cp-kick">${en ? "IT COULD HAVE LOOKED LIKE THIS" : "BÖYLE DE GÖRÜNEBİLİRDİ"}</div>
+    <div class="cp-name">${en ? c.en : c.tr}</div><div class="cp-desc">${en ? c.den : c.dtr}</div>
+    <button type="button" class="mi-buy cp-buy">${c.price} ${AKCE_COIN_SVG}</button><div class="cp-msg" aria-live="polite"></div></div>`;
+  const btn = el.querySelector(".cp-buy"), msg = el.querySelector(".cp-msg");
+  btn.onclick = () => {
+    if (_cosmOwned(id)) return;
+    if (!spendAkce(c.price)) {
+      msg.textContent = en ? `You need ${c.price} akce.` : `${c.price} akçe gerekiyor.`;
+      showAkceScreen();
+      setTimeout(() => document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" }), 250);
+      return;
+    }
+    const o = _cosmGet(); o[id] = true; if (c.opts) o[id + "Sel"] = c.opts[0][0]; _cosmSet(o);
+    if (window.playSelectConfirm) playSelectConfirm();
+    updateAkceUI(); _applyCosmetics();
+    _an("cosmetic_buy", { id, where: "gameover" });
+    btn.disabled = true; btn.textContent = en ? "YOURS" : "SENİN";
+    msg.textContent = en ? "It is yours. Change it any time in the Market." : "Artık senin. Market'ten istediğin zaman değiştirebilirsin.";
+  };
 }
 
 function getDynamicDeathTitle(reason) {
@@ -10941,8 +11372,13 @@ function showAchievementToast(a) {
   const _aEN = (_isENach && window.EN_ACHIEVEMENTS && window.EN_ACHIEVEMENTS[a.id]) || {};
   const _aName = _aEN.name || a.name;
   const _secretLabel = _isENach ? 'Secret Achievement' : 'Gizli Başarım';
-  toast.innerHTML = `<span style="font-size:18px">${a.icon}</span><span style="color:${color}">${_aName}</span><span style="font-size:10px;opacity:0.7">${a.tier === 'secret' ? _secretLabel : a.tier.toUpperCase()}</span>`;
-  toast.style.cssText += `border-color:${color};`;
+  // K7 (7 Ekim 2026): mühür töreni — kademe renginde balmumu mühür basılır, halka yayılır
+  const _tierTR = { bronze: "BRONZ", silver: "GÜMÜŞ", gold: "ALTIN", platinum: "PLATİN", secret: "GİZLİ" };
+  const _tierLbl = a.tier === 'secret' ? _secretLabel.toLocaleUpperCase(_isENach ? 'en' : 'tr') : (_isENach ? String(a.tier).toUpperCase() : (_tierTR[a.tier] || String(a.tier).toUpperCase()));
+  toast.classList.add("ach-seal", "t-" + a.tier);
+  toast.style.setProperty("--tier", color);
+  toast.innerHTML = `<span class="as-ring"></span><span class="as-seal"><span class="as-ic">${a.icon}</span></span>
+    <span class="as-txt"><span class="as-k">${_isENach ? "ACHIEVEMENT" : "BAŞARIM"} · ${_tierLbl}</span><span class="as-n">${_aName}</span></span>`;
   document.body.appendChild(toast);
   if (window.playAchievement) playAchievement();
   setTimeout(() => toast.remove(), 3400);
@@ -11171,9 +11607,9 @@ function getShareText() {
   const _enS = (_isENshare && window.EN_SULTANS && selectedSultan) ? window.EN_SULTANS[selectedSultan.id] : null;
   const sultanName = _enS ? _enS.name : (selectedSultan ? selectedSultan.name : "Sultan");
   if (_isENshare) {
-    return `I survived ${year} years in Divan: Sadrazam during the reign of ${sultanName}! How long can YOU last? 🗡️\n\nDownload on the App Store!\nhttps://apps.apple.com/app/id6783881003`;
+    return `I survived ${year} years in Divan: Sadrazam during the reign of ${sultanName}!${window._lastReignTitle ? ` My title: “${window._lastReignTitle}”.` : ""} How long can YOU last? 🗡️\n\nDownload on the App Store!\nhttps://apps.apple.com/app/id6783881003`;
   }
-  return `Divan: Sadrazam'da ${sultanName} döneminde ${year} yıl ayakta kalabildim! Sen kaç yıl dayanabilirsin? 🗡️\n\nApp Store'dan İndir!\nhttps://apps.apple.com/tr/app/divan-sadrazam/id6783881003`;
+  return `Divan: Sadrazam'da ${sultanName} döneminde ${year} yıl ayakta kalabildim!${window._lastReignTitle ? ` Unvanım: “${window._lastReignTitle}”.` : ""} Sen kaç yıl dayanabilirsin? 🗡️\n\nApp Store'dan İndir!\nhttps://apps.apple.com/tr/app/divan-sadrazam/id6783881003`;
 }
 
 function showShareMenu() {
@@ -11603,15 +12039,22 @@ function showVezirlikGunlugu() {
 }
 
 // ── Osmanlı Kodeksi — görülen karakterlerin kalıcı galerisi ───────
+// K2 (7 Ekim 2026): albüm ilerlemesi — ilerleme çubuğu, görülmeyenler karartılmış gölge,
+// son açılıştan beri tanışılanlarda "YENİ", zümre süzgeci (kişinin kartlarında en sık zümre).
+const KODEKS_OPEN_KEY = "sadrazam_kodeks_seen_at_open";
+const KODEKS_GROUPS = [["all", "TÜMÜ", "ALL"], ["saray", "SARAY", "PALACE"], ["ordu", "ORDU", "ARMY"], ["din", "ULEMA", "CLERGY"], ["halk", "HALK", "PEOPLE"], ["dış", "YABANCI", "FOREIGN"]];
 function getAllCodexCharacters() {
   const seen = new Set();
   const list = [];
+  const fac = {};
   for (const c of allCards) {
     if (!c.character || c.character === '1-sultan') continue;
+    if (c.faction) { const f = fac[c.character] || (fac[c.character] = {}); f[c.faction] = (f[c.faction] || 0) + 1; }
     if (seen.has(c.character)) continue;
     seen.add(c.character);
     list.push({ key: c.character, name: c.character_name, name_en: c.character_name_en });
   }
+  for (const ch of list) { const f = fac[ch.key]; ch.group = f ? Object.entries(f).sort((x, y) => y[1] - x[1])[0][0] : null; }
   return list.sort((a, b) => a.key.localeCompare(b.key, 'tr'));
 }
 
@@ -11621,15 +12064,20 @@ function showKartKodeksi() {
   const everSeen = new Set(getCrossGameData().seenCharactersEver || []);
   const chars = getAllCodexCharacters();
   const count = chars.filter(ch => everSeen.has(ch.key)).length;
+  let lastOpen = null; try { const a = JSON.parse(localStorage.getItem(KODEKS_OPEN_KEY) || "null"); if (Array.isArray(a)) lastOpen = new Set(a); } catch (e) {}
+  const pct = chars.length ? Math.round(count / chars.length * 100) : 0;
+  const groups = KODEKS_GROUPS.filter(([g]) => g === "all" || chars.some(ch => ch.group === g));
 
   const rows = chars.map(ch => {
     const isSeen = everSeen.has(ch.key);
+    const isNew = isSeen && lastOpen && !lastOpen.has(ch.key);
     const name = isSeen ? ((isEN && ch.name_en) ? ch.name_en : ch.name) : '???';
     const imgPath = "assets/characters/" + encodeURIComponent(ch.key + ".jpg");
-    return `<div class="kodeks-card ${isSeen ? '' : 'locked'}">
+    const fb = CHARACTER_IMAGE_FALLBACK[ch.key] ? `if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/characters/${CHARACTER_IMAGE_FALLBACK[ch.key]}.jpg'}else{this.style.display='none'}` : `this.style.display='none'`;
+    return `<div class="kodeks-card ${isSeen ? '' : 'locked'}${isNew ? ' new' : ''}" data-g="${ch.group || ''}">
       ${isSeen
-        ? `<img src="${imgPath}" onerror="${CHARACTER_IMAGE_FALLBACK[ch.key] ? `if(!this.dataset.fb){this.dataset.fb=1;this.src='assets/characters/${CHARACTER_IMAGE_FALLBACK[ch.key]}.jpg'}else{this.style.display='none'}` : `this.style.display='none'`}">`
-        : `<div class="kodeks-silhouette">?</div>`}
+        ? `<img src="${imgPath}" loading="lazy" onerror="${fb}">`
+        : `<div class="kodeks-silhouette"><img src="${imgPath}" alt="" loading="lazy" onerror="this.remove()"><span>?</span></div>`}
       <span class="kodeks-name">${name}</span>
     </div>`;
   }).join('');
@@ -11642,11 +12090,20 @@ function showKartKodeksi() {
         <div id="kodeks-title">${isEN ? 'IMPERIAL CODEX' : 'OSMANLI KODEKSİ'}</div>
         <div id="kodeks-count">${count} / ${chars.length}</div>
       </div>
+      <div id="kodeks-prog" aria-hidden="true"><i style="width:${pct}%"></i></div>
+      <div id="kodeks-chips">${groups.map(([g, tr, en], i) => `<button type="button" class="kodeks-chip${i ? '' : ' on'}" data-g="${g}">${isEN ? en : tr}</button>`).join('')}</div>
       <div id="kodeks-divider"></div>
       <div id="kodeks-grid">${rows}</div>
+      <p id="kodeks-note">${isEN ? "People you have not met wait in the shadows." : "Tanışmadığın kişiler gölgede bekler."}</p>
       <button id="kodeks-close-btn">${isEN ? '× Close' : '× Kapat'}</button>
     </div>`;
   document.body.appendChild(ov);
+  ov.querySelectorAll('.kodeks-chip').forEach(btn => btn.addEventListener('click', () => {
+    ov.querySelectorAll('.kodeks-chip').forEach(b => b.classList.toggle('on', b === btn));
+    const g = btn.dataset.g;
+    ov.querySelectorAll('.kodeks-card').forEach(c => { c.hidden = g !== 'all' && c.dataset.g !== g; });
+  }));
+  try { localStorage.setItem(KODEKS_OPEN_KEY, JSON.stringify([...everSeen])); } catch (e) {}
   ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
   document.getElementById('kodeks-close-btn').onclick = () => ov.remove();
 }
@@ -11656,21 +12113,31 @@ function showGameMenu() {
   const overlay = document.createElement("div");
   overlay.id = "game-menu-overlay";
   const isENMenu = window.LANG === 'en';
+  // G2-B (7 Ekim 2026): alttan açılan pencere — başlıkta tarih/sultan/dört güç, 3 sütunlu kutular,
+  // altta büyük Devam Et. Düğme kimlikleri (gm-*) aynı; S1/S2 mantığı değişmedi.
+  const _gmMonths = (isENMenu && window.EN_HICRI_MONTHS) ? window.EN_HICRI_MONTHS : HICRI_MONTHS;
+  const _gmS = selectedSultan ? ((isENMenu && window.EN_SULTANS && window.EN_SULTANS[selectedSultan.id]) ? window.EN_SULTANS[selectedSultan.id].name : selectedSultan.name) : "";
+  const _gmWhen = `${_gmMonths[hicriMonth % 12]} ${hicriYear} · ${isENMenu ? "year" : ""} ${year}${isENMenu ? "" : ". yıl"}${_gmS ? " · " + _gmS.split(" ")[0] : ""}`.replace("·  ", "· ");
+  const _gmBar = (k, tr, en) => `<div class="gm-bar"><span>${isENMenu ? en : tr}</span><i><b style="width:${Math.max(0, Math.min(100, Math.round(stats[k] ?? 50)))}%"></b></i></div>`;
+  const _gmT = (id, icon, tr, en) => `<button class="gm-tile" id="${id}"><span class="gm-ic">${icon}</span><span class="gm-tl">${isENMenu ? en : tr}</span></button>`;
   overlay.innerHTML = `
-    <div id="game-menu-box">
-      <div id="game-menu-title">${isENMenu ? "PAUSED" : "DURAKLAT"}</div>
-      <div id="game-menu-divider"></div>
-      <button class="game-menu-option primary" id="gm-resume">${isENMenu ? "CONTINUE" : "DEVAM ET"}</button>
-      ${_canRetire() ? `<button class="game-menu-option" id="gm-retire">${isENMenu ? "ASK TO RETIRE" : "EMEKLİLİĞİNİ İSTE"}</button>` : ""}
-      <button class="game-menu-option secondary" id="gm-halka">${isENMenu ? "DIVAN CIRCLE" : "DİVAN HALKASI"}</button>
-      <button class="game-menu-option secondary" id="gm-journal">${isENMenu ? "VIZIER'S JOURNAL" : "VEZİRLİK GÜNLÜĞÜ"}</button>
-      <button class="game-menu-option secondary" id="gm-harita">${isENMenu ? "IMPERIAL MAP" : "İMPARATORLUK HARİTASI"}</button>
-      <button class="game-menu-option secondary" id="gm-kodeks">${isENMenu ? "IMPERIAL CODEX" : "OSMANLI KODEKSİ"}</button>
-      ${AKCE_SYSTEM_ENABLED ? `<button class="game-menu-option secondary" id="gm-esya">${isENMenu ? "ITEM SHOP" : "EŞYA DÜKKANI"}</button>` : ""}
+    <div id="game-menu-box" class="gm-sheet" role="dialog" aria-label="${isENMenu ? "Paused" : "Duraklat"}">
+      <div class="gm-grab"></div>
+      <div class="gm-head"><div id="game-menu-title">${isENMenu ? "PAUSED" : "DURAKLAT"}</div><div class="gm-when">${_gmWhen}</div></div>
+      <div class="gm-bars">${_gmBar("saray", "SARAY", "PALACE")}${_gmBar("yeniçeri", "ORDU", "ARMY")}${_gmBar("ulema", "ULEMA", "CLERGY")}${_gmBar("hazine", "HAZİNE", "TREASURY")}</div>
+      <div class="gm-grid">
+        ${_gmT("gm-halka", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="5" r="1.6"/><circle cx="18.5" cy="14" r="1.6"/><circle cx="5.5" cy="14" r="1.6"/></svg>', "DİVAN<br>HALKASI", "DIVAN<br>CIRCLE")}
+        ${_gmT("gm-journal", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M6 3.5h9.5L19 7v13.5H6z"/><path d="M15.5 3.5V7H19M9 11h7M9 14h7M9 17h4"/></svg>', "GÜNLÜK", "JOURNAL")}
+        ${_gmT("gm-harita", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M3.5 6.5l5.5-2 6 2 5.5-2v13l-5.5 2-6-2-5.5 2z"/><path d="M9 4.5v13M15 6.5v13"/></svg>', "HARİTA", "MAP")}
+        ${_gmT("gm-kodeks", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>', "KODEKS", "CODEX")}
+        ${AKCE_SYSTEM_ENABLED ? _gmT("gm-esya", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>', "EŞYA<br>DÜKKÂNI", "ITEM<br>SHOP") : ""}
+        ${_canRetire() ? _gmT("gm-retire", '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M4 19h16M6 19V10l6-4.5 6 4.5v9"/><path d="M10 19v-5h4v5"/></svg>', "EMEKLİLİĞİNİ<br>İSTE", "ASK TO<br>RETIRE") : ""}
+      </div>
       <div class="gm-sound">
         <button class="gm-snd" id="gm-mus"><span>${isENMenu ? "Music" : "Müzik"}</span><b></b></button>
         <button class="gm-snd" id="gm-sfx"><span>${isENMenu ? "Effects" : "Efektler"}</span><b></b></button>
       </div>
+      <button class="game-menu-option primary gm-continue" id="gm-resume">${isENMenu ? "CONTINUE" : "DEVAM ET"}</button>
       <button class="gm-quit-link" id="gm-quit">${isENMenu ? "End game…" : "Oyunu bitir…"}</button>
       <div class="gm-confirm hidden" id="gm-confirm">
         <div class="gm-confirm-t">${isENMenu ? "End this reign? Your progress in it will be lost." : "Saltanatı bitirmek istiyor musun? Bu saltanattaki ilerlemen silinir."}</div>
@@ -11843,6 +12310,24 @@ document.getElementById("btn-ach-back")?.addEventListener("click", () => {
   const badge = document.getElementById("ach-count-badge");
   // D3 (6 Ekim 2026): hiç başarım yokken boş altın kutu bir "—" gibi görünüyordu; sayı hep yazılır
   if (badge) { badge.textContent = `${unlocked.length}/${ACHIEVEMENTS.length}`; badge.classList.toggle("zero", unlocked.length === 0); }
+})();
+
+// A4: bant sayacı — yalnız ana menü görünürken saniyede bir
+setInterval(() => { try { if (introScreen.style.display !== "none") _updateStarterBand(); } catch (e) {} }, 1000);
+
+// A3 (7 Ekim 2026): ana menü akçe göstergesi → Market, akçe keselerine kaydırılmış
+(function initIntroWallet() {
+  const w = document.getElementById("intro-wallet");
+  if (!w) return;
+  if (!AKCE_SYSTEM_ENABLED) { w.remove(); return; }
+  w.setAttribute("aria-label", window.LANG === 'en' ? "Akce · open the Market" : "Akçe · Market'i aç");
+  w.addEventListener("click", () => {
+    if (window.playButtonTap) playButtonTap();
+    showAkceScreen();
+    _an("wallet_tap", {});
+    setTimeout(() => document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" }), 250);
+  });
+  updateAkceUI();
 })();
 
 // D6 (6 Ekim 2026): uzun ekranlarda "aşağıda daha var" ipucu — yalnız ekran en üstteyken ve
