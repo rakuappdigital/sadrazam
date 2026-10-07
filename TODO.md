@@ -24,6 +24,19 @@ arayüz düzeltmeleri S1–S8 + D1–D8 (commit ada0126; ayrıntı CLAUDE.md §3
 - Testler: scratchpad ux_fix_test.js (136 kontrol ×2 tur), ad_test, long_test, death_test, native_ads_test (164),
   fuzz 5 ayar × 600 adım — hepsi temiz.
 
+**7 Ekim (öğleden sonra) — BÜYÜK YAMA UYGULANDI (commit fb71c05, build YOK):** kullanıcı seçimi
+A1 A3 A4 A7 A9 · Y1 Y2 · K1 K2 K4 K6 K7 + G2-B. Önizleme: https://claude.ai/artifact/CdRnh1gUMFZuuvxcSEDRAT
+- G2-B: showGameMenu alttan pencere (gm-* kimlikleri aynı; ses iki ayrı anahtar). 
+- A1 _quickPack* (İkinci Şans'ta 10'luk kese, ürün yoksa görünmez; alınınca spendAkce retry, A9 bitince resolve).
+- A3 #intro-wallet. A4 STARTER_BAND_AT (48 sa, #btn-full-version.starter-band). A7 _renderCosmPreview (ilk oyunda yok).
+- A9 _akceCeremony (purchaseAkcePack başarıda). Y1 COACH_TIPS/_coach* (sadrazam_coach; #coach-overlay fitil ve klavyeyi
+  durdurur). Y2 DEATH_LESSONS + _nextGoalHTML. K1 _reignFav (cag.rf) + REIGN_TITLES + paylaşım metni.
+- K2 showKartKodeksi (KODEKS_OPEN_KEY, süzgeç, gölge). K4 _playCardBack (#card-back, kartın İÇİNDE katman).
+- K6 TARIH_OLAYLARI (34; düğüm yılları, sultan ölümleri, sadrazam idamları bilerek yok). K7 .achievement-toast.ach-seal.
+- Testler: scratchpad new_feat_test.js (hepsi geçti); ux_fix_test.js ve long_test.js ipuçlarını görülmüş sayacak ve
+  G2-B'ye göre güncellendi. **Bekleyen seçim:** G1-A1/A2/A3 (önerim A2), G3-A1/A2/A3 (önerim A2). Seçimden sonra
+  uygulanıp test, sonra build 44 (1.7.0'a mı 1.7.1'e mi — 43 incelemede).
+
 **BÜYÜK YAMA — öneri sayfası:** https://claude.ai/artifact/CzTskzKzTzQ4ExW21JKKtH
 (9 tasarım: G1 ana menü A/B/C, G2 duraklat A/B/C, G3 Market A/B/C — oyunun kendi style.css'iyle çizildi;
 A1–A10 akçe satışı, Y1–Y6 yönlendirme, K1–K8 keyif). Taslak üreticiler: scratchpad demo/gen.py, gen2.py.
