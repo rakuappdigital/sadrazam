@@ -393,6 +393,8 @@ window.UI_STRINGS = {
     'stat.ulema':           'Ulema',
     'stat.hazine':          'Hazine',
     // Ana menü butonları
+    'btn.play': 'OYNA', 'mode.sadrazam': 'SADRAZAM', 'mode.pasa': 'PAŞALIK', 'mode.challenge': 'MEYDAN<br>OKUMA',
+    'menu.progress': 'İLERLEMEN', 'menu.t_asir': 'DEVLETİN<br>KADERİ', 'menu.t_defter': 'VEZİRLER<br>DEFTERİ', 'menu.t_ach': 'BAŞARIMLAR', 'menu.t_howto': 'NASIL<br>OYNANIR', 'menu.t_howto_n': '8 araç',
     'btn.sadrazam_mode':    'SADRAZAM MODU',
     'btn.pasa_mode':        'PAŞALIK MODU',
     'btn.achievements':     'BAŞARIMLARIM',
@@ -466,6 +468,7 @@ window.UI_STRINGS = {
     'btn.gift':             'HEDİYE',
     'market.title':         'MARKET',
     'market.bundle_head':   'EN AVANTAJLI',
+    'market.tab_akce': 'AKÇE', 'market.tab_items': 'EŞYALAR', 'market.tab_cosm': 'KOZMETİK',
     'market.items_head':    'EŞYALAR',
     'market.cosmetic_head': 'KOZMETİK',
     'market.bundle_name':   'Tam Sürüm + Reklamsız',
@@ -622,6 +625,8 @@ window.UI_STRINGS = {
     'stat.ulema':           'Clergy',
     'stat.hazine':          'Treasury',
     // Main menu buttons
+    'btn.play': 'PLAY', 'mode.sadrazam': 'GRAND VIZIER', 'mode.pasa': 'PASHA', 'mode.challenge': 'CHALLENGE',
+    'menu.progress': 'YOUR PROGRESS', 'menu.t_asir': 'FATE OF<br>THE EMPIRE', 'menu.t_defter': "VIZIERS'<br>LEDGER", 'menu.t_ach': 'ACHIEVEMENTS', 'menu.t_howto': 'HOW TO<br>PLAY', 'menu.t_howto_n': '8 tools',
     'btn.sadrazam_mode':    'GRAND VIZIER MODE',
     'btn.pasa_mode':        'PASHA MODE',
     'btn.achievements':     'ACHIEVEMENTS',
@@ -695,6 +700,7 @@ window.UI_STRINGS = {
     'btn.gift':             'GIFT',
     'market.title':         'MARKET',
     'market.bundle_head':   'BEST VALUE',
+    'market.tab_akce': 'AKCE', 'market.tab_items': 'ITEMS', 'market.tab_cosm': 'COSMETICS',
     'market.items_head':    'ITEMS',
     'market.cosmetic_head': 'COSMETICS',
     'market.bundle_name':   'Full Version + Ad-Free',

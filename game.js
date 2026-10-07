@@ -2633,7 +2633,28 @@ function showStarterOffer() {
   requestAnimationFrame(() => ov.classList.add("visible"));
 }
 
+// G3-A2 (7 Ekim 2026): Market sekmeleri — üç bölüm aynı, yalnız biri görünür
+function _marketTab(tab) {
+  const map = { akce: "market-akce", items: "market-items", cosm: "market-cosmetic" };
+  if (!map[tab]) tab = "akce";
+  document.querySelectorAll("#market-tabs .market-tab").forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle("on", on); b.setAttribute("aria-selected", on ? "true" : "false"); });
+  for (const [k, id] of Object.entries(map)) document.getElementById(id)?.classList.toggle("tab-off", k !== tab);
+}
+function _marketShowAkce() {
+  _marketTab("akce");
+  setTimeout(() => document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+}
+// Kesenin fiyatı (sayı): mağazadan; test modunda yedek fiyattan
+function _packPriceNum(amount) {
+  const pack = AKCE_PACKS.find(p => p.amount === amount);
+  const pr = pack && _akceProducts[pack.productId];
+  if (pr && typeof pr.price === "number") return { v: pr.price, cur: pr.currencyCode || "" };
+  if (!FREEMIUM_ENABLED && AKCE_FALLBACK_PRICES[amount]) return { v: parseFloat(AKCE_FALLBACK_PRICES[amount].replace(/[^\d,]/g, "").replace(",", ".")), cur: "TRY" };
+  return null;
+}
 function updateAkcePriceUI() {
+  const en = window.LANG === 'en';
+  const base = _packPriceNum(10);
   document.querySelectorAll('.akce-pack-btn').forEach(btn => {
     const amount = parseInt(btn.dataset.amount, 10);
     const pack = AKCE_PACKS.find(p => p.amount === amount);
@@ -2646,6 +2667,17 @@ function updateAkcePriceUI() {
       priceEl.textContent = AKCE_FALLBACK_PRICES[amount] || '';
     } else {
       priceEl.textContent = '…';
+    }
+    // G3-A2 / A5: karşılığı ("5 İkinci Şans") ve gerçek fiyattan hesaplanan değer rozeti
+    const per = btn.querySelector('.pack-per');
+    if (per) { const n = Math.floor(amount / SECOND_CHANCE_AKCE_COST); per.textContent = en ? `${n} Second Chances` : `${n} İkinci Şans`; }
+    const val = btn.querySelector('.pack-value');
+    if (val) {
+      const p = _packPriceNum(amount);
+      let pct = 0;
+      if (base && p && base.v > 0 && p.v > 0 && base.cur === p.cur) pct = Math.round(((base.v / 10) / (p.v / amount) - 1) * 100);
+      val.textContent = pct >= 10 ? (en ? `+${pct}% VALUE` : `+%${pct} DEĞER`) : "";
+      btn.classList.toggle("best", amount === 100 && pct >= 10);
     }
   });
 }
@@ -2781,7 +2813,7 @@ function renderMarketCosmetics() {
     if (_getSeal()) { showSealEditor(); return; }
     if (!spendAkce(SEAL_PRICE)) {
       if (status) status.textContent = en ? `You need ${SEAL_PRICE} akce. Pouches are below.` : `${SEAL_PRICE} akçe gerekiyor. Keseler aşağıda.`;
-      document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      _marketShowAkce();
       return;
     }
     updateAkceUI();
@@ -2862,7 +2894,7 @@ function renderMarketItems() {
     if (_getStash().length >= ITEM_STASH_MAX) return;
     if (!spendAkce(_itemPrice(b.dataset.id))) {
       if (status) status.textContent = en ? "Not enough akce. Pouches are below." : "Akçe yetmiyor. Keseler aşağıda.";
-      document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      _marketShowAkce();
       return;
     }
     const st = _getStash(); st.push(b.dataset.id); _setStash(st);
@@ -2879,6 +2911,7 @@ function showAkceScreen() {
   // Reklamsız bölümünü gizle, oyuncu doğrudan akçe keselerini görsün.
   scr?.classList.toggle('from-need', !!_akceReturnCallback);
   scr && (scr.scrollTop = 0);
+  _marketTab("akce"); // G3-A2
   updateAkceUI();
   updateAkcePriceUI();
   updateNoAdsUI();
@@ -8581,7 +8614,7 @@ function renderCosmeticRows() {
       if (_cosmOwned(id)) return;
       if (!spendAkce(c.price)) {
         if (status) status.textContent = en ? `You need ${c.price} akce. Pouches are below.` : `${c.price} akçe gerekiyor. Keseler aşağıda.`;
-        document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        _marketShowAkce();
         return;
       }
       const o = _cosmGet(); o[id] = true; if (c.opts) o[id + "Sel"] = c.opts[0][0]; _cosmSet(o);
@@ -10054,7 +10087,8 @@ function _asirBadge(sultanId) {
 function _asirMenuLabel() {
   const b = document.getElementById("btn-asir"); if (!b) return;
   const n = ASIR_KNOTS.filter(x => _asirGet().knots[x.id]).length, en = window.LANG === 'en';
-  const l = b.querySelector(".asir-lbl"); if (l) l.textContent = (en ? "FATE OF THE EMPIRE " : "DEVLETİN KADERİ ") + `${n}/${ASIR_KNOTS.length}`;
+  // G1-A1: ad kutuda sabit (data-i18n), sayaç ayrı rozette
+  const c = b.querySelector(".asir-cnt"); if (c) { c.textContent = `${n} / ${ASIR_KNOTS.length}`; c.classList.toggle("z", n === 0); }
 }
 function showAsirlar() {
   if (document.getElementById("asir-overlay")) return;
@@ -11268,7 +11302,7 @@ function _renderCosmPreview(panel, after) {
     if (!spendAkce(c.price)) {
       msg.textContent = en ? `You need ${c.price} akce.` : `${c.price} akçe gerekiyor.`;
       showAkceScreen();
-      setTimeout(() => document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" }), 250);
+      setTimeout(_marketShowAkce, 250);
       return;
     }
     const o = _cosmGet(); o[id] = true; if (c.opts) o[id + "Sel"] = c.opts[0][0]; _cosmSet(o);
@@ -12313,7 +12347,36 @@ document.getElementById("btn-ach-back")?.addEventListener("click", () => {
 })();
 
 // A4: bant sayacı — yalnız ana menü görünürken saniyede bir
-setInterval(() => { try { if (introScreen.style.display !== "none") _updateStarterBand(); } catch (e) {} }, 1000);
+setInterval(() => { try { if (introScreen.style.display !== "none") { _updateStarterBand(); _updateMenuCounts(); } } catch (e) {} }, 1000);
+
+// G1-A1 (7 Ekim 2026): ana menü — mod seçici (hatırlanır), OYNA, ilerleme sayaçları
+(function initMenuG1() {
+  const KEY = "sadrazam_menu_mode";
+  const opts = [...document.querySelectorAll("#mode-seg .mode-opt")];
+  const pick = (id) => {
+    if (!document.getElementById(id)) id = "btn-start";
+    opts.forEach(o => { const on = o.dataset.mode === id; o.classList.toggle("on", on); o.setAttribute("aria-checked", on ? "true" : "false"); });
+    try { localStorage.setItem(KEY, id); } catch (e) {}
+  };
+  let saved = "btn-start"; try { saved = localStorage.getItem(KEY) || "btn-start"; } catch (e) {}
+  pick(saved);
+  opts.forEach(o => o.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); pick(o.dataset.mode); }));
+  document.getElementById("btn-play")?.addEventListener("click", () => {
+    const on = opts.find(o => o.classList.contains("on"));
+    document.getElementById(on ? on.dataset.mode : "btn-start")?.click();
+  });
+})();
+function _updateMenuCounts() {
+  const en = window.LANG === 'en';
+  const d = document.querySelector("#btn-defter .defter-cnt");
+  if (d) { const n = _defterGet().seals; d.textContent = en ? `${n} seal${n === 1 ? "" : "s"}` : `${n} mühür`; d.classList.toggle("z", n === 0); }
+  try { _asirMenuLabel(); } catch (e) {}
+}
+setTimeout(_updateMenuCounts, 0);
+
+// G3-A2: Market sekmeleri ve üst köşedeki kapat
+document.querySelectorAll("#market-tabs .market-tab").forEach(b => b.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); _marketTab(b.dataset.tab); document.getElementById("akce-screen") && (document.getElementById("akce-screen").scrollTop = 0); }));
+document.getElementById("akce-x")?.addEventListener("click", () => hideAkceScreen());
 
 // A3 (7 Ekim 2026): ana menü akçe göstergesi → Market, akçe keselerine kaydırılmış
 (function initIntroWallet() {
@@ -12325,7 +12388,7 @@ setInterval(() => { try { if (introScreen.style.display !== "none") _updateStart
     if (window.playButtonTap) playButtonTap();
     showAkceScreen();
     _an("wallet_tap", {});
-    setTimeout(() => document.getElementById("market-akce")?.scrollIntoView({ behavior: "smooth", block: "start" }), 250);
+    setTimeout(_marketShowAkce, 250);
   });
   updateAkceUI();
 })();

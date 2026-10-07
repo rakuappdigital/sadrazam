@@ -1687,43 +1687,50 @@ html, body {
 }
 
 #akce-pack-grid {
+  /* G3-A2 (7 Ekim 2026): 2×2, büyük mühür + karşılık + altın fiyat düğmesi */
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 .akce-pack-btn {
   position: relative;
   background: rgba(201,162,39,0.03);
   border: 1px solid rgba(201,162,39,0.16);
   border-radius: 12px;
-  padding: 14px 2px 10px;
+  padding: 16px 8px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   transition: background 0.15s, border-color 0.15s;
 }
 .akce-pack-btn:active { background: rgba(201,162,39,0.1); border-color: rgba(201,162,39,0.45); }
-.akce-pack-btn .ferman { width: 60px; height: 60px; border-width: 2px; transition: transform 0.15s; }
-.akce-pack-btn .ferman::before { inset: 4px; }
-.akce-pack-btn .ferman .famt { font-size: 17px; transform: none; }
+.akce-pack-btn .ferman { width: 84px; height: 84px; border-width: 2.5px; transition: transform 0.15s; }
+.akce-pack-btn .ferman::before { inset: 5px; }
+.akce-pack-btn .ferman .famt { font-size: 24px; transform: none; }
 .akce-pack-btn .ferman .funit {
   font-family: 'Alegreya SC', serif;
-  font-size: 7.5px;
+  font-size: 8.5px;
   letter-spacing: 1px;
   color: rgba(232,200,74,0.85);
   margin-top: 2px;
 }
 .akce-pack-btn:active .ferman { transform: scale(0.94); }
 .akce-pack-btn .price-in {
+  /* G3-A2: dokunulacak altın fiyat düğmesi görünümü (düğmenin tamamı tıklanır) */
+  width: 100%;
+  text-align: center;
   font-family: 'Alegreya SC', serif;
-  font-weight: 600;
-  font-size: 11.5px;
-  color: var(--gold-light);
+  font-weight: 700;
+  font-size: 15px;
+  color: #1a1206;
+  background: linear-gradient(180deg, #E8C84A, #B38D1C);
+  border-radius: 8px;
+  padding: 9px 0;
   white-space: nowrap;
 }
 .akce-pack-btn .pack-ribbon {
@@ -4244,7 +4251,7 @@ html, body {
   flex-direction: row;
   gap: 4px;
   width: 100%;
-  max-width: 300px;
+  max-width: 330px; /* G1-A1: kutularla aynı genişlik */
   margin-top: 4px;
 }
 #ghost-buttons-row .intro-btn.ghost {
@@ -5160,7 +5167,7 @@ html, body {
 .akce-pack-btn.starter-pack .starter-info { flex: 1 1 auto; min-width: 0; text-align: left; display: flex; flex-direction: column; gap: 3px; }
 .akce-pack-btn.starter-pack .starter-name { font-family: 'Alegreya SC', serif; font-weight: 700; font-size: 12px; letter-spacing: .12em; color: var(--gold-light, #E8C84A); }
 .akce-pack-btn.starter-pack .starter-sub { font-family: 'Alegreya', serif; font-style: italic; font-size: 13px; color: rgba(240,230,208,.8); }
-.akce-pack-btn.starter-pack .price-in { flex: 0 0 auto; font-size: 13px; }
+.akce-pack-btn.starter-pack .price-in { flex: 0 0 auto; font-size: 13px; width: auto; background: none; color: var(--gold-light); padding: 0; } /* G3-A2 altın düğme görünümü burada yok */
 
 /* ── Mevsim atmosferi (27 Eylül 2026): oyun ekranının en arkasında ── */
 #season-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
@@ -6173,3 +6180,55 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
   opacity: 0; transform: translateY(6px); transition: opacity .5s ease, transform .5s ease; }
 #yil-sonu .ys-tarih span { display: block; font-style: normal; font-family: 'Alegreya SC', serif; font-size: 10.5px; letter-spacing: 2.5px; color: rgba(201,162,39,0.85); margin-bottom: 2px; }
 #yil-sonu.s3 .ys-tarih { opacity: 1; transform: none; }
+
+/* G3-A2 (7 Ekim 2026): Market sekmeleri, üst kapat, karşılık ve değer rozeti */
+#akce-x { position: absolute; top: 14px; right: 14px; z-index: 3; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(201,162,39,0.35); background: rgba(14,11,26,0.6);
+  color: rgba(201,162,39,0.85); display: flex; align-items: center; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#akce-x svg { width: 18px; height: 18px; }
+#market-tabs { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.market-tab { min-height: 42px; border-radius: 6px; border: 1px solid var(--gold-dim); background: transparent; color: rgba(201,162,39,0.78);
+  font-family: 'Alegreya SC', serif; font-size: 11.5px; letter-spacing: 1.6px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.market-tab.on { border-color: var(--gold); color: var(--gold); background: var(--gold-faint); box-shadow: inset 0 -2px 0 var(--gold); }
+#akce-panel .market-section.tab-off { display: none; }
+.akce-pack-btn .pack-per { font-family: 'Alegreya', serif; font-style: italic; font-size: 12px; color: rgba(240,230,208,0.62); }
+.akce-pack-btn .pack-per:empty { display: none; }
+.akce-pack-btn .pack-value { position: absolute; z-index: 2; top: -9px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-family: 'Alegreya SC', serif; font-size: 10px; letter-spacing: .8px;
+  color: #0b2414; background: #7fd197; border-radius: 4px; padding: 1px 8px; }
+.akce-pack-btn .pack-value:empty { display: none; }
+.akce-pack-btn.best { border-color: var(--gold); box-shadow: 0 0 18px rgba(201,162,39,0.25); }
+
+/* G1-A1 (7 Ekim 2026): ana menü — altın OYNA, mod seçici, İLERLEMEN 2×2 büyük kutular */
+#btn-play.play-main { width: 100%; max-width: 330px; min-height: 58px; padding: 0; justify-content: center; font-size: 17px; letter-spacing: 6px; font-weight: 700;
+  color: #1a1206; background: linear-gradient(180deg, #E8C84A, #B38D1C); border: 1px solid var(--gold-light); border-radius: 8px;
+  box-shadow: 0 0 22px rgba(201,162,39,0.28), 0 6px 18px rgba(0,0,0,0.5); }
+#btn-play.play-main:active { transform: translateY(1px); filter: brightness(0.95); }
+#mode-seg { width: 100%; max-width: 330px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.mode-opt { min-height: 44px; padding: 4px; border-radius: 6px; border: 1px solid var(--gold-dim); background: transparent; color: rgba(201,162,39,0.8);
+  font-family: 'Alegreya SC', serif; font-size: 11px; letter-spacing: 1.2px; line-height: 1.15; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mode-opt.on { border-color: var(--gold); color: var(--gold); background: var(--gold-faint); box-shadow: inset 0 0 0 1px rgba(201,162,39,0.25); }
+.menu-head-line { display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%; max-width: 330px; margin-top: 6px;
+  font-family: 'Alegreya SC', serif; font-size: 10.5px; letter-spacing: 3px; color: rgba(201,162,39,0.75); }
+.menu-head-line::before, .menu-head-line::after { content: ''; flex: 1; max-width: 70px; height: 1px; background: linear-gradient(90deg, transparent, rgba(201,162,39,0.45)); }
+.menu-head-line::after { background: linear-gradient(90deg, rgba(201,162,39,0.45), transparent); }
+#progress-grid { width: 100%; max-width: 330px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.prog-tile { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-height: 118px; padding: 12px 8px;
+  border-radius: 12px; border: 1px solid rgba(201,162,39,0.3); background: radial-gradient(ellipse at 50% 0%, rgba(201,162,39,0.12), rgba(201,162,39,0.03) 70%);
+  color: var(--gold); text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.prog-tile:active { background: rgba(201,162,39,0.14); }
+.prog-tile .btn-icon-svg { width: 30px; height: 30px; }
+.prog-tile b { font-family: 'Alegreya SC', serif; font-weight: 500; font-size: 12px; letter-spacing: 1.4px; color: var(--gold); line-height: 1.2; }
+.prog-tile em { font-style: normal; font-family: 'Alegreya SC', serif; font-size: 11.5px; color: #1a1405; background: var(--gold); border: 1px solid var(--gold); border-radius: 9px; padding: 2px 9px 1px;
+  font-variant-numeric: lining-nums tabular-nums; }
+.prog-tile em.z { background: transparent; color: rgba(201,162,39,0.75); border-color: rgba(201,162,39,0.4); }
+.prog-tile #ach-count-badge { margin-left: 0; font-size: 11.5px; padding: 3px 9px 2px; }
+.prog-tile.wide { grid-column: span 2; flex-direction: row; min-height: 52px; gap: 10px; }
+.prog-tile.wide .btn-icon-svg { width: 22px; height: 22px; }
+@media (max-height: 880px) { .prog-tile { min-height: 96px; } }
+@media (max-height: 740px) {
+  #btn-play.play-main { min-height: 50px; }
+  .prog-tile { min-height: 72px; gap: 4px; padding: 8px 6px; }
+  .prog-tile .btn-icon-svg { width: 22px; height: 22px; }
+  .menu-head-line { margin-top: 2px; }
+}
+
+#btn-full-version { max-width: 330px; } /* G1-A1 */
