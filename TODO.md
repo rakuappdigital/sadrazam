@@ -1,5 +1,35 @@
 # Sadrazam — TODO
 
+## SIRADAKİ — 1.7.0 / build 44 İNCELEMEDE (7 Ekim 2026, 12:03 TR) ← BURADAN DEVAM
+
+**Durum:** 1.7.0 / **build 44** (Delivery `d00056a0-c76f-4bf0-a8eb-93d12c69e9f3`) yüklendi; kullanıcı build 43'ü
+incelemeden çekip 44'ü gönderdi → WAITING_FOR_REVIEW (gönderim d0ae70f2…). Export compliance API ile false yapıldı
+(yeni build'lerde HER SEFERİNDE kontrol et: usesNonExemptEncryption boş kalırsa gönderim 409 verir).
+**Push ve Vercel deploy YAPILMADI** (son commit'ler: fb71c05 büyük yama, G1-A1/G3-A2, c71ae08 build 44) — onay bekliyor.
+
+**Build 44'te olanlar (43'e ek):**
+- Büyük yama (fb71c05): G2-B duraklat alt penceresi; A1 İkinci Şans'ta yerinde kese, A3 akçe göstergesi, A4 48 saatlik
+  Hoşgeldin bandı, A7 ölüm ekranında kozmetik önizleme, A9 satın alma töreni; Y1 bağlamsal ipuçları (6, her biri bir kez),
+  Y2 ölüm dersi + sıradaki hedef; K1 saltanat unvanı, K2 Kodeks albümü, K4 çini kart arkası, K6 tarihte bu yıl (34 olay),
+  K7 başarım mührü. Ayrıntı aşağıda "BÜYÜK YAMA UYGULANDI" ve CLAUDE.md.
+- G1-A1 ana menü: #btn-play (OYNA) seçili modun gizli eski düğmesine tıklar (btn-start / btn-pasa-mode / btn-challenge,
+  hidden ama işleyicileri aynı); #mode-seg seçimi sadrazam_menu_mode'da; İLERLEMEN #progress-grid 2×2 .prog-tile
+  (btn-asir/.asir-cnt, btn-defter/.defter-cnt, btn-achievements/#ach-count-badge, btn-howto; btn-pargali .wide).
+  Güç önizleme kutuları (#intro-stats-preview) kaldırıldı. _updateMenuCounts menü açıkken saniyede bir.
+- G3-A2 Market: #market-tabs (Akçe/Eşyalar/Kozmetik, açılışta Akçe; _marketTab, _marketShowAkce), #akce-x üst kapat,
+  2×2 büyük mühür, .pack-per ("N İkinci Şans"), .price-in altın düğme, .pack-value gerçek fiyattan değer rozeti
+  (_packPriceNum; 10'luk keseye göre ≥%10). "Akçe yetmiyor" yönlendirmeleri Akçe sekmesine geçer.
+- Önizleme sayfaları: https://claude.ai/artifact/CdRnh1gUMFZuuvxcSEDRAT (büyük yama), https://claude.ai/artifact/CzTskzKzTzQ4ExW21JKKtH (öneriler).
+
+**Testler (scratchpad):** g13_test.js (G1/G3, hepsi geçti), new_feat_test.js (hepsi geçti), ux_fix_test.js (D6 Market
+ipucu 390'da artık çıkmıyor — sekmeli Market sığdığı için doğru davranış, test beklentisi eski), long_test.js /
+native_ads_test.js / death_test.js / fuzz — son tur sonucu sohbette. Gerçek cihazda henüz denenmedi.
+
+**Yayından sonra bakılacaklar:** AdMob gösterim/istek oranı; TelemetryDeck olayları: ad_impression, quick_pack,
+wallet_tap, starter_band_tap, cosmetic_buy, coach_tip, reign_title, investigate_ad.
+
+**Uygulanmamış öneriler (kullanıcı seçmedi):** A2 ilk kese +%50, A6, A8, A10 · Y3 Y4 Y5 Y6 · K3 K5 K8.
+
 ## SIRADAKİ — 1.7.0 / build 43 incelemede (7 Ekim 2026) + BÜYÜK YAMA seçimleri ← BURADAN DEVAM
 
 **Durum:** 1.7.0 / **build 43** yüklendi (Delivery `023c907c-cd3d-4f8d-be4c-a6a97dca0bb2`), 1.7.0'a bağlanıp
