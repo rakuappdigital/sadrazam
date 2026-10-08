@@ -1,8 +1,16 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 8 Ekim 2026 BÜYÜK PAKET (main'de, BUILD ALINMADI) ← BURADAN DEVAM
+## SIRADAKİ — 1.7.1 / build 45 ASC'DE HAZIR, İNCELEMEYE GÖNDERİLMEDİ ← BURADAN DEVAM
 
-**Durum:** 1.7.0 / build 44 hâlâ incelemede. Aşağıdakilerin hepsi main'de; build 45 alınmadı, push/deploy onayı bekliyor.
+**Durum (8 Ekim 2026, 17:30 TR):** 1.7.0 (build 44) onaylandı, yayında. 1.7.1 / **build 45** yüklendi (Delivery
+`5d508f54-61ef-4776-ac98-87cea8e0f58b`, VALID, şifreleme false), ASC'de 1.7.1 sürümü açıldı (id a9dbb152-…) ve build bağlandı:
+PREPARE_FOR_SUBMISSION. Kullanıcı isteği: 1.7.0'ın bütün lokalizasyonları AYNEN aktarıldı (Apple promotionalText ve
+whatsNew'i boş getirdi → 1.7.0'dan kopyalandı), YALNIZ 17 dilin Keywords alanı kullanıcının havuzlarıyla güncellendi
+(≤100 bayt, ad/alt başlıkla çakışan kelime yok). Alan alan doğrulandı: fark yok. İncelemeye GÖNDERİLMEDİ; GitHub push ve
+Vercel deploy YAPILMADI (commit 39f9b13 + bu commit). Not: it ve fr-FR uygulama adı/alt başlığı eskiden karışık
+(it'de Fransızca, fr'de İngilizce alt başlık) — kullanıcıya söylendi, dokunulmadı.
+
+**İçerik:** aşağıdaki "8 Ekim BÜYÜK PAKET".
 Öneri + uygulama sayfası: https://claude.ai/artifact/21oDqMLacpHpaTUf83Ntdh (en üstte "2. tur" = uygulananlar, ekran görüntüleriyle).
 Kullanıcının görselleri: ~/Desktop/divan (çini 5, akce, muhur-humayun, lutuf 4) → assets/frames, assets/icons, assets/lutuf.
 
