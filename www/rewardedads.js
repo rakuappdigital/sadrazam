@@ -115,11 +115,11 @@ const RewardedAds = (() => {
   // KURAL: reklam ekrana çıktıktan sonra HİÇBİR zamanlayıcı akışı bitiremez.
   // Akış yalnızca native event'lerle biter:
   //   - onRewardedVideoAdReward / showRewardVideoAd() resolve → ödül kazanıldı
-  //   - onRewardedVideoAdDismissed → reklam kapandı → ödül verilir
+  //   - onRewardedVideoAdDismissed → reklam kapandı → ödül YALNIZ kazanıldıysa (8 Ekim 2026)
   //   - onRewardedVideoAdFailedToShow → gösterilemedi → iptal
   // Tek yedek: reklam kapanıp uygulama tekrar görünür olduğu hâlde 2 sn içinde
-  // dismissed event'i gelmezse (event kaybı) yine ödül verilir — bu, reklamın
-  // süresine değil, reklamın gerçekten kapanmasına bağlıdır.
+  // dismissed event'i gelmezse (event kaybı) kapanmış sayılır — yine kazanıldıysa ödül.
+  // onCancel(why): "skipped" = reklam yarıda kapatıldı, aksi hâlde gösterilemedi.
   const LOAD_WAIT_MS = 10000;   // reklam henüz yüklenmediyse en fazla bu kadar bekle
   const LAUNCH_TIMEOUT_MS = 10000; // show çağrısından sonra reklam hiç açılmazsa
 
@@ -179,18 +179,30 @@ const RewardedAds = (() => {
     let launchTimer = null, visTimer = null;
     const handles = [];
 
+    // 8 Ekim 2026: ödül YALNIZ native "ödül kazanıldı" sinyaliyle verilir (onRewardedVideoAdReward
+    // ya da showRewardVideoAd() resolve). Eskiden kapanış (Dismissed) tek başına ödül sayılıyordu →
+    // reklamı yarıda kapatan da ödül alıyordu. Kapanışta sinyal henüz gelmediyse (sıra kayması)
+    // EARN_GRACE_MS beklenir; gelmezse onCancel("skipped").
+    const EARN_GRACE_MS = 1500;
+    let graceTimer = null;
+    const closed = () => {
+      if (done) return;
+      if (earned) { finish(true); return; }
+      if (graceTimer) return;
+      graceTimer = setTimeout(() => finish(earned, "skipped"), EARN_GRACE_MS);
+    };
     const onVis = () => {
       if (done || !shown || document.visibilityState !== "visible") return;
       clearTimeout(visTimer);
-      visTimer = setTimeout(() => finish(true), 2000);
+      visTimer = setTimeout(closed, 2000); // Dismissed olayı kaybolduysa: reklam kapanmış sayılır
     };
-    const finish = (rewarded) => {
+    const finish = (rewarded, why) => {
       if (done) return; done = true;
-      clearTimeout(launchTimer); clearTimeout(visTimer);
+      clearTimeout(launchTimer); clearTimeout(visTimer); clearTimeout(graceTimer);
       document.removeEventListener("visibilitychange", onVis);
       handles.forEach((h) => { try { h?.remove(); } catch (e) {} });
       prepare(); // sıradaki gösterim için yeniden hazırla
-      if (rewarded) { _earn(); onReward(); } else onCancel();
+      if (rewarded) { _earn(); onReward(); } else onCancel(why || "failed");
     };
 
     handles.push(...await Promise.all([
@@ -199,8 +211,8 @@ const RewardedAds = (() => {
         try { window.Analytics?.track('ad_impression', { kind: 'rewarded' }); } catch (e) {} // gerçekten ekrana çıktı
         if (onShow) onShow();
       }),
-      _cap.addListener("onRewardedVideoAdReward", () => { earned = true; _earn(); }),
-      _cap.addListener("onRewardedVideoAdDismissed", () => finish(true)),
+      _cap.addListener("onRewardedVideoAdReward", () => { earned = true; _earn(); if (graceTimer) finish(true); }),
+      _cap.addListener("onRewardedVideoAdDismissed", closed),
       _cap.addListener("onRewardedVideoAdFailedToShow", () => { if (!earned) finish(false); else finish(true); }),
     ]));
     document.addEventListener("visibilitychange", onVis);
@@ -214,7 +226,7 @@ const RewardedAds = (() => {
     // Native taraf bu promise'i kullanıcı ödülü kazandığında resolve eder;
     // reject yalnızca reklam hiç sunulamadığında olur.
     _cap.showRewardVideoAd()
-      .then(() => { earned = true; _earn(); })
+      .then(() => { earned = true; _earn(); if (graceTimer) finish(true); })
       .catch(() => { if (!shown) finish(false); });
   };
 

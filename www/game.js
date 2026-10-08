@@ -227,6 +227,11 @@ function _recoverPendingDailyGift() {
   }
   return got;
 }
+// Ödüllü reklam ödülsüz bittiğinde gösterilen metin. why: "skipped" (yarıda kapatıldı) / diğer (gösterilemedi).
+function _adFailText(why, en) {
+  if (why === "skipped") return en ? "The ad was closed before the end, so no reward was given." : "Reklam sonuna kadar izlenmedi, ödül verilmedi.";
+  return en ? "The ad could not be shown. Please try again shortly." : "Reklam gösterilemedi. Biraz sonra tekrar dene.";
+}
 function updateDailyGiftBadge() {
   const b = document.getElementById("btn-daily-gift");
   let tq = false; try { tq = !_triviaAnsweredToday(); } catch (e) {}
@@ -280,11 +285,11 @@ function showDailyGift() {
           m.classList.add("ok");
           setTimeout(() => { try { if (window.Notif) Notif.ask("gift"); } catch (e) {} }, 1400); // yarınki hediye için haber verelim mi?
         },
-        () => { // gösterilemedi
+        (why) => { // gösterilemedi ya da yarıda kapatıldı → ödül yok
           try { localStorage.removeItem(DAILY_GIFT_PENDING); } catch (e) {}
           if (!document.body.contains(overlay)) return;
           const c2 = overlay.querySelector("#dg-claim"); if (c2) c2.disabled = false;
-          overlay.querySelector("#dg-msg").textContent = isEN ? "The ad could not be shown. Please try again shortly." : "Reklam gösterilemedi. Biraz sonra tekrar dene.";
+          overlay.querySelector("#dg-msg").textContent = _adFailText(why, isEN);
         },
         null,
         () => { lastGot = _claimDailyGift() || lastGot; updateAkceUI(); } // ödül olayı: hemen kalıcı yaz
@@ -601,11 +606,12 @@ function showSecondChanceOffer(reason) {
         closeOverlay();
         resolveSecondChance();
       },
-      () => { // reklam gösterilemedi → teklif ekranına dön
+      (why) => { // reklam gösterilemedi ya da yarıda kapatıldı → ödül yok, teklif ekranına dön
         if (settled) return;
         settled = true;
         closeOverlay();
         showSecondChanceOffer(reason);
+        if (why === "skipped") { try { showItemToast(_adFailText(why, window.LANG === 'en')); } catch (e) {} }
       }
     );
   };
@@ -1348,7 +1354,7 @@ function _showLutuf(done) {
       try { localStorage.setItem(LUTUF_PENDING, JSON.stringify({ cp: cardsPlayed, y: year, k, at: Date.now() })); } catch (e) {}
       RewardedAds.show(
         () => success("ad"),
-        () => { try { localStorage.removeItem(LUTUF_PENDING); } catch (e) {} if (finished) return; lock(false); msg.textContent = en ? "The ad could not be shown. Try again or use akce." : "Reklam gösterilemedi. Tekrar dene ya da akçeyle al."; },
+        (why) => { try { localStorage.removeItem(LUTUF_PENDING); } catch (e) {} if (finished) return; lock(false); msg.textContent = why === "skipped" ? _adFailText(why, en) : (en ? "The ad could not be shown. Try again or use akce." : "Reklam gösterilemedi. Tekrar dene ya da akçeyle al."); },
         null,
         () => success("ad")
       );
@@ -5014,7 +5020,7 @@ function showKatibNotu(sc, opts) {
     if (fb) fb.onclick = () => { _endState.katibFree = true; reveal(); };
     overlay.querySelector(".kn-ad").onclick = () => {
       lock(true); msg.textContent = "";
-      RewardedAds.show(() => { if (document.body.contains(overlay)) reveal(); }, () => { lock(false); msg.textContent = en ? "The ad could not be shown." : "Reklam gösterilemedi."; });
+      RewardedAds.show(() => { if (document.body.contains(overlay)) reveal(); }, (why) => { lock(false); msg.textContent = _adFailText(why, en); });
     };
     overlay.querySelector(".kn-akce").onclick = () => {
       if (spendAkce(1)) { reveal(); return; }
@@ -6932,7 +6938,7 @@ function maybeShowCriticalOffer() {
     lock(true); msg.textContent = "";
     RewardedAds.show(
       () => { if (!document.getElementById("critical-offer") || isGameOver) return; done(); },
-      () => { lock(false); msg.textContent = en ? "The ad could not be shown." : "Reklam gösterilemedi."; }
+      (why) => { lock(false); msg.textContent = _adFailText(why, en); }
     );
   };
   el.querySelector(".co-akce").onclick = () => {
@@ -10408,10 +10414,10 @@ function _offerTahkikAd(c, btn) {
       _an("investigate_ad", { year });
       if (currentCard === c) btn.onclick(); // hakkı hemen bu kartta kullan
       else _cagToast(en ? "<b>+1 INQUIRY</b><span>Use it on any card this year.</span>" : "<b>+1 TAHKİK</b><span>Bu yıl dilediğin kartta kullan.</span>", 2600);
-    }, () => {
+    }, (why) => {
       use.disabled = false;
       const d = popup.querySelector(".icp-desc");
-      if (d) d.textContent = en ? "The ad could not be shown." : "Reklam gösterilemedi.";
+      if (d) d.textContent = _adFailText(why, en);
     });
   };
 }

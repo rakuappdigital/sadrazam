@@ -632,6 +632,15 @@ dışarıda bir görsel üretici gerekmiyor.
      olursa 30sn sonra otomatik yeniden deneniyor (eskiden bir yükleme
      hatasından sonra o oturumda bir daha asla reklam hazırlanmıyordu).
 
+  **8 Ekim 2026 DÜZELTMESİ — yarıda kapatılan reklam ödül VERMEZ:** 26 Eylül'den beri
+  `onRewardedVideoAdDismissed` tek başına ödül sayılıyordu → reklamı 2 sn açıp kapatan da
+  ödül alıyordu (6 ödül noktasının hepsinde; test de bunu "doğru" bekliyordu). Artık ödül YALNIZ
+  native "ödül kazanıldı" sinyaliyle (`onRewardedVideoAdReward` / `showRewardVideoAd()` resolve);
+  kapanışta sinyal yoksa 1,5 sn beklenir (sıra kayması), gelmezse `onCancel("skipped")` →
+  `_adFailText` "Reklam sonuna kadar izlenmedi". **Kapanışı yeniden ödül sayma.** Testler:
+  native_ads_test (noreward=0, dismissfirst=1, nodismissnr=0), ad_skip_test (Tahkik), v8_money (Lütuf).
+  **Test beklentisini koddan değil iş kuralından yaz** — bu hata testin kodu kopyalamasından kaçtı.
+
   `rewardedads.js`'teki `show(onReward, onCancel, onShow)` imzasını ve
   `onRewardedVideoAdShowed`/`onRewardedVideoAdFailedToShow`/
   `onRewardedVideoAdLoaded`/`onRewardedVideoAdFailedToLoad` dinleyicilerini
