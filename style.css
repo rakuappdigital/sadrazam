@@ -397,7 +397,7 @@ html, body {
   display: flex; flex-direction: column; align-items: center; gap: 12px;
   text-align: center; animation: iipSlideUp 0.3s cubic-bezier(0.16,1,0.3,1);
 }
-#rating-stars { font-size: 24px; letter-spacing: 4px; }
+#rating-stars { font-size: 24px; letter-spacing: 4px; color: var(--gold); }
 #rating-title {
   font-family: 'Cinzel Decorative', serif; font-size: 15px;
   color: var(--gold); letter-spacing: 2px;
@@ -4515,7 +4515,7 @@ html, body {
 #about-stats span { font-family: 'Alegreya SC', serif; font-size: 8px; letter-spacing: 1.2px; color: rgba(240,230,208,0.6); }
 #about-hello { margin: 2px 0 0; font-family: 'Alegreya SC', serif; font-size: 14px; color: var(--gold-light); letter-spacing: 0.5px; }
 #about-text, #about-text2 { margin: 0; font-family: 'Alegreya', serif; font-size: 15px; line-height: 1.55; color: #e6dcc4; }
-#about-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 2px; }
+#about-cta { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 2px; } /* 8 Ekim 2026: Görüş Yaz kaldırıldı, tek düğme */
 #about-cta button { font-family: 'Alegreya SC', serif; font-size: 10.5px; letter-spacing: 1.2px; padding: 10px 4px; border-radius: 5px; cursor: pointer;
   border: 1px solid var(--gold-dim); background: transparent; color: var(--gold-light); -webkit-tap-highlight-color: transparent; }
 #about-cta #about-rate { background: var(--gold); color: #1a1006; border-color: var(--gold); }
@@ -5562,7 +5562,8 @@ html, body {
 @media (prefers-reduced-motion: reduce) { #death-scene.on .ds-img { animation: none; transform: none; } #death-scene.on * { animation-duration: .01ms !important; animation-delay: 0s !important; } }
 
 /* ── Göreve başlama: Mühr-i Hümayun (4 Ekim 2026) — akan dikey düzen, üst üste binmez ── */
-#culus-overlay { position: fixed; inset: 0; z-index: 280; background: #07050c; overflow: hidden; opacity: 0; transition: opacity .4s ease;
+/* 8 Ekim 2026: ilk karede tam opak — eskiden 0,4 sn'de beliriyordu ve altta oyun ekranı (barlar, önceki kart) bir an görünüyordu */
+#culus-overlay { position: fixed; inset: 0; z-index: 280; background: #07050c; overflow: hidden; opacity: 1;
   display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1.4vh;
   padding: calc(env(safe-area-inset-top, 0px) + 2.6vh) 22px calc(env(safe-area-inset-bottom, 0px) + 3vh); }
 #culus-overlay.on { opacity: 1; }
@@ -5752,17 +5753,28 @@ html, body {
 .mc-opt { font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: .04em; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--gold-dim); background: transparent; color: rgba(240,230,208,.75); cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .mc-opt.on { background: var(--gold); color: #1a1006; border-color: var(--gold); }
 .mc-owned { font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: .08em; color: var(--gold-light); align-self: center; white-space: nowrap; }
-/* Çini Kart Çerçevesi: kartın üstüne çizilen desenli kenar (yerleşimi değiştirmez) */
-#card.frame-iznik::after, #card.frame-kutahya::after, #card.frame-lale::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; padding: 7px; border-radius: inherit;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; }
-#card.frame-iznik::before, #card.frame-kutahya::before, #card.frame-lale::before { content: ""; position: absolute; inset: 7px; z-index: 3; pointer-events: none; border: 1px solid rgba(232,200,74,.9); border-radius: 6px; }
-#card.frame-iznik::after { background: repeating-conic-gradient(from 45deg, #1b3f8f 0 25%, #f3efe2 0 50%) 0 0 / 14px 14px, #1b3f8f; }
-#card.frame-kutahya::after { background: radial-gradient(circle, #e8c84a 0 2px, transparent 3px) 0 0 / 12px 12px, linear-gradient(135deg, #1f6b4a, #0f4a33); }
-#card.frame-lale::after { background: radial-gradient(ellipse 4px 7px at 50% 55%, #f3efe2 0 60%, transparent 70%) 0 0 / 14px 16px, linear-gradient(135deg, #a81f1f, #6e1010); }
+/* Çini Kart Çerçevesi (8 Ekim 2026: kullanıcının 5 gerçek çini görseli, tek tek satılır).
+   Kartın üstüne çizilir, yerleşimi değiştirmez. Görseldeki desen bandı (~%11) border-image ile 13 px'e
+   ölçeklenir; köşe rozetleri bozulmaz. Kart overflow:hidden + radius olduğu için köşeler kırpılır. */
+#card.has-frame::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+  border: 13px solid transparent; border-image-width: 13px; border-image-repeat: stretch; }
+#card.frame-iznik::after   { border-image-source: url("assets/frames/cini-iznik.png");   border-image-slice: 62 62 64 62; }
+#card.frame-kutahya::after { border-image-source: url("assets/frames/cini-kutahya.png"); border-image-slice: 68 64 82 64; }
+#card.frame-lale::after    { border-image-source: url("assets/frames/cini-lale.png");    border-image-slice: 63 62 77 61; }
+#card.frame-tekfur::after  { border-image-source: url("assets/frames/cini-tekfur.png");  border-image-slice: 62 61 78 60; }
+#card.frame-rustem::after  { border-image-source: url("assets/frames/cini-rustem.png");  border-image-slice: 69 69 85 68; }
 #card.frame-iznik #card-bottom { background: linear-gradient(180deg, #0d1730, #0a1124); }
 #card.frame-kutahya #card-bottom { background: linear-gradient(180deg, #0c2219, #08180f); }
 #card.frame-lale #card-bottom { background: linear-gradient(180deg, #200b0b, #160707); }
+#card.frame-tekfur #card-bottom { background: linear-gradient(180deg, #0b2427, #07181a); }
+#card.frame-rustem #card-bottom { background: linear-gradient(180deg, #1c0f12, #120a0c); }
+/* Çerçeve önizlemesi (Market penceresi) için aynı kurallar */
+.cf-card.has-frame::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; border: 11px solid transparent; border-image-width: 11px; border-image-repeat: stretch; }
+.cf-card.frame-iznik::after   { border-image-source: url("assets/frames/cini-iznik.png");   border-image-slice: 62 62 64 62; }
+.cf-card.frame-kutahya::after { border-image-source: url("assets/frames/cini-kutahya.png"); border-image-slice: 68 64 82 64; }
+.cf-card.frame-lale::after    { border-image-source: url("assets/frames/cini-lale.png");    border-image-slice: 63 62 77 61; }
+.cf-card.frame-tekfur::after  { border-image-source: url("assets/frames/cini-tekfur.png");  border-image-slice: 62 61 78 60; }
+.cf-card.frame-rustem::after  { border-image-source: url("assets/frames/cini-rustem.png");  border-image-slice: 69 69 85 68; }
 /* Sadrazam Kaftanı */
 .cosm-kaftan { display: block; object-fit: contain; margin: 0 auto; }
 .cosm-kaftan.k-lacivert { filter: hue-rotate(205deg) saturate(1.1); }
@@ -5987,7 +5999,12 @@ html[lang="en"] .sultan-card.selected::after { content: 'SELECTED'; }
 .gm-ic { width: 22px; height: 22px; color: var(--gold); display: block; }
 .gm-ic svg { width: 100%; height: 100%; display: block; }
 .game-menu-option.primary.gm-continue { background: linear-gradient(180deg, #E8C84A, #B38D1C); border-color: var(--gold-light); color: #1a1206; font-weight: 700; min-height: 54px; font-size: 14px; letter-spacing: 4px; box-shadow: 0 0 22px rgba(201,162,39,0.25); }
-#game-menu-box .gm-quit-link { margin-top: -2px; align-self: flex-start; }
+/* 8 Ekim 2026 (kullanıcı isteği): "Oyunu bitir" köşede, arka plansız duruyordu → ortalı, tam genişlik, opak kırmızı */
+#game-menu-box .gm-quit-link { margin-top: 2px; align-self: stretch; width: 100%; min-height: 46px; border-radius: 6px;
+  background: linear-gradient(180deg, #8e2420, #6a1714); border: 1px solid #b8463e; color: #f6e3d6;
+  font-size: 12.5px; letter-spacing: 2.5px; box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+#game-menu-box .gm-quit-link:active { filter: brightness(.88); transform: translateY(1px); }
+#game-menu-box .gm-confirm-b .game-menu-option.danger { background: linear-gradient(180deg, #8e2420, #6a1714); border-color: #b8463e; color: #f6e3d6; }
 
 /* A1 (7 Ekim 2026): İkinci Şans'ta yerinde kese — oyunun mühür (.ferman) ve altın düğme (.mi-buy) dili */
 .qp-sep { display: flex; align-items: center; gap: 8px; font-family: 'Alegreya', serif; font-style: italic; font-size: 12.5px; color: rgba(240,230,208,0.55); }
@@ -6078,11 +6095,7 @@ html[lang="en"] .sultan-card.selected::after { content: 'SELECTED'; }
 #gameover-cosm .cp-death::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(5,3,12,.85)); }
 #gameover-cosm .cp-kaftan { position: absolute; z-index: 1; left: 50%; bottom: 8px; width: 40px; height: 40px; transform: translateX(-50%); filter: drop-shadow(0 0 8px rgba(232,200,74,.5)); }
 #gameover-cosm .cp-card img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
-#gameover-cosm .cp-card::after { content: ""; position: absolute; inset: 0; padding: 5px; border-radius: inherit;
-  background: repeating-conic-gradient(from 45deg, #1b3f8f 0 25%, #f3efe2 0 50%) 0 0 / 10px 10px, #1b3f8f;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; }
-#gameover-cosm .cp-card::before { content: ""; position: absolute; z-index: 1; inset: 5px; border: 1px solid rgba(232,200,74,.9); border-radius: 4px; }
+#gameover-cosm .cf-card.has-frame::after { border-width: 7px; border-image-width: 7px; } /* 8 Ekim: gerçek çini görseli */
 #gameover-cosm .cp-gild { background: radial-gradient(ellipse at 50% 0%, rgba(232,200,74,.3), transparent 60%), linear-gradient(180deg, #f3e8cc, #e6d3a8); outline: 1px solid #b8892a; outline-offset: -6px; padding: 12px 10px; display: flex; flex-direction: column; gap: 6px; }
 #gameover-cosm .cp-dc { font-family: 'Cinzel Decorative', serif; font-size: 26px; line-height: .9; color: #9a1d12; }
 #gameover-cosm .cp-gild i { display: block; height: 3px; border-radius: 2px; background: rgba(90,60,20,.35); }
@@ -6145,10 +6158,12 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
   background: radial-gradient(circle at 40% 35%, #1a1430, #0b0918 70%); border: 2px double var(--gold-light);
   box-shadow: 0 0 0 6px rgba(14,11,26,0.85), 0 0 24px rgba(232,200,74,0.35); display: flex; align-items: center; justify-content: center; }
 #card-back .cb-medal img { width: 52%; height: auto; filter: drop-shadow(0 0 8px rgba(232,200,74,0.35)); }
-#card-back.flip { visibility: visible; animation: cardBackFlip .58s cubic-bezier(.45,.05,.35,1) forwards; }
+/* 8 Ekim 2026 (kullanıcı isteği): 0,58 sn çok hızlıydı → 2 sn; kısa bekleyiş + yavaş dönüş */
+#card-back.flip { visibility: visible; animation: cardBackFlip 2s cubic-bezier(.42,0,.38,1) forwards; }
 @keyframes cardBackFlip {
   0%   { opacity: 1; transform: perspective(900px) rotateY(0deg); }
-  38%  { opacity: 1; transform: perspective(900px) rotateY(0deg); }
+  14%  { opacity: 1; transform: perspective(900px) rotateY(0deg); }
+  70%  { opacity: 1; transform: perspective(900px) rotateY(64deg); }
   100% { opacity: 0; transform: perspective(900px) rotateY(90deg); visibility: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { #card-back, #card-back.flip { display: none; animation: none; } }
@@ -6232,3 +6247,268 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 }
 
 #btn-full-version { max-width: 330px; } /* G1-A1 */
+
+/* ════════════════════════════════════════
+   8 Ekim 2026 — kayıtlı oyun sorusu (OYNA'ya basınca), Tam Sürüm sahibi
+════════════════════════════════════════ */
+#resume-ask { z-index: 700; }
+.ra-box .ra-text { margin: 2px 0 0; }
+.ra-when { font-family: 'Alegreya', serif; font-size: 15px; line-height: 1.45; color: rgba(240,230,208,.92); }
+.ra-when b { color: var(--gold-light); font-family: 'Alegreya SC', serif; letter-spacing: 1px; }
+.ra-when span { font-size: 13px; color: rgba(240,230,208,.6); }
+.ip-box > button.ra-go { background: linear-gradient(180deg, #E8C84A, #B38D1C); color: #1a1206; border-color: var(--gold-light); font-weight: 700; letter-spacing: 3px; min-height: 48px; }
+.ip-box > button.ra-close { background: none; border: 0; color: rgba(240,230,208,.55); min-height: 40px; margin-top: 0; }
+.ra-warn { width: 100%; margin-top: 4px; padding-top: 10px; border-top: 1px solid rgba(180,30,30,.35); font-family: 'Alegreya', serif; font-size: 13.5px; line-height: 1.45; color: rgba(240,230,208,.88); }
+.ra-wb { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; }
+.ra-wb button { min-height: 44px; border-radius: 6px; font-family: 'Alegreya SC', serif; font-size: 11.5px; letter-spacing: 1.2px; cursor: pointer; }
+.ra-wb .ra-no { background: transparent; border: 1px solid rgba(201,162,39,.35); color: rgba(201,162,39,.85); }
+.ra-wb .ra-yes { background: linear-gradient(180deg, #8e2420, #6a1714); border: 1px solid #b8463e; color: #f6e3d6; }
+.ra-box .hidden { display: none !important; }
+#btn-full-version.owned { background: rgba(201,162,39,.06); border-color: rgba(201,162,39,.35); color: rgba(232,200,74,.85); box-shadow: none; animation: none; }
+#btn-full-version.owned::before, #btn-full-version.owned::after { display: none; }
+.fo-box .fo-seal { width: 54px; height: 54px; margin-bottom: 2px; }
+.fo-list { list-style: none; margin: 2px 0 0; padding: 0; width: 100%; text-align: left; display: flex; flex-direction: column; gap: 7px; }
+.fo-list li { position: relative; padding-left: 20px; font-family: 'Alegreya', serif; font-size: 14px; line-height: 1.4; color: rgba(240,230,208,.9); }
+.fo-list li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--gold-light); font-weight: 700; }
+.ip-box p.fo-thanks { font-style: italic; font-size: 13px; color: rgba(240,230,208,.6); }
+.se-cancel { width: 100%; margin-top: 2px; min-height: 40px; background: none; border: 0; color: rgba(240,230,208,.6); font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: 1.5px; cursor: pointer; }
+.fm-reroll .fm-rr-cost { display: inline-flex; align-items: center; gap: 3px; text-decoration: none; font-weight: 600; }
+.fm-rr-left { font-family: 'Alegreya', serif; font-size: 11.5px; font-style: italic; color: rgba(60,40,10,.72); margin: -2px 18px 2px; }
+/* 8 Ekim 2026: çini çerçeve takılıyken kartın kenarında 7 px desen + altın hat var; alt bölümdeki
+   düğmeler (Padişah ziyareti, Tarih Düğümü, seçenekli kartlar) bu banda taşıyordu → bant kadar iç boşluk */
+#card.has-frame:is(.no-swipe, .has-easter-choices) #card-bottom { padding: 10px 17px 24px; } /* yalnız düğmeli kartlar; normal kartın boyu değişmez */
+/* Uzun özel düğme yazısı (ör. "SADAKATİMDEN ŞÜPHE ETMEYİN PADİŞAHIM.") 3-4 satıra kırılıyordu */
+#easter-action-btn.long { letter-spacing: 1.4px; font-size: 12px; line-height: 1.35; padding: 11px 14px; }
+/* 8 Ekim 2026: küçük ekranda ferman parşömeni kayıyor ve "BAŞ ÜSTÜNE" görünmüyordu → ana düğme parşömenin
+   altına yapışık; kısa ekranlarda tuğra/metin sıkışır */
+#ferman-overlay .fm-btn { position: sticky; bottom: 8px; z-index: 3; box-shadow: inset 0 0 0 1px rgba(232,200,74,0.45), 0 -6px 14px 4px rgba(222,203,152,.95); }
+@media (max-height: 700px), (max-width: 340px) {
+  .fm-tugra { width: 78px; height: 50px; margin: 8px auto 0; }
+  .fm-intro { font-size: 13.5px; line-height: 1.38; margin-top: 4px; margin-bottom: 6px; }
+  .fm-list { padding: 7px 0; gap: 5px; margin-bottom: 8px; }
+  .fm-list li { font-size: 14px; }
+  .fm-stakes { margin-bottom: 8px; }
+}
+
+/* ── 8 Ekim 2026: Market kozmetik — çini desen kutucukları, önizleme pencereleri (M2-A, M3-A), satır içi mühür (M1-C) ── */
+.cosm-pop { z-index: 760; }
+.cf-tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; margin-top: 8px; }
+.cf-tile { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 2px 5px; border-radius: 7px; border: 1px solid rgba(201,162,39,.28); background: rgba(14,11,26,.6); cursor: pointer; -webkit-tap-highlight-color: transparent; min-width: 0; }
+.cf-tile.own { border-color: rgba(201,162,39,.55); }
+.cf-tile.on { border-color: var(--gold-light); box-shadow: 0 0 0 1px rgba(232,200,74,.45), 0 0 10px rgba(232,200,74,.25); }
+.cf-sw { display: block; width: 100%; max-width: 40px; aspect-ratio: 3 / 4; border-radius: 4px; background: #f3efe2 center / 100% 100% no-repeat; }
+.cf-l { font-family: 'Alegreya SC', serif; font-size: 9px; letter-spacing: .3px; color: rgba(240,230,208,.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.cf-p { display: inline-flex; align-items: center; gap: 2px; font-family: 'Alegreya SC', serif; font-size: 9.5px; color: var(--gold-light); white-space: nowrap; }
+.cf-p .akce-coin-svg { width: 10px; height: 10px; }
+.cf-tile.mini { padding: 3px; } .cf-tile.mini .cf-sw { max-width: 34px; }
+.cp-box { gap: 10px; }
+.cf-card { position: relative; width: min(56vw, 200px); border-radius: 12px; overflow: hidden; background: #0E0B1A; border: 1px solid rgba(201,162,39,.55); box-shadow: 0 12px 30px rgba(0,0,0,.55); }
+.cf-card .cf-img { aspect-ratio: 3 / 3.3; background: #1a1430 center 15% / cover no-repeat; }
+.cf-card .cf-bt { display: flex; flex-direction: column; gap: 4px; padding: 8px 16px 16px; text-align: center; }
+.cf-card .cf-bt b { font-family: 'Alegreya SC', serif; font-size: 13px; letter-spacing: 1.2px; color: var(--gold); }
+.cf-card .cf-bt span { font-family: 'Alegreya', serif; font-size: 12px; line-height: 1.35; color: var(--text); }
+.cf-back { position: absolute; inset: 0; z-index: 6; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(circle at 50% 50%, rgba(8,6,18,0) 0 26%, rgba(8,6,18,.35) 27% 29%, transparent 30%), repeating-conic-gradient(from 45deg, #1b3f8f 0 25%, #f3efe2 0 50%) 0 0 / 22px 22px;
+  box-shadow: inset 0 0 0 7px #0E0B1A, inset 0 0 0 8px rgba(232,200,74,.9); animation: cfFlip 4s cubic-bezier(.42,0,.38,1) infinite; }
+@keyframes cfFlip { 0%, 7% { opacity: 1; transform: perspective(900px) rotateY(0); } 35% { opacity: 1; transform: perspective(900px) rotateY(64deg); } 50%, 100% { opacity: 0; transform: perspective(900px) rotateY(90deg); } }
+.cp-price { display: inline-flex; align-items: center; gap: 6px; font-family: 'Alegreya SC', serif; font-size: 13px; letter-spacing: 1px; color: var(--gold-light); margin-top: 2px; }
+.cp-price .akce-coin-svg { width: 15px; height: 15px; }
+.cp-actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 8px; width: 100%; }
+.ip-box .cp-actions button { margin-top: 0; min-height: 46px; }
+.ip-box .cp-actions .cp-close { background: transparent; border: 1px solid rgba(201,162,39,.3); color: rgba(240,230,208,.7); }
+.ip-box .cp-actions .cp-main { background: linear-gradient(180deg, #E8C84A, #B38D1C); border-color: var(--gold-light); color: #1a1006; font-weight: 700; letter-spacing: 2px; }
+.ip-box .cp-actions .cp-main:disabled { background: rgba(201,162,39,.1); color: rgba(232,200,74,.75); border-color: rgba(201,162,39,.35); cursor: default; }
+.ip-box > button.cp-off { background: none; border: 0; min-height: 36px; margin-top: 0; color: rgba(240,230,208,.55); font-size: 11px; }
+.cp-msg { min-height: 16px; font-family: 'Alegreya', serif; font-size: 13px; color: var(--gold-light); text-align: center; }
+.kp-img { width: 132px; height: 132px; filter: drop-shadow(0 0 12px rgba(232,200,74,.3)); }
+.kp-img.k-lacivert { filter: hue-rotate(205deg) saturate(1.1) drop-shadow(0 0 12px rgba(232,200,74,.3)); }
+.kp-img.k-zumrut { filter: hue-rotate(115deg) saturate(.9) drop-shadow(0 0 12px rgba(232,200,74,.3)); }
+.kp-sw, .ms-sw { display: flex; gap: 10px; justify-content: center; }
+.kp-sw .sw, .ms-sw .sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid rgba(232,200,74,.35); cursor: pointer; padding: 0; }
+.kp-sw .sw.on, .ms-sw .sw.on { border-color: var(--gold-light); box-shadow: 0 0 0 2px rgba(232,200,74,.35); }
+.kp-name { font-family: 'Alegreya SC', serif; font-size: 13px; letter-spacing: 1.5px; color: var(--gold-light); }
+.ip-box p.kp-d { font-size: 13px; color: rgba(240,230,208,.72); }
+#market-cosmetic-list .mc-row.mc-cosm[data-id="kaftan"] .mc-ico { cursor: pointer; }
+.mc-seal.open { align-items: flex-start; }
+.ms-ed { display: flex; flex-direction: column; gap: 7px; margin-top: 9px; }
+.ms-l { font-family: 'Alegreya SC', serif; font-size: 10px; letter-spacing: 2px; color: var(--gold); }
+.ms-txt { width: 76px; text-align: center; margin: 0; }
+.ms-opts { display: flex; flex-wrap: wrap; gap: 5px; }
+.ms-opts .ms-opt { min-height: 34px; padding: 5px 10px; }
+.ms-sw { justify-content: flex-start; }
+.ms-ok { min-height: 15px; font-family: 'Alegreya', serif; font-size: 12.5px; color: var(--gold-light); }
+/* K1-A (8 Ekim 2026): akçe miktarı taşıyan mühürler kullanıcının mum mühür görseliyle (assets/icons/akce-seal.png, 10 KB).
+   Rakam mumun düz ortasına kabartma gibi oturur; çizilmiş halka/çift çerçeve kapanır. */
+#akce-screen .akce-pack-btn .ferman, #akce-screen .starter-pack .ferman, .qp-box .ferman.qp-seal, #akce-ceremony .ferman.ac-seal, #starter-offer .so-seal {
+  background: url("assets/icons/akce-seal.png") center / 100% 100% no-repeat; border: 0; border-radius: 0;
+  box-shadow: none; filter: drop-shadow(0 6px 8px rgba(0,0,0,.55)); }
+#akce-screen .akce-pack-btn .ferman::before, #akce-screen .starter-pack .ferman::before, .qp-box .ferman.qp-seal::before, #akce-ceremony .ferman.ac-seal::before { display: none; }
+#akce-screen .akce-pack-btn .ferman .famt, #akce-screen .starter-pack .ferman .famt, .qp-box .ferman.qp-seal .famt, #akce-ceremony .ferman.ac-seal .famt {
+  color: #f6d98e; text-shadow: 0 1px 0 #3b0905, 0 -1px 0 rgba(255,200,170,.25), 0 0 6px rgba(60,6,2,.6); margin-top: 6%; }
+#akce-screen .akce-pack-btn .ferman .funit, #akce-screen .starter-pack .ferman .funit { color: rgba(246,217,142,.85); text-shadow: 0 1px 0 #3b0905; }
+#starter-offer .so-seal::before { display: none; }
+.cp-box .cf-pop-tiles { width: 100%; max-width: 250px; margin-top: 0; }
+.cf-sw { background-color: #0E0B1A; }
+/* 8 Ekim 2026: Mührü Al sahnesinde kullanıcının gerçekçi Mühr-i Hümayun görseli (yastık görselin içinde).
+   Çizilmiş yastık/halka kalktı; altında yumuşak, oval temas gölgesi. Düşüş animasyonu aynı (.cu-seal). */
+.cu-sealbox { height: min(17vh, 138px); width: 170px; }
+.cu-seal.cu-seal-img { height: 100%; max-height: 138px; width: auto; aspect-ratio: auto; bottom: 6px; filter: drop-shadow(0 10px 12px rgba(0,0,0,.55)); object-fit: contain; }
+.cu-shadow { position: absolute; left: 50%; bottom: 0; width: 120px; height: 16px; margin-left: -60px; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.6), rgba(0,0,0,0) 70%); opacity: 0; transition: opacity .5s .5s; }
+#culus-overlay.st3 .cu-shadow { opacity: 1; }
+@media (max-height: 700px) { .cu-sealbox { height: min(15vh, 110px); } }
+/* T-A (8 Ekim 2026): Günün Sorusu — kâtibin parşömeni; HEDİYE penceresinin içinden ya da bildirimden açılır */
+#trivia-overlay { z-index: 950; } /* hediye penceresi 900 */
+.tv-paper { width: min(90vw, 340px); max-height: 88vh; overflow-y: auto; border-radius: 4px; padding: 18px 16px 10px; display: flex; flex-direction: column; gap: 10px; color: #2b1c0b;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.35), transparent 60%), linear-gradient(180deg, #efe0bb, #e3cf9e 60%, #d9c08a); box-shadow: inset 0 0 40px rgba(120,80,20,.25), 0 14px 34px rgba(0,0,0,.6); }
+.tv-k { font-family: 'Alegreya SC', serif; font-size: 10.5px; letter-spacing: 2.5px; color: #7a2a12; text-align: center; }
+.tv-body { display: flex; flex-direction: column; gap: 9px; }
+.tv-q { margin: 0; font-family: 'Alegreya', serif; font-size: 16px; line-height: 1.4; text-align: center; }
+.tv-x { margin: 0; font-family: 'Alegreya', serif; font-style: italic; font-size: 13.5px; text-align: center; color: rgba(43,28,11,.75); }
+.tv-load { text-align: center; font-size: 20px; color: #7a2a12; }
+.tv-opts { display: flex; flex-direction: column; gap: 7px; }
+.tv-o { text-align: left; min-height: 44px; padding: 9px 12px; border-radius: 6px; border: 1px solid rgba(43,28,11,.3); background: rgba(255,255,255,.28); font-family: 'Alegreya', serif; font-size: 14.5px; color: #2b1c0b; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.tv-o b { font-family: 'Alegreya SC', serif; color: #7a2a12; margin-right: 4px; }
+.tv-o:disabled { cursor: default; opacity: .75; }
+.tv-o.right { background: rgba(33,99,47,.22); border-color: #21632f; opacity: 1; }
+.tv-o.wrong { background: rgba(138,29,18,.18); border-color: #8a1d12; opacity: 1; }
+.tv-r { min-height: 18px; font-family: 'Alegreya', serif; font-size: 13.5px; line-height: 1.4; text-align: center; }
+.tv-r .ok { color: #21632f; } .tv-r .no { color: #8a1d12; }
+.tv-close { align-self: center; min-height: 40px; padding: 6px 18px; background: none; border: 0; font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: 1.5px; color: #6b4a10; cursor: pointer; }
+.dg-q { margin-top: 2px; }
+.dg-trivia { width: 100%; min-height: 46px; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid rgba(201,162,39,.45); background: linear-gradient(180deg, #efe0bb, #d9c08a); color: #2b1c0b; -webkit-tap-highlight-color: transparent; }
+.dg-q-k { font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: 1.5px; color: #7a2a12; font-weight: 700; }
+.dg-q-r { font-family: 'Alegreya SC', serif; font-size: 12px; color: #6B1A1A; }
+.dg-q-done { display: block; text-align: center; font-family: 'Alegreya', serif; font-style: italic; font-size: 13px; color: rgba(240,230,208,.6); }
+
+/* ════════════════════════════════════════
+   T1-A (8 Ekim 2026, kullanıcı seçimi): ortak menü dili "Gece Divanı"
+   Bütün menü ve bilgi pencereleri aynı zemin, çerçeve ve gölgeyle. Defter, Ferman, Vakayiname,
+   soru parşömeni, ölüm/son sahneleri kendi malzemesini korur (bunlar menü değil, nesne).
+════════════════════════════════════════ */
+:root {
+  --menu-bg: linear-gradient(180deg, #17122d 0%, #0d0a1b 100%);
+  --menu-line: rgba(201,162,39,.38);
+  --menu-radius: 16px;
+  --menu-shadow: 0 18px 50px rgba(0,0,0,.62), 0 0 40px rgba(201,162,39,.07);
+}
+#settings-box, #akce-panel, .rr-box, .ip-box, #daily-gift-box, #game-menu-box, #tutorial-box, #second-chance-box, #rating-box, #about-box, #gameover-panel {
+  background: var(--menu-bg); border-color: var(--menu-line); box-shadow: var(--menu-shadow); }
+#settings-box, .rr-box, .ip-box, #daily-gift-box, #tutorial-box, #second-chance-box, #rating-box, #about-box { border-radius: var(--menu-radius); }
+#about-hero::after { background: linear-gradient(180deg, rgba(23,18,45,0.15), #17122d 96%); }
+/* R2-B (8 Ekim 2026): Tarih Düğümü hazırlık koşulları — simgeli çipler, düz dil */
+#card-chips { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-top: 2px; }
+#card-chips.hidden { display: none; }
+#card-chips .pc-h { font-family: 'Alegreya SC', serif; font-size: 9.5px; letter-spacing: 2px; color: var(--gold); }
+#card-chips .pc-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
+#card-chips .pc { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px 3px 6px; border-radius: 999px; font-family: 'Alegreya', serif; font-size: 12px; line-height: 1.25; color: var(--text); background: rgba(14,11,26,.55); white-space: nowrap; }
+#card-chips .pc.y { border: 1px solid rgba(95,174,110,.65); } #card-chips .pc.n { border: 1px solid rgba(184,70,62,.7); }
+#card-chips .pc img { width: 15px; height: 15px; object-fit: contain; }
+#card-chips .pc b { color: var(--gold-light); font-weight: 700; }
+#card-chips .pc em { font-style: normal; font-weight: 700; } #card-chips .pc.y em { color: #8fd49c; } #card-chips .pc.n em { color: #ef8a80; }
+#card-chips .pc-dot { font-style: normal; color: var(--gold); font-size: 11px; }
+@media (max-width: 360px) { #card-chips .pc { font-size: 11px; padding: 2px 7px 2px 5px; } }
+/* R1-A (8 Ekim 2026): Kader Mührü — şans kartında ve sefer kararında */
+#kader-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; width: 100%; margin-top: 8px; }
+#kader-row button, #easter-choice-row .sz-free, #easter-choice-row .sz-seal { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; padding: 7px 6px; border-radius: 7px; cursor: pointer;
+  font-family: 'Alegreya SC', serif; font-size: 11px; letter-spacing: 1px; -webkit-tap-highlight-color: transparent; }
+#kader-row small, #easter-choice-row .sz-free small, #easter-choice-row .sz-seal small { display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; letter-spacing: .5px; opacity: .85; }
+#kader-row small .akce-coin-svg, #easter-choice-row small .akce-coin-svg { width: 11px; height: 11px; }
+#kader-row .kd-free, #easter-choice-row .sz-free { background: transparent; border: 1px solid rgba(201,162,39,.45); color: var(--gold-light); }
+#kader-row .kd-seal, #easter-choice-row .sz-seal { background: linear-gradient(180deg, #E8C84A, #B38D1C); border: 1px solid var(--gold-light); color: #1a1006; font-weight: 700; animation: kdGlow 2s ease-in-out infinite; }
+#kader-row .kd-seal:disabled, #easter-choice-row .sz-seal:disabled { background: rgba(201,162,39,.08); color: rgba(232,200,74,.55); border-color: rgba(201,162,39,.3); animation: none; cursor: default; font-weight: 500; }
+#kader-row button:disabled { cursor: default; }
+@keyframes kdGlow { 50% { box-shadow: 0 0 14px rgba(232,200,74,.55); } }
+#chance-coin.sealed { filter: drop-shadow(0 0 14px rgba(232,200,74,.85)); }
+#chance-coin.sealed::after { content: ""; position: absolute; right: -8px; bottom: -6px; width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #d4473a, #8a1d12 70%, #5e110a); box-shadow: 0 2px 5px rgba(0,0,0,.5); z-index: 3; animation: kdStamp .45s cubic-bezier(.3,1.4,.5,1) both; }
+@keyframes kdStamp { from { transform: scale(2.2); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { #kader-row .kd-seal, #easter-choice-row .sz-seal { animation: none; } }
+/* R3-A (8 Ekim 2026): Sultan'ın Lütfu */
+#lutuf-overlay { z-index: 275; }
+.lf-box { width: min(92vw, 350px); gap: 10px; }
+.lf-k { font-family: 'Alegreya SC', serif; font-size: 10.5px; letter-spacing: 2.5px; color: var(--gold); }
+.lf-img { width: 100%; aspect-ratio: 16 / 10; border-radius: 10px; background: #1a1430 center / cover no-repeat; border: 1px solid rgba(201,162,39,.45); box-shadow: 0 8px 20px rgba(0,0,0,.45); }
+.ip-box p.lf-t { font-size: 14px; }
+.lf-n { font-family: 'Alegreya SC', serif; font-size: 14px; letter-spacing: 2px; color: var(--gold-light); }
+.lf-b { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+.lf-b button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 48px; border-radius: 7px; cursor: pointer; font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: 1.2px; }
+.lf-b .lf-akce { background: linear-gradient(180deg, #E8C84A, #B38D1C); border: 1px solid var(--gold-light); color: #1a1006; font-weight: 700; }
+.lf-b .lf-akce .akce-coin-svg { width: 15px; height: 15px; }
+.lf-b .lf-ad { background: transparent; border: 1px solid rgba(201,162,39,.5); color: var(--gold-light); }
+.lf-b button:disabled { opacity: .55; cursor: default; }
+.ip-box > button.lf-no { background: none; border: 0; min-height: 38px; margin-top: 0; color: rgba(240,230,208,.55); font-size: 11.5px; }
+.lf-msg { min-height: 16px; font-family: 'Alegreya', serif; font-size: 13.5px; color: var(--gold-light); text-align: center; }
+/* F2-D (8 Ekim 2026): Af arzuhali */
+.fm-af { display: inline-flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px; margin: 2px auto 10px; min-height: 42px; padding: 8px 14px; border-radius: 6px; cursor: pointer;
+  background: rgba(107,26,26,.12); border: 1px dashed rgba(107,26,26,.6); color: #6B1A1A; font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: 1px; }
+.fm-af span { display: inline-flex; align-items: center; gap: 3px; font-family: 'Alegreya', serif; letter-spacing: 0; }
+.fm-af .akce-coin-svg { width: 12px; height: 12px; }
+#yil-sonu .fm-af { background: rgba(201,162,39,.08); border-color: rgba(232,200,74,.55); color: var(--gold-light); width: 100%; margin: 8px 0 0; }
+.fm-af-ok { margin: 4px auto 10px; text-align: center; font-family: 'Alegreya', serif; font-style: italic; font-size: 13px; color: #21632f; }
+#yil-sonu .fm-af-ok { color: #8fd49c; margin: 8px 0 0; }
+/* A2 (8 Ekim 2026): kriz kartında hazineden yatıştır */
+#soothe-chip { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 3px; width: 100%; min-height: 34px; margin: -2px 0 2px; padding: 5px 10px; border-radius: 999px; cursor: pointer;
+  background: rgba(201,162,39,.08); border: 1px dashed rgba(232,200,74,.55); color: var(--gold-light); font-family: 'Alegreya SC', serif; font-size: 11px; letter-spacing: .6px; -webkit-tap-highlight-color: transparent; position: relative; z-index: 4; }
+#soothe-chip span { display: inline-flex; align-items: center; gap: 3px; font-family: 'Alegreya', serif; letter-spacing: 0; color: rgba(240,230,208,.75); }
+#soothe-chip .akce-coin-svg { width: 11px; height: 11px; }
+#soothe-chip.done { border-style: solid; border-color: rgba(95,174,110,.6); color: #9fe0aa; background: rgba(33,99,47,.15); cursor: default; }
+/* S-B (8 Ekim 2026): mevsim renk tonu — kart ve parçacıkların arkasında, dokunmayı engellemez */
+#season-tint { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+#season-tint i { position: absolute; inset: 0; opacity: 0; transition: opacity 3s ease; }
+#season-tint .t0 { background: radial-gradient(ellipse at 50% 0%, rgba(150,195,255,.24), transparent 62%), linear-gradient(180deg, rgba(40,80,160,.16), rgba(20,40,90,.10)); }
+#season-tint .t1 { background: radial-gradient(ellipse at 50% 0%, rgba(255,175,205,.18), transparent 60%), linear-gradient(180deg, rgba(70,140,80,.10), rgba(120,60,90,.08)); }
+#season-tint .t2 { background: radial-gradient(ellipse at 65% 0%, rgba(255,205,110,.26), transparent 62%), linear-gradient(180deg, rgba(160,110,20,.12), rgba(90,60,10,.06)); }
+#season-tint .t3 { background: radial-gradient(ellipse at 50% 0%, rgba(235,135,55,.22), transparent 60%), linear-gradient(180deg, rgba(130,55,20,.14), rgba(70,25,10,.10)); }
+#season-tint[data-s="0"] .t0, #season-tint[data-s="1"] .t1, #season-tint[data-s="2"] .t2, #season-tint[data-s="3"] .t3 { opacity: 1; }
+#game.night-mode #season-tint { opacity: .6; }
+@media (prefers-reduced-motion: reduce) { #season-tint i { transition: none; } }
+/* K7 (8 Ekim 2026): Divan kedisi */
+.divan-cat { position: fixed; left: 0; bottom: calc(env(safe-area-inset-bottom, 0px) + 2px); width: 78px; height: 47px; z-index: 120; pointer-events: none; transform: translateX(-90px); }
+.divan-cat.menu { bottom: calc(env(safe-area-inset-bottom, 0px) - 4px); width: 56px; height: 34px; } /* menüde sürüm yazısı hizasında, düğmeleri örtmez */
+.divan-cat svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 3px 3px rgba(0,0,0,.45)); }
+.divan-cat.go { animation: catWalk 11s linear forwards; }
+.divan-cat.rtl svg { transform: scaleX(-1); }
+.divan-cat.rtl.go { animation-name: catWalkR; }
+@keyframes catWalk { from { transform: translateX(-90px); } to { transform: translateX(calc(100vw + 90px)); } }
+@keyframes catWalkR { from { transform: translateX(calc(100vw + 90px)); } to { transform: translateX(-90px); } }
+.divan-cat .dc-leg { transform-box: fill-box; transform-origin: 50% 0; animation: catLeg .5s ease-in-out infinite alternate; }
+.divan-cat .dc-leg.l2, .divan-cat .dc-leg.l4 { animation-delay: -.25s; }
+@keyframes catLeg { from { transform: rotate(16deg); } to { transform: rotate(-16deg); } }
+.divan-cat .dc-tail { transform-box: fill-box; transform-origin: 100% 100%; animation: catTail 1.6s ease-in-out infinite alternate; }
+@keyframes catTail { from { transform: rotate(-8deg); } to { transform: rotate(10deg); } }
+#card-back.tg .cb-medal img { width: 82%; filter: drop-shadow(0 0 8px rgba(232,200,74,0.4)); }
+.fm-tugra-img { background-color: #7a2a12; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; }
+#gameover-cosm .cp-tg { display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 40%, #1d1636, #0b0918); }
+#gameover-cosm .cp-tg img { width: 92%; height: auto; }
+#gameover-cosm .cp-cat { display: flex; align-items: flex-end; justify-content: center; background: linear-gradient(180deg, #1d1636, #0b0918); }
+#gameover-cosm .cp-cat svg { width: 92%; height: auto; margin-bottom: 10px; }
+/* E4 (8 Ekim 2026): başarım ilerlemesi */
+.ach-prog { height: 4px; border-radius: 2px; background: rgba(201,162,39,.14); margin-top: 6px; overflow: hidden; }
+.ach-prog i { display: block; height: 100%; border-radius: 2px; background: linear-gradient(90deg, #B38D1C, #E8C84A); }
+.ach-pn { font-family: 'Alegreya SC', serif; font-size: 10.5px; letter-spacing: .5px; color: rgba(232,200,74,.7); margin-top: 3px; font-variant-numeric: tabular-nums; }
+/* R2-B düzeltmesi (8 Ekim): çipli kartta (Tarih Düğümü) dar/kısa ekranda düğme çerçevede kalsın */
+#card.has-chips #card-image { max-height: 34vh; }
+#card-chips .pc-h { align-self: center; margin-right: 2px; }
+#card-chips .pc { font-size: 11.5px; padding: 2px 8px 2px 5px; }
+#card-chips .pc img { width: 13px; height: 13px; }
+@media (max-height: 760px) { #card.has-chips #card-image { max-height: 24vh; } #card.has-chips #card-text { font-size: 13px; line-height: 1.38; } }
+@media (max-height: 600px) { #card.has-chips #card-image { max-height: 17vh; } }
+@media (max-height: 600px) {
+  .fm-tugra { width: 62px; height: 40px; margin: 6px auto 0; }
+  .fm-from { margin-top: 2px; }
+  .fm-intro { font-size: 13px; line-height: 1.32; margin-top: 2px; margin-bottom: 4px; }
+  .fm-list { padding: 5px 0; gap: 4px; margin-bottom: 6px; }
+  .fm-list li { font-size: 13.5px; line-height: 1.3; }
+  .fm-stakes { font-size: 11.5px; margin-bottom: 6px; gap: 6px; }
+  .fm-stakes div { padding: 3px 7px; }
+  .fm-btn { padding: 9px; margin-bottom: 6px; }
+  .fm-rr-left { font-size: 10.5px; }
+}
+@media (max-width: 340px) { #easter-action-btn { letter-spacing: 1.5px; padding: 10px 12px; font-size: 12px; } }
+@media (max-height: 600px) { #card.has-chips #card-text { font-size: 12.5px; line-height: 1.33; } #card.has-chips #card-bottom { gap: 4px; } }
+@media (max-width: 340px) { #card.has-frame .easter-choice { letter-spacing: 0; padding-left: 3px; padding-right: 3px; } #card.has-frame:is(.no-swipe, .has-easter-choices) #card-bottom { padding-left: 15px; padding-right: 15px; } }
+#ferman-overlay.on .fm-paper { max-height: 86vh; }
+/* 8 Ekim 2026: Başarımlar listesi 3.000 px'i aşıyor; "← GERİ" yalnız en altta kalıyordu (geri dönmek için bütün listeyi
+   kaydırmak gerekiyordu) → Nasıl Oynanır'daki gibi ekranın altına yapışık */
+#btn-ach-back { position: sticky; bottom: max(14px, env(safe-area-inset-bottom, 14px)); z-index: 3; background: var(--bg); box-shadow: 0 -10px 24px 6px var(--bg); }

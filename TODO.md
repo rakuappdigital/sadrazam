@@ -1,5 +1,42 @@
 # Sadrazam — TODO
 
+## SIRADAKİ — 8 Ekim 2026 BÜYÜK PAKET (main'de, BUILD ALINMADI) ← BURADAN DEVAM
+
+**Durum:** 1.7.0 / build 44 hâlâ incelemede. Aşağıdakilerin hepsi main'de; build 45 alınmadı, push/deploy onayı bekliyor.
+Öneri + uygulama sayfası: https://claude.ai/artifact/21oDqMLacpHpaTUf83Ntdh (en üstte "2. tur" = uygulananlar, ekran görüntüleriyle).
+Kullanıcının görselleri: ~/Desktop/divan (çini 5, akce, muhur-humayun, lutuf 4) → assets/frames, assets/icons, assets/lutuf.
+
+**Hata düzeltmeleri (1. tur):**
+- Market: mühür kaydedince Çini/Kaftan/Kalem satırları siliniyordu (geri dönememe) → M1-C ile mühür artık satır içinde.
+- Günlük hediye reklamında akçe kaybı: simülatörde (Google test reklamı) sayfa reklam sırasında gizleniyor; ödül yalnız
+  kapanışta yazılıyordu, iOS web içeriğini yeniden yüklerse kayboluyordu → ödül sinyalinde anında yazılır (RewardedAds.show
+  4. parametre onEarned) + sadrazam_daily_gift_pending ile açılışta kurtarma.
+- Mührü Al öncesi kısa ekran (sahne 0,4 sn'de beliriyordu) → ilk karede opak.
+- Kart düğmeleri çerçeveden taşıyordu: çini çerçeve bandı (çerçevesiz testler göremiyordu) → düğmeli kartlarda alt boşluk;
+  Ferman parşömeni küçük ekranda sıkıştı + BAŞ ÜSTÜNE yapışık.
+- Devam et/Yeni oyun bandı menülerde asılı kalıyordu → yalnız OYNA'da soru (_askResumeThen).
+- Görüş Yaz (web sürümüne gidiyordu) kaldırıldı; puan penceresi EN'de Türkçe çıkıyordu.
+- Tam Sürüm sahibine ödeme ekranı → "TAM SÜRÜM · SENİN ✓" + bilgi penceresi.
+- Şans kartı decide()'dan geçmediği için chanceCardsPlayed/chanceStreak hiç artmıyordu (Kader Sınavı/Şans Tanrısı alınamıyordu).
+- Oyunu bitir düğmesi ortalı, opak kırmızı. Kart arkası dönüşü 2 sn. Keselerde "N İkinci Şans" kaldırıldı.
+
+**Kullanıcı seçimleriyle uygulananlar (2. tur):** M1-C, M2-A (5 çini tek tek 3/3/3/4/5), M3-A, K1-A, Mühr-i Hümayun görseli,
+T1-A (ortak menü zemini --menu-bg), R1-A Kader Mührü (şans 1 / sefer 2 akçe, yılda 1), R2-B çipler, R3-A + A4 Sultan'ın
+Lütfu (3 yılda bir → 70; 1 akçe ya da reklam), F2-A + D (kademeli gazap + Af 2 akçe), A2 yatıştırma (1 akçe, yılda 2),
+T-A Günün Sorusu (HEDİYE penceresinde, data/trivia.json 55 soru), D-A 10 düğüm, S-B mevsim tonu (kartların arkasında),
+N1 N2 N3 N7 N9 + N-E1 + N-E4 bildirimleri, hediye 1-1-2-2-3-3-5, K2 tuğralar (Wikimedia kamu malı), K7 kedi, E1, E4.
+Başarımlar zorlaştırıldı (22) + Game Center TR/EN metinleri API ile eşitlendi (yedek: scratchpad gc_backup.json).
+Boyut: müzik MP3 → AAC 112 kbps (.m4a; 39 → 29 MB), 8 kullanılmayan görsel design-sources/'a; web paketi 96 → 80 MB.
+
+**Build 45 öncesi yapılacaklar:**
+- tools/denge.py + node --check + ad taraması (§2 / §8b).
+- Bildirim izni ve bildirime dokunma gerçek cihazda bir kez denensin (simülatörde 3 senaryo geçti).
+- Game Center metin değişiklikleri yeni sürümle incelemeye gider; ayrıca bir işlem gerekmiyor.
+- Yeni sürüm notu: Günün Sorusu, bildirimler, Kader Mührü, 5 çini, tuğralar, kedi, 10 düğüm.
+
+**Testler (scratchpad t/):** v8_money_test (136), v8_feat_test (152), daily_test (56), ui8_test, overflow_test (FRAME=…),
+fuzz_test (taşma ölçümü ekli). Eski bg/fx/ferman/money/cosm/flow testleri yeni kurallara göre güncellendi.
+
 ## SIRADAKİ — 1.7.0 / build 44 İNCELEMEDE (7 Ekim 2026, 12:03 TR) ← BURADAN DEVAM
 
 **Durum:** 1.7.0 / **build 44** (Delivery `d00056a0-c76f-4bf0-a8eb-93d12c69e9f3`) yüklendi; kullanıcı build 43'ü

@@ -145,10 +145,15 @@ const RewardedAds = (() => {
     return el;
   };
 
-  const show = async (onReward, onCancel, onShow) => {
+  // onEarned (opsiyonel, 8 Ekim 2026): native "ödül kazanıldı" olayı geldiği AN bir kez çağrılır —
+  // reklam henüz ekrandayken. Ödülü kalıcı yazmak için: reklam sırasında iOS web içeriğini
+  // bellekten atıp yeniden yüklerse (Capacitor otomatik reload) kapanıştaki onReward hiç çalışmaz.
+  const show = async (onReward, onCancel, onShow, onEarned) => {
+    let _earnedFired = false;
+    const _earn = () => { if (_earnedFired) return; _earnedFired = true; try { if (onEarned) onEarned(); } catch (e) {} };
     try { window.Analytics?.track('ad_shown', { kind: 'rewarded' }); } catch (e) {} // ölçüm; reklam akışını etkilemez
     if (!_cap) { // web/tarayıcı geliştirme ortamı — native AdMob yok
-      _showSimulatedAd(onReward, onCancel);
+      _showSimulatedAd(() => { _earn(); onReward(); }, onCancel);
       return;
     }
     const isEN = window.LANG === 'en';
@@ -185,7 +190,7 @@ const RewardedAds = (() => {
       document.removeEventListener("visibilitychange", onVis);
       handles.forEach((h) => { try { h?.remove(); } catch (e) {} });
       prepare(); // sıradaki gösterim için yeniden hazırla
-      if (rewarded) onReward(); else onCancel();
+      if (rewarded) { _earn(); onReward(); } else onCancel();
     };
 
     handles.push(...await Promise.all([
@@ -194,7 +199,7 @@ const RewardedAds = (() => {
         try { window.Analytics?.track('ad_impression', { kind: 'rewarded' }); } catch (e) {} // gerçekten ekrana çıktı
         if (onShow) onShow();
       }),
-      _cap.addListener("onRewardedVideoAdReward", () => { earned = true; }),
+      _cap.addListener("onRewardedVideoAdReward", () => { earned = true; _earn(); }),
       _cap.addListener("onRewardedVideoAdDismissed", () => finish(true)),
       _cap.addListener("onRewardedVideoAdFailedToShow", () => { if (!earned) finish(false); else finish(true); }),
     ]));
@@ -209,7 +214,7 @@ const RewardedAds = (() => {
     // Native taraf bu promise'i kullanıcı ödülü kazandığında resolve eder;
     // reject yalnızca reklam hiç sunulamadığında olur.
     _cap.showRewardVideoAd()
-      .then(() => { earned = true; })
+      .then(() => { earned = true; _earn(); })
       .catch(() => { if (!shown) finish(false); });
   };
 

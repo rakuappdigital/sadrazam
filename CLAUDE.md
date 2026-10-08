@@ -285,7 +285,7 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
   JPEG q80; danışmanlar 192 px, eşya ikonları 384 px PNG (saydam). Yeni
   görsel eklerken aynı boyutlara getir. Kullanılmayan dosyalar paket dışında
   `design-sources/` (icon-1024/512/192, intro-bg, 4 font). assets 113→56 MB.
-  Müzik zaten 64 kbps MP3 — yeniden sıkıştırma kalite bozar, dokunulmadı.
+  Müzik (8 Ekim 2026): MP3 aslında ~190 kbps'ydi → AAC 112 kbps .m4a (39 → 29 MB). Bkz. §3i.
 - Testler (scratchpad): `season_test`, `slot_test`, `vk_test`, `vk_pick`, `age_test`, `stamp_test`, `tabs_test`.
 
 ## 3e. 3–4 Ekim 2026 sistemleri (hepsi game.js, `hasAdvisor` fonksiyonunun hemen üstünde modüller)
@@ -474,6 +474,44 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
 - #scroll-hint: initScrollHint (game.js sonu, Init'ten önce) — liste yalnız intro/akce/achievements.
 - Nasıl Oynanır: howto.t_*_t / _d çeviri anahtarları; html.native sınıfı howtoScreen tanımının yanında eklenir.
 - Test: scratchpad ux_fix_test.js.
+
+## 3i. 8 Ekim 2026 sistemleri (build 45 adayı)
+
+- **Akçe ödemesi kuralı:** akçe tek adımda (`spendAkce`) düşer ve hemen ardından etki uygulanır. Etki karar anına kadar
+  bekliyorsa (Kader Mührü, yatıştırma) `_paidPending(kind, cost)` yazılır, uygulanınca `_paidDone()`. Kayıttan dönüşte
+  (`_paidRecover`) ya da yeni oyunda bekleyen ödeme İADE edilir (kayıt ekrandaki kartı saklamaz). Akçe yetmezse
+  `redirectToAkcePurchase(cb)`; Market (z 150) bir pencerenin altında kalacaksa pencere önce `display:none`, cb'de geri.
+- **Yeni saltanat durumları** tek blokta: `_v8Reset/_v8Save/_v8Load` (kayıtta `v8`): `_kaderYear, _lutufYear,
+  _fermanWatch, _fermanNoReroll, _fermanAfUsed, _sootheYear/_sootheN/_sootheCardId`. Yeni durum eklersen buraya ekle.
+- **Kader Mührü** (R1-A): `_kaderPay`, `_kaderAvailable` (yılda 1, şans+sefer ortak). Şans kartı `showChanceCard` (#kader-row;
+  sayaçlar artık burada artar — eskiden hiç artmıyordu). Sefer: `_savasSonucSchedule` zamanı gelince `_seferZarCard()`
+  (easter_type sefer_zar → `_showSeferZar`); zamanlama karar verilene kadar kayıtta durur. `_savasChance()`.
+- **Sultan'ın Lütfu** (R3-A): `_showLutuf` ferman kuyruğu `kind:"lutuf"` (advanceYear'da, 3'ün katı yıllar, bir güç <40 →
+  en düşük 70'e). Reklam: `RewardedAds.show(onReward, onCancel, null, onEarned)`; `_lutufApply` çift uygulanmaz;
+  `sadrazam_lutuf_pending` → `_lutufRecover` (loadGameState). Görseller assets/lutuf/.
+- **Ferman** (F2): `_fermanCloseYear` kademeli (1.: −12 + `_fermanWatch` → sonraki ferman 2 madde; 2.: gazap; 3+: −25 +
+  `noRr`). Değiştirme hakkı 2 (`FERMAN_REROLLS`, `_fermanRerollsUsed` eski `rerolled` kaydını da okur). Af:
+  `_fermanAfHTML/_fermanAfBind` (sonuç penceresi + Yıl Sonu), 2 akçe, saltanatta 1.
+- **Yatıştırma** (A2): `setupSootheChip` (dealNext; yalnız `_isCrisisCard`), `_sootheAdjust` decide'daki applyEffects zincirinin
+  EN DIŞINDA. Şerit her dealNext başında silinir.
+- **Günlük hediye**: `DAILY_GIFT_REWARDS` [1,1,2,2,3,3,5]; `_claimDailyGift` tek yazım noktası; `_recoverPendingDailyGift`.
+- **Günün Sorusu** (T-A): `data/trivia.json` (55, TR/EN, şıklar günlük karışık `_seededPerm`), `_triviaAnswer` tek yazım
+  noktası (önce "cevaplandı", sonra akçe). Menüde ayrı kutu YOK: HEDİYE penceresi `#dg-trivia`; `showTrivia` (z 950 > hediye 900).
+- **Bildirimler**: `notifications.js` (game.js'ten sonra). `Notif.plan(now, Notif.state())` saf fonksiyon; günde ≤2;
+  kimlikler 7100–7139; her öne gelişte/arka plana geçişte yeniden kurulur. Dokunma `onTap` (gift/streak/trivia/both).
+  İzin: `Notif.ask(reason)` yumuşak soru (ilk hediye / ilk saltanat sonu), Ayarlar `#sett-notif-*`. Haftalık özet için
+  `_weekLogGame` (showGameOver). Plugin `@capacitor/local-notifications` 8.3.1.
+- **Market kozmetik**: `CINI_FRAMES` (5, tek tek; eski `{cini:true}` = ilk 3), `_ciniOwned/_ciniBuy`, `showCiniPreview`,
+  `showKaftanPreview`, mühür `renderMarketCosmetics` (satır içi, anında kayıt), `_renderCosmTab`. Çerçeve CSS
+  `#card.has-frame.frame-<k>::after` border-image (13 px; dilim değerleri görsellere göre). `tugra` (K2, assets/tugra,
+  fermanda maske ile kırmızı, kart arkasında seçilen) ve `kedi` (K7, `DivanCat`, `DIVAN_CAT_SVG`).
+- **Devletin Kaderi** 10 düğüm: her sultana 2. düğüm (`n:2`, y 6). `_asirKnotFor` iyi bitmemiş ilk düğümü verir;
+  `ASIR_SULTANS` sırası başlangıç mirası için. Düğüm seçenekleri rastgele sırada. Koşullar `_asirPrepChips` (#card-chips).
+- **Mevsim tonu** `#season-tint` (#game ilk çocuğu, z −1, canvas'tan önce) `_seasonTint()` dealNext'te.
+- **Ortak menü dili** (T1-A) style.css sonunda `--menu-bg/--menu-line/--menu-shadow`.
+- **Başarım ilerlemesi** `ACH_PROGRESS`, `_achBestUpdate` (checkAchievements), `sadrazam_ach_best`.
+- **Müzik** artık AAC 112 kbps `.m4a` (orijinal MP3'ler design-sources/music-mp3). Eski not "64 kbps" yanlıştı (190 kbps'ydi).
+- Testler (scratchpad t/): v8_money_test, v8_feat_test, daily_test, ui8_test, overflow_test (FRAME=iznik|rustem …).
 
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 
