@@ -1,7 +1,34 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 1.7.1 / build 45 ASC'DE HAZIR, İNCELEMEYE GÖNDERİLMEDİ ← BURADAN DEVAM
-(Kalan: kullanıcı kararıyla incelemeye gönderme; öncesinde gerçek cihazda TestFlight ile bildirim + hediye reklamı kontrolü önerildi.)
+## SIRADAKİ — 1.7.1 / build 46 ASC'DE, İNCELEMEYE GÖNDERİLMEDİ ← BURADAN DEVAM
+(Kalan: kullanıcı kararıyla incelemeye gönderme. Öncesinde TestFlight'ta gerçek cihazda: bildirimler, hediye reklamı,
+bir reklamı YARIDA kapatıp "Reklam sonuna kadar izlenmedi" mesajı + ödül gelmediği. Build 45 KULLANILMAMALI — hatalı.)
+
+**Build 46 (8 Ekim 2026 akşam) — Delivery `514891d3-27ed-465f-adb0-87e13cc031e3`, commit b8b8b2e. VALID, şifreleme false,
+1.7.1 sürümüne BAĞLANDI (45'in yerine; API ile doğrulandı), sürüm PREPARE_FOR_SUBMISSION. Metinler/keywords değişmedi.**
+- **Hata (kullanıcı fark etti): ödüllü reklam yarıda kapatılsa da ödül veriliyordu.** 26 Eylül (1cbce90, 1.4.1) beri
+  `onRewardedVideoAdDismissed` tek başına ödül sayılıyordu; 6 ödül noktasının hepsinde (hediye, İkinci Şans, Kâtip,
+  Kritik An, Tahkik, Lütuf). native_ads_test "noreward" senaryosunda +1 BEKLİYORDU — test kodu kopyalamıştı.
+  Düzeltme: ödül yalnız "ödül kazanıldı" sinyaliyle; kapanışta yoksa 1,5 sn bekle → `onCancel("skipped")` →
+  `_adFailText`. Yükleme/gösterim/yenileme koduna dokunulmadı (git diff ile gösterildi). AdMob geliri gösterimden
+  sayıldığı için etkilenmiyordu; kayıp oyun içi (bedava ödül).
+- **Info.plist SKAdNetworkItems 1 → 50** (Google'ın resmî listesi, developers.google.com/admob/ios/3p-skadnetworks).
+  Diğer 21 ayar birebir aynı (plistlib karşılaştırması). Etki: diğer reklam ağlarının teklif vermesi; ölçülmüş yüzde yok.
+  1–2 hafta sonra AdMob'da "Uygulama sürümü"ne göre 1.7.0/1.7.1 eBGBM karşılaştırılacak.
+- **Simülatör (Debug + Google test rewarded unit, geçici yalnız iOS kopyasında, sonra geri alındı):** reklam yüklendi ve
+  gösterildi (ATT izinli ve izinsiz), "Ödül verildi" sonrası kapatınca menü sayacı 0 → 1, uygulama kapatılıp açılınca 1.
+  Google test reklamının ilk parçasında kapatma düğmesi yok → yarıda kapatma simülatörde denenemedi (otomatik testte var).
+- **Tam test turu (scratchpad t/full_run4.sh, katı: çıkış kodu + çökme + FAIL satırı):** 42 grup temiz. İlk turdaki
+  kırmızılar test kaynaklıydı ve düzeltildi: dip/mem (rastgele erken ölüm, yüklü makinede adım sınırı — tekrarlarda geçti),
+  v8_money (ortalama güç ≥65'te %6 felaket kartı sefer kartının önüne geçiyordu → test güçleri 50'ye sabitlendi),
+  overflow (ferman parşömeni 0,5 sn'de açılıyor, ölçüm 500 ms'de yarım açılışa denk geldi → 900 ms; ekran görüntüsü temiz).
+  Yeni testler: native_ads (noreward=0, dismissfirst=1, nodismissnr=0, İkinci Şans/Kâtip/Kritik An yarıda kapatma),
+  ad_skip_test (Tahkik), v8_money (Lütuf yarıda kapatma).
+- **Ders:** test beklentisi koddan değil iş kuralından yazılır. Para/ödül kuralları: izlenmeyen reklam ödül vermez; akçe
+  düşmeden etki yok; akçe düştüyse etki ya da iade; bir ödül iki kez verilmez.
+- Bekleyen karar (kullanıcıya soruldu, cevap yok): reklam sırasında iOS sayfayı yeniden yüklerse izlenip izlenmediği
+  bilinemiyor → şu an hediye/Lütuf bekleyen kayıtla VERİLİYOR (günde en çok 1 kez, 1–5 akçe).
+- Öneri (sonraki sürüm): reklamın yarıda kapatılmasını ayrı ölçüm olayı olarak say (ad_skipped).
 
 **Durum (8 Ekim 2026, 17:30 TR):** 1.7.0 (build 44) onaylandı, yayında. 1.7.1 / **build 45** yüklendi (Delivery
 `5d508f54-61ef-4776-ac98-87cea8e0f58b`, VALID, şifreleme false), ASC'de 1.7.1 sürümü açıldı (id a9dbb152-…) ve build bağlandı:
@@ -20,7 +47,7 @@ whatsNew'i boş getirdi → 1.7.0'dan kopyalandı), YALNIZ 17 dilin Keywords ala
 - Son kontrol (ASC'den geri okuma): 17 dil kendi dilinde, ad/alt başlık ≤30, keywords 17/17 kurallara uygun; 1.7.0 → 1.7.1
   açıklama/whatsNew/promotional birebir aynı. Yedekler: scratchpad snap_170 / snap_171_after / snap_171_final.json.
 
-**GitHub push + Vercel deploy:** kullanıcı onayıyla 8 Ekim'de yapıldı (bu commit ile).
+**GitHub push + Vercel deploy:** kullanıcı onayıyla 8 Ekim'de yapıldı (45a3787; build 46 düzeltmesi b8b8b2e ile tekrar).
 
 **İçerik:** aşağıdaki "8 Ekim BÜYÜK PAKET".
 Öneri + uygulama sayfası: https://claude.ai/artifact/21oDqMLacpHpaTUf83Ntdh (en üstte "2. tur" = uygulananlar, ekran görüntüleriyle).
