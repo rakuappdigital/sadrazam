@@ -1,5 +1,25 @@
 # Sadrazam — TODO
 
+## ⏰ SONRAKİ OTURUMDA İLK İŞ: KULLANICIYA BU 4 MADDEYİ HATIRLAT (9 Ekim 2026 isteği)
+1. **TelemetryDeck verilerini düzenli kontrol et.** Panoya Claude'un erişimi yok → kullanıcıdan API token ya da panodan
+   ekran görüntüsü/CSV iste. Bakılacaklar: oyuncular kaçıncı yılda/kartta bırakıyor (year_end, game_over), paywall_shown →
+   purchase dönüşümü, ad_shown / ad_impression, oteki_night / oteki_done / oteki_trap, daily_gift, trivia, settings_changed.
+   1.7.1 yayına çıktıktan 1–2 hafta sonra ilk rapor; sonra 2 haftada bir.
+2. **Yeni oyuncu deneyimi: ayrıntılı öneri / düzeltme / ekleme planı hazırla** (web sayfasında, oyunun kendi tasarımıyla,
+   her öneri için 3 seçenek). Puan değerlendirmesinde en zayıf alan (5/10): ilk oyunlarda çok sistem ve pencere üst üste;
+   ücretsiz oyuncu 2. yılda duruyor ama en iyi kısımlar (Asırlar, diplomasi, Öteki Oda) 4. yıldan sonra. Fikir yönü:
+   sistemlerin birer birer açılması, 2. yıl bitmeden bir "vay" anı, ilk 10 dakikanın akışı.
+3. **ASC Product Page Optimization (A/B testi) ve Custom Product Pages stratejisi geliştir.** Örn. farklı kitlelere farklı
+   sayfa (Osmanlı tarihi meraklısı / Reigns benzeri kart oyunu seven / strateji), ikon ve ekran görüntüsü A/B testleri,
+   reklam kampanyalarına bağlanacak özel sayfalar, 17 dilde nasıl ölçekleneceği. Önce mevcut durum ve ASC'nin sınırları
+   (API ile neler yapılabilir) incelenir.
+4. **Kozmetik ve akçe ile satılabilecek öğeler: analiz + öneriler.** Mevcut: çini çerçeveler (5), kaftan, hattat kalemi,
+   kişisel mühür, tuğralar, Divan kedisi, eşyalar, Kader Mührü, Lütuf, yatıştırma, Af, ferman değiştirme. Hangileri ne kadar
+   kullanılıyor (TelemetryDeck), fiyat/değer dengesi, yeni kozmetik ve akçe harcama noktası önerileri (oyunu bozmadan,
+   oyunun tasarım diliyle; görseller için prompt + dosya adı).
+Bu dört iş için çıktılar web sayfası olarak sunulur; kullanıcı kodlarla seçer.
+
+
 ## SIRADAKİ — 1.7.1 / build 47 İNCELEMEDE (9 Ekim 2026, 00:58 UTC gönderildi) ← BURADAN DEVAM
 Gönderim f35f0aa5…: 1.7.1 (47) + 42 başarım + 1 liderlik = 44 öğe, WAITING_FOR_REVIEW (kullanıcı gönderdi).
 **Onaydan sonra yapılacaklar:**
