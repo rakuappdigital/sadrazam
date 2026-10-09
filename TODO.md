@@ -2,6 +2,11 @@
 
 ## ŞU AN — 1.7.1 YENİ BUILD (9 Ekim 2026): kullanıcı build 47'yi incelemeden çekiyor
 Yeni oyuncu deneyimi (7441890) + aşağıdaki listeden kullanıcının seçtikleri birlikte 1.7.1'e yeni build olarak yüklenecek.
+**Build sonrası ASC adımları (kullanıcı 9 Ekim'de build 47'yi incelemeden çekti):** yeni build'i (48+) 1.7.1'e bağla VE
+Game Center öğelerini inceleme gönderimine YENİDEN ekle: 42 başarım + 1 liderlik tablosu (8 Ekim'deki yöntem: POST
+/v1/reviewSubmissionItems; ayrıntı aşağıdaki "1.7.1 / build 47" bölümünde). Gönderimi kullanıcı yapar; öncesinde hepsinin
+READY_FOR_REVIEW olduğunu API ile doğrula.
+Günlük hediye 9 Ekim'de 1-1-2-2-3-4-5 yapıldı (ef7ffb5).
 Kullanıcının 9 Ekim test notları (öneri sayfası hazırlanıyor, her biri 3 seçenek, kullanıcı kodla seçecek):
 1. **Kritik An teklifi** (güç ≤20 → Şifa Otu: reklam / 1 akçe) çok çabuk geçiyor, bildirim küçük, reddedilince geri alınamıyor.
    Kök neden: dealNext her kartta `_hideCriticalOffer()` → oyuncu kartı kaydırınca teklif kapanıyor; sonra 12 kart bekleme, yılda en fazla 2.
