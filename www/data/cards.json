@@ -26443,6 +26443,857 @@
       "text_en": "We heard a bridge will be built over the Golden Horn. The boatmen will lose their livelihood, Pasha. Give up this bridge.",
       "left_text_en": "The bridge will be built",
       "right_text_en": "The bridge is cancelled"
+    },
+    {
+      "id": "oteki_ordu_f",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası",
+      "faction": "yeniçeri",
+      "text": "Ocak'ta bir fısıltı dolaşıyor: \"Sadrazam ulufeyi kesecekmiş.\" Kimin yaydığı belli değil ama ağalar huzursuz.",
+      "left_text": "Söylentiye kulak asma",
+      "right_text": "Ulufe sandığını kışlada açtır",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -6,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "right",
+        "xl": {},
+        "xr": {}
+      },
+      "character_name_en": "Janissary Commander",
+      "text_en": "A whisper runs through the barracks: \"The Grand Vizier will cut our pay.\" No one knows who started it, but the aghas are restless.",
+      "left_text_en": "Ignore the rumour",
+      "right_text_en": "Open the pay chest in the barracks"
+    },
+    {
+      "id": "oteki_ordu_i",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası",
+      "faction": "yeniçeri",
+      "text": "Kışlada bir mektup okundu: Sadrazam'ın Ocak'ı dağıtmak istediği yazıyor. Altında senin mührüne benzeyen bir mühür var.",
+      "left_text": "Ağalara bahşiş dağıt, sustur",
+      "right_text": "Mührü incelet, sahteliği ilan et",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 3,
+        "ulema": 0,
+        "hazine": -8
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 6,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "right",
+        "xl": {},
+        "xr": {}
+      },
+      "character_name_en": "Janissary Commander",
+      "text_en": "A letter was read out in the barracks: it says the Grand Vizier wants to disband the Corps. It bears a seal much like yours.",
+      "left_text_en": "Pay the aghas to keep quiet",
+      "right_text_en": "Have the seal examined, expose the forgery"
+    },
+    {
+      "id": "oteki_ulema_f",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "faction": "ulema",
+      "text": "Bir vaazda \"bazı devlet adamları şeriatı hafife alıyor\" denildi. İsim verilmedi ama herkes sana baktı.",
+      "left_text": "Şeyhülislam'ı ziyaret et",
+      "right_text": "Duymazdan gel",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -6,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {},
+        "xr": {}
+      },
+      "character_name_en": "Şeyhülislam",
+      "text_en": "A sermon warned that \"some statesmen make light of the sacred law.\" No names were given, but every eye turned to you.",
+      "left_text_en": "Call on the Şeyhülislam",
+      "right_text_en": "Pretend you did not hear"
+    },
+    {
+      "id": "oteki_ulema_i",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "faction": "ulema",
+      "text": "Elden ele bir fetva taslağı dolaşıyor: son kararlarından birinin dine aykırı olduğu yazıyor.",
+      "left_text": "Kararını geri çek",
+      "right_text": "Taslağın kaynağını bul",
+      "left_effects": {
+        "saray": -6,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 6,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "right",
+        "xl": {
+          "sabir": -4
+        },
+        "xr": {}
+      },
+      "character_name_en": "Şeyhülislam",
+      "text_en": "A draft fatwa is passing from hand to hand: it says one of your recent rulings is against the faith.",
+      "left_text_en": "Withdraw your ruling",
+      "right_text_en": "Find who wrote the draft"
+    },
+    {
+      "id": "oteki_saray_f",
+      "character": "5-valide-sultan",
+      "character_name": "Valide Sultan",
+      "faction": "saray",
+      "text": "Harem koridorlarında senin için \"Sultan'ı hiçe sayıyor\" deniyormuş. Valide Sultan da duymuş.",
+      "left_text": "Kulak asma",
+      "right_text": "Valide Sultan'a hediye gönder",
+      "left_effects": {
+        "saray": -6,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 5,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "right",
+        "xl": {},
+        "xr": {}
+      },
+      "character_name_en": "Valide Sultan",
+      "text_en": "In the harem corridors they say you \"hold the Sultan in contempt.\" The Valide Sultan has heard it too.",
+      "left_text_en": "Pay it no mind",
+      "right_text_en": "Send the Valide Sultan a gift"
+    },
+    {
+      "id": "oteki_saray_i",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "Casuslar Başı haber getirdi: Sultan'ın önüne, senin yazdığın söylenen sert bir mektup konmuş. El yazısı seninkine çok benziyor.",
+      "left_text": "Kâtipleri topla, yazıyı karşılaştırt",
+      "right_text": "Özür dile ve sus",
+      "left_effects": {
+        "saray": 7,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "sabir": -4
+        },
+        "xr": {
+          "sabir": -8
+        }
+      },
+      "character_name_en": "Spymaster",
+      "text_en": "The Spymaster brings word: a harsh letter, said to be yours, has been laid before the Sultan. The hand looks very like your own.",
+      "left_text_en": "Gather the scribes and compare the hands",
+      "right_text_en": "Apologise and say no more"
+    },
+    {
+      "id": "oteki_hazine_f",
+      "character": "4-defterdar",
+      "character_name": "Defterdar",
+      "faction": "hazine",
+      "text": "Bedestende \"devlet borcunu ödeyemeyecek\" dedikodusu var; tüccarlar kepenk indiriyor.",
+      "left_text": "Defterdar'la çarşıya in",
+      "right_text": "Kendiliğinden geçer",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 5
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": 2,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {},
+        "xr": {}
+      },
+      "character_name_en": "Treasurer",
+      "text_en": "In the covered bazaar they whisper that \"the state cannot pay its debts\"; the merchants are pulling down their shutters.",
+      "left_text_en": "Walk the bazaar with the Treasurer",
+      "right_text_en": "It will pass on its own"
+    },
+    {
+      "id": "oteki_hazine_i",
+      "character": "4-defterdar",
+      "character_name": "Defterdar",
+      "faction": "hazine",
+      "text": "Hazine defterlerinden iki sayfa kayıp. Defterdar'a göre kayıp sayfalarda senin onayın varmış.",
+      "left_text": "Açığı sessizce kapat",
+      "right_text": "Teftiş başlat",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -8
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "right",
+        "xl": {},
+        "xr": {}
+      },
+      "character_name_en": "Treasurer",
+      "text_en": "Two pages are missing from the treasury ledgers. The Treasurer says they bore your approval.",
+      "left_text_en": "Quietly cover the shortfall",
+      "right_text_en": "Order an inspection"
+    },
+    {
+      "id": "oteki_kisi_valide_f",
+      "character": "5-valide-sultan",
+      "character_name": "Valide Sultan",
+      "faction": "saray",
+      "text": "Valide Sultan seni artık sofrasına çağırmıyor. Biri kulağına, onun hakkında ileri geri konuştuğunu fısıldamış.",
+      "left_text": "Mesafeni koru",
+      "right_text": "Huzuruna çık, açıkça konuş",
+      "left_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "right",
+        "xl": {
+          "rel": -1
+        },
+        "xr": {
+          "rel": 1
+        }
+      },
+      "character_name_en": "Valide Sultan",
+      "text_en": "The Valide Sultan no longer invites you to her table. Someone whispered that you had spoken ill of her.",
+      "left_text_en": "Keep your distance",
+      "right_text_en": "Seek an audience and speak plainly"
+    },
+    {
+      "id": "oteki_kisi_valide_i",
+      "character": "5-valide-sultan",
+      "character_name": "Valide Sultan",
+      "faction": "saray",
+      "text": "Valide Sultan Divan'a haber yolladı: \"Sadrazam'ın harem işlerine karıştığını biliyorum.\" Kanıtı olduğunu söylüyor.",
+      "left_text": "Onu özel olarak ziyaret et",
+      "right_text": "Divan'da karşılık ver",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": -5
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "rel": 2
+        },
+        "xr": {
+          "rel": -2
+        }
+      },
+      "character_name_en": "Valide Sultan",
+      "text_en": "The Valide Sultan sent word to the Divan: \"I know the Grand Vizier meddles in the harem.\" She says she has proof.",
+      "left_text_en": "Visit her in private",
+      "right_text_en": "Answer her in the Divan"
+    },
+    {
+      "id": "oteki_kisi_yeniceri_f",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası",
+      "faction": "yeniçeri",
+      "text": "Yeniçeri Ağası selamını kesti. Biri ona, ulufe kesintisini senin istediğini söylemiş.",
+      "left_text": "Kışlaya git, yüz yüze konuş",
+      "right_text": "Aldırma",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -2
+      },
+      "right_effects": {
+        "saray": 0,
+        "yeniçeri": -4,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "rel": 1
+        },
+        "xr": {
+          "rel": -1
+        }
+      },
+      "character_name_en": "Janissary Commander",
+      "text_en": "The Janissary Commander no longer greets you. Someone told him it was you who wanted the pay cut.",
+      "left_text_en": "Go to the barracks and talk face to face",
+      "right_text_en": "Ignore it"
+    },
+    {
+      "id": "oteki_kisi_yeniceri_i",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası",
+      "faction": "yeniçeri",
+      "text": "Yeniçeri Ağası kazanları devirmekle tehdit ediyor: \"Sadrazam Ocak'ı satıyor, belgesi elimde.\"",
+      "left_text": "Belgeyi iste, sahteliğini göster",
+      "right_text": "Ağa'yı Divan'da kına",
+      "left_effects": {
+        "saray": -4,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": -6,
+        "ulema": 0,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "rel": 2
+        },
+        "xr": {
+          "rel": -2
+        }
+      },
+      "character_name_en": "Janissary Commander",
+      "text_en": "The Janissary Commander threatens to overturn the cauldrons: \"The Grand Vizier is selling out the Corps, and I have the proof.\"",
+      "left_text_en": "Demand the proof and show it is forged",
+      "right_text_en": "Rebuke him in the Divan"
+    },
+    {
+      "id": "oteki_kisi_seyhulislam_f",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "faction": "ulema",
+      "text": "Şeyhülislam Cuma namazında selamını almadı. Biri ona, medreselerin vakfını kısacağını söylemiş.",
+      "left_text": "Bir vakıf bağışıyla gönlünü al",
+      "right_text": "Yalanlamaya tenezzül etme",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": 0,
+        "ulema": 4,
+        "hazine": -5
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": -5,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "rel": 1
+        },
+        "xr": {
+          "rel": -1
+        }
+      },
+      "character_name_en": "Şeyhülislam",
+      "text_en": "At Friday prayer the Şeyhülislam did not return your greeting. Someone told him you mean to cut the madrasas' endowments.",
+      "left_text_en": "Win him back with an endowment",
+      "right_text_en": "Do not stoop to deny it"
+    },
+    {
+      "id": "oteki_kisi_seyhulislam_i",
+      "character": "3-seyhulislam",
+      "character_name": "Şeyhülislam",
+      "faction": "ulema",
+      "text": "Şeyhülislam açıkça konuştu: \"Sadrazam'ın gizli bir meyhanesi var, kâtibi bana itiraf etti.\"",
+      "left_text": "Divan'da karşılık ver",
+      "right_text": "Kâtibi huzura getirt, yalan çıksın",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -6,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 5,
+        "hazine": -3
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "right",
+        "xl": {
+          "rel": -2
+        },
+        "xr": {
+          "rel": 2
+        }
+      },
+      "character_name_en": "Şeyhülislam",
+      "text_en": "The Şeyhülislam spoke openly: \"The Grand Vizier keeps a secret tavern; his own scribe confessed it to me.\"",
+      "left_text_en": "Answer him in the Divan",
+      "right_text_en": "Bring the scribe forward and expose the lie"
+    },
+    {
+      "id": "oteki_kisi_defterdar_f",
+      "character": "4-defterdar",
+      "character_name": "Defterdar",
+      "faction": "hazine",
+      "text": "Defterdar artık hesap defterlerini sana göstermiyor. Biri ona, yerine kendi adamını koyacağını söylemiş.",
+      "left_text": "Onu görevinde teyit et",
+      "right_text": "Defterleri zorla iste",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": -2,
+        "hazine": 0
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "rel": 1
+        },
+        "xr": {
+          "rel": -1
+        }
+      },
+      "character_name_en": "Treasurer",
+      "text_en": "The Treasurer no longer shows you his ledgers. Someone told him you mean to replace him with your own man.",
+      "left_text_en": "Confirm him in his post",
+      "right_text_en": "Demand the ledgers by force"
+    },
+    {
+      "id": "oteki_kisi_defterdar_i",
+      "character": "4-defterdar",
+      "character_name": "Defterdar",
+      "faction": "hazine",
+      "text": "Defterdar, Sultan'a bir arz yazdı: \"Sadrazam hazineden gizli kese çekiyor.\"",
+      "left_text": "Hesapları birlikte açalım de",
+      "right_text": "Arzı Sultan'ın önünde çürüt",
+      "left_effects": {
+        "saray": -2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -5
+      },
+      "right_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": -4,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "rel": 2
+        },
+        "xr": {
+          "rel": -2,
+          "sabir": -4
+        }
+      },
+      "character_name_en": "Treasurer",
+      "text_en": "The Treasurer has written to the Sultan: \"The Grand Vizier draws secret purses from the treasury.\"",
+      "left_text_en": "Offer to open the accounts together",
+      "right_text_en": "Refute it before the Sultan"
+    },
+    {
+      "id": "oteki_kisi_casus_f",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "Casuslar Başı raporlarını artık önce Rakip Vezir'e götürüyormuş. Biri ona, onu harcayacağını söylemiş.",
+      "left_text": "Ona yeni bir görev ver",
+      "right_text": "Raporları başka yoldan al",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -2,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": 2
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "rel": 1
+        },
+        "xr": {
+          "rel": -1
+        }
+      },
+      "character_name_en": "Spymaster",
+      "text_en": "They say the Spymaster now takes his reports to the Rival Vizier first. Someone told him you plan to throw him away.",
+      "left_text_en": "Give him a new mission",
+      "right_text_en": "Get your reports another way"
+    },
+    {
+      "id": "oteki_kisi_casus_i",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "Casuslar Başı Divan'da bir defter açtı: \"Sadrazam'ın Venedik elçisiyle gizli yazışmaları.\"",
+      "left_text": "Mektupları okut, sahteyi göster",
+      "right_text": "Elçiliği kapat, iz bırakma",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 3,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": 2,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "rel": 2
+        },
+        "xr": {
+          "rel": -2
+        }
+      },
+      "character_name_en": "Spymaster",
+      "text_en": "The Spymaster opened a ledger in the Divan: \"The Grand Vizier's secret letters to the Venetian envoy.\"",
+      "left_text_en": "Have the letters read, show the forgery",
+      "right_text_en": "Close the embassy, leave no trace"
+    },
+    {
+      "id": "oteki_kanli_sabir",
+      "character": "14-casuslar_basi",
+      "character_name": "Casuslar Başı",
+      "faction": "saray",
+      "text": "Casuslar Başı fısıldıyor: \"Rakip Vezir üç gecedir Sultan'la baş başa. Sultan sana artık eskisi gibi bakmıyor.\"",
+      "left_text": "Sultan'a bir zafer haberi götür",
+      "right_text": "Bekle, geçer",
+      "left_effects": {
+        "saray": 0,
+        "yeniçeri": -5,
+        "ulema": 0,
+        "hazine": -3
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "sabir": 6
+        },
+        "xr": {
+          "sabir": -8
+        }
+      },
+      "character_name_en": "Spymaster",
+      "text_en": "The Spymaster whispers: \"The Rival Vizier has been alone with the Sultan three nights running. The Sultan no longer looks at you as before.\"",
+      "left_text_en": "Bring the Sultan news of a victory",
+      "right_text_en": "Wait, it will pass"
+    },
+    {
+      "id": "oteki_kanli_ocak",
+      "character": "2-yeniceri",
+      "character_name": "Yeniçeri Ağası",
+      "faction": "yeniçeri",
+      "text": "Gece yarısı Ocak'ta meşaleler yandı. Ağalar \"Sadrazam'ın başını\" istiyor; arkalarında Rakip Vezir'in kesesi var.",
+      "left_text": "Kesenin izini sür, ağalara göster",
+      "right_text": "Ulufeyi ikiye katla",
+      "left_effects": {
+        "saray": -5,
+        "yeniçeri": 5,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": -2,
+        "yeniçeri": 4,
+        "ulema": 0,
+        "hazine": -8
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {},
+        "xr": {}
+      },
+      "character_name_en": "Janissary Commander",
+      "text_en": "At midnight torches burned in the barracks. The aghas demand \"the Grand Vizier's head\", and the Rival Vizier's purse is behind them.",
+      "left_text_en": "Trace the purse and show the aghas",
+      "right_text_en": "Double their pay"
+    },
+    {
+      "id": "oteki_hesap_gercek",
+      "character": "8-rakip-vezir",
+      "character_name": "Rakip Vezir",
+      "faction": "saray",
+      "text": "Divan toplandı. Rakip Vezir ayağa kalktı: \"{KARAR} devlete zarar verdi.\" Bütün gözler sende.",
+      "left_text": "Hatanı kabul et, bedelini öde",
+      "right_text": "Kararını gerekçeleriyle savun",
+      "left_effects": {
+        "saray": 3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -6
+      },
+      "right_effects": {
+        "saray": -4,
+        "yeniçeri": 0,
+        "ulema": -3,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "right",
+        "xl": {
+          "sabir": -4
+        },
+        "xr": {
+          "sabir": 6
+        }
+      },
+      "character_name_en": "Rival Vizier",
+      "text_en": "The Divan has gathered. The Rival Vizier rises: \"{KARAR} has harmed the state.\" Every eye is on you.",
+      "left_text_en": "Admit the mistake and pay for it",
+      "right_text_en": "Defend your decision with reasons"
+    },
+    {
+      "id": "oteki_hesap_sahte",
+      "character": "8-rakip-vezir",
+      "character_name": "Rakip Vezir",
+      "faction": "saray",
+      "text": "Divan toplandı. Rakip Vezir, altında senin mührün olan bir mektup okuyor: Sultan'ı tahttan indirme planı. Mühür seninkine çok benziyor.",
+      "left_text": "Mührü ustalara incelet",
+      "right_text": "Af dile, Sultan'ın merhametine sığın",
+      "left_effects": {
+        "saray": -3,
+        "yeniçeri": 0,
+        "ulema": 0,
+        "hazine": -4
+      },
+      "right_effects": {
+        "saray": -5,
+        "yeniçeri": 0,
+        "ulema": 2,
+        "hazine": 0
+      },
+      "left_flags_set": [],
+      "right_flags_set": [],
+      "required_flags": [],
+      "excluded_flags": [],
+      "weight": 1,
+      "category": "intrigue",
+      "oteki": {
+        "beat": "left",
+        "xl": {
+          "sabir": 4
+        },
+        "xr": {
+          "sabir": -8
+        }
+      },
+      "character_name_en": "Rival Vizier",
+      "text_en": "The Divan has gathered. The Rival Vizier reads out a letter bearing your seal: a plot to dethrone the Sultan. The seal looks very like yours.",
+      "left_text_en": "Have the seal examined by the masters",
+      "right_text_en": "Beg the Sultan's mercy"
     }
   ]
 }

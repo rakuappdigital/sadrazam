@@ -44,12 +44,13 @@ const Notif = (() => {
     const p = plugin(); if (!p) return false;
     try { const r = await p.requestPermissions(); return r?.display === "granted"; } catch (e) { return false; }
   }
-  const at = (dayOffset, [h, m]) => { const d = new Date(); d.setDate(d.getDate() + dayOffset); d.setHours(h, m, 0, 0); return d; };
 
   // Önümüzdeki 7 günün planı (saf fonksiyon — test edilebilir).
   // st: { gift: getDailyGiftStatus(), trivia: bugün cevaplandı mı, week: {wk,games,best}, best: rekor yıl }
   function plan(now, st) {
     const out = [], E = en() ? 1 : 0, gift = st.gift;
+    // Saatler verilen "now"a göre (9 Ekim 2026: eskiden gerçek saatten hesaplanıyordu; oyunda fark yoktu, testte tarih değişince sapıyordu)
+    const at = (dayOffset, [h, m]) => { const d = new Date(now.getTime()); d.setDate(d.getDate() + dayOffset); d.setHours(h, m, 0, 0); return d; };
     const nextDay = gift.claimed ? (gift.day % DAILY_GIFT_DAYS) + 1 : 1; // yarın gelirse serinin günü
     const T = { gift: ["Divan Hediyesi", "Divan Gift"], trivia: ["Günün Sorusu", "Question of the Day"], call: ["Divan: Sadrazam", "Divan: Grand Vizier"] };
     for (let d = 0; d < DAYS; d++) {

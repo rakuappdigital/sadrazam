@@ -375,6 +375,8 @@ window.EN_ACHIEVEMENTS = {
   dip_two:         { name: "Eternal Peace",            desc: "Sign two treaties in a single reign." },
   dip_refuse:      { name: "Shown the Door",           desc: "Turn down a hostile state's threat three times." },
   memory_sharp:    { name: "A Sharp Memory",           desc: "Answer 8 questions about your past decisions correctly." },
+  oteki_reader:    { name: "Reader of the Other Room", desc: "Foil 5 traps the Rival Vizier set at night (across games)." },
+  oteki_exile:     { name: "Exile",                    desc: "On the Blood Moon night, beat the Rival Vizier who swore \"no way back\" in the Divan." },
   rival_five:      { name: "The Rival's Rival",        desc: "Confront the Rival Vizier 8 times in one game." },
   zimmet:          { name: "Embezzlement Suspect",     desc: "Die accused of embezzlement." },
   valide_loyal:    { name: "The Valide's Favorite",    desc: "Accept at least 5 of the Valide Sultan's requests in one game, refusing none." },

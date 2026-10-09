@@ -1111,6 +1111,8 @@ const ACHIEVEMENTS = [
   { id: "dip_two",        tier:"secret",   icon:GAME_ICONS.diplomat, name:"Ebedi Sulh",          desc:"Tek saltanatta iki antlaşma imzala.",            check: s => (s.dipTreaties||0) >= 2 },
   { id: "dip_refuse",     tier:"secret",   icon:GAME_ICONS.diplomat, name:"Kapı Dışarı",         desc:"Hasım bir devletin tehdit mektubunu üç kez geri çevir.", check: s => (s.dipRefused||0) >= 3 },
   { id: "memory_sharp",   tier:"silver",   icon:GAME_ICONS.first_letter, name:"Hafızası Kuvvetli",   desc:"Geçmiş kararlarını soran 8 soruya doğru cevap ver.", check: s => (s.memCorrect||0) >= 8 },
+  { id: "oteki_reader",   tier:"silver",   icon:GAME_ICONS.rival_five, name:"Öteki Odayı Okuyan", desc:"Rakip Vezir'in gece kurduğu 5 tuzağı boz (oyunlar boyunca).", check: s => (s.otekiBeat||0) >= 5 },
+  { id: "oteki_exile",    tier:"secret",   icon:GAME_ICONS.rival_five, name:"Sürgün",             desc:"Kanlı Ay gecesinde \"geri dönüş yok\" diyen Rakip Vezir'i Divan'da yen.", check: s => (s.otekiExile||0) >= 1 },
   { id: "rival_five",     tier:"secret",   icon:GAME_ICONS.rival_five, name:"Rakibin Rakibi",     desc:"Tek oyunda Rakip Vezir ile 8 kez yüzleş.",   check: s => (s.characterMemory?.["8-rakip-vezir"]?.left||0)+(s.characterMemory?.["8-rakip-vezir"]?.right||0) >= 8 },
   { id: "zimmet",         tier:"secret",   icon:GAME_ICONS.zimmet, name:"Zimmet Şüphelisi",    desc:"Zimmet suçuyla öl.",                          check: s => s.deathCause === "hazine_100" },
   { id: "valide_loyal",   tier:"secret",   icon:GAME_ICONS.valide_loyal, name:"Valide'nin Gözdesi",  desc:"Tek oyunda Valide Sultan'ın en az 5 isteğini, hiçbirini reddetmeden kabul et.", check: s => (s.characterMemory?.["5-valide-sultan"]?.left||0)===0 && (s.characterMemory?.["5-valide-sultan"]?.right||0)>=5 },
@@ -4205,6 +4207,7 @@ function startGame() {
   _cagReset(null);
   try { const pp = JSON.parse(localStorage.getItem(PAID_PENDING) || "null"); _paidDone(); if (pp && +pp.cost > 0) { addAkce(+pp.cost); _an("paid_refund", { kind: pp.kind, cost: +pp.cost, at: "new_game" }); } } catch (e) {} // bitmeden bırakılan saltanatın kullanılmamış ödemesi
   _v8Reset();
+  try { if (window.OtekiOda) OtekiOda.reset(); } catch (e) {}
   try { localStorage.removeItem(LUTUF_PENDING); } catch (e) {}
   factionFavors = { saray: 0, ordu: 0, din: 0, halk: 0 };
   factionPressureSent = { saray: false, ordu: false, din: false, halk: false };
@@ -4687,6 +4690,7 @@ function saveGameState() {
       chronicle,
       // 8 Ekim 2026: başarım sayaçları da kayda girer (kayıttan dönülünce sıfırlanıyordu)
       v8: _v8Save(),
+      oteki: (() => { try { return window.OtekiOda ? OtekiOda.save() : null; } catch (e) { return null; } })(),
       ach: { seen: [...seenCharacters], letters: receivedLetters, chance: chanceCardsPlayed, cstreak: chanceStreak, chains: chainsCompleted, war: warVictory, wars: warVictories, items: itemsUsed, uniq: [...uniqueItemsCollected], minH: minHazine, maxS: maxSaray, maxH: maxHazine, minA: minAnyStat, sc: _scUsedThisGame },
       v: 3
     };
@@ -4824,6 +4828,7 @@ function loadGameState(s) {
   _cagReset(s.cag);
   chronicle = Array.isArray(s.chronicle) ? s.chronicle : [];
   _v8Load(s.v8);
+  try { if (window.OtekiOda) OtekiOda.load(s.oteki); } catch (e) {}
   try { _lutufRecover(s); } catch (e) {}
   try { _paidRecover(s); } catch (e) {}
   if (s.ach && typeof s.ach === "object") { try {
@@ -5179,10 +5184,14 @@ function _playConsequenceStamp(c, meta) {
   const en = window.LANG === 'en';
   const src = meta && meta.src ? (en ? meta.src.en : meta.src.tr) : "";
   const ago = (meta && typeof meta.at === "number") ? _stampAgoText(Math.max(1, cardsPlayed - meta.at), en) : "";
-  seal.querySelector("i").textContent = en ? "RESULT" : "SONUÇ";
+  const ot = !!(meta && meta.oteki); // Öteki Oda tuzağı: gece damgası
+  seal.querySelector("i").textContent = ot ? (en ? "TRAP" : "TUZAK") : (en ? "RESULT" : "SONUÇ");
+  seal.classList.toggle("oteki", ot); ring.classList.toggle("oteki", ot); band.classList.toggle("oteki", ot);
   const esc = (t) => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
   const agoHTML = ago ? ` <span class="csb-ago">· ${esc(ago)}</span>` : "";
-  band.innerHTML = src
+  band.innerHTML = ot
+    ? `${esc(en ? "The Rival Vizier's trap, set at night" : "Rakip Vezir'in gece kurduğu tuzak")}${agoHTML}`
+    : src
     ? (en ? `Your decision “${esc(src)}”${agoHTML}` : `“${esc(src)}” kararınız${agoHTML}`)
     : esc(en ? "The result of a past decision" : "Geçmiş bir kararınızın sonucu");
   card._stampT = setTimeout(() => {
@@ -5229,6 +5238,7 @@ function getEligible() {
   const knotPull = _knotPullSources();
   return allCards.filter(c => {
     if (c.is_pasa_terfi && (!isPasaMode || pasaPromoted)) return false;
+    if (c.oteki) return false; // Öteki Oda tuzakları yalnız gece kurulunca gelir
     if (c.character === "8-rakip-vezir" && _nisan("rakip") === 1) return false; // Boş Koltuk
     if (c.is_event) return false;
     if (c.era) return false; // dönem kartları _eraPick ile gelir
@@ -5514,7 +5524,7 @@ function dealNext() {
     }
   }
 
-  const c = _applyTextVariant(getNextCard());
+  const c = (() => { let x = _applyTextVariant(getNextCard()); try { if (window.OtekiOda) x = OtekiOda.prepare(x) || x; } catch (e) {} return x; })(); // Öteki Oda: tuzak kartı kademesine göre
   if (!c) return;
   currentCard = c;
   isInvestigating = false;
@@ -7646,7 +7656,7 @@ function _timeoutEffects(c) {
 function _fusePaused() {
   if (document.hidden) return true;
   if (_settOv && _settOv.style.display === 'flex') return true;
-  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay, #divan-oturumu, .info-panel-overlay, #rel-rescue-overlay, #yil-sonu, #ending-overlay, #dip-summit, #coach-overlay");
+  return !!document.querySelector("#katib-overlay, #item-confirm-popup, #empty-slot-tip, #game-menu-overlay, #item-unlock-overlay, #item-info-popup, #esya-dukkani-overlay, #akce-screen.visible, #second-chance-overlay, #ferman-overlay, #divan-overlay, #divan-oturumu, .info-panel-overlay, #rel-rescue-overlay, #yil-sonu, #ending-overlay, #dip-summit, #coach-overlay, #oteki-ov");
 }
 function _maybeStartFuse(c) {
   _stopFuse();
@@ -7932,6 +7942,11 @@ function _fermanNext() {
   if (item.kind === "yearend") { if (item.skip || isGameOver) { _fermanShowing = false; _fermanNext(); return; } _showYearEnd(item, after); return; }
   if (item.kind === "summit") { if (isGameOver) { _fermanShowing = false; _fermanNext(); return; } _showDipSummit(item.k, after); return; }
   if (item.kind === "lutuf") { if (isGameOver) { _fermanShowing = false; _fermanNext(); return; } _showLutuf(after); return; }
+  if (item.kind === "oteki") { // Öteki Oda: 4 yılda bir gece
+    if (isGameOver || !window.OtekiOda) { _fermanShowing = false; _fermanNext(); return; }
+    try { OtekiOda.show(after); } catch (e) { document.getElementById("oteki-ov")?.remove(); after(); }
+    return;
+  }
   if (item.kind === "call") { _fermanShowing = false; if (!isGameOver) item.fn(); _fermanNext(); return; }
   _showFermanOverlay(item, after);
 }
@@ -8017,7 +8032,8 @@ function _renderFermanChip() {
   }
   const en = window.LANG === 'en', d = _ferman.demands;
   const allOk = d.every(_fermanDemandOk);
-  chip.innerHTML = `<span class="fc-k">${en ? "DECREE" : "FERMAN"}</span><span class="fc-v">${_fermanProgress(d[0], en)}${d.length > 1 ? ` <i>+1</i>` : ""}</span><span class="fc-dot ${allOk ? "y" : "n"}"></span>`;
+  let _ot = ""; try { _ot = window.OtekiOda ? OtekiOda.chipHTML() : ""; } catch (e) {} // Öteki Oda: bekleyen tuzak sayısı
+  chip.innerHTML = `<span class="fc-k">${en ? "DECREE" : "FERMAN"}</span><span class="fc-v">${_fermanProgress(d[0], en)}${d.length > 1 ? ` <i>+1</i>` : ""}</span><span class="fc-dot ${allOk ? "y" : "n"}"></span>${_ot}`;
   game.classList.add("has-ferman");
 }
 
@@ -8093,7 +8109,7 @@ function relChange(key, delta, quiet) {
   }
 }
 function _relOnDecision(card, dir) {
-  if (!card || card._divan || card._timeout || card._mem || !CAST[card.character]) return;
+  if (!card || card._divan || card._timeout || card._mem || card._oteki || !CAST[card.character]) return; // Öteki Oda tuzağı: ilişki etkisi kartın kendi tanımından (oteki.js)
   relChange(card.character, dir === "right" ? 1 : -1);
 }
 // checkGameOver / checkSultanSabir: Can Dostu kurtarması
@@ -8602,7 +8618,7 @@ function _ysReleaseDeferred() {
 }
 function _ysModalOpen() {
   if (_fermanShowing || _fermanKickT || _fermanQueue.length) return true; // pencereler arası boşluk da sayılır
-  return !!document.querySelector("#dip-summit, #yil-sonu, #ferman-overlay, #ending-overlay, #sultan-event-overlay, #paywall-screen.visible, #free-limit-overlay, #death-scene, #divan-overlay, #divan-oturumu, #culus-overlay, #miras-overlay, #lutuf-overlay");
+  return !!document.querySelector("#dip-summit, #yil-sonu, #ferman-overlay, #ending-overlay, #sultan-event-overlay, #paywall-screen.visible, #free-limit-overlay, #death-scene, #divan-overlay, #divan-oturumu, #culus-overlay, #miras-overlay, #lutuf-overlay, #oteki-ov");
 }
 function _ysFinish() {
   const item = _ysCur; _ysCur = null;
@@ -10961,6 +10977,7 @@ function decide(dir) {
       ms: _cardShownAt ? Math.min(600000, Date.now() - _cardShownAt) : 0, tahkik: _tahkikCard === currentCard ? 1 : 0, year }); } catch (e) {}
   }
   _setLastDecision(currentCard, dir);
+  try { if (window.OtekiOda) OtekiOda.onDecide(currentCard, dir); } catch (e) {} // Öteki Oda: tuzak bozuldu mu
 
   // Padişah bizzat ziyaret — sağ = kabul, sol = ölüm
   if (currentCard.type === "padisah_ziyaret") {
@@ -11250,6 +11267,7 @@ function decide(dir) {
     // Arz: Sultan'ın reddettiği tavsiyelerin sonucu
     _arzDue();
     _asirTick(); // Asırlar: tarih düğümü
+    try { if (window.OtekiOda) OtekiOda.tick(); } catch (e) {} // Öteki Oda: vadesi gelen tuzak / 4 yılda bir gece
     // Savaş Sonucu: gecikme dolunca askeri güce göre zafer ya da yenilgi kartı gelir
     // R1-A (8 Ekim 2026): önce "Sefer kararı" kartı (Kadere bırak / Kader Mührü). Zamanlama karar
     // verilene kadar kayıtta kalır: kayıttan dönülürse (sentetik kart kayda yazılmaz) yeniden kuyruğa girer.
@@ -11595,6 +11613,7 @@ window.addEventListener("keydown", e => {
   // "kendi kendine peş peşe kart kayması" hissi yaratır. Sadece gerçek ilk basışı işle.
   if (e.repeat) return;
   if (document.getElementById("coach-overlay")) return; // Y1: ipucu açıkken karar yok
+  if (document.getElementById("oteki-ov")) return; // Öteki Oda gecesi: arkadaki kart kaydırılmaz
   // Sultan overlay açıkken ok tuşları sultana yönlendir
   if (document.getElementById("sultan-event-overlay")) {
     if (e.key === "ArrowRight" && window._sultanAccept) { e.preventDefault(); window._sultanAccept(); }
@@ -12204,6 +12223,7 @@ function buildAchievementState(deathReason) {
     deathCauses: [...new Set([..._deathCausesFromCrossGame(cg), ...(_deathCause && _deathCause !== "free_limit" ? [_deathCause] : [])])],
     totalCurses: (cg.totalCurses||0) + (cursedEver?1:0),
     memCorrect: cg.memCorrect || 0,
+    otekiBeat: cg.otekiBeat || 0, otekiExile: cg.otekiExile || 0,
     dipMet: _dipGlobal().met.length, dipRefused: _dipGlobal().refused, dipTreaties: (_dipState && _dipState.treaties.length) || 0,
   };
 }
@@ -12219,7 +12239,7 @@ const ACH_PROGRESS = {
   ten_years: ["year", 10], kanuni_ten: ["year_kanuni", 10], yavuz_eight: ["year_yavuz", 8], murad_treasure: ["hz_murad3", 90],
   all_deaths: ["@deaths", 8], curse_master: ["@curses", 5], no_curse: ["yearNoCurse", 5], sabir_imtihani: ["yearNoCurse", 15],
   legend: ["year", 20], all_chars: ["chars", 26], item_collector: ["uniq", 5], gizli_ustat: ["secrets", 3],
-  memory_sharp: ["@mem", 8], dip_all: ["@dip", 5], rival_five: ["rival", 8], diplomat: ["elci", 6], deli_dervis_right: ["dervis", 3],
+  memory_sharp: ["@mem", 8], oteki_reader: ["@oteki", 5], dip_all: ["@dip", 5], rival_five: ["rival", 8], diplomat: ["elci", 6], deli_dervis_right: ["dervis", 3],
 };
 function _achBestGet() { try { const o = JSON.parse(localStorage.getItem(ACH_BEST_KEY) || "{}"); return (o && typeof o === "object") ? o : {}; } catch (e) { return {}; } }
 function _achBestUpdate(st) {
@@ -12234,7 +12254,7 @@ function _achBestUpdate(st) {
   if (st.sultanId) { m["year_" + st.sultanId] = st.year || 0; if (st.sultanId === "murad3") m.hz_murad3 = st.maxHazine || 0; }
   const b = _achBestGet();
   for (const [k, v] of Object.entries(m)) if (typeof v === "number" && isFinite(v) && v > (b[k] || 0)) b[k] = v;
-  b["@deaths"] = (st.deathCauses || []).length; b["@curses"] = st.totalCurses || 0; b["@mem"] = st.memCorrect || 0; b["@dip"] = st.dipMet || 0;
+  b["@deaths"] = (st.deathCauses || []).length; b["@curses"] = st.totalCurses || 0; b["@mem"] = st.memCorrect || 0; b["@dip"] = st.dipMet || 0; b["@oteki"] = st.otekiBeat || 0;
   try { localStorage.setItem(ACH_BEST_KEY, JSON.stringify(b)); } catch (e) {}
 }
 function _achProgress(id) {
@@ -12242,6 +12262,7 @@ function _achProgress(id) {
   const b = _achBestGet(); let cur = +b[p[0]] || 0;
   if (p[0] === "@mem") { try { cur = getCrossGameData().memCorrect || cur; } catch (e) {} }
   if (p[0] === "@dip") { try { cur = _dipGlobal().met.length; } catch (e) {} }
+  if (p[0] === "@oteki") { try { cur = getCrossGameData().otekiBeat || 0; } catch (e) {} }
   if (p[0] === "@deaths") { try { cur = _deathCausesFromCrossGame(getCrossGameData()).length; } catch (e) {} }
   if (p[0] === "@curses") { try { cur = getCrossGameData().totalCurses || 0; } catch (e) {} }
   return [Math.min(cur, p[1]), p[1]];

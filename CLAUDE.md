@@ -513,6 +513,33 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
 - **Müzik** artık AAC 112 kbps `.m4a` (orijinal MP3'ler design-sources/music-mp3). Eski not "64 kbps" yanlıştı (190 kbps'ydi).
 - Testler (scratchpad t/): v8_money_test, v8_feat_test, daily_test, ui8_test, overflow_test (FRAME=iznik|rustem …).
 
+## 3j. Öteki Oda (9 Ekim 2026) — 4 yılda bir Rakip Vezir gecesi (oteki.js)
+
+- Kullanıcı seçimleri: **1-C** kafes açılışı (opak yazı kutusu ≥2 sn + açıklama penceresi, TAMAM ile başlar,
+  "Bu gece uyu" ile atlanır), **2-B** hafızalı rakip, **3-A** şafak + mühürlü zarf, **5-A** kendi tuzağın.
+  Tasarım/metin sayfası: https://claude.ai/artifact/BbjDKbbwvVDvconyV7Q4V8 . 3. gecenin adı **Kanlı Ay**.
+- **Modül** `oteki.js` (game.js'ten SONRA yüklenir; `window.OtekiOda`). game.js'te yalnız try/catch'li çağrılar:
+  dealNext `OtekiOda.prepare(c)` (tuzağı kademeye göre ölçekler, `{KARAR}` doldurur, gece damgası `_stampMeta {oteki}`),
+  decide `onDecide` (`_setLastDecision`'dan hemen sonra; sabır/ilişki ek etkisi, BOZAR → Defter mührü, sayaç),
+  enjeksiyon bloğu `tick()` (`_asirTick`'ten sonra; vadesi gelen tuzak → forcedQueue, gece → `_fermanEnqueue({kind:"oteki"})`),
+  `_fermanNext` "oteki" türü → `OtekiOda.show(after)`, kayıt `oteki:` / `OtekiOda.load(s.oteki)` / startGame `reset()`.
+  `#oteki-ov` (z 282) `_ysModalOpen`, `_fusePaused`, klavye korumasında. `getEligible` `c.oteki` kartlarını hiç vermez.
+- **Gece**: `year % 4 === 0`, yılın ≥5. kartı, bekleyen tuzak yok, Paşa/Meydan Okuma/Boş Koltuk değil. Gece kartları
+  pencere içindeki düğmelerdir (kart destesi, cardsPlayed, güçler HİÇ değişmez). Açık ipucu (coach) varsa kapanmasını bekler.
+- **Tuzaklar**: data/cards.json `oteki_*` (22; `weight 1`, `oteki: {beat, xl, xr}`; xl/xr = sabir, rel ek etkileri,
+  denetçi görmez). Taban etki ≤8; kademe 1/2/3 = ×1/×1,4/×1,8, sınır 8/12/15. 2-B: önceki gece bozulduysa +1 kademe,
+  düşüldüyse −1 kademe ve DAMGASIZ (karardan sonra "Rakip Vezir'in tuzağıydı" notu). "Bu yıl" 6–20, "sabırla" 30–80 kart,
+  en geç gece+86; iki tuzak arası ≥6 kart. Kişi tuzaklarında oyunun genel +1/−1 ilişki kuralı kapalı (`_relOnDecision`
+  `card._oteki`) — yalnız kartın `rel` değeri. Kanlı Ay: kanli_sabir/kanli_ocak 8–20 + hesap_gercek/sahte 40–70;
+  "Geri dönüş yok" + Hesap bozulursa sürgün (+3 mühür, sonraki gece yerine tek Limni mektubu, sonra gece yok).
+- **Ödül (5-A)**: fısıltı +1, iftira +2 Defter mührü (`_defterGet().seals`), crossgame `otekiBeat`/`otekiExile`,
+  başarımlar `oteki_reader` (5, ilerlemeli) ve `oteki_exile` (gizli). **Game Center'da YOK** (dip_* ve memory_sharp ile
+  birlikte 7 başarım oyunda var, GC'de yok — kullanıcıya soruldu).
+- Görseller assets/oteki/: kethuda-gece, rakip-vezir-gece (1080×1440), gece-koridor, kanli-ay (720×1280), kafes.webp
+  (beyaz zemin saydamlaştırıldı). Kaynaklar ~/Desktop/vezir. safak / mektup görselleri gelirse 3-A'daki CSS yerine konur.
+- Test: scratchpad t/oteki_test.js (98 kontrol: zamanlama, kilit, ≥2 sn yazı, 3 gece, 2-B, sürgün, uyu, kayıt, 22×3 ölçek,
+  320/375/390), t/oteki_shots.js (ekran görüntüleri), t/oteki_dump.js (sayfa için metinleri oyundan çeker).
+
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 
 - **Dönemler** `ERA_DEFS`, `_eraState` (kayıtta `era`), `_eraPick` (getNextCard'da, %30, ayrı kanal;

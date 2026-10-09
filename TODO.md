@@ -1,6 +1,22 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 1.7.1 / build 46 ASC'DE, İNCELEMEYE GÖNDERİLMEDİ ← BURADAN DEVAM
+## SIRADAKİ — 1.7.1 / build 47 (Öteki Oda + Game Center) ← BURADAN DEVAM
+**9 Ekim 2026:** Öteki Oda (Rakip Vezir gecesi, 4 yılda bir) eklendi; kullanıcı seçimleri **1-C1** (opak yazı kutusu ≥2 sn +
+açıklama penceresi, TAMAM), **K-A** (kafes TEK görsel olarak belirir, yazıdan sonra tam ortadan ikiye ayrılıp iki yana ekrandan
+çıkar), **2-B**, **3-A** (kullanıcının safak + mektup görselleriyle), **5-A**; 3. gece adı **Kanlı Ay**. Ayrıntı CLAUDE.md §3j.
+Sayfa: https://claude.ai/artifact/BbjDKbbwvVDvconyV7Q4V8
+- **Game Center:** 7 başarım ASC'de oluşturuldu (oteki_reader 5, oteki_exile 3 gizli, dip_first 3, dip_all 6, dip_two 4 gizli,
+  dip_refuse 4 gizli, memory_sharp 5). Toplam puan tam 1000 (Apple sınırı; eskiler 970). Görseller mevcut çerçeveyle + oyundaki
+  portre (scratchpad gcimg/new_*.png), TR/EN, 14 görsel COMPLETE. **1.7.1 incelemeye gönderilirken sürümün Game Center
+  bölümünde bu 7 başarım SEÇİLMELİ**, yoksa GC'de görünmezler.
+- **Bildirim düzeltmesi:** notifications.js `plan(now)` saatleri gerçek saatten değil verilen `now`'dan (oyuncuya etkisi yoktu).
+- **Testler (son):** oteki_test 99/99 (Chromium+WebKit, TR/EN, K-A ölçümü, ipucu bekleme, 320/375/390); tam tur 43 grup: 40 doğrudan,
+  oteki (test hatası düzeltildi → 99/99), v8_feat (bildirim → 0 FAIL), dip (makine yükü; boştayken 2×8/8 geçti). Uzun oyun
+  testleri artık geceyi de oynuyor (#oteki-ov düğmeleri döngülerde).
+- **Kalan:** build 47 → ASC → 1.7.1'e bağla (46 yerine); kullanıcı incelemeye gönderecek. TestFlight'ta gerçek cihazda:
+  bildirim, hediye reklamı, reklamı yarıda kapatma ("izlenmedi" + ödül yok), 4. yılda bir gece (bunun için uzun oyun gerekir).
+
+## SIRADAKİ — 1.7.1 / build 46 ASC'DE, İNCELEMEYE GÖNDERİLMEDİ
 (Kalan: kullanıcı kararıyla incelemeye gönderme. Öncesinde TestFlight'ta gerçek cihazda: bildirimler, hediye reklamı,
 bir reklamı YARIDA kapatıp "Reklam sonuna kadar izlenmedi" mesajı + ödül gelmediği. Build 45 KULLANILMAMALI — hatalı.)
 
