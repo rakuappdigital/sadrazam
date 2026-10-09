@@ -16,7 +16,12 @@ Sayfa: https://claude.ai/artifact/BbjDKbbwvVDvconyV7Q4V8
 - **Build 47** yüklendi (Delivery `985027f2-efea-40e9-b8c3-1ef556bdd30d`; IPA kontrol: 1.7.1/47, 50 SKAN, oteki.js + 7 görsel,
   gerçek reklam kimliği, test kimliği/simülatör betiği yok). Simülatörde gerçek iOS'ta bir gece oynandı (kafes K-A, açıklama, kartlar).
 - **Build 47 1.7.1'e BAĞLANDI** (VALID, şifreleme false; sürüm READY_FOR_REVIEW). Kullanıcı 46'yı incelemeden geri çekmişti.
-- **Kalan:** kullanıcı Game Center bölümünde 7 başarımı seçip incelemeye gönderecek. TestFlight'ta gerçek cihazda:
+- **Game Center hiç yayında DEĞİLDİ (9 Ekim keşfi):** 42 başarımın 42'si ve "years_survived" liderlik tablosu v2 API'de
+  PREPARE_FOR_SUBMISSION, yayın kaydı 0 — uygulama yayına çıktığından beri GC oyunculara hiç görünmemiş (oyun raporluyor ama
+  Apple göstermiyor). Hepsi (42 + 1) kullanıcının taslak gönderimine (reviewSubmission f35f0aa5…) API ile eklendi; taslakta
+  1.7.1 + 42 başarım + 1 liderlik = 44 öğe, hepsi READY_FOR_REVIEW. Yöntem: POST /v1/reviewSubmissionItems, ilişki
+  gameCenterAchievementVersion / gameCenterLeaderboardVersion (sürüm id'si: GET /v2/gameCenterAchievements/{id}/versions).
+- **Kalan:** kullanıcı taslağı "Submit for Review" ile gönderecek. Onaydan sonra GC'de başarımların göründüğünü kontrol et. TestFlight'ta gerçek cihazda:
   bildirim, hediye reklamı, reklamı yarıda kapatma ("izlenmedi" + ödül yok), 4. yılda bir gece (bunun için uzun oyun gerekir).
 
 ## SIRADAKİ — 1.7.1 / build 46 ASC'DE, İNCELEMEYE GÖNDERİLMEDİ
