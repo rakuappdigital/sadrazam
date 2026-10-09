@@ -1,5 +1,18 @@
 # Sadrazam — TODO
 
+## ŞU AN — 1.7.1 YENİ BUILD (9 Ekim 2026): kullanıcı build 47'yi incelemeden çekiyor
+Yeni oyuncu deneyimi (7441890) + aşağıdaki listeden kullanıcının seçtikleri birlikte 1.7.1'e yeni build olarak yüklenecek.
+Kullanıcının 9 Ekim test notları (öneri sayfası hazırlanıyor, her biri 3 seçenek, kullanıcı kodla seçecek):
+1. **Kritik An teklifi** (güç ≤20 → Şifa Otu: reklam / 1 akçe) çok çabuk geçiyor, bildirim küçük, reddedilince geri alınamıyor.
+   Kök neden: dealNext her kartta `_hideCriticalOffer()` → oyuncu kartı kaydırınca teklif kapanıyor; sonra 12 kart bekleme, yılda en fazla 2.
+2. **Güce dokununca "akçe ile yükselt"** seçeneği: akçe satışını artırır mı? Analiz + öneri.
+3. Bazı kartlarda üstteki **minik mühür, Tahkik penceresi yüzünden görünmüyor**.
+4. **Arka planı olmayan kırmızı uyarı yazıları** (ör. "Divan fısıldıyor…") üstte okunmuyor; yazılar/bildirimler üst üste binmemeli.
+5. **"DİVAN BÖLÜNDÜ"** yazısı daha estetik olmalı (3 öneri).
+6. **Akçe harcama miktarları** (İkinci Şans, kozmetikler…) az mı? Analiz; normalse kalsın.
+   Bulgu: günlük oyuncu haftada ~24 akçe bedava (hediye 17 + soru 7); tüm kozmetikler toplam 47; harcamaların çoğu 1 akçe; 1.7.0'da satın alma 0.
+7. **Göze batmadan akçe satışını artıracak** kozmetik / oyunun devamını sağlayan fikirler.
+
 ## ⏰ SONRAKİ OTURUMDA İLK İŞ: KULLANICIYA BU 4 MADDEYİ HATIRLAT (9 Ekim 2026 isteği)
 1. **TelemetryDeck verilerini düzenli kontrol et.** Okuma API anahtarı (tdpat_) YALNIZ ÜCRETLİ planda (9 Ekim'de denendi) →
    kullanıcıdan panodan ekran görüntüsü/CSV iste; hangi grafiklerin kurulacağını adım adım yaz. Alternatifler kullanıcıya
