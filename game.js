@@ -175,7 +175,7 @@ function _todayKey() {
   return `${d.getFullYear()}-${mm}-${dd}`;
 }
 // ── Günlük Divan Hediyesi (27 Eylül 2026; 8 Ekim 2026'da yenilendi) ─────
-// Günde bir kez ödüllü reklam → seri gününe göre akçe: 1-1-2-2-3-3-5 (haftada 17; 8 Ekim 2026
+// Günde bir kez ödüllü reklam → seri gününe göre akçe: 1-1-2-2-3-4-5 (haftada 18; 9 Ekim'den önce 1-1-2-2-3-3-5; 8 Ekim 2026
 // kullanıcı kararı — önce 1..7 = 28 denendi, kese satışını öldürecek kadar fazlaydı).
 // Bir gün kaçırılırsa seri 1. güne döner; 7. günden sonra yeni hafta 1'den başlar.
 // Tarih: cihazın YEREL günü (_todayKey) — saat dilimi kaymasıyla hile/kayıp olmasın.
@@ -184,7 +184,7 @@ function _todayKey() {
 const DAILY_GIFT_KEY = "sadrazam_daily_gift";
 const DAILY_GIFT_PENDING = "sadrazam_daily_gift_pending";
 const DAILY_GIFT_DAYS = 7;
-const DAILY_GIFT_REWARDS = [1, 1, 2, 2, 3, 3, 5];
+const DAILY_GIFT_REWARDS = [1, 1, 2, 2, 3, 4, 5]; // 9 Ekim 2026 kullanıcı: 6. gün 3 → 4 (haftada 18)
 function _dailyGiftReward(day) { const d = Math.max(1, Math.min(DAILY_GIFT_DAYS, day | 0)); return DAILY_GIFT_REWARDS[d - 1]; }
 function _dateKeyOffset(days) {
   const d = new Date(); d.setDate(d.getDate() + days);
