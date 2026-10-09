@@ -1,6 +1,17 @@
 # Sadrazam — TODO
 
-## SIRADAKİ — 1.7.1 / build 47 (Öteki Oda + Game Center) ← BURADAN DEVAM
+## SIRADAKİ — 1.7.1 / build 47 İNCELEMEDE (9 Ekim 2026, 00:58 UTC gönderildi) ← BURADAN DEVAM
+Gönderim f35f0aa5…: 1.7.1 (47) + 42 başarım + 1 liderlik = 44 öğe, WAITING_FOR_REVIEW (kullanıcı gönderdi).
+**Onaydan sonra yapılacaklar:**
+1. Game Center gerçekten yayında mı: ASC'de başarımlar/liderlik LIVE; gerçek cihazda bir başarım kazanıp GC'de görünüyor mu.
+2. Gerçek cihaz (yayın sürümü): bir reklamı yarıda kapat → "Reklam sonuna kadar izlenmedi", ödül yok; sonuna kadar izle → ödül.
+3. Bildirimler doğru saatte (10:00 hediye, 19:30, 21:00 seri) geliyor mu.
+4. Öteki Oda: Tam Sürüm'le 4. yıla gelen bir oyunda gece açılıyor mu (kafes K-A, açıklama, kartlar, şafak).
+5. 1–2 hafta sonra AdMob'da 1.7.0 / 1.7.1 eBGBM karşılaştırması (50 SKAdNetwork kimliğinin etkisi).
+6. TelemetryDeck: oteki_night / oteki_done / oteki_trap olayları ile kaç oyuncunun geceyi oynadığı, kaçının tuzağı bozduğu.
+Reddedilirse: ret gerekçesini oku; Game Center öğeleri gerekiyorsa ayrı gönderime alınabilir.
+
+### 1.7.1 içeriği (özet)
 **9 Ekim 2026:** Öteki Oda (Rakip Vezir gecesi, 4 yılda bir) eklendi; kullanıcı seçimleri **1-C1** (opak yazı kutusu ≥2 sn +
 açıklama penceresi, TAMAM), **K-A** (kafes TEK görsel olarak belirir, yazıdan sonra tam ortadan ikiye ayrılıp iki yana ekrandan
 çıkar), **2-B**, **3-A** (kullanıcının safak + mektup görselleriyle), **5-A**; 3. gece adı **Kanlı Ay**. Ayrıntı CLAUDE.md §3j.
