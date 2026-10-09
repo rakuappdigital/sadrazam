@@ -6,6 +6,10 @@
    anlatıldı: ücretli plan ya da önemli olayları ayrıca ücretsiz bir veritabanına (Supabase) yazmak (yeni build + gizlilik metni). Bakılacaklar: oyuncular kaçıncı yılda/kartta bırakıyor (year_end, game_over), paywall_shown →
    purchase dönüşümü, ad_shown / ad_impression, oteki_night / oteki_done / oteki_trap, daily_gift, trivia, settings_changed.
    1.7.1 yayına çıktıktan 1–2 hafta sonra ilk rapor; sonra 2 haftada bir.
+   **9 Ekim: pano kuruldu** (Dashboards → "Sadrazam Ölçümler", TQL kartları A–F, hepsi appVersion=1.7.0 filtreli;
+   1.7.1 yayına çıkınca kullanıcı "1.7.1" yapacak). İlk bakış: reklam deneme=gösterim (7/7, 2/2), 11 ilk oyun → 1 ikinci
+   oyun, 17 başlangıç / 1 game_over; 1.7.0'da hiç purchase/ending/cosmetic_buy yok. Simülatör testleri canlı veriye yazıyor
+   (oteki_* olayları) → sonraki build'de test cihazını isTestMode ile işaretleme önerildi.
 2. **Yeni oyuncu deneyimi: ayrıntılı öneri / düzeltme / ekleme planı hazırla** (web sayfasında, oyunun kendi tasarımıyla,
    her öneri için 3 seçenek). Puan değerlendirmesinde en zayıf alan (5/10): ilk oyunlarda çok sistem ve pencere üst üste;
    ücretsiz oyuncu 2. yılda duruyor ama en iyi kısımlar (Asırlar, diplomasi, Öteki Oda) 4. yıldan sonra. Fikir yönü:
