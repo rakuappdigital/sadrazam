@@ -1,5 +1,37 @@
 # Sadrazam — TODO
 
+## ⏭ SONRAKİ OTURUM BURADAN BAŞLA (9 Ekim 2026 akşam, kullanıcı oturumu kapattı)
+**Kullanıcı seçimi (öneri sayfası https://claude.ai/artifact/DJeL91ifMZirZWKY4h9bTq): K-A · G-A · M-C · U-A · D-A · E-C · F-A**
+Sıra: aşağıdakileri uygula → test (yeni/eski oyuncu, TR/EN, ses açık/kapalı, Chromium+WebKit; akçe/reklam yolları: yetersiz
+akçe, çift tıklama, iptal, reklam yarıda) → senkron (www + ios public + cap sync) → build 48 → ASC'de 1.7.1'e bağla +
+Game Center 42 başarım + liderlik YENİDEN ekle (aşağıda) → kullanıcı gönderir. Build/yükleme öncesi kısa onay iste.
+- **K-A Kritik An kaybolmaz:** `maybeShowCriticalOffer`/`_hideCriticalOffer` (dealNext her kartta kapatıyor). Teklif ilk kez
+  bugünkü gibi açılır; kart kaydırılınca kapanmaz, küçülüp barların altında rozet ("Şifa Otu hazır · Hazine %15 · AÇ")
+  olarak bekler; güç 20'nin üstüne çıkınca ya da kullanılınca kalkar. Sayaç (_criticalShownCount) rozet beklerken artmasın.
+- **G-A Güce dokun (yalnız tehlikede):** güç ≤20 iken bara dokununca "Hazineden takviye +15" penceresi; 3 akçe YA DA
+  ödüllü reklam; saltanat yılında 1 kez (yeni durum → `_v8Save/_v8Load`'a ekle). Kritik An (Şifa Otu +20) ayrı kalır.
+  Akçe kuralı: spendAkce tek adım + hemen uygula; yetersizse redirectToAkcePurchase. Reklam yarıda → ödül yok.
+- **M-C Sonuç mührü:** `_playConsequenceStamp` mühür basıldıktan ~0,6 sn sonra küçülüp `#card-char-name` yanına rozet
+  (SONUÇ/TUZAK) olarak iner; Tahkik düğmesi yerinde. dealNext'te rozet temizlenir.
+- **U-A Tek bildirim şeridi:** `_cagToast`, `#curse-whisper` (fısıltı), `showItemToast`, rel-toast vb. tek kuyruk; koyu
+  zeminli tek şerit başlığın altında, sırayla, köşede "1/2". Zeminsiz kırmızı yazı kalmasın. Önce bütün bildirim
+  türlerini envanterle (grep toast/whisper), sonra ortak `_notify(html, ms, kind)`.
+- **D-A Divan Bölündü = kırık mühür:** `triggerCurse` overlay'i: karartma + ortada çatlayan mum mühür (SVG, _imperialSealSVG
+  diliyle), altın Cinzel "Divan Bölündü", italik alt satır, üç gücün "−6" çipleri. Süre ~1,9 sn kalabilir; dokununca kapanır.
+  Taslak görseli sayfada (E1).
+- **E-C 1 akçelik harcamalar 2 akçe:** Şifa Otu/Kritik An, Kâtibin Notu/Müneccim, Eşya Dükkânı (ITEM_AKCE_COST), Yatıştırma
+  (SOOTHE_COST), Lütuf (LUTUF_COST), Kader Mührü şans (KADER_COST_CHANCE). Reklam seçenekleri aynen kalır. Kozmetikler,
+  İkinci Şans (2), Market eşyalarının kendi fiyatları DEĞİŞMEZ. Metinlerde sabit "1 akçe" yazan her yeri bul (TR+EN).
+- **F-A Divan Odası:** kullanıcı görselleri üretecek → `~/Desktop/divan-odasi/PROMPTLAR.txt` (4 oda: oda-arz, oda-lale,
+  oda-bogaz, oda-kis; 9:16, insansız, ortası sakin). Görseller gelince: `#divan-bg` (Yaşayan Divan, `_updateDivanBg`) için
+  aynı işlem (kırp, GaussianBlur 9, parlaklık .62, 540x720 civarı JPEG) ve Market Kozmetik sekmesine "Divan Odası"
+  (oda başına 8–12 akçe, önizleme). Görseller gelmeden kodlama.
+- **Günün Sorusu ödülsüz (kullanıcı kararı):** soru ve bildirim AYNEN çıkmaya devam eder, yalnız akçe verilmez. DİKKAT,
+  sistemi bozma: game.js `TRIVIA_REWARD` kullanımları (HEDİYE penceresi `#dg-trivia` "+1 AKÇE" etiketi ~265, `_triviaAnswer`
+  addAkce ~355 ve dönüş `got` ~359, soru penceresi başlığı "ÖDÜL 1 AKÇE" ~365, sonuç mesajı) ve notifications.js 68/70
+  ("Ödüllü sorun hazır…" → "Günün sorusu hazır…", TR+EN). Cevaplandı kaydı, seri, bildirim planı (Notif.plan) değişmez.
+  daily_test.js / notifications testleri yeni metinle koşulsun.
+
 ## ŞU AN — 1.7.1 YENİ BUILD (9 Ekim 2026): kullanıcı build 47'yi incelemeden çekiyor
 Yeni oyuncu deneyimi (7441890) + aşağıdaki listeden kullanıcının seçtikleri birlikte 1.7.1'e yeni build olarak yüklenecek.
 **Build sonrası ASC adımları (kullanıcı 9 Ekim'de build 47'yi incelemeden çekti):** yeni build'i (48+) 1.7.1'e bağla VE
