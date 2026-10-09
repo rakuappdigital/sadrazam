@@ -10,7 +10,10 @@
    1.7.1 yayına çıkınca kullanıcı "1.7.1" yapacak). İlk bakış: reklam deneme=gösterim (7/7, 2/2), 11 ilk oyun → 1 ikinci
    oyun, 17 başlangıç / 1 game_over; 1.7.0'da hiç purchase/ending/cosmetic_buy yok. Simülatör testleri canlı veriye yazıyor
    (oteki_* olayları) → sonraki build'de test cihazını isTestMode ile işaretleme önerildi.
-2. **Yeni oyuncu deneyimi: ayrıntılı öneri / düzeltme / ekleme planı hazırla** (web sayfasında, oyunun kendi tasarımıyla,
+2. **[9 Ekim: PLAN HAZIR, KULLANICI SEÇİMİ BEKLİYOR → https://claude.ai/artifact/RKvHHKqeuVWjdXccW6FR2E · kodlar Y1–Y5 A/B/C;
+   önerilerim Y1-A Y2-A Y3-A Y4-B Y5-A; yalnız yeni oyuncu ilkesi (games_played); seçimsiz düzeltmeler + ölçüm app_hidden/tutorial_done/first_year_end.
+   Teşhis: ilk karta 16 dokunuş, 6. karttan önce 6–7 sistem, ilk Ferman (tek güç) ↔ Kayırma çelişkisi (11 oyuncuda 26 tetik),
+   Kanuni'nin Viyana'sı 4. yılda (ücretsiz 2 yıl), yarısı 1. yılı bitirmiyor. Test: scratchpad nux/journey.js]** Yeni oyuncu deneyimi: ayrıntılı öneri / düzeltme / ekleme planı hazırla (web sayfasında, oyunun kendi tasarımıyla,
    her öneri için 3 seçenek). Puan değerlendirmesinde en zayıf alan (5/10): ilk oyunlarda çok sistem ve pencere üst üste;
    ücretsiz oyuncu 2. yılda duruyor ama en iyi kısımlar (Asırlar, diplomasi, Öteki Oda) 4. yıldan sonra. Fikir yönü:
    sistemlerin birer birer açılması, 2. yıl bitmeden bir "vay" anı, ilk 10 dakikanın akışı.
