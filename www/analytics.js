@@ -103,7 +103,14 @@
   }
 
   try {
-    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(true); });
+    // app_hidden (9 Ekim 2026): oyuncu uygulamadan çıkarken saltanatın neresindeydi — "nerede bırakıyorlar".
+    // Aynı kartta tekrar tekrar arka plana geçmek tek olay sayılır (kota).
+    let lastHiddenAt = null;
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState !== "hidden") return;
+      try { const c = window.__anCtx && window.__anCtx(); if (c && c.cp !== lastHiddenAt) { lastHiddenAt = c.cp; track("app_hidden", c); } } catch (e) {}
+      flush(true);
+    });
     window.addEventListener("pagehide", () => flush(true));
   } catch (e) {}
 

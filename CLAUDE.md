@@ -540,6 +540,22 @@ kartlara eklendi; zamanlama `CHAIN_RULES` / kartın `triggers_on_*` alanı.
 - Test: scratchpad t/oteki_test.js (98 kontrol: zamanlama, kilit, ≥2 sn yazı, 3 gece, 2-B, sürgün, uyu, kayıt, 22×3 ölçek,
   320/375/390), t/oteki_shots.js (ekran görüntüleri), t/oteki_dump.js (sayfa için metinleri oyundan çeker).
 
+## 3k. Yeni oyuncu (NUX, 9 Ekim 2026 · Y1-A Y2-A Y3-A Y4-B Y5-A)
+
+Plan sayfası: https://claude.ai/artifact/RKvHHKqeuVWjdXccW6FR2E . Modül game.js'te `COACH_KEY`'in hemen üstünde.
+- **Kim:** yalnız hiç oynamamış oyuncu (`sadrazam_tutorial_done` yok VE `sadrazam_games_played`=0). OYNA → btn-start
+  `_nuxEligible() && _nuxStart()`: Kanuni + Sokollu/Şemsi hazır, öğretici atlanır (tutorial_done yazılır), `_nuxPending`
+  → startGame `_nuxGame` (kayıtta `v8.nx`). Bugünkü oyuncular bu yola HİÇ girmez. **Ücretsiz sınıra dokunulmadı** (2 yıl aynen).
+- **Y1-A:** `_nuxCards()` 3 Divan Kâtibi kartı (hazine-katibi portresi, `_noCurse`, cards.json'da DEĞİL) forcedQueue başında.
+- **Y2-A:** `_nuxLock(f)` takvimi: tahkik cp<6, asır girişi cp<8, arz cp<15; ferman/kayırma/ilişki rozeti/yatıştırma/
+  büyüteç/kritik an/fitil/hafıza kartı 1. yılda kapalı. Gölge kartı 9–14. 1. yılda boş eşya kutuları gizli
+  (`#game.nux-y1.items-empty`). Coach başlığına "YENİ YETKİ ·".
+- **Y3-A:** `_nuxDengeFerman()` (`sadrazam_nux_v1`=1 ve games_played<2) → ferman türü `denge` (hiçbir güç <30).
+- **Y4-B (HERKES):** `ASIR_KNOTS` "belgrad" (Kanuni, y 2, 1521) viyana'dan ÖNCE; düğüm sayısı 11 (metinler sayıyı okur).
+- **Y5-A:** `#year-prog` (1. yıl), 18. kartta vaat bildirimi, `_nuxYearReward` (_ysFinish): 1 mühür + 3 akçe, bir kez (`sadrazam_nux_y1`).
+- **Ölçüm:** game_start `nux`, `nux_first_card {sec}`, `first_year_end`, `app_hidden {cp, year, n, nux}` (analytics.js, `window.__anCtx`).
+- Test: scratchpad nux/journey.js `<lang> <seed> <out> <max> new|veteran|second` + check.py; chance.js (şans kartı stres).
+
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 
 - **Dönemler** `ERA_DEFS`, `_eraState` (kayıtta `era`), `_eraPick` (getNextCard'da, %30, ayrı kanal;

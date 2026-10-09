@@ -1277,11 +1277,12 @@ let _fermanNoReroll = false; // F2-A: üst üste 3. başarısızlıktan sonraki 
 let _fermanAfUsed = false;   // F2-D: Af arzuhali saltanat başına bir kez
 let _sootheYear = 0, _sootheN = 0, _sootheCardId = null; // A2: kriz kartında yatıştırma (yılda 2)
 function _v8Reset() { _kaderYear = 0; _lutufYear = 0; _fermanWatch = false; _fermanNoReroll = false; _fermanAfUsed = false; _sootheYear = 0; _sootheN = 0; _sootheCardId = null; }
-function _v8Save() { return { k: _kaderYear, l: _lutufYear, fw: _fermanWatch, fn: _fermanNoReroll, fa: _fermanAfUsed, sy: _sootheYear, sn: _sootheN, sc: _sootheCardId }; }
+function _v8Save() { return { k: _kaderYear, l: _lutufYear, fw: _fermanWatch, fn: _fermanNoReroll, fa: _fermanAfUsed, sy: _sootheYear, sn: _sootheN, sc: _sootheCardId, nx: _nuxGame ? 1 : 0 }; }
 function _v8Load(o) {
   _v8Reset(); if (!o || typeof o !== "object") return;
   _kaderYear = +o.k || 0; _lutufYear = +o.l || 0; _fermanWatch = !!o.fw; _fermanNoReroll = !!o.fn; _fermanAfUsed = !!o.fa;
   _sootheYear = +o.sy || 0; _sootheN = +o.sn || 0; _sootheCardId = o.sc || null;
+  _nuxGame = !!o.nx; _nuxPromised = _nuxGame; _nuxFirstCardSent = true; // kayıttan dönüşte vaat/ölçüm tekrarlanmaz
 }
 
 // ── Sultan'ın Lütfu (R3-A, 8 Ekim 2026) ──────────────────────────────────
@@ -3858,6 +3859,7 @@ document.getElementById("btn-start").addEventListener("click", () => {
   isPasaMode = false;
   isChallengeMode = false; // normal mod — challenge kapalı
   introScreen.style.display = "none";
+  if (_nuxEligible() && _nuxStart()) return; // Y1-A: ilk saltanat hazır kadroyla
   showSultanScreen();
 });
 
@@ -4093,9 +4095,10 @@ function showAdvisorScreen() {
 
 // ── Oyunu Başlat ──────────────────────────────────────────────────
 function startGame() {
+  _nuxGame = _nuxPending && !isPasaMode && !isChallengeMode; _nuxPending = false; _nuxFirstCardSent = false; _nuxPromised = false; // Y1-A: yalnız _nuxStart'tan gelen saltanat
   stats = { ...selectedSultan.stats };
   sultanSabir = selectedSultan.sultanSabir;
-  _an("game_start", { sultan: selectedSultan?.id, diff: difficultyId, pasa: isPasaMode ? 1 : 0,
+  _an("game_start", { sultan: selectedSultan?.id, diff: difficultyId, pasa: isPasaMode ? 1 : 0, nux: _nuxGame ? 1 : 0,
     n: (() => { try { return parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10) + 1; } catch (e) { return 0; } })() });
 
   if (isPasaMode) {
@@ -4118,6 +4121,7 @@ function startGame() {
   isGameOver = false;
   playCounts = {};
   forcedQueue = [];
+  if (_nuxGame) forcedQueue.push(..._nuxCards()); // Y1-A: ilk 3 kart Divan Kâtibi anlatır
   scheduledCards = [];
   _criticalShownCount = 0; _criticalLastAt = -999; _criticalYear = 0;
   _muneccimN = 0; _muneccimAt = -999;
@@ -4189,7 +4193,7 @@ function startGame() {
   _mektup4Shown = false;
   // Rastgele eşikler: her oyunda özel kartlar farklı bir kart sayısında gelsin
   const _rndBetween = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
-  _golgeThreshold    = _rndBetween(4, 8);
+  _golgeThreshold    = _nuxGame ? _rndBetween(9, 14) : _rndBetween(4, 8); // Y2-A: ilk 6 kart yalnız kart + güçler
   // Sultan mektupları: CARDS_PER_YEAR=24 olduğu için eski sabit değerler
   // (6/9/15/25) hepsi 1. yılın içine sıkışıyordu — mektuplar arka arkaya
   // gelip önemsizleşiyordu. Artık yıla göre orantılı, ~2-3 yılda bir gelecek
@@ -5529,6 +5533,7 @@ function dealNext() {
   currentCard = c;
   isInvestigating = false;
   if (c.character === "1-sultan") _lastSultanCardAt = cardsPlayed;
+  try { _nuxOnDeal(); } catch (e) {} // Y2-A/Y5-A
 
   _renderCardRel(null);
   // Divan Oturumu (3 Ekim 2026)
@@ -5826,7 +5831,7 @@ function setupInvestigateBtn(c, displayText) {
     btn.setAttribute("aria-label", btn.title);
   };
   const isCandidate = TRAITOR_CANDIDATES.includes(c.character) && !c.knot_of && !c._mem;
-  if ((!c.investigate_text && !isCandidate) || c._mem) {
+  if ((!c.investigate_text && !isCandidate) || c._mem || _nuxLock("investigate")) {
     btn.classList.add("hidden");
     btn.onclick = null;
     return;
@@ -6901,7 +6906,7 @@ function _applyCriticalHeal() {
 }
 
 function maybeShowCriticalOffer() {
-  if (isGameOver || isPaywalled || !currentCard) return;
+  if (isGameOver || isPaywalled || !currentCard || _nuxLock("kritik")) return;
   if (document.getElementById("critical-offer")) return;
   if (document.getElementById("katib-overlay")) return; // Kâtip/Müneccim notu açıkken üst üste binmesin
   if (_criticalYear !== year) { _criticalYear = year; _criticalShownCount = 0; }
@@ -7661,6 +7666,7 @@ function _fusePaused() {
 function _maybeStartFuse(c) {
   _stopFuse();
   const mode = _timedSetting();
+  if (_nuxLock("fuse")) return;
   if (mode === 'off' || !_isCrisisCard(c) || _timedUsedYear === year || isGameOver) return;
   if (cardsPlayed % CARDS_PER_YEAR === 0) return; // yeni yılın ilk kartı (Yıl Sonu'ndan hemen sonra) fitilsiz
   _timedUsedYear = year;
@@ -7802,6 +7808,7 @@ let _fermanQueue = [];     // gösterilecek pencereler
 let _fermanShowing = false;
 
 function _fermanPick(yr) {
+  if (_nuxDengeFerman()) return [{ t: "denge", Y: 30 }]; // Y3-A: Ferman ile Kayırma aynı şeyi öğretsin
   const ds = [], keys = Object.keys(FERMAN_STATS);
   const low = keys.slice().sort((a, b) => stats[a] - stats[b]).slice(0, 2);
   const k = low[Math.floor(Math.random() * low.length)];
@@ -7823,7 +7830,7 @@ function _fermanPick(yr) {
   return ds;
 }
 function _fermanNew(show) {
-  if (isGameOver || !selectedSultan) return;
+  if (isGameOver || !selectedSultan || _nuxLock("ferman")) return; // Y2-A: ilk ferman yeni oyuncuda 2. yılın başında
   _ferman = { year, demands: _fermanPick(year), rerolls: 0, noRr: _fermanNoReroll };
   _renderFermanChip();
   if (show) _fermanEnqueue({ kind: "new" });
@@ -7831,6 +7838,7 @@ function _fermanNew(show) {
 function _fermanDemandOk(d) {
   if (d.t === "target") return stats[d.k] >= d.X;
   if (d.t === "keep") return Math.min(d.min, stats[d.k]) >= d.Y;
+  if (d.t === "denge") return Object.keys(FERMAN_STATS).every(k => stats[k] >= d.Y);
   if (d.t === "ban") return !activeFlags[FERMAN_BANS[d.i].flag];
   if (d.t === "person") { const p = FERMAN_PEOPLE[d.i]; return (((characterMemory[p.key] || {})[p.dir]) || 0) === d.base; }
   return false;
@@ -7838,6 +7846,7 @@ function _fermanDemandOk(d) {
 function _fermanDemandText(d, en) {
   const L = en ? 1 : 0;
   if (d.t === "target") return en ? `Raise ${FERMAN_STATS[d.k][1]} to at least ${d.X} by year's end.` : `Yıl sonunda ${FERMAN_STATS[d.k][0]} en az ${d.X} olsun.`;
+  if (d.t === "denge") return en ? `By year's end, let no power stand below ${d.Y}.` : `Yıl sonunda hiçbir güç ${d.Y}'un altında olmasın.`;
   if (d.t === "keep") return en ? `Do not let ${FERMAN_STATS[d.k][1]} fall below ${d.Y} all year.` : `${FERMAN_STATS[d.k][0]} yıl boyunca ${d.Y}'in altına düşmesin.`;
   if (d.t === "ban") return [FERMAN_BANS[d.i].tr, FERMAN_BANS[d.i].en][L];
   if (d.t === "person") return [FERMAN_PEOPLE[d.i].tr, FERMAN_PEOPLE[d.i].en][L];
@@ -7846,6 +7855,7 @@ function _fermanDemandText(d, en) {
 function _fermanProgress(d, en) {
   if (d.t === "target") return `${FERMAN_STATS[d.k][en ? 1 : 0].replace(/^the /, "")} ${Math.round(stats[d.k])}/${d.X}`;
   if (d.t === "keep") return `${FERMAN_STATS[d.k][en ? 1 : 0].replace(/^the /, "")} ≥${d.Y}`;
+  if (d.t === "denge") return `${en ? "Lowest" : "En düşük"} ${Math.round(Math.min(...Object.keys(FERMAN_STATS).map(k => stats[k])))}/${d.Y}`;
   return _fermanDemandOk(d) ? (en ? "kept" : "tutuldu") : (en ? "broken" : "bozuldu");
 }
 // decide() sonunda: "koru" talepleri için yılın en düşük değeri
@@ -8179,7 +8189,7 @@ function _showInfoPanel([title, p1, p2]) {
 function _renderCardRel(c) {
   let el = document.getElementById("card-rel");
   if (!el) { el = document.createElement("span"); el.id = "card-rel"; charName.insertAdjacentElement("afterend", el); }
-  if (!c || !CAST[c.character] || c.type) { el.innerHTML = ""; el.style.display = "none"; return; }
+  if (!c || !CAST[c.character] || c.type || _nuxLock("rel")) { el.innerHTML = ""; el.style.display = "none"; return; }
   const lv = relLevel(c.character), L = REL_LEVELS[lv + 3], n = Math.abs(lv), en = window.LANG === 'en';
   el.style.display = "";
   el.innerHTML = `<span class="cr-dots">${[0, 1, 2].map(i => `<i style="${i < n ? `background:${L.c};border-color:${L.c}` : `border-color:${L.c}`}"></i>`).join("")}</span><span class="cr-lbl" style="color:${L.c}">${L[en ? "en" : "tr"]}</span>`;
@@ -8633,6 +8643,7 @@ function _ysFinish() {
   if (ey === _ysLastYear || isGameOver) item.skip = true; else _ysLastYear = ey;
   _ysSnap1 = { ...stats };
   if (five) _ysSnap5 = { ...stats };
+  try { _nuxYearReward(item); } catch (e) {} // Y5-A
   _fermanKick(350);
 }
 const YS_NAMES = { // [artı, eksi] × [tr, en]
@@ -9485,7 +9496,7 @@ function _memBuild(type, e, src) {
   return card;
 }
 function _maybeQueueMemory() {
-  if (isGameOver || isPaywalled || !selectedSultan) return;
+  if (isGameOver || isPaywalled || !selectedSultan || _nuxLock("memory")) return;
   if (_memN >= MEM_MAX || cardsPlayed < MEM_MIN_CARDS || cardsPlayed - _memAt < MEM_GAP) return;
   if (forcedQueue.length) return;
   if (Math.random() >= MEM_CHANCE) return;
@@ -9925,6 +9936,7 @@ function showEmptySlotTip(slotIndex) {
 }
 
 function updateItemBar() {
+  try { document.getElementById("game")?.classList.toggle("items-empty", playerItems.every(x => x === null)); } catch (e) {} // Y2-A: yeni oyuncuda boş kutular gizli
   for (let i = 0; i < 3; i++) {
     const slot = document.getElementById("item-slot-" + i);
     if (!slot) continue;
@@ -10205,6 +10217,7 @@ function _favMark(k) {
 }
 // decide() içinden, efektler uygulanmadan önce çağrılır (adı geriye dönük uyum için aynı)
 function checkCurse(dir) {
+  if (_nuxLock("kayirma")) return; // Y2-A: ilk saltanatın 1. yılında Kayırma Dengesi yok
   const f = _favOf(currentCard && currentCard[dir + "_effects"]);
   if (f && _reignFav[f] != null) _reignFav[f]++; // K1: saltanat unvanı için
   _favHist.push(f);
@@ -10234,6 +10247,98 @@ function _showCurseWhisper(f) {
 // Kurallar: başka bir pencere / animasyon varken beklenir (kuyruk), bir kartta en fazla bir yeni
 // ipucu, ipucu açıkken kart sürüklenemez (katman tüm ekranı kaplar), fitil durur (_fusePaused),
 // klavye kararları engellenir (keydown). Kurallara ve sayılara dokunmaz.
+// ── Yeni oyuncu (NUX, 9 Ekim 2026 · kullanıcı seçimi Y1-A Y2-A Y3-A Y5-A) ──────────────
+// YALNIZ hiç oynamamış oyuncunun İLK saltanatı değişir (öğretici görülmemiş + hiç oyun bitmemiş);
+// bugünkü oyuncular aynı oyunu oynar. Karar startGame'de verilir ve kayıtta (v8.nx) taşınır.
+// Y1-A: seçim ekranları + 7 adımlı öğretici atlanır, ilk 3 kart Divan Kâtibi'nin öğretici kartı.
+// Y2-A: sistemler kart takvimiyle açılır (_nuxLock). Y3-A: ilk iki oyunda yalnız "denge" fermanı.
+// Y5-A: yıl çizgisi, 18. kartta vaat, ilk yıl sonunda Defter mührü + 3 akçe.
+const NUX_KEY = "sadrazam_nux_v1";          // "1": yeni oyuncu yolundan başladı (Y3-A için kalıcı iz)
+const NUX_Y1_KEY = "sadrazam_nux_y1";       // ilk yıl ödülü verildi
+const NUX_ADVISORS = ["sokollu", "semsi"];  // değişimler %15 yumuşak + sabır yavaş azalır
+var _nuxGame = false, _nuxPending = false, _nuxT0 = 0, _nuxFirstCardSent = false, _nuxPromised = false; // var: startGame/_v8Save dosyada önce tanımlı
+function _nuxEligible() {
+  try { return !localStorage.getItem("sadrazam_tutorial_done") && parseInt(localStorage.getItem("sadrazam_games_played") || "0", 10) === 0; } catch (e) { return false; }
+}
+// Y2-A takvimi: true = bu sistem ilk saltanatta henüz açılmadı
+function _nuxLock(f) {
+  if (!_nuxGame) return false;
+  switch (f) {
+    case "tahkik": return cardsPlayed < 6;   // 7. kart
+    case "asir":   return cardsPlayed < 8;
+    case "arz":    return cardsPlayed < 15;  // 16. kart
+    case "ferman": case "kayirma": case "rel": case "soothe": case "investigate":
+    case "kritik": case "fuse": case "memory": return year < 2;
+  }
+  return false;
+}
+// Y3-A: yeni oyuncu yolundan gelenin ilk iki oyununda Sultan yalnız denge ister
+function _nuxDengeFerman() {
+  try { return localStorage.getItem(NUX_KEY) === "1" && parseInt(localStorage.getItem("sadrazam_games_played") || "0", 10) < 2; } catch (e) { return false; }
+}
+function _nuxCards() {
+  const fx = (o) => ({ saray: 0, "yeniçeri": 0, ulema: 0, hazine: 0, ...o });
+  const mk = (i, tr, en, l, r) => ({ id: "nux_katip_" + i, character: "hazine-katibi", character_name: "Divan Kâtibi", character_name_en: "Divan Scribe",
+    text: tr, text_en: en, left_text: l[0], left_text_en: l[1], right_text: r[0], right_text_en: r[1], left_effects: fx(l[2]), right_effects: fx(r[2]),
+    left_flags_set: [], right_flags_set: [], required_flags: [], excluded_flags: [], weight: 1, min_year: 1, category: "nux", _noCurse: true, _nux: true });
+  return [
+    mk(1, "Hoş geldiniz, Paşam. Ben Divan kâtibiyim. Buraya gelen her iş dört gücü oynatır: Saray, Ordu, Ulema, Hazine. Kartı sağa ya da sola kaydırarak karar verirsiniz. İlk iş: Yeniçeri kışlasının çatısı akıyor.",
+      "Welcome, my Pasha. I am the scribe of the Divan. Every matter brought here moves four powers: Palace, Army, Clergy, Treasury. Swipe the card right or left to decide. First matter: the Janissary barracks roof is leaking.",
+      ["Beklesinler", "Let them wait", { "yeniçeri": -5, hazine: 3 }], ["Tamir ettirin", "Have it repaired", { "yeniçeri": 5, hazine: -4 }]),
+    mk(2, "Üstteki dört çubuğa dikkat edin. Biri boşalırsa ya da tamamen dolarsa görevden düşersiniz; fazla güç de tehlikelidir. Medrese yeni bir vakıf istiyor.",
+      "Watch the four bars at the top. If one empties or fills completely, you fall from office; too much power is dangerous too. The madrasa asks for a new endowment.",
+      ["Şimdilik olmaz", "Not for now", { ulema: -4, saray: 2 }], ["Vakfı onaylayın", "Approve the endowment", { ulema: 5, hazine: -4 }]),
+    mk(3, "Son bir şey: kararlarınız unutulmaz, bazıları aylar sonra kapınızı çalar. Saray kethüdası bir düğün için para istiyor.",
+      "One last thing: your decisions are not forgotten; some will knock on your door months later. The palace steward asks for money for a wedding.",
+      ["Sade tutulsun", "Keep it simple", { saray: -4, hazine: 3 }], ["Görkemli olsun", "Make it grand", { saray: 5, hazine: -5 }]),
+  ];
+}
+// OYNA → (yeni oyuncu) hazır kadroyla doğrudan göreve başlama
+function _nuxStart() {
+  const s = SULTANS.find(x => x.id === "kanuni"); if (!s) return false;
+  selectedSultan = s;
+  selectedAdvisors = NUX_ADVISORS.map(id => ADVISORS.find(a => a.id === id)).filter(Boolean);
+  if (selectedAdvisors.length !== 2) return false;
+  try { localStorage.setItem(NUX_KEY, "1"); localStorage.setItem("sadrazam_tutorial_done", "1"); } catch (e) {}
+  _nuxT0 = Date.now(); _nuxPending = true;
+  _maybeShowInterstitialThenStartGame();
+  return true;
+}
+// dealNext'te, kart ekrana konduktan sonra
+function _nuxOnDeal() {
+  const g = document.getElementById("game"); if (!g) return;
+  g.classList.toggle("nux-y1", _nuxGame && year === 1);
+  let bar = document.getElementById("year-prog");
+  if (!(_nuxGame && year === 1)) { bar?.remove(); return; }
+  if (!bar) { bar = document.createElement("div"); bar.id = "year-prog"; bar.innerHTML = "<i></i><b></b>"; document.getElementById("header-left")?.appendChild(bar); }
+  const done = cardsPlayed % CARDS_PER_YEAR;
+  bar.firstChild.style.width = Math.round(done / CARDS_PER_YEAR * 100) + "%";
+  bar.setAttribute("aria-label", window.LANG === 'en' ? `Year: ${done} of ${CARDS_PER_YEAR} cards` : `Yıl: ${CARDS_PER_YEAR} kartın ${done}'i`);
+  if (!_nuxFirstCardSent && _nuxT0) { _nuxFirstCardSent = true; _an("nux_first_card", { sec: Math.round((Date.now() - _nuxT0) / 1000) }); }
+  if (!_nuxPromised && done >= 18) {
+    _nuxPromised = true;
+    const left = CARDS_PER_YEAR - done, en = window.LANG === 'en';
+    setTimeout(() => _cagToast(en ? `<b>${left} CARDS TO YEAR'S END</b><span>The Sultan will receive you and seal your first year.</span>`
+                                   : `<b>YIL SONUNA ${left} KART</b><span>Sultan seni kabul edecek ve ilk yılını mühürleyecek.</span>`, 3600), 900);
+  }
+}
+// Ölçüm bağlamı: analytics.js uygulama arka plana geçerken okur (app_hidden). Oyun dışında null.
+window.__anCtx = () => {
+  if (isGameOver || !selectedSultan || document.getElementById("game")?.classList.contains("hidden")) return null;
+  let n = 0; try { n = parseInt(localStorage.getItem("sadrazam_games_played") || "0", 10) + 1; } catch (e) {}
+  return { cp: cardsPlayed, year, n, nux: _nuxGame ? 1 : 0 };
+};
+// _ysFinish'te: ilk yılın sonu töreni (Defter mührü + 3 akçe), bir kez
+function _nuxYearReward(item) {
+  if (!_nuxGame || item.endedYear !== 1 || isGameOver) return;
+  try { if (localStorage.getItem(NUX_Y1_KEY) === "1") return; localStorage.setItem(NUX_Y1_KEY, "1"); } catch (e) { return; }
+  const d = _defterGet(); d.seals++; _defterSet(d);
+  addAkce(3); updateAkceUI();
+  const en = window.LANG === 'en';
+  item.stations.unshift(en ? "FIRST YEAR SEALED · 1 seal to the Viziers' Ledger · +3 akce" : "İLK YILIN MÜHRÜ · Vezirler Defteri'ne 1 mühür · +3 akçe");
+  _an("first_year_end", { cards: cardsPlayed });
+}
+
 const COACH_KEY = "sadrazam_coach";
 const COACH_TIPS = {
   ferman:  { sel: "#ferman-chip",
@@ -10302,6 +10407,7 @@ function _coachShow(k, t, el) {
     const nm = FAV_NAMES[_coachFav] || FAV_NAMES.saray;
     text = text.replace("{F}", en ? nm[1].charAt(0).toUpperCase() + nm[1].slice(1) : nm[0]);
   }
+  if (_nuxGame && (k === "tahkik" || k === "arz" || k === "ferman")) title = (en ? "NEW AUTHORITY · " : "YENİ YETKİ · ") + title; // Y2-A
   _coachMark(k);
   _an("coach_tip", { k });
   const r = el.getBoundingClientRect(), pad = 6;
@@ -10438,7 +10544,7 @@ function _offerTahkikAd(c, btn) {
   };
 }
 function _tahkikEligible(c) {
-  return !!c && !c.type && !c._mem && !c._timeout && c.character !== "1-sultan" && !!c.left_effects && !!c.right_effects;
+  return !!c && !_nuxLock("tahkik") && !c.type && !c._mem && !c._timeout && c.character !== "1-sultan" && !!c.left_effects && !!c.right_effects;
 }
 function _hideTahkikBtn() { const b = document.getElementById("tahkik-btn"); if (b) b.classList.add("hidden"); }
 function _renderTahkikChoices(c) {
@@ -10463,7 +10569,7 @@ function _sootheAdjust(c, fx) {
 }
 function setupSootheChip(c) {
   let el = document.getElementById("soothe-chip");
-  const show = AKCE_SYSTEM_ENABLED && _isCrisisCard(c) && !isGameOver && (_sootheCardId === c.id || _sootheLeft() > 0);
+  const show = AKCE_SYSTEM_ENABLED && !_nuxLock("soothe") && _isCrisisCard(c) && !isGameOver && (_sootheCardId === c.id || _sootheLeft() > 0);
   if (!show) { el?.remove(); if (_sootheCardId && (!c || c.id !== _sootheCardId)) _sootheCardId = null; return; }
   if (!el) { el = document.createElement("button"); el.type = "button"; el.id = "soothe-chip"; }
   const bottom = document.getElementById("card-bottom");
@@ -10548,7 +10654,7 @@ function setupTahkikBtn(c, leftTxt, rightTxt) {
 // Saray +3), değilse "Sultan haklıydı" (sabır +3).
 let _arzPending = [];
 function _arzChance() { return sultanSabir >= 60 ? 0.85 : sultanSabir >= 30 ? 0.65 : 0.45; }
-function _arzEligible(c) { return !!c && c.arz === true && !c.type && !c._mem && !c._timeout && !c._noCurse; }
+function _arzEligible(c) { return !!c && !_nuxLock("arz") && c.arz === true && !c.type && !c._mem && !c._timeout && !c._noCurse; }
 function _hideArzChip() { const ch = document.getElementById("arz-chip"); if (ch) ch.classList.add("hidden"); }
 function setupArzChip(c) {
   let chip = document.getElementById("arz-chip");
@@ -10654,6 +10760,23 @@ const ASIR_KNOTS = [
     frag: { good: ["Yavuz'un ordusu Kahire'ye girdi; hilafet İstanbul'a taşındı.", "Selim's army entered Cairo; the caliphate moved to Istanbul."],
             bad: ["Mısır hiç alınamadı; hilafet Kahire'de kaldı.", "Egypt was never taken; the caliphate stayed in Cairo."] },
     bonus: { good: ["ulema", 3], bad: ["hazine", -3] } },
+  // Y4-B (9 Ekim 2026): Kanuni'nin 2. yıl düğümü — ücretsiz sürümde de yaşanan büyük an. Viyana 4. yılda kalır.
+  { id: "belgrad", sultan: "kanuni", y: 2, cal: 1521, hist: "win",
+    tr: "Belgrad Seferi", en: "The Belgrade Campaign",
+    intro: ["Sultan Süleyman: “Büyük dedem Fatih'in önünde durduğu kapı Belgrad'dır. İkinci yılın bitmeden o kale bizim olacak. Bana diri bir ordu ve dolu bir hazine getir, Sadrazam.”",
+            "Sultan Süleyman: “Belgrade is the gate my great-grandfather the Conqueror could not pass. Before your second year ends, that fortress will be ours. Bring me a living army and a full treasury, Grand Vizier.”"],
+    prep: [["yeniçeri", ">=", 55], ["hazine", ">=", 45], ["ulema", ">=", 40]],
+    cards: [
+      { ch: "2-yeniceri", t: ["Sava taştı, Paşam. Köprü kurmak haftalar alır. Bekleyelim mi, yoksa sallarla mı geçelim?", "The Sava has flooded, my Pasha. A bridge will take weeks. Do we wait, or cross on rafts?"],
+        a: ["Köprüyü kurun", "Build the bridge", { hazine: -4 }], b: ["Sallarla geçin", "Cross on rafts", { "yeniçeri": -3 }] },
+      { ch: "6-kaptan-i-derya", t: ["Kaleye Tuna'dan erzak giriyor. Nehri gemilerle kesersek kuşatma kısalır; ama donanma Akdeniz'den çekilir.", "Supplies reach the fortress by the Danube. If our ships cut the river the siege will be short; but the fleet leaves the Mediterranean."],
+        a: ["Nehri kesin", "Cut the river", { saray: -3 }], b: ["Donanma yerinde kalsın", "Keep the fleet where it is", { ulema: 2 }] },
+    ],
+    win: ["Belgrad ağustosun sonunda teslim oldu. Macaristan'ın kapısı artık açık. Tarih, yazıldığı gibi tekrarlandı.", "Belgrade surrendered at the end of August. The gate to Hungary now stands open. History repeated itself as written."],
+    lose: ["Kuşatma güz yağmurlarında dağıldı. Belgrad bu kez Macar'da kaldı.", "The siege broke up in the autumn rains. This time Belgrade stayed Hungarian."],
+    frag: { good: ["Belgrad 1521'de alındı; Tuna yolu açıldı.", "Belgrade was taken in 1521; the Danube road opened."],
+            bad: ["Belgrad 1521'de alınamadı; Tuna yolu kapalı kaldı.", "Belgrade was not taken in 1521; the Danube road stayed shut."] },
+    bonus: { good: ["yeniçeri", 3], bad: ["hazine", -2] } },
   { id: "viyana", sultan: "kanuni", y: 4, cal: 1529, hist: "loss",
     tr: "Viyana Önlerinde", en: "Before Vienna",
     intro: ["Sultan Süleyman: “Mohaç bitti. Dördüncü yılında Viyana surlarının önünde olacağız. Bu kez kış bizi geri çevirmesin, Sadrazam.”",
@@ -10895,7 +11018,7 @@ function _asirCard(k, idx) {
       _an("asir", { knot: k.id, result: res, prep: _asirRun ? _asirRun.prep : 0, score: _asirRun ? _asirRun.score : 0, year });
       _asirMenuLabel();
       const n = ASIR_KNOTS.filter(x => d.knots[x.id]).length;
-      if (n === ASIR_KNOTS.length) showItemToast(en ? "All ten knots of history are tied. Read “Your Ottoman Empire” in the menu." : "On düğüm de bağlandı. “Senin Osmanlın” menüde seni bekliyor.");
+      if (n === ASIR_KNOTS.length) showItemToast(en ? `All ${ASIR_KNOTS.length} knots of history are tied. Read “Your Ottoman Empire” in the menu.` : `${ASIR_KNOTS.length} düğümün hepsi bağlandı. “Senin Osmanlın” menüde seni bekliyor.`);
     } };
 }
 function _asirQueued() { return forcedQueue.some(c => c && c.easter_type === "asir") || (currentCard && currentCard.easter_type === "asir"); }
@@ -10906,7 +11029,7 @@ function _asirTick() {
   if (_asirQueued()) return;
   // kayıttan dönüşte yarım kalan düğüm sahnesi kaldığı yerden sürer (kuyruk kayda yalnız kimlikle yazılır)
   if (_asirRun.started) { if (_asirRun.stage < 4) forcedQueue.unshift(_asirCard(k, _asirRun.stage)); return; }
-  if (!_asirRun.intro && cardsPlayed >= 2 && year <= k.y) { forcedQueue.push(_asirCard(k, "intro")); return; }
+  if (!_asirRun.intro && cardsPlayed >= 2 && !_nuxLock("asir") && year <= k.y) { forcedQueue.push(_asirCard(k, "intro")); return; }
   if (year === k.y && (cardsPlayed % CARDS_PER_YEAR) >= ASIR_AT_CARD) { _asirRun.started = true; _asirRun.intro = true; forcedQueue.unshift(_asirCard(k, 0)); }
 }
 // Yıl Sonu ekranına hazırlık satırı
@@ -10954,7 +11077,7 @@ function showAsirlar() {
   }
   const el = document.createElement("div"); el.id = "asir-overlay";
   el.innerHTML = `<div id="asir-panel"><div class="as-kicker">${en ? "THE MAIN GOAL" : "ASIL HEDEF"}</div><div class="as-title">${en ? "FATE OF THE EMPIRE" : "DEVLETİN KADERİ"}</div>
-    <p class="as-lead">${en ? "Every Sultan's reign hides two knots of history; the second opens once the first ends well. Reach the year prepared and decide well: change what was lost, repeat what was won." : "Her sultanın saltanatında iki tarih düğümü var; ikincisi, ilki iyi bitince açılır. O yıla hazırlıklı ulaş, doğru karar ver: kaybedileni değiştir, kazanılanı tekrarla."}</p>
+    <p class="as-lead">${en ? "Every Sultan's reign hides knots of history; the next opens once the one before ends well. Reach the year prepared and decide well: change what was lost, repeat what was won." : "Her sultanın saltanatında tarih düğümleri var; sıradaki, bir öncekisi iyi bitince açılır. O yıla hazırlıklı ulaş, doğru karar ver: kaybedileni değiştir, kazanılanı tekrarla."}</p>
     <div class="as-sub">${n}/${ASIR_KNOTS.length}</div>${rows}${fin}<button class="as-close" type="button">${en ? "Close" : "Kapat"}</button></div>`;
   document.body.appendChild(el);
   requestAnimationFrame(() => el.classList.add("visible"));
