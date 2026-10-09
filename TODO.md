@@ -1,8 +1,9 @@
 # Sadrazam — TODO
 
 ## ⏰ SONRAKİ OTURUMDA İLK İŞ: KULLANICIYA BU 4 MADDEYİ HATIRLAT (9 Ekim 2026 isteği)
-1. **TelemetryDeck verilerini düzenli kontrol et.** Panoya Claude'un erişimi yok → kullanıcıdan API token ya da panodan
-   ekran görüntüsü/CSV iste. Bakılacaklar: oyuncular kaçıncı yılda/kartta bırakıyor (year_end, game_over), paywall_shown →
+1. **TelemetryDeck verilerini düzenli kontrol et.** Okuma API anahtarı (tdpat_) YALNIZ ÜCRETLİ planda (9 Ekim'de denendi) →
+   kullanıcıdan panodan ekran görüntüsü/CSV iste; hangi grafiklerin kurulacağını adım adım yaz. Alternatifler kullanıcıya
+   anlatıldı: ücretli plan ya da önemli olayları ayrıca ücretsiz bir veritabanına (Supabase) yazmak (yeni build + gizlilik metni). Bakılacaklar: oyuncular kaçıncı yılda/kartta bırakıyor (year_end, game_over), paywall_shown →
    purchase dönüşümü, ad_shown / ad_impression, oteki_night / oteki_done / oteki_trap, daily_gift, trivia, settings_changed.
    1.7.1 yayına çıktıktan 1–2 hafta sonra ilk rapor; sonra 2 haftada bir.
 2. **Yeni oyuncu deneyimi: ayrıntılı öneri / düzeltme / ekleme planı hazırla** (web sayfasında, oyunun kendi tasarımıyla,
