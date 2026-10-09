@@ -15,7 +15,8 @@ Sayfa: https://claude.ai/artifact/BbjDKbbwvVDvconyV7Q4V8
   testleri artık geceyi de oynuyor (#oteki-ov düğmeleri döngülerde).
 - **Build 47** yüklendi (Delivery `985027f2-efea-40e9-b8c3-1ef556bdd30d`; IPA kontrol: 1.7.1/47, 50 SKAN, oteki.js + 7 görsel,
   gerçek reklam kimliği, test kimliği/simülatör betiği yok). Simülatörde gerçek iOS'ta bir gece oynandı (kafes K-A, açıklama, kartlar).
-- **Kalan:** 47'yi 1.7.1'e bağla (46 yerine); kullanıcı incelemeye gönderecek (Game Center bölümünde 7 başarımı seçerek). TestFlight'ta gerçek cihazda:
+- **Build 47 1.7.1'e BAĞLANDI** (VALID, şifreleme false; sürüm READY_FOR_REVIEW). Kullanıcı 46'yı incelemeden geri çekmişti.
+- **Kalan:** kullanıcı Game Center bölümünde 7 başarımı seçip incelemeye gönderecek. TestFlight'ta gerçek cihazda:
   bildirim, hediye reklamı, reklamı yarıda kapatma ("izlenmedi" + ödül yok), 4. yılda bir gece (bunun için uzun oyun gerekir).
 
 ## SIRADAKİ — 1.7.1 / build 46 ASC'DE, İNCELEMEYE GÖNDERİLMEDİ
