@@ -1,6 +1,10 @@
 # Sadrazam — TODO
 
-## ⏭ DERİN ANALİZ (10 Ekim 2026) — kullanıcı seçimi bekleniyor · 1.7.1 (48) İNCELEMEDE (kullanıcı gönderdi)
+## ⏭ DERİN ANALİZ (10 Ekim 2026) — KARAR ERTELENDİ · 1.7.1 (48) İNCELEMEDE (kullanıcı gönderdi)
+**Kullanıcı kararı (10 Ekim):** veri çok az, şimdi DEĞİŞİKLİK YOK. O/K/M kararı 1.7.1 verisiyle birlikte verilecek.
+Yapılacak: 1.7.1 yayına çıkınca ~2 hafta bekle → TelemetryDeck'ten aynı ölçümleri 1.7.1 için çıkar (ilk oyun → ikinci oyun,
+başka gün dönüş, yıl sonları, ücretsiz sınır → satın alma, app_hidden ile bırakılan kart, bildirim izni, Kayırma sıklığı;
+geliştirici cihazı d91a02… hariç) → sayfayı 1.7.0 / 1.7.1 karşılaştırmasıyla güncelle → kullanıcı seçer.
 Sayfa: https://claude.ai/artifact/2BQFywirHjRULv1cewbHCa — kodlar O (omurga) · K (Kayırma) · M (menü), her biri A/B/C;
 önerilerim O-A K-A M-A. Kaynak: TelemetryDeck 1.7.0, 6–10 Ekim, geliştirici cihazı (clientUser d91a02…, 26 oyun) hariç 15 oyuncu.
 Bulgular: 15 ilk oyun → 1 ikinci oyun; başka gün geri gelen 0; ölümle biten 2 (gerisi yarıda bırakıldı); 9 oyuncu 1. yılı,
