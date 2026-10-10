@@ -1,6 +1,16 @@
 # Sadrazam — TODO
 
-## ⏭ SONRAKİ ADIM: BUILD 48 (10 Ekim 2026) — kod, test ve senkron TAMAM, build onayı bekleniyor
+## ⏭ ŞU AN — 1.7.1 / build 48 ASC'DE HAZIR, GÖNDERİM KULLANICIDA (10 Ekim 2026)
+- **Build 48 yüklendi:** Delivery `68861a2a-f14c-4d4f-aca2-67f0e0f1b170`, commit c39cc1b; arşiv kontrolü 1.7.1/48, 8 oda görseli,
+  yeni kod. VALID, şifreleme false (API), 1.7.1'e BAĞLANDI (build 47'nin yerine).
+- **Taslak gönderim** `5dc387f4-5a2a-4a75-9034-79b85c1a3863`: 1.7.1 + 42 başarım + 1 liderlik (years_survived) = 44 öğe, hepsi
+  READY_FOR_REVIEW. Kullanıcı ASC'den "Submit for Review" ile gönderecek. Betik: scratchpad asc/link48.py (göndermez).
+- **GitHub push (c39cc1b) + Vercel deploy yapıldı** (10 Ekim); canlıda yeni game.js ve assets/oda doğrulandı.
+- Onay sonrası kontrol listesi aşağıdaki "build 47" bölümünde (Game Center LIVE mı, reklam yarıda kapatma, bildirim saatleri,
+  Öteki Oda). Ek: TestFlight'ta Kritik An rozeti, bara dokunma takviyesi, Divan Odası satın alma (gerçek akçe yolu).
+- **Bekleyen karar:** 320x568'de uzun metinli kartlarda güç barlarının üstü 4–17px kesiliyor (eski sorun) — düzeltilsin mi?
+
+## (Tamamlandı) BUILD 48 hazırlığı — kod, test ve senkron (10 Ekim 2026)
 K-A G-A M-C U-A D-A E-C F-A + Günün Sorusu ödülsüz uygulandı (ayrıntı CLAUDE.md §3l). Ferman değiştirme 1 akçe kalır (kullanıcı).
 10 Ekim ek düzeltmeler: rozet beklerken portre kısalır (`#game.co-wait`; 320x568'de güç barları ekrandan taşıyordu),
 pencere açıkken bildirim şeridi ekranın en üstüne çıkar (`.ns-top`; takviye penceresinin başlığını örtüyordu).
