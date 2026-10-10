@@ -5030,6 +5030,28 @@ html, body {
 #critical-offer .co-btns button:disabled { opacity: .5; cursor: default; }
 #critical-offer .co-msg { min-height: 0; font-family: 'Alegreya', serif; font-size: 12.5px; color: #e07070; text-align: center; margin-top: 4px; }
 #critical-offer .co-msg:empty { display: none; }
+/* K-A (10 Ekim 2026): küçülmüş hâl — barların altında rozet */
+#critical-offer .co-mini { display: none; }
+#critical-offer.mini {
+  position: relative; left: auto; bottom: auto; top: auto; transform: none; transition: none;
+  width: max-content; max-width: calc(100vw - 24px); margin: 6px auto 0; padding: 0; border-radius: 999px; z-index: 2;
+  box-shadow: 0 0 0 2px rgba(216,72,60,.15), 0 4px 14px rgba(0,0,0,.55);
+  animation: coMiniIn .3s ease-out;
+}
+#critical-offer.mini > :not(.co-mini) { display: none; }
+#critical-offer.mini .co-mini {
+  display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 6px; background: none; border: 0; cursor: pointer;
+  font-family: 'Alegreya', serif; font-size: 12px; color: var(--text); white-space: nowrap;
+}
+#critical-offer .co-mini img { width: 20px; height: 20px; flex: none; filter: drop-shadow(0 0 4px rgba(39,174,96,.6)); }
+#critical-offer .co-mini span { overflow: hidden; text-overflow: ellipsis; }
+#critical-offer .co-mini b { color: #ff5b4d; }
+#critical-offer .co-mini em {
+  font-style: normal; font-family: 'Alegreya SC', serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; color: #1a1206;
+  background: linear-gradient(180deg, #F2D56B, #C9A227 60%, #A8841A); border-radius: 999px; padding: 3px 9px;
+}
+@keyframes coMiniIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+body:has(#game.hidden) #critical-offer { display: none; }
 .stat.critical-focus .stat-track { animation: criticalPulse 1s ease-in-out infinite; }
 @keyframes criticalPulse { 50% { box-shadow: 0 0 0 2px rgba(216,72,60,.8), 0 0 12px rgba(216,72,60,.7); } }
 .item-slot.critical-hint, [id^="item-slot-"].critical-hint { animation: criticalHint .8s ease-in-out 4; }
@@ -6614,3 +6636,105 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 #year-prog i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, #C9A227, #E8C84A); border-radius: 2px; transition: width .6s ease; }
 #year-prog b { position: absolute; right: -4px; top: -3px; width: 9px; height: 9px; border-radius: 50%; background: #6B1A1A; border: 1px solid #E8C84A; }
 @media (prefers-reduced-motion: reduce) { #year-prog i { transition: none; } }
+
+/* ── G-A Güce dokun: Hazineden Takviye (10 Ekim 2026) ── */
+#boost-overlay { z-index: 275; }
+#boost-overlay .lf-akce small { font-weight: 400; opacity: .7; }
+#stats-bar .stat.boostable { cursor: pointer; position: relative; }
+#stats-bar .stat.boostable .stat-label::after {
+  content: "+"; display: inline-block; margin-left: 3px; width: 11px; height: 11px; line-height: 11px; border-radius: 50%;
+  font-family: 'Alegreya', serif; font-size: 10px; font-weight: 700; color: #1a1206; text-align: center; vertical-align: 1px;
+  background: linear-gradient(180deg, #F2D56B, #C9A227); box-shadow: 0 0 6px rgba(242,213,107,.6);
+  animation: boostPlus 1.6s ease-in-out infinite;
+}
+@keyframes boostPlus { 50% { box-shadow: 0 0 0 2px rgba(242,213,107,.25), 0 0 10px rgba(242,213,107,.8); } }
+@media (prefers-reduced-motion: reduce) { #stats-bar .stat.boostable .stat-label::after { animation: none; } }
+
+/* ── F-A Divan Odası (10 Ekim 2026) ── */
+#divan-bg.oda { background-position: center 40%; }
+.oda-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cf-sw.oda-sw { max-width: 46px; aspect-ratio: 9 / 16; background-size: cover; background-position: center; }
+.cf-tile.mini .cf-sw.oda-sw { max-width: 34px; }
+.oda-view { position: relative; width: min(52vw, 190px); aspect-ratio: 9 / 16; border-radius: 12px; overflow: hidden;
+  background: #0E0B1A center / cover no-repeat; border: 1px solid rgba(201,162,39,.55); box-shadow: 0 12px 30px rgba(0,0,0,.55);
+  display: flex; align-items: center; justify-content: center; }
+.oda-card { width: 58%; border-radius: 8px; overflow: hidden; background: #0E0B1A; border: 1px solid rgba(201,162,39,.6); box-shadow: 0 8px 18px rgba(0,0,0,.6); text-align: center; }
+.oda-ci { aspect-ratio: 3 / 4; background: center 20% / cover no-repeat; }
+.oda-card b { display: block; padding: 4px 0 6px; font-family: 'Alegreya SC', serif; font-size: 9px; letter-spacing: 1.5px; color: var(--gold); }
+#gameover-cosm .cp-thumb.cp-oda { background-size: cover; }
+@media (max-height: 640px) { .oda-view { width: min(40vw, 150px); } }
+
+/* ── M-C Sonuç mührü rozete iner (10 Ekim 2026) ── */
+#card-stamp.go.land { animation: cardStampLand .42s ease-in forwards; }
+@keyframes cardStampLand { from { opacity: 1; transform: scale(1) rotate(-10deg); } to { opacity: 0; transform: translate(-40%, 120%) scale(.25) rotate(0deg); } }
+#card-stamp-ring.land { animation: none; opacity: 0; }
+#card-stamp-chip {
+  display: inline-flex; align-items: center; gap: 3px; margin-left: 7px; padding: 2px 7px 2px 5px; border-radius: 999px; vertical-align: 2px;
+  font-family: 'Alegreya SC', serif; font-size: 9px; font-weight: 700; letter-spacing: 1.2px; line-height: 1.3; color: #F6DCA0; white-space: nowrap;
+  background: radial-gradient(circle at 30% 30%, #d8483c, #C4342B 40%, #6e1410); border: 1px solid rgba(232,200,74,.7);
+  box-shadow: 0 2px 6px rgba(0,0,0,.45); animation: stampChipIn .38s .3s cubic-bezier(.3,1.6,.5,1) both;
+}
+#card-stamp-chip b { font-size: 10px; color: #F6DCA0; }
+#card-stamp-chip.oteki { background: radial-gradient(circle at 30% 30%, #4b5c9a, #273370 40%, #0d1236); border-color: #AFC3E6; }
+@keyframes stampChipIn { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { #card-stamp.go.land { animation: none; opacity: 0; } #card-stamp-chip { animation: none; } }
+
+/* ── U-A Tek bildirim şeridi (10 Ekim 2026) ── */
+#notice-strip {
+  position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 54px); z-index: 400; pointer-events: none;
+  width: max-content; max-width: min(340px, calc(100vw - 32px)); box-sizing: border-box;
+  padding: 8px 14px; border-radius: 12px;
+  background: rgba(12,9,20,0.96); border: 1px solid rgba(201,162,39,0.5); box-shadow: 0 6px 18px rgba(0,0,0,0.65);
+  transform: translate(-50%, -8px); opacity: 0; transition: opacity .3s, transform .3s;
+}
+#notice-strip.on { opacity: 1; transform: translate(-50%, 0); }
+#notice-strip .ns-body { display: flex; align-items: center; justify-content: center; gap: 9px; text-align: center;
+  font-family: 'Alegreya', serif; font-size: 13px; line-height: 1.35; color: rgba(240,230,208,0.92); }
+#notice-strip .ns-n { position: absolute; right: 6px; top: -8px; padding: 0 5px; border-radius: 999px; font-family: 'Alegreya SC', serif;
+  font-size: 9px; letter-spacing: .5px; line-height: 15px; color: #1a1206; background: var(--gold); }
+#notice-strip .ns-n:empty { display: none; }
+#notice-strip.k-cag .ns-body { flex-direction: column; gap: 3px; }
+#notice-strip.k-cag b { font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: .8px; color: var(--gold-light); font-weight: 600; }
+#notice-strip.k-cag span { font-size: 13px; }
+#notice-strip.k-item .ns-body, #notice-strip.k-end .ns-body { font-family: 'Alegreya SC', serif; font-size: 12px; letter-spacing: .5px; color: var(--gold); }
+#notice-strip.k-end b { color: var(--gold-light); font-size: 11.5px; letter-spacing: .4px; }
+#notice-strip.k-item em { font-style: normal; color: #e07a6e; }
+#notice-strip .ns-ico { width: 24px; height: 24px; object-fit: contain; flex: none; }
+#notice-strip .ns-ico.gray { filter: grayscale(1) brightness(.6); }
+#notice-strip.k-good .ns-body { font-family: 'Alegreya SC', serif; font-size: 12px; color: #7fd197; }
+#notice-strip.k-bad .ns-body { font-family: 'Alegreya SC', serif; font-size: 12px; color: #ff8a70; }
+#notice-strip.k-whisper { border-color: rgba(216,72,60,.6); background: rgba(26,8,10,0.96); }
+#notice-strip.k-whisper .ns-body { font-style: italic; color: #ffb3a6; }
+#notice-strip.k-rel { padding: 5px 13px 5px 5px; border-radius: 999px; }
+#notice-strip.k-rel .ns-body { justify-content: flex-start; text-align: left; }
+#notice-strip .rt-med { width: 30px; height: 30px; border-radius: 50%; background-size: cover; background-position: center 18%; box-shadow: 0 0 0 2px var(--rc), 0 0 10px var(--rc); flex-shrink: 0; }
+#notice-strip .rt-txt { display: flex; flex-direction: column; line-height: 1.15; }
+#notice-strip .rt-txt b { font-family: 'Alegreya SC', serif; font-size: 11px; color: var(--text); font-weight: 600; }
+#notice-strip .rt-txt em { font-style: normal; font-family: 'Alegreya SC', serif; font-size: 9.5px; letter-spacing: 1px; }
+@media (prefers-reduced-motion: reduce) { #notice-strip { transition: opacity .2s; transform: translate(-50%, 0); } }
+
+/* ── D-A Divan Bölündü = kırık mühür (10 Ekim 2026) ── */
+#curse-overlay { background: radial-gradient(ellipse at 50% 45%, rgba(60,8,6,.55), rgba(4,3,8,.86) 70%); pointer-events: auto; cursor: pointer;
+  flex-direction: column; gap: 10px; padding: 0 20px; animation: cbFade .25s ease-out; }
+@keyframes cbFade { from { opacity: 0; } }
+#curse-overlay .cb-seal { position: relative; width: 112px; height: 112px; margin-bottom: 6px; filter: drop-shadow(0 10px 22px rgba(0,0,0,.7)); }
+#curse-overlay .cb-half { position: absolute; inset: 0; }
+#curse-overlay .cb-svg { width: 100%; height: 100%; display: block; }
+#curse-overlay .cb-half.l { clip-path: polygon(0 0, 52% 0, 47% 22%, 55% 36%, 45% 52%, 54% 66%, 46% 82%, 50% 100%, 0 100%); animation: cbSplitL .55s .35s cubic-bezier(.3,.7,.4,1) forwards; }
+#curse-overlay .cb-half.r { clip-path: polygon(52% 0, 100% 0, 100% 100%, 50% 100%, 46% 82%, 54% 66%, 45% 52%, 55% 36%, 47% 22%); animation: cbSplitR .55s .35s cubic-bezier(.3,.7,.4,1) forwards; }
+#curse-overlay .cb-crack { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; animation: cbCrack .5s .2s ease-out forwards; }
+#curse-overlay .cb-crack path { stroke-dasharray: 120; stroke-dashoffset: 120; animation: cbDraw .3s .2s ease-out forwards; filter: drop-shadow(0 0 3px rgba(255,210,120,.9)); }
+@keyframes cbDraw { to { stroke-dashoffset: 0; } }
+@keyframes cbCrack { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: .35; } }
+@keyframes cbSplitL { to { transform: translate(-7px, 3px) rotate(-7deg); } }
+@keyframes cbSplitR { to { transform: translate(7px, -2px) rotate(6deg); } }
+#curse-overlay .curse-text { font-family: 'Cinzel Decorative', 'Cinzel', serif; font-weight: 700; font-size: clamp(24px, 7.4vw, 32px); letter-spacing: 1px; line-height: 1.2;
+  color: var(--gold-light, #E8C84A); text-shadow: 0 2px 0 rgba(60,30,4,.9), 0 0 18px rgba(232,200,74,.35); animation: cbTitle .5s .45s ease-out both; }
+@keyframes cbTitle { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+#curse-overlay .curse-sub { color: #f3dcc8; font-size: 15px; animation: cbTitle .5s .6s ease-out both; }
+#curse-overlay .cb-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; animation: cbTitle .5s .75s ease-out both; }
+#curse-overlay .cb-chips span { font-family: 'Alegreya', serif; font-size: 14px; color: #ffd2c8; padding: 3px 12px; border-radius: 999px;
+  background: rgba(110,20,16,.55); border: 1px solid rgba(232,120,100,.6); }
+@media (prefers-reduced-motion: reduce) {
+  #curse-overlay, #curse-overlay * { animation-duration: .01s !important; animation-delay: 0s !important; }
+}

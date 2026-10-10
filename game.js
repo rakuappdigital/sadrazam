@@ -262,7 +262,7 @@ function showDailyGift() {
         <div class="dg-msg" id="dg-msg"></div>
         <div class="dg-q">${_triviaAnsweredToday()
           ? `<span class="dg-q-done">${isEN ? "Question of the day answered ✓ · new one tomorrow" : "Günün sorusu cevaplandı ✓ · yenisi yarın"}</span>`
-          : `<button id="dg-trivia" class="dg-trivia"><span class="dg-q-k">${isEN ? "QUESTION OF THE DAY" : "GÜNÜN SORUSU"}</span><span class="dg-q-r">+${TRIVIA_REWARD} ${isEN ? "AKCE" : "AKÇE"}</span></button>`}</div>
+          : `<button id="dg-trivia" class="dg-trivia"><span class="dg-q-k">${isEN ? "QUESTION OF THE DAY" : "GÜNÜN SORUSU"}</span><span class="dg-q-r">${isEN ? "TEST YOURSELF" : "KENDİNİ SINA"}</span></button>`}</div>
         <button id="dg-close" class="dg-close">${isEN ? "Close" : "Kapat"}</button>
       </div>`;
     overlay.querySelector("#dg-close").onclick = () => { overlay.classList.remove("visible"); setTimeout(() => overlay.remove(), 250); };
@@ -308,12 +308,13 @@ function _weekGet() { try { const o = JSON.parse(localStorage.getItem("sadrazam_
 function _weekLogGame(yr) { try { const w = _weekGet(); w.games++; w.best = Math.max(w.best, +yr || 0); localStorage.setItem("sadrazam_week", JSON.stringify(w)); } catch (e) {} }
 
 // ── Günün Sorusu (8 Ekim 2026, T-A) ───────────────────────────────────
-// Günde bir Osmanlı tarihi sorusu (data/trivia.json, 55 soru TR/EN). Doğru cevap 1 akçe.
+// Günde bir Osmanlı tarihi sorusu (data/trivia.json, 55 soru TR/EN). 10 Ekim 2026: ÖDÜLSÜZ (kullanıcı
+// kararı) — soru, kayıt, seri ve bildirim planı aynen; yalnız akçe verilmez (TRIVIA_REWARD = 0).
 // Ana menüye yeni kutu EKLENMEDİ (kullanıcı: menü boğulmasın) — HEDİYE penceresinin ikinci bölümü;
 // HEDİYE düğmesindeki nokta hediye ya da soru beklerken yanar. Bildirimden (kind:"trivia") gelinince
 // doğrudan soru penceresi açılır. Sorular karışık bir sırayla döner; bitince yeni sıra.
 // Kayıt: sadrazam_trivia {last: cevaplanan gün, n: kaçıncı soru, order: sıra, right: doğru sayısı, ok: son cevap}
-const TRIVIA_KEY = "sadrazam_trivia", TRIVIA_REWARD = 1;
+const TRIVIA_KEY = "sadrazam_trivia", TRIVIA_REWARD = 0;
 let _triviaQs = null, _triviaLoading = null;
 function _triviaLoad() {
   if (_triviaQs) return Promise.resolve(_triviaQs);
@@ -346,13 +347,13 @@ function _triviaToday(qs) {
   const perm = _seededPerm(4, _todayKey() + ":" + qi);
   return { qi, q, perm };
 }
-// Tek giriş noktası: bugünün cevabını kaydeder ve doğruysa akçeyi yazar (bir gün bir kez)
+// Tek giriş noktası: bugünün cevabını kaydeder (bir gün bir kez); TRIVIA_REWARD > 0 ise doğru cevaba akçe yazar
 function _triviaAnswer(correct) {
   const st = _triviaGet(); const today = _todayKey();
   if (st.last === today) return { already: true, got: 0 };
   st.last = today; st.n = st.n + 1; st.ok = !!correct; if (correct) st.right = st.right + 1;
   _triviaSet(st); // önce "cevaplandı" yazılır, sonra akçe: iki kez basmak ikinci akçeyi vermez
-  if (correct) addAkce(TRIVIA_REWARD);
+  if (correct && TRIVIA_REWARD > 0) addAkce(TRIVIA_REWARD);
   _an("trivia", { ok: correct ? 1 : 0, right: st.right });
   try { if (window.Notif) Notif.reschedule(); } catch (e) {}
   updateDailyGiftBadge();
@@ -362,7 +363,7 @@ function showTrivia(onClose) {
   if (document.getElementById("trivia-overlay")) return;
   const en = window.LANG === 'en';
   const ov = document.createElement("div"); ov.id = "trivia-overlay"; ov.className = "info-panel-overlay";
-  ov.innerHTML = `<div class="tv-paper"><div class="tv-k">${en ? "QUESTION OF THE DAY" : "GÜNÜN SORUSU"} · ${en ? `PRIZE ${TRIVIA_REWARD} AKCE` : `ÖDÜL ${TRIVIA_REWARD} AKÇE`}</div><div class="tv-body"><div class="tv-load">…</div></div>
+  ov.innerHTML = `<div class="tv-paper"><div class="tv-k">${en ? "QUESTION OF THE DAY" : "GÜNÜN SORUSU"}</div><div class="tv-body"><div class="tv-load">…</div></div>
     <button type="button" class="tv-close">${en ? "Close" : "Kapat"}</button></div>`;
   document.body.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("on"));
@@ -392,7 +393,8 @@ function showTrivia(onClose) {
       const r = body.querySelector(".tv-r");
       if (res.already) { r.textContent = en ? "Today's question was already answered." : "Bugünün sorusu zaten cevaplandı."; return; }
       if (correct) { try { Haptics.statPositive(); } catch (e) {} if (window.playSelectConfirm) playSelectConfirm(); updateAkceUI();
-        r.innerHTML = `<b class="ok">${en ? `Correct! +${res.got} akce added to your treasury.` : `Doğru! +${res.got} akçe hazinene eklendi.`}</b> <span>${en ? (q.xe || "") : (q.x || "")}</span>`; }
+        const okTxt = res.got > 0 ? (en ? `Correct! +${res.got} akce added to your treasury.` : `Doğru! +${res.got} akçe hazinene eklendi.`) : (en ? "Correct!" : "Doğru!");
+        r.innerHTML = `<b class="ok">${okTxt}</b> <span>${en ? (q.xe || "") : (q.x || "")}</span>`; }
       else { try { Haptics.statNegative(); } catch (e) {} r.innerHTML = `<b class="no">${en ? "Not this time." : "Bu sefer olmadı."}</b> <span>${en ? (q.xe || "") : (q.x || "")}</span>`; }
     });
   });
@@ -1276,21 +1278,21 @@ let _fermanWatch = false;    // F2-A: bir sonraki ferman iki maddeli ("Sultan'ı
 let _fermanNoReroll = false; // F2-A: üst üste 3. başarısızlıktan sonraki fermanda değiştirme hakkı yok
 let _fermanAfUsed = false;   // F2-D: Af arzuhali saltanat başına bir kez
 let _sootheYear = 0, _sootheN = 0, _sootheCardId = null; // A2: kriz kartında yatıştırma (yılda 2)
-function _v8Reset() { _kaderYear = 0; _lutufYear = 0; _fermanWatch = false; _fermanNoReroll = false; _fermanAfUsed = false; _sootheYear = 0; _sootheN = 0; _sootheCardId = null; }
-function _v8Save() { return { k: _kaderYear, l: _lutufYear, fw: _fermanWatch, fn: _fermanNoReroll, fa: _fermanAfUsed, sy: _sootheYear, sn: _sootheN, sc: _sootheCardId, nx: _nuxGame ? 1 : 0 }; }
+function _v8Reset() { _boostYear = 0; _kaderYear = 0; _lutufYear = 0; _fermanWatch = false; _fermanNoReroll = false; _fermanAfUsed = false; _sootheYear = 0; _sootheN = 0; _sootheCardId = null; }
+function _v8Save() { return { k: _kaderYear, l: _lutufYear, fw: _fermanWatch, fn: _fermanNoReroll, fa: _fermanAfUsed, sy: _sootheYear, sn: _sootheN, sc: _sootheCardId, nx: _nuxGame ? 1 : 0, bt: _boostYear }; }
 function _v8Load(o) {
   _v8Reset(); if (!o || typeof o !== "object") return;
   _kaderYear = +o.k || 0; _lutufYear = +o.l || 0; _fermanWatch = !!o.fw; _fermanNoReroll = !!o.fn; _fermanAfUsed = !!o.fa;
-  _sootheYear = +o.sy || 0; _sootheN = +o.sn || 0; _sootheCardId = o.sc || null;
+  _sootheYear = +o.sy || 0; _sootheN = +o.sn || 0; _sootheCardId = o.sc || null; _boostYear = +o.bt || 0;
   _nuxGame = !!o.nx; _nuxPromised = _nuxGame; _nuxFirstCardSent = true; // kayıttan dönüşte vaat/ölçüm tekrarlanmaz
 }
 
 // ── Sultan'ın Lütfu (R3-A, 8 Ekim 2026) ──────────────────────────────────
 // 3., 6., 9.… yılın başında (Yıl Sonu'ndan hemen sonra, yeni fermandan önce) bir güç 40'ın altındaysa
-// en düşük güç 70'e çekilir (100 değil: güçlerin çoğu 100'de de öldürür). Bedel 1 akçe YA DA ödüllü reklam.
+// en düşük güç 70'e çekilir (100 değil: güçlerin çoğu 100'de de öldürür). Bedel 2 akçe (E-C, 10 Ekim 2026) YA DA ödüllü reklam.
 // Akçe: tek adımda düşer + uygulanır. Reklam: ödül sinyalinde uygulanır (çift uygulanmaz); reklam sırasında
 // sayfa yeniden yüklenirse kayıttan dönüşte sadrazam_lutuf_pending ile kurtarılır (15 dk, aynı kart).
-const LUTUF_EVERY = 3, LUTUF_BELOW = 40, LUTUF_TO = 70, LUTUF_COST = 1, LUTUF_PENDING = "sadrazam_lutuf_pending";
+const LUTUF_EVERY = 3, LUTUF_BELOW = 40, LUTUF_TO = 70, LUTUF_COST = 2, LUTUF_PENDING = "sadrazam_lutuf_pending";
 const LUTUF_IMG = { saray: "saray", "yeniçeri": "ordu", ulema: "ulema", hazine: "hazine" };
 const LUTUF_TXT = {
   saray: ["Saray seni gözden çıkarmak üzere. Sultan, bir hil'at ve fermanla itibarını yeniden yükseltmeye razı.", "The palace is about to cast you aside. The Sultan is willing to restore your standing with a robe of honour and a decree."],
@@ -1396,10 +1398,10 @@ function _paidRecover(s) {
 }
 
 // ── Kader Mührü (R1-A, 8 Ekim 2026) ─────────────────────────────────────
-// Şans kartında (yazı-tura, 1 akçe) ve sefer kararında (2 akçe) zaferi garanti eder. Yılda BİR kez
+// Şans kartında (yazı-tura, 2 akçe — E-C) ve sefer kararında (2 akçe) zaferi garanti eder. Yılda BİR kez
 // (ikisi ortak). Akçe, sonuç belirlenmeden hemen önce TEK seferde düşer; düştükten sonra başarısız
 // olabilecek hiçbir adım yoktur. Akçe yetmezse Market açılır, kapanınca aynı karara dönülür.
-const KADER_COST_CHANCE = 1, KADER_COST_WAR = 2;
+const KADER_COST_CHANCE = 2, KADER_COST_WAR = 2; // E-C (10 Ekim 2026): şans 1 → 2
 let _kaderYear = 0; // Kader Mührü'nün kullanıldığı oyun yılı (kayıtta)
 function _kaderAvailable() { return AKCE_SYSTEM_ENABLED && _kaderYear !== year; }
 function _kaderPay(cost, kind) {
@@ -4123,7 +4125,7 @@ function startGame() {
   forcedQueue = [];
   if (_nuxGame) forcedQueue.push(..._nuxCards()); // Y1-A: ilk 3 kart Divan Kâtibi anlatır
   scheduledCards = [];
-  _criticalShownCount = 0; _criticalLastAt = -999; _criticalYear = 0;
+  _criticalShownCount = 0; _criticalLastAt = -999; _criticalYear = 0; _hideCriticalOffer();
   _muneccimN = 0; _muneccimAt = -999;
   _memLog = []; _memN = 0; _memAt = -999;
   _variantLast = {};
@@ -4951,7 +4953,7 @@ function updateFateBar() {
     const chip = document.createElement("div");
     chip.className = "fate-thread" + (sc.revealed ? " revealed" : "");
     chip.textContent = `⧖ ${remaining} ${_en ? (remaining === 1 ? "card" : "cards") : "kart"}`;
-    // Bilinmezlik korunuyor — dokununca Kâtibin Notu açılır (reklam / 1 akçe)
+    // Bilinmezlik korunuyor — dokununca Kâtibin Notu açılır (reklam / KATIB_COST akçe)
     chip.title = _en ? `The echo of a decision arrives in ${remaining} cards…` : `Bir kararının yankısı ${remaining} kart içinde gelecek…`;
     chip.addEventListener('click', () => showKatibNotu(sc));
     fb.appendChild(chip);
@@ -4960,7 +4962,7 @@ function updateFateBar() {
 
 // ── Kâtibin Notu (27 Eylül 2026) ───────────────────────────────────────
 // Üstteki "⧖ N kart" göstergesine dokununca: bekleyen sonucu reklamla ya da
-// 1 akçeyle öğren — hangi karardan, kimden, en çok hangi gücü etkileyeceği ve
+// KATIB_COST (2) akçeyle öğren — hangi karardan, kimden, en çok hangi gücü etkileyeceği ve
 // genel yönü. Sadece bilgi verir (oyunu değiştirmez). Açılan not kaydedilir.
 function _katibAnalysis(sc) {
   const en = window.LANG === 'en';
@@ -4982,6 +4984,7 @@ function _katibAnalysis(sc) {
                  : { good: "Hayırlı görünüyor.", bad: "Tehlikeli görünüyor.", mixed: "Sonucu vereceğiniz karara bağlı." }[tone],
   };
 }
+const KATIB_COST = 2; // E-C (10 Ekim 2026): Kâtibin Notu / Müneccimbaşı 1 → 2 akçe; reklam aynen
 function showKatibNotu(sc, opts) {
   opts = opts || {};
   if (document.getElementById("katib-overlay")) return;
@@ -5014,7 +5017,7 @@ function showKatibNotu(sc, opts) {
         ${free ? `<button class="kn-free">${en ? "Letter Seal · free" : "Mektup Mührü · bedava"}</button>` : ""}
         <div class="kn-btns">
           <button class="kn-ad">${en ? "Watch Ad" : "Reklam İzle"}</button>
-          <button class="kn-akce">${bal >= 1 ? (en ? "1 Akce" : "1 Akçe") : (en ? "Get Akce" : "Akçe Al")} <span class="kn-bal">(${bal})</span></button>
+          <button class="kn-akce">${bal >= KATIB_COST ? `${KATIB_COST} ${en ? "Akce" : "Akçe"}` : (en ? "Get Akce" : "Akçe Al")} <span class="kn-bal">(${bal})</span></button>
         </div>
         <div class="kn-msg"></div>`;
     }
@@ -5032,7 +5035,7 @@ function showKatibNotu(sc, opts) {
       RewardedAds.show(() => { if (document.body.contains(overlay)) reveal(); }, (why) => { lock(false); msg.textContent = _adFailText(why, en); });
     };
     overlay.querySelector(".kn-akce").onclick = () => {
-      if (spendAkce(1)) { reveal(); return; }
+      if (spendAkce(KATIB_COST)) { reveal(); return; }
       close(); redirectToAkcePurchase(() => showKatibNotu(sc, opts));
     };
   };
@@ -5044,7 +5047,7 @@ function showKatibNotu(sc, opts) {
 // ── Müneccimbaşı (27 Eylül 2026) ───────────────────────────────────────
 // En az 2 sonuç beklerken (henüz okunmamış) gelir ve en yakın olanı okur.
 // Oyun başına en çok 2 kez: ilki bedava, ikincisi Kâtibin Notu gibi reklam
-// ya da 1 akçe. Sayaçlar kayıtla birlikte saklanır (muneccimN/At).
+// ya da KATIB_COST akçe. Sayaçlar kayıtla birlikte saklanır (muneccimN/At).
 const MUNECCIM_MIN_CARDS = 20, MUNECCIM_GAP = 30, MUNECCIM_MAX = 2, MUNECCIM_CHANCE = 0.35;
 let _muneccimN = 0, _muneccimAt = -999; // bu oyundaki ziyaret sayısı / son ziyaret kartı
 function _muneccimTargets() {
@@ -5175,8 +5178,24 @@ function _consumeConsequence(c) {
 // kart hemen kaydırılabilir.
 let _stampMeta = new Map(); // sonuç kartı nesnesi → { src, at }
 function _hideConsequenceStamp() {
-  ["card-stamp", "card-stamp-ring", "card-stamp-band"].forEach(id => document.getElementById(id)?.classList.remove("go"));
-  clearTimeout(card._stampT);
+  ["card-stamp", "card-stamp-ring", "card-stamp-band"].forEach(id => document.getElementById(id)?.classList.remove("go", "land"));
+  clearTimeout(card._stampT); clearTimeout(card._stampLandT);
+  document.getElementById("card-stamp-chip")?.remove();
+}
+// M-C (10 Ekim 2026): mühür basıldıktan ~0,6 sn sonra küçülüp karakter adının yanına rozet olarak iner
+// (köşedeki Tahkik düğmesi/penceresi mührü örtmesin). Rozet dealNext'te temizlenir.
+function _landConsequenceStamp(c, ot) {
+  if (currentCard !== c) return;
+  const seal = document.getElementById("card-stamp"), ring = document.getElementById("card-stamp-ring");
+  if (seal) seal.classList.add("land");
+  if (ring) ring.classList.add("land");
+  const nm = document.getElementById("card-char-name");
+  if (!nm || document.getElementById("card-stamp-chip")) return;
+  const en = window.LANG === 'en';
+  const chip = document.createElement("span");
+  chip.id = "card-stamp-chip"; chip.className = ot ? "oteki" : ""; chip.setAttribute("aria-hidden", "true");
+  chip.innerHTML = `<b>☾</b>${ot ? (en ? "TRAP" : "TUZAK") : (en ? "RESULT" : "SONUÇ")}`;
+  nm.appendChild(chip);
 }
 function _stampAgoText(n, en) {
   if (n >= CARDS_PER_YEAR) { const y = Math.floor(n / CARDS_PER_YEAR); return en ? `${y} ${y === 1 ? "year" : "years"} ago` : `${y} yıl önce`; }
@@ -5206,6 +5225,7 @@ function _playConsequenceStamp(c, meta) {
     band.style.top = Math.max(0, cardImage.offsetTop + cardImage.offsetHeight - band.offsetHeight - 6) + "px";
     seal.classList.add("go"); ring.classList.add("go"); band.classList.add("go");
     setTimeout(() => { if (currentCard === c && typeof Haptics !== "undefined" && Haptics.tap) Haptics.tap(); }, 380);
+    card._stampLandT = setTimeout(() => _landConsequenceStamp(c, ot), 1100); // basış .5 sn + ~0,6 sn
   }, 500);
 }
 
@@ -5486,7 +5506,7 @@ function dealNext() {
   try { _seasonTint(); } catch (e) {}
   _setCardChips(null);
   document.getElementById("soothe-chip")?.remove(); // A2: yalnız kriz kartında yeniden eklenir
-  _hideCriticalOffer();
+  _collapseCriticalOffer(); // K-A: güç eşiğin üstüne çıktıysa burada kalkar
 
   // Item expiry: her kart açılışında sayacı azalt
   for (let i = 0; i < 3; i++) {
@@ -6876,14 +6896,15 @@ function getEasterChoices(c) {
 
 // ── Kritik An Teklifi (27 Eylül 2026) ─────────────────────────────────
 // Bir güç CRITICAL_THRESHOLD'un altına düşünce, yeni kart gelir gelmez alttan
-// küçük bir panel: Şifa Otu (en düşük güç +20) — reklamla ya da 1 akçeyle,
-// anında uygulanır. Kartı kapatmaz; kart kaydırılınca panel kapanır.
+// küçük bir panel: Şifa Otu (en düşük güç +20) — reklamla ya da CRITICAL_COST (2) akçeyle,
+// anında uygulanır. Kartı kapatmaz; K-A'dan beri kart kaydırılınca rozet olarak bekler (aşağıda).
 // Sınırlar: en az CRITICAL_COOLDOWN kartta bir, oyun başına CRITICAL_MAX_PER_GAME.
 // Çantada zaten Şifa Otu varsa teklif yok — o eşya parlatılır.
 // 3 Ekim 2026: eşik 15 → 20, oyun başına 2 → YILDA 2, ara 20 → 12 kart.
 const CRITICAL_THRESHOLD = 20;
 const CRITICAL_COOLDOWN = 12;
 const CRITICAL_MAX_PER_YEAR = 2;
+const CRITICAL_COST = 2; // E-C (10 Ekim 2026): 1 → 2 akçe; reklam seçeneği aynen
 let _criticalYear = 0;
 let _criticalShownCount = 0;
 let _criticalLastAt = -999;
@@ -6893,6 +6914,48 @@ function _hideCriticalOffer() {
   const el = document.getElementById("critical-offer");
   if (el) el.remove();
   document.querySelectorAll(".stat.critical-focus").forEach(x => x.classList.remove("critical-focus"));
+}
+
+// K-A (10 Ekim 2026): teklif kart kaydırılınca KAYBOLMAZ — küçülüp barların/başlığın altında rozet olarak bekler
+// ("Şifa Otu hazır · Hazine %15 · AÇ"). Kalkış: kullanılınca ya da bütün güçler eşiğin üstüne çıkınca.
+// Rozet beklerken yeni teklif sayılmaz (_criticalShownCount yalnız ilk açılışta artar).
+function _criticalLow() {
+  return Object.entries(stats).filter(([k, v]) => v <= CRITICAL_THRESHOLD).sort((a, b) => a[1] - b[1])[0] || null;
+}
+function _collapseCriticalOffer() {
+  const el = document.getElementById("critical-offer");
+  if (!el || el.dataset.busy === "1") return; // reklam açıkken dokunma
+  const low = _criticalLow();
+  if (!low || playerItems.indexOf("sifa_otu") >= 0) { el.classList.remove("visible"); setTimeout(_hideCriticalOffer, 260); return; }
+  const en = window.LANG === 'en', [key, val] = low;
+  const pct = en ? Math.round(val) + "%" : "%" + Math.round(val);
+  const mini = el.querySelector(".co-mini");
+  if (mini) mini.innerHTML = `<img src="assets/icons/item-sifa-otu.png" alt=""><span>${en ? "Healing Herb ready" : "Şifa Otu hazır"} · ${_STAT_NAMES[key][en ? 1 : 0]} <b>${pct}</b></span><em>${en ? "OPEN" : "AÇ"}</em>`;
+  document.querySelectorAll(".stat.critical-focus").forEach(x => x.classList.remove("critical-focus"));
+  el.classList.add("mini");
+  _placeCriticalMini(el);
+}
+// Rozet başlığın (yıl, ☰, ferman çipi) altına GERÇEK bir satır olarak girer: kart alanı o kadar daralır, böylece
+// hiçbir ekranda kartın üstüne (Tahkik düğmesi) ya da Kader İpleri'ne binmez. Açılınca panel yine alttan çıkar.
+function _placeCriticalMini(el) {
+  const hr = document.getElementById("header-row");
+  if (hr && el.parentElement !== hr) hr.appendChild(el);
+  const ns = document.getElementById("notice-strip"); // açık bildirim şeridi rozetin altına kaysın
+  if (ns && ns.classList.contains("on")) { try { _notifyTop(ns); } catch (e) {} }
+}
+function _expandCriticalOffer() {
+  const el = document.getElementById("critical-offer");
+  if (!el) return;
+  const low = _criticalLow();
+  if (low) {
+    const en = window.LANG === 'en', [key, val] = low;
+    const t = el.querySelector(".co-title");
+    if (t) t.innerHTML = `${en ? `${_STAT_NAMES[key][1]} is in danger` : `${_STAT_NAMES[key][0]} tehlikede`} <span class="co-val">${en ? Math.round(val) + "%" : "%" + Math.round(val)}</span>`;
+    document.querySelector('.stat[data-stat="' + (key === "yeniçeri" ? "yeniceri" : key) + '"]')?.classList.add("critical-focus");
+  }
+  if (el.parentElement !== document.body) document.body.appendChild(el);
+  el.classList.remove("mini");
+  if (window.playButtonTap) playButtonTap();
 }
 
 function _applyCriticalHeal() {
@@ -6907,7 +6970,7 @@ function _applyCriticalHeal() {
 
 function maybeShowCriticalOffer() {
   if (isGameOver || isPaywalled || !currentCard || _nuxLock("kritik")) return;
-  if (document.getElementById("critical-offer")) return;
+  if (document.getElementById("critical-offer")) { _collapseCriticalOffer(); return; } // rozet bekliyor: yalnız tazele
   if (document.getElementById("katib-overlay")) return; // Kâtip/Müneccim notu açıkken üst üste binmesin
   if (_criticalYear !== year) { _criticalYear = year; _criticalShownCount = 0; }
   if (_criticalShownCount >= CRITICAL_MAX_PER_YEAR) return;
@@ -6930,6 +6993,7 @@ function maybeShowCriticalOffer() {
   const el = document.createElement("div");
   el.id = "critical-offer";
   el.innerHTML = `
+    <button type="button" class="co-mini"></button>
     <button class="co-x" aria-label="${en ? "Close" : "Kapat"}">✕</button>
     <div class="co-head">
       <img class="co-icon" src="assets/icons/item-sifa-otu.png" alt="">
@@ -6940,31 +7004,122 @@ function maybeShowCriticalOffer() {
     </div>
     <div class="co-btns">
       <button class="co-ad">${en ? "Watch Ad" : "Reklam İzle"}</button>
-      <button class="co-akce">${bal >= 1 ? (en ? "1 Akce" : "1 Akçe") : (en ? "Get Akce" : "Akçe Al")} <span class="co-bal">(${bal})</span></button>
+      <button class="co-akce">${_coAkceLabel(bal, en)}</button>
     </div>
     <div class="co-msg"></div>`;
   document.body.appendChild(el);
   requestAnimationFrame(() => el.classList.add("visible"));
   const msg = el.querySelector(".co-msg");
-  const lock = (on) => el.querySelectorAll(".co-btns button").forEach(b => b.disabled = on);
-  const done = () => { _applyCriticalHeal(); el.classList.remove("visible"); setTimeout(_hideCriticalOffer, 260); };
-  el.querySelector(".co-x").onclick = () => { el.classList.remove("visible"); setTimeout(_hideCriticalOffer, 260); };
+  let used = false;
+  const lock = (on) => { el.dataset.busy = on ? "1" : ""; el.querySelectorAll(".co-btns button").forEach(b => b.disabled = on); };
+  const done = () => { if (used) return; used = true; lock(true); _applyCriticalHeal(); el.classList.remove("visible"); setTimeout(_hideCriticalOffer, 260); };
+  el.querySelector(".co-mini").onclick = _expandCriticalOffer;
+  el.querySelector(".co-x").onclick = _collapseCriticalOffer; // K-A: reddetmek geri dönülmez değil — rozet bekler
   el.querySelector(".co-ad").onclick = () => {
+    if (used || el.dataset.busy === "1") return;
     lock(true); msg.textContent = "";
     RewardedAds.show(
-      () => { if (!document.getElementById("critical-offer") || isGameOver) return; done(); },
+      () => { el.dataset.busy = ""; if (!document.getElementById("critical-offer") || isGameOver) return; done(); },
       (why) => { lock(false); msg.textContent = _adFailText(why, en); }
     );
   };
   el.querySelector(".co-akce").onclick = () => {
-    if (spendAkce(1)) { done(); return; }
+    if (used || el.dataset.busy === "1") return;
+    if (spendAkce(CRITICAL_COST)) { _an("critical_heal", { via: "akce", cost: CRITICAL_COST }); done(); return; }
     // Bakiye yok: Market'e git, dönünce panel yerinde (teklif hakkı yanmaz)
     redirectToAkcePurchase(() => {
       const b = el.querySelector(".co-akce");
-      if (b) { const nb = getAkceBalance(); b.innerHTML = (nb >= 1 ? (en ? "1 Akce" : "1 Akçe") : (en ? "Get Akce" : "Akçe Al")) + ` <span class="co-bal">(${nb})</span>`; }
+      if (b) b.innerHTML = _coAkceLabel(getAkceBalance(), en);
     });
   };
 }
+function _coAkceLabel(bal, en) {
+  return (bal >= CRITICAL_COST ? `${CRITICAL_COST} ${en ? "Akce" : "Akçe"}` : (en ? "Get Akce" : "Akçe Al")) + ` <span class="co-bal">(${bal})</span>`;
+}
+
+// ── Güce dokun: Hazineden Takviye (G-A, 10 Ekim 2026) ───────────────────
+// Bir güç ≤ CRITICAL_THRESHOLD iken o bara dokununca: +15, bedeli 3 akçe YA DA ödüllü reklam.
+// Saltanat yılında BİR kez (_boostYear kayıtta, _v8Save). Kritik An (Şifa Otu +20) ayrı kalır.
+// Akçe: tek adımda düşer + hemen uygulanır. Reklam: yalnız native "ödül kazanıldı" sinyalinde
+// uygulanır (onEarned + onReward ikisi de aynı, tek seferlik success'i çağırır) — yarıda kapatılırsa ödül yok.
+const BOOST_COST = 3, BOOST_AMT = 15;
+var _boostYear = 0; // var: updateStatUI/_v8Save dosyada önce tanımlı
+const _BOOST_KEY = { saray: "saray", yeniceri: "yeniçeri", ulema: "ulema", hazine: "hazine" };
+function _boostOpen(k) { return !isGameOver && year > 0 && _boostYear !== year && (stats[k] ?? 50) <= CRITICAL_THRESHOLD; }
+function _boostApply(k, via) {
+  if (_boostYear === year || isGameOver) return false;
+  _boostYear = year;
+  const from = Math.round(stats[k] ?? 50);
+  stats[k] = Math.min(100, (stats[k] ?? 50) + BOOST_AMT);
+  try { showStatDelta(k, BOOST_AMT); } catch (e) {}
+  updateStatUI();
+  _an("stat_boost", { k, via, from, year });
+  try { saveGameState(); } catch (e) {}
+  return true;
+}
+function showStatBoost(k) {
+  if (!k || !currentCard || isAnimating || isPaywalled || document.getElementById("boost-overlay")) return;
+  if (document.querySelector(".info-panel-overlay.on")) return; // başka pencere açıkken üst üste binmesin
+  const en = window.LANG === 'en', nm = _STAT_NAMES[k] ? _STAT_NAMES[k][en ? 1 : 0] : k;
+  if (!_boostOpen(k)) {
+    if (_boostYear === year && (stats[k] ?? 50) <= CRITICAL_THRESHOLD) _notify(en ? "You have already called for reinforcement this year." : "Bu yıl takviye zaten istendi.", 2600, "info");
+    return;
+  }
+  const ov = document.createElement("div"); ov.id = "boost-overlay"; ov.className = "info-panel-overlay";
+  let finished = false, busy = false;
+  const finish = () => { if (finished) return; finished = true; ov.classList.remove("on"); setTimeout(() => ov.remove(), 280); };
+  const draw = () => {
+    const from = Math.round(stats[k] ?? 50), to = Math.min(100, from + BOOST_AMT), bal = getAkceBalance();
+    ov.innerHTML = `<div class="ip-box lf-box">
+      <div class="lf-k">${en ? "THE PRIVY PURSE · REINFORCEMENT" : "HAS HAZİNEDEN TAKVİYE"}</div>
+      <div class="lf-img" style="background-image:url('assets/lutuf/lutuf-${LUTUF_IMG[k]}.jpg')"></div>
+      <p class="lf-t">${en ? `${nm} is in danger. Once a year you may draw on the privy purse to shore it up.` : `${nm} tehlikede. Yılda bir kez has hazineden takviye isteyebilirsin.`}</p>
+      <div class="lf-n">${nm.toLocaleUpperCase(en ? "en" : "tr")} ${from} → ${to}</div>
+      <div class="lf-b">${AKCE_SYSTEM_ENABLED ? `<button type="button" class="lf-akce">${bal >= BOOST_COST ? `${BOOST_COST} ${AKCE_COIN_SVG} ${en ? "AKCE" : "AKÇE"}` : (en ? "GET AKCE" : "AKÇE AL")} <small>(${bal})</small></button>` : ""}<button type="button" class="lf-ad">${en ? "WATCH AD" : "REKLAM İZLE"}</button></div>
+      <button type="button" class="lf-no">${en ? "Not now" : "Şimdi değil"}</button>
+      <div class="lf-msg" aria-live="polite"></div></div>`;
+    const msg = ov.querySelector(".lf-msg");
+    const lock = (on) => { busy = on; ov.querySelectorAll("button").forEach(b => b.disabled = on); };
+    const success = (via) => {
+      if (finished || !_boostApply(k, via)) return;
+      lock(true);
+      try { Haptics.statPositive(); } catch (e) {}
+      if (window.playSelectConfirm) playSelectConfirm();
+      msg.textContent = en ? `${nm} +${BOOST_AMT}.` : `${nm} +${BOOST_AMT}.`;
+      setTimeout(finish, 1100);
+    };
+    ov.querySelector(".lf-no").onclick = () => { if (!busy) finish(); };
+    ov.onclick = (e) => { if (e.target === ov && !busy) finish(); };
+    const ab = ov.querySelector(".lf-akce");
+    if (ab) ab.onclick = () => {
+      if (busy || finished || _boostYear === year) return;
+      if (getAkceBalance() < BOOST_COST) {
+        ov.style.display = "none"; // Market bu pencerenin altında kalmasın
+        redirectToAkcePurchase(() => { ov.style.display = ""; if (!finished) draw(); });
+        return;
+      }
+      if (!spendAkce(BOOST_COST)) { msg.textContent = en ? "Not enough akce." : "Akçe yetmiyor."; return; }
+      updateAkceUI(); success("akce");
+    };
+    ov.querySelector(".lf-ad").onclick = () => {
+      if (busy || finished || _boostYear === year) return;
+      lock(true); msg.textContent = "";
+      RewardedAds.show(
+        () => success("ad"),
+        (why) => { if (finished) return; lock(false); msg.textContent = _adFailText(why, en); },
+        null,
+        () => success("ad")
+      );
+    };
+  };
+  draw();
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+}
+document.addEventListener("click", (e) => {
+  const st = e.target.closest && e.target.closest("#stats-bar .stat");
+  if (st && st.classList.contains("boostable") || (st && _boostYear === year)) showStatBoost(_BOOST_KEY[st.dataset.stat]);
+});
 
 // ── Pargalı'nın Sırrı — oyunlar arası nihai gizem (27 Eylül 2026) ────────
 // Pargalı İbrahim Paşa'nın halefine bıraktığı mektubun 7 sayfası farklı oyunlara
@@ -7427,7 +7582,7 @@ function showChanceCard(c) {
   coin.classList.remove("spinning", "sealed");
   coin.style.setProperty("--coin-end", "1800deg");
   const en = window.LANG === 'en';
-  // R1-A: "Kadere bırak %50" / "Kader Mührü %100 · 1 akçe" (paraya dokunmak = kadere bırak, eskisi gibi)
+  // R1-A: "Kadere bırak %50" / "Kader Mührü %100 · 2 akçe" (paraya dokunmak = kadere bırak, eskisi gibi)
   let row = document.getElementById("kader-row");
   if (!row && panel) { row = document.createElement("div"); row.id = "kader-row"; panel.appendChild(row); }
   const renderRow = () => {
@@ -7560,6 +7715,7 @@ function updateStatUI() {
     else if (val <= 30 || val >= 68) fill.className = "stat-fill warn";
     else                 fill.className = "stat-fill";
     if (val <= 15 || val >= 80) anyDanger = true;
+    try { fill.closest(".stat")?.classList.toggle("boostable", _boostOpen(key)); } catch (e) {} // G-A: dokun → takviye
   }
   _updateCrisisPulse();
   updateHealthUI();
@@ -7609,6 +7765,7 @@ function _updateDivanBg(game) {
     bg = document.createElement("div"); bg.id = "divan-bg"; bg.setAttribute("aria-hidden", "true");
     bg.innerHTML = '<i class="db-calm"></i><i class="db-tense"></i><i class="db-crisis"></i>';
     game.insertBefore(bg, game.firstChild);
+    try { _applyOda(); } catch (e) {} // F-A
   }
   const vals = Object.values(stats);
   const crisis = !isGameOver && vals.some(v => v <= CRISIS_LOW || v >= CRISIS_HIGH);
@@ -8153,12 +8310,7 @@ function _relDueKomplo() {
 function _showRelToast(key, before, after) {
   const game = document.getElementById("game"); if (!game) return;
   const en = window.LANG === 'en', up = after > before, L = REL_LEVELS[after + 3];
-  const t = document.createElement("div");
-  t.className = "rel-toast";
-  t.innerHTML = `<span class="rt-med" style="background-image:url('assets/characters/${encodeURIComponent(key)}.jpg');--rc:${L.c}"></span><span class="rt-txt"><b>${_castName(key, en)}</b><em style="color:${L.c}">${up ? "▲" : "▼"} ${L[en ? "en" : "tr"]}</em></span>`;
-  game.appendChild(t);
-  requestAnimationFrame(() => t.classList.add("on"));
-  setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, 2300);
+  _notify(`<span class="rt-med" style="background-image:url('assets/characters/${encodeURIComponent(key)}.jpg');--rc:${L.c}"></span><span class="rt-txt"><b>${_castName(key, en)}</b><em style="color:${L.c}">${up ? "▲" : "▼"} ${L[en ? "en" : "tr"]}</em></span>`, 2300, "rel"); // U-A
 }
 function _showRescue(key) {
   const en = window.LANG === 'en';
@@ -8470,9 +8622,7 @@ function _endStationDone(id, idx) {
 }
 function _showEndToast(txt) {
   const game = document.getElementById("game"); if (!game) return;
-  const t = document.createElement("div"); t.className = "rel-toast end-toast"; t.innerHTML = `<span class="rt-txt"><b>✦ ${txt}</b></span>`;
-  game.appendChild(t); requestAnimationFrame(() => t.classList.add("on"));
-  setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, 2800);
+  _notify(`<b>✦ ${txt}</b>`, 2800, "end"); // U-A
 }
 // advanceYear(): ferman değerlendirmesinden hemen sonra, paywall kontrollerinden ÖNCE
 function _endYearClose() {
@@ -8841,12 +8991,7 @@ function _renderEraChip() {
 }
 function _eraToast(text, good) {
   const game = document.getElementById("game"); if (!game) return;
-  const t = document.createElement("div");
-  t.className = "era-toast " + (good ? "good" : "bad");
-  t.textContent = text;
-  game.appendChild(t);
-  requestAnimationFrame(() => t.classList.add("on"));
-  setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, 2300);
+  _notify(_nEsc(text), 2300, good ? "good" : "bad"); // U-A
 }
 
 // ── Diplomasi verisi (4 Ekim 2026) — game.js'e modül olarak eklenecek
@@ -9116,7 +9261,18 @@ const CINI_FRAMES = [
   { k: "rustem",  tr: "Rüstem Paşa",    en: "Rüstem Pasha",   price: 5 },
 ];
 const CINI_LEGACY = ["iznik", "kutahya", "lale"];
+// F-A (10 Ekim 2026): Divan Odası — kartın arkasındaki salon (Yaşayan Divan'ın üç ışığı aynen kalır).
+// Kullanıcının 4 görseli; assets/oda/oda-X.jpg = bulanık+karartılmış arka plan, oda-X-on.jpg = net önizleme.
+const ODA_ROOMS = [
+  { k: "arz",   tr: "Arz Odası",        en: "Audience Chamber", price: 8 },
+  { k: "lale",  tr: "Lale Bahçesi",     en: "Tulip Garden",     price: 10 },
+  { k: "bogaz", tr: "Boğaz Köşkü",      en: "Bosphorus Yalı",   price: 10 },
+  { k: "kis",   tr: "Kış Gecesi Divan", en: "Winter Divan",     price: 12 },
+];
 const COSMETICS = {
+  oda:    { price: 8, icon: "assets/oda/oda-arz-on.jpg", tr: "Divan Odası", en: "Divan Chamber",
+            dtr: "Kartlarının arkasındaki salon değişir. Dört oda, her biri ayrı; dokun, önizle.", den: "Change the hall behind your cards. Four chambers, each sold separately; tap to preview.",
+            opts: ODA_ROOMS.map(r => [r.k, r.tr, r.en]) },
   cini:   { price: 3, icon: "assets/icons/item-cini-cerceve.png", tr: "Çini Kart Çerçevesi", en: "Tile Card Frame",
             dtr: "Kartlarının kenarı gerçek çini deseniyle döşenir. Beş desen, her biri ayrı; dokun, önizle.", den: "Your cards are framed in real tile patterns. Five patterns, each sold separately; tap to preview.",
             opts: CINI_FRAMES.map(f => [f.k, f.tr, f.en]) },
@@ -9147,11 +9303,25 @@ function _ciniOwned(k) { const o = _cosmGet(); return (o.cini === true && CINI_L
 function _ciniAny() { return CINI_FRAMES.some(f => _ciniOwned(f.k)); }
 function _ciniAll() { return CINI_FRAMES.every(f => _ciniOwned(f.k)); }
 // "cini" için: en az bir desene sahip mi (Vakayiname/ölüm ekranı gibi yerler için); diğerleri: alındı mı
-function _cosmOwned(id) { return id === "cini" ? _ciniAny() : !!_cosmGet()[id]; }
+function _cosmOwned(id) { return id === "cini" ? _ciniAny() : id === "oda" ? _odaAny() : !!_cosmGet()[id]; }
 function _cosmSel(id) {
   const o = _cosmGet();
   if (id === "cini") { const k = o.ciniSel; if (k === "off") return "off"; return (k && _ciniOwned(k)) ? k : (CINI_FRAMES.find(f => _ciniOwned(f.k)) || {}).k || null; }
   return o[id] ? (o[id + "Sel"] || (COSMETICS[id].opts ? COSMETICS[id].opts[0][0] : true)) : null;
+}
+function _odaOwned(k) { const o = _cosmGet(); return Array.isArray(o.odaOwn) && o.odaOwn.includes(k); }
+function _odaAny() { return ODA_ROOMS.some(r => _odaOwned(r.k)); }
+function _odaAll() { return ODA_ROOMS.every(r => _odaOwned(r.k)); }
+function _odaSel() { const k = _cosmGet().odaSel; return (k && k !== "off" && _odaOwned(k)) ? k : null; }
+function _odaBuy(k) { // akçe düşmüşse çağrılır; kalıcı yaz + tak
+  const o = _cosmGet(); const own = Array.isArray(o.odaOwn) ? o.odaOwn : [];
+  if (!own.includes(k)) own.push(k); o.odaOwn = own; o.odaSel = k; _cosmSet(o);
+}
+function _applyOda() {
+  const bg = document.getElementById("divan-bg"); if (!bg) return;
+  const k = _odaSel();
+  bg.style.backgroundImage = k ? `url('assets/oda/oda-${k}.jpg')` : "";
+  bg.classList.toggle("oda", !!k);
 }
 function _ciniBuy(k) { // akçe düşmüşse çağrılır; kalıcı yaz + tak
   const o = _cosmGet(); const own = Array.isArray(o.ciniOwn) ? o.ciniOwn : [];
@@ -9161,6 +9331,7 @@ function _applyCosmetics() {
   const c = document.getElementById("card"); if (!c) return;
   c.classList.remove("has-frame", ...CINI_FRAMES.map(f => "frame-" + f.k));
   const f = _cosmSel("cini"); if (f && f !== "off" && _ciniOwned(f)) c.classList.add("has-frame", "frame-" + f);
+  _applyOda();
 }
 function _kaftanImg(cls) {
   const k = _cosmSel("kaftan"); if (!k) return "";
@@ -9183,6 +9354,10 @@ function renderCosmeticRows() {
       const sel = _cosmSel("cini");
       extra = `<div class="cf-tiles">${CINI_FRAMES.map(f => { const own = _ciniOwned(f.k), on = own && sel === f.k;
         return `<button type="button" class="cf-tile${own ? " own" : ""}${on ? " on" : ""}" data-k="${f.k}" aria-label="${en ? f.en : f.tr}"><span class="cf-sw" style="background-image:url('assets/frames/cini-${f.k}.png')"></span><span class="cf-l">${en ? f.en : f.tr}</span><span class="cf-p">${on ? (en ? "ON" : "TAKILI") : own ? (en ? "YOURS" : "SENİN") : `${f.price} ${AKCE_COIN_SVG}`}</span></button>`; }).join("")}</div>`;
+    } else if (id === "oda") {
+      const sel = _odaSel();
+      extra = `<div class="cf-tiles oda-tiles">${ODA_ROOMS.map(r => { const own = _odaOwned(r.k), on = sel === r.k;
+        return `<button type="button" class="cf-tile${own ? " own" : ""}${on ? " on" : ""}" data-k="${r.k}" aria-label="${en ? r.en : r.tr}"><span class="cf-sw oda-sw" style="background-image:url('assets/oda/oda-${r.k}-on.jpg')"></span><span class="cf-l">${en ? r.en : r.tr}</span><span class="cf-p">${on ? (en ? "ON" : "AÇIK") : own ? (en ? "YOURS" : "SENİN") : `${r.price} ${AKCE_COIN_SVG}`}</span></button>`; }).join("")}</div>`;
     } else if (id === "kaftan") {
       const own = _cosmOwned("kaftan");
       ctrl = `<button type="button" class="mi-buy mc-btn mc-open">${own ? (en ? "COLOUR" : "RENK") : `${c.price} ${AKCE_COIN_SVG}`}</button>`;
@@ -9192,10 +9367,13 @@ function renderCosmeticRows() {
     } else {
       ctrl = _cosmOwned(id) ? `<span class="mc-owned">${en ? "OWNED" : "SENİN"}</span>` : `<button type="button" class="mi-buy mc-btn mc-buy">${c.price} ${AKCE_COIN_SVG}</button>`;
     }
+    if (id === "oda") ctrl = "";
     const ico = id === "kaftan" && _cosmOwned("kaftan") ? `<img class="cosm-kaftan k-${_cosmSel("kaftan")}" src="${c.icon}" alt="">` : `<img src="${c.icon}" alt="">`;
     row.innerHTML = `<div class="mc-prev mc-ico">${ico}</div><div class="mc-info"><div class="mc-name">${en ? c.en : c.tr}</div><div class="mc-desc">${en ? c.den : c.dtr}</div>${extra}</div>${ctrl}`;
     box.appendChild(row);
     if (id === "cini") row.querySelectorAll(".cf-tile").forEach(b => b.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showCiniPreview(b.dataset.k); }));
+    if (id === "oda") { row.querySelectorAll(".cf-tile").forEach(b => b.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showOdaPreview(b.dataset.k); }));
+      row.querySelector(".mc-ico")?.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showOdaPreview(_odaSel() || ODA_ROOMS[0].k); }); }
     if (id === "kaftan") { const open = () => { if (window.playButtonTap) playButtonTap(); showKaftanPreview(); }; row.querySelector(".mc-open")?.addEventListener("click", open); row.querySelector(".mc-ico")?.addEventListener("click", open); }
     row.querySelectorAll(".mc-opt").forEach(b => b.addEventListener("click", () => {
       const o = _cosmGet(); o[id + "Sel"] = b.dataset.k; _cosmSet(o);
@@ -9254,6 +9432,49 @@ function showCiniPreview(k0) {
     if (wear) wear.onclick = () => { const o = _cosmGet(); o.ciniSel = k; _cosmSet(o); if (window.playSelectConfirm) playSelectConfirm(); _applyCosmetics(); renderCosmeticRows(); render(); };
     const off = ov.querySelector(".cp-off");
     if (off) off.onclick = () => { const o = _cosmGet(); o.ciniSel = "off"; _cosmSet(o); _applyCosmetics(); renderCosmeticRows(); render(); };
+  };
+  render();
+  ov.addEventListener("click", e => { if (e.target === ov) close(); });
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
+}
+// F-A (10 Ekim 2026): Divan Odası önizleme — net oda görseli, üstünde örnek kart; odalar arası geçiş;
+// alınmadıysa fiyat + SATIN AL, alındıysa KULLAN / AÇIK + "Varsayılan salona dön".
+function showOdaPreview(k0) {
+  document.getElementById("oda-preview")?.remove();
+  const en = window.LANG === 'en';
+  const ov = document.createElement("div"); ov.id = "oda-preview"; ov.className = "info-panel-overlay cosm-pop";
+  let k = ODA_ROOMS.some(r => r.k === k0) ? k0 : ODA_ROOMS[0].k, busy = false;
+  const close = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 250); };
+  const render = () => {
+    const r = ODA_ROOMS.find(x => x.k === k), own = _odaOwned(k), on = _odaSel() === k;
+    ov.innerHTML = `<div class="ip-box cp-box">
+      <div class="ip-title">${en ? "CHAMBER" : "ODA"} · ${(en ? r.en : r.tr).toLocaleUpperCase(en ? "en" : "tr")}</div>
+      <div class="oda-view" style="background-image:url('assets/oda/oda-${k}-on.jpg')"><div class="oda-card"><div class="oda-ci" style="background-image:url('assets/characters/1-sultan.jpg')"></div><b>${en ? "MY SULTAN" : "PADİŞAHIM"}</b></div></div>
+      <div class="cf-tiles cf-pop-tiles">${ODA_ROOMS.map(x => `<button type="button" class="cf-tile mini${x.k === k ? " on" : ""}${_odaOwned(x.k) ? " own" : ""}" data-k="${x.k}" aria-label="${en ? x.en : x.tr}"><span class="cf-sw oda-sw" style="background-image:url('assets/oda/oda-${x.k}-on.jpg')"></span></button>`).join("")}</div>
+      <div class="cp-price">${own ? (en ? "This chamber is yours" : "Bu oda senin") : `${AKCE_COIN_SVG} ${r.price} ${en ? "AKCE" : "AKÇE"}`}</div>
+      <div class="cp-actions"><button type="button" class="cp-close">${en ? "CLOSE" : "KAPAT"}</button>
+        ${own ? `<button type="button" class="cp-main cp-wear"${on ? " disabled" : ""}>${on ? (en ? "IN USE ✓" : "AÇIK ✓") : (en ? "USE" : "KULLAN")}</button>` : `<button type="button" class="cp-main cp-buy">${en ? "BUY" : "SATIN AL"}</button>`}</div>
+      ${on ? `<button type="button" class="cp-off">${en ? "Back to the default hall" : "Varsayılan salona dön"}</button>` : ""}
+      <div class="cp-msg" aria-live="polite"></div></div>`;
+    ov.querySelector(".cp-close").onclick = close;
+    ov.querySelectorAll(".cf-pop-tiles .cf-tile").forEach(b => b.onclick = () => { if (busy) return; k = b.dataset.k; render(); });
+    const buy = ov.querySelector(".cp-buy");
+    if (buy) buy.onclick = () => {
+      if (busy || _odaOwned(k)) return; busy = true; buy.disabled = true;
+      const price = ODA_ROOMS.find(x => x.k === k).price;
+      if (!spendAkce(price)) { busy = false; buy.disabled = false; _cosmNeedAkce(ov.querySelector(".cp-msg"), price, close); return; }
+      _odaBuy(k);
+      if (window.playSelectConfirm) playSelectConfirm();
+      _an("cosmetic_buy", { id: "oda_" + k, where: "market" });
+      updateAkceUI(); _applyCosmetics(); renderCosmeticRows();
+      busy = false; render();
+      ov.querySelector(".cp-msg").textContent = en ? "It is yours; your cards now sit in this chamber." : "Artık senin; kartların bu odada.";
+    };
+    const wear = ov.querySelector(".cp-wear");
+    if (wear) wear.onclick = () => { const o = _cosmGet(); o.odaSel = k; _cosmSet(o); if (window.playSelectConfirm) playSelectConfirm(); _applyCosmetics(); renderCosmeticRows(); render(); };
+    const off = ov.querySelector(".cp-off");
+    if (off) off.onclick = () => { const o = _cosmGet(); o.odaSel = "off"; _cosmSet(o); _applyCosmetics(); renderCosmeticRows(); render(); };
   };
   render();
   ov.addEventListener("click", e => { if (e.target === ov) close(); });
@@ -9647,7 +9868,7 @@ function showItemInfoPopup(itemId) {
 }
 
 // ── Eşya Dükkanı — nadir kartlarla kazanılan eşyaları akçeyle doğrudan satın al ──
-const ITEM_AKCE_COST = 1; // 1 akçe = 1 anlamlı kurtarma (İkinci Şans 29 Eylül 2026’dan beri 2 akçe)
+const ITEM_AKCE_COST = 2; // E-C (10 Ekim 2026): 1 → 2 akçe (kendi fiyatı olan Market eşyaları değişmez)
 // Bilinçli olarak dükkanda satılmayan eşyalar — bu ikisi sadece nadir kartlarla
 // kazanılabilir kalsın diye (altın_muhur = hazine cezası bloğu, sultan_ferman =
 // saray cezası bloğu), akçeyle garantiye bağlanamaz.
@@ -9985,25 +10206,15 @@ function updateItemBar() {
 function showItemExpiredToast(itemId) {
   const itm = ITEMS[itemId];
   if (!itm) return;
-  const toast = document.createElement("div");
-  toast.className = "item-expired-toast";
   // (29 Haziran'dan beri burada tanımsız 'expiredId' vardı → İngilizce oyunda
   // eşya süresi dolunca dealNext hata verip sıradaki kart gelmiyordu)
   const _expEN = (window.LANG === 'en' && window.EN_ITEMS) ? window.EN_ITEMS[itemId] : null;
   const _expName = _expEN ? _expEN.name : itm.name;
   const _expiredLabel = window.LANG === 'en' ? 'Expired' : 'Tükendi';
-  toast.innerHTML = `<img src="${itm.icon}" alt="${_expName}"><span>${_expiredLabel}</span>`;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 2000);
+  _notify(`<img class="ns-ico gray" src="${itm.icon}" alt=""><span>${_nEsc(_expName)} · <em>${_expiredLabel}</em></span>`, 2200, "item"); // U-A
 }
 
-function showItemToast(msg) {
-  const t = document.createElement("div");
-  t.className = "item-toast";
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2700);
-}
+function showItemToast(msg) { _notify(_nEsc(msg), 2700, "item"); } // U-A
 
 function applyEffects(effects) {
   const blockMap = { block_hazine: "hazine", block_saray: "saray", block_yeniceri: "yeniçeri" };
@@ -10231,14 +10442,10 @@ function checkCurse(dir) {
 function _showCurseWhisper(f) {
   const game = document.getElementById("game");
   if (!game || isGameOver) return;
-  let w = document.getElementById("curse-whisper");
-  if (!w) { w = document.createElement("div"); w.id = "curse-whisper"; w.setAttribute("aria-live", "polite"); game.appendChild(w); }
   const nm = FAV_NAMES[f] || FAV_NAMES.saray;
-  w.textContent = window.LANG === 'en'
+  _notify(_nEsc(window.LANG === 'en'
     ? `The Divan whispers: ${nm[1]} always wins, the others grow jealous…`
-    : `Divan fısıldıyor: hep ${nm[0]} kazanıyor, ötekiler kıskanıyor…`;
-  w.classList.remove("on"); void w.offsetWidth; w.classList.add("on");
-  clearTimeout(w._t); w._t = setTimeout(() => w.classList.remove("on"), 3000);
+    : `Divan fısıldıyor: hep ${nm[0]} kazanıyor, ötekiler kıskanıyor…`), 3000, "whisper"); // U-A: koyu zeminli şeritte
   _coachFav = f; _coach("kayirma"); // Y1
 }
 // ── Y1 (7 Ekim 2026): oynarken bir kerelik bağlamsal ipuçları ──────────────────────────
@@ -10372,7 +10579,7 @@ function _coachBusy() {
   if (isGameOver || isAnimating || isDragging) return true;
   if (!gameScreen || gameScreen.classList.contains("hidden")) return true;
   try { if (_fusePaused() || _ysModalOpen()) return true; } catch (e) {}
-  return !!document.querySelector("#coach-overlay, #tutorial-overlay, #sultan-event-overlay, #curse-overlay, #second-chance-overlay, #execution-overlay, #guc-uyarisi-overlay, .cag-toast.on");
+  return !!document.querySelector("#coach-overlay, #tutorial-overlay, #sultan-event-overlay, #curse-overlay:not(.hidden), #second-chance-overlay, #execution-overlay, #guc-uyarisi-overlay, #notice-strip.on");
 }
 function _coach(k) {
   if (!COACH_TIPS[k] || _coachSeen(k) || _coachPending.includes(k)) return;
@@ -10448,6 +10655,8 @@ function _coachCheckCard(c) {
   }, 900);
 }
 
+// D-A (10 Ekim 2026): "Divan Bölündü" = kırık mühür. Karartma + ortada oyunun mum mührü ikiye çatlar,
+// altın Cinzel başlık, italik alt satır, üç gücün −6 çipleri. ~1,9 sn; dokununca kapanır.
 function triggerCurse(f) {
   cursedEver = true;
   Haptics.curseTriggered();
@@ -10456,45 +10665,88 @@ function triggerCurse(f) {
   if (!overlay) {
     overlay = document.createElement("div");
     overlay.id = "curse-overlay";
-    const ct = document.createElement("div");
-    ct.className = "curse-text";
-    overlay.appendChild(ct);
-    const cs = document.createElement("div");
-    cs.className = "curse-sub";
-    overlay.appendChild(cs);
+    overlay.className = "hidden";
+    overlay.addEventListener("click", () => { clearTimeout(overlay._t); overlay.classList.add("hidden"); });
     document.body.appendChild(overlay);
   }
-  overlay.querySelector(".curse-text").textContent = en ? "THE DIVAN IS DIVIDED" : "DİVAN BÖLÜNDÜ";
   const nm = FAV_NAMES[f] || FAV_NAMES.saray;
-  const sub = overlay.querySelector(".curse-sub");
-  if (sub) sub.textContent = en ? `You favoured ${nm[1]} again and again — the other three −${FAV_COST}`
-                                : `Hep ${nm[0]} kayrıldı — öteki üçü −${FAV_COST}`;
+  const seal = _imperialSealSVG("cb-svg");
+  const others = Object.keys(stats).filter(s => s !== f);
+  overlay.innerHTML = `<div class="cb-seal" aria-hidden="true"><div class="cb-half l">${seal}</div><div class="cb-half r">${seal}</div>
+      <svg class="cb-crack" viewBox="0 0 100 100"><path d="M52 4 L47 22 L55 36 L45 52 L54 66 L46 82 L50 96" fill="none" stroke="#e8c84a" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+    <div class="curse-text">${en ? "THE DIVAN IS DIVIDED" : "DİVAN BÖLÜNDÜ"}</div>
+    <div class="curse-sub">${en ? `You favoured ${nm[1]} again and again. The other three broke away.` : `Hep ${nm[0]} kayrıldı. Öteki üçü kırıldı.`}</div>
+    <div class="cb-chips">${others.map(k => `<span>${(_STAT_NAMES[k] || [k, k])[en ? 1 : 0]} −${FAV_COST}</span>`).join("")}</div>`;
   overlay.classList.remove("hidden");
-  Object.keys(stats).forEach(s => { if (s !== f) stats[s] = Math.max(0, stats[s] - FAV_COST); });
+  others.forEach(s => { stats[s] = Math.max(0, stats[s] - FAV_COST); });
   updateStatUI();
   _an("favor_triggered", { faction: f, year, cards: cardsPlayed });
-  setTimeout(() => overlay.classList.add("hidden"), 1900);
+  clearTimeout(overlay._t);
+  overlay._t = setTimeout(() => overlay.classList.add("hidden"), 1900);
 }
 
 // Ölçüm kısayolu: asla hata fırlatmaz, oyunu etkilemez (analytics.js)
 function _an(type, p) { try { if (window.Analytics) window.Analytics.track(type, p); } catch (e) {} }
 
-// Ortak küçük bildirim (satır kırabilir; .rel-toast tek satırdı)
-function _cagToast(html, ms) {
-  const game = document.getElementById("game"); if (!game) return;
-  document.querySelectorAll(".cag-toast").forEach(x => x.remove());
-  const t = document.createElement("div"); t.className = "cag-toast"; t.setAttribute("aria-live", "polite"); t.innerHTML = html;
-  // S7 (6 Ekim 2026): üst satırı (yıl, ☰, ferman çipi) asla örtmesin — küçük ekranda sabit 54px'te
-  // yılın ve menü düğmesinin üstüne biniyordu. Başlığın o anki alt kenarının hemen altında açılır.
-  try {
-    const g = game.getBoundingClientRect();
-    const low = ["header-row", "ferman-chip"].map(id => document.getElementById(id))
-      .filter(el => el && el.offsetParent).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
-    if (low > 0) t.style.top = Math.round(low - g.top + 6) + "px";
-  } catch (e) {}
-  game.appendChild(t); requestAnimationFrame(() => t.classList.add("on"));
-  setTimeout(() => { t.classList.remove("on"); setTimeout(() => t.remove(), 400); }, ms || 3200);
+// ── U-A Tek bildirim şeridi (10 Ekim 2026) ─────────────────────────────
+// Bütün küçük bildirimler (_cagToast, Divan fısıltısı, eşya/iade/lütuf iletileri, ilişki, dönem, son, eşya
+// tükendi) TEK kuyrukta, koyu zeminli TEK şeritte, sırayla gösterilir; birden çoksa köşede "1/2". Şerit
+// başlığın (yıl, ☰, ferman çipi) hemen altında açılır, dokunuşu engellemez. Aynı ileti kuyruğa iki kez girmez.
+// Başarım mührü (altta, kendi töreni) bunun dışında.
+var _NQ = []; // var: dosyada önce tanımlı yükleme/kurtarma yolları da çağırabilir
+var _nCur = null, _nShown = 0, _nTimer = null;
+function _nEsc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch])); }
+function _notify(html, ms, kind) {
+  if (!html) return;
+  if ((_nCur && _nCur.html === html) || _NQ.some(x => x.html === html)) return;
+  if (_NQ.length >= 4) _NQ.shift(); // kuyruk sonsuz uzamasın
+  _NQ.push({ html, ms: ms || 2800, kind: kind || "info" });
+  if (!_nCur) _notifyNext(); else _notifyCount();
 }
+function _notifyStrip() {
+  let s = document.getElementById("notice-strip");
+  if (!s) {
+    s = document.createElement("div"); s.id = "notice-strip"; s.setAttribute("aria-live", "polite");
+    s.innerHTML = '<div class="ns-body"></div><span class="ns-n"></span>';
+    document.body.appendChild(s);
+  }
+  return s;
+}
+function _notifyCount() {
+  const n = document.querySelector("#notice-strip .ns-n"); if (!n) return;
+  const tot = _nShown + _NQ.length;
+  n.textContent = tot > 1 ? `${_nShown}/${tot}` : "";
+}
+function _notifyTop(s) {
+  // S7 (6 Ekim 2026) kuralı korunur: üst satırı asla örtmez — başlığın o anki alt kenarının altında açılır
+  let top = 0;
+  try {
+    const g = document.getElementById("game");
+    if (g && !g.classList.contains("hidden") && getComputedStyle(g).display !== "none") { // #game sabit konumlu: offsetParent hep null
+      top = ["header-row", "ferman-chip", "critical-offer"].map(id => document.getElementById(id))
+        .filter(el => el && el.getClientRects().length && (el.id !== "critical-offer" || el.classList.contains("mini"))) // rozet sabit konumlu: offsetParent null
+        .reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
+    }
+  } catch (e) {}
+  s.style.top = top > 0 ? Math.round(top + 6) + "px" : "";
+}
+function _notifyNext() {
+  clearTimeout(_nTimer);
+  const s = _notifyStrip();
+  if (!_NQ.length) { _nCur = null; _nShown = 0; s.classList.remove("on"); return; }
+  _nCur = _NQ.shift(); _nShown++;
+  s.className = "k-" + _nCur.kind;
+  s.querySelector(".ns-body").innerHTML = _nCur.html;
+  _notifyCount(); _notifyTop(s);
+  void s.offsetWidth; s.classList.add("on");
+  const cur = _nCur;
+  _nTimer = setTimeout(() => {
+    s.classList.remove("on");
+    _nTimer = setTimeout(() => { if (_nCur === cur) _nCur = null; _notifyNext(); }, 320);
+  }, cur.ms);
+}
+// Ortak küçük bildirim (satır kırabilir) — U-A'dan beri tek şeride yazar
+function _cagToast(html, ms) { _notify(html, ms || 3200, "cag"); }
 
 // ── Tahkik: yılda sınırlı hak; bir kartın iki seçeneğinin hangi gücü artırıp azalttığını
 // gösterir (yön, sayı değil — Usturlap/Deneyimli Mod ile aynı görünüm). Her kullanım Sultan'ın
@@ -10553,10 +10805,10 @@ function _renderTahkikChoices(c) {
   choiceRight.innerHTML = _escHtml(_tahkikTexts.r) + getEffectPreviewHTML(c.right_effects);
 }
 function _escHtml(t) { return String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch])); }
-// ── A2 (8 Ekim 2026): kriz kartında "Hazineden yatıştır" — 1 akçe, yılda 2 kez ──────────────
+// ── A2 (8 Ekim 2026): kriz kartında "Hazineden yatıştır" — 2 akçe (E-C), yılda 2 kez ──────────────
 // Kriz kartının altında küçük bir şerit. Ödenirse bu kartta hangi taraf seçilirse seçilsin EKSİ etkiler
 // yarıya iner (artılar aynı). Akçe tek adımda düşer; kart kimliği kayda yazılır (kayıttan dönülürse korunur).
-const SOOTHE_COST = 1, SOOTHE_PER_YEAR = 2;
+const SOOTHE_COST = 2, SOOTHE_PER_YEAR = 2; // E-C (10 Ekim 2026): 1 → 2
 function _sootheLeft() { return SOOTHE_PER_YEAR - (_sootheYear === year ? _sootheN : 0); }
 function _sootheAdjust(c, fx) {
   if (!c || !_sootheCardId || c.id !== _sootheCardId) return fx;
@@ -11092,7 +11344,7 @@ try { const _st = document.querySelector("#card-stamp i"); if (_st) _st.textCont
 let _cardShownAt = 0;
 function decide(dir) {
   if (!currentCard) return;
-  _hideCriticalOffer(); // oyuncu teklif yerine kararını verdi
+  _collapseCriticalOffer(); // K-A: oyuncu karar verdi — teklif rozet olarak bekler
   const _advisedDir = dir;
   dir = _arzResolve(currentCard, dir); // Arz: Sultan tavsiyeni reddederse öbür seçenek uygulanır
   if (!currentCard.type && currentCard.left_effects) {
@@ -11678,7 +11930,7 @@ function flyOff(dir) {
     _hideInvestigateBtn();
     _hideTahkikBtn(); _hideArzChip();
     _hideEasterChoices();
-    _hideCriticalOffer();
+    _collapseCriticalOffer(); // K-A: kapanmaz, rozet olur
     charName.textContent = "";
     cardText.textContent = "";
     choiceLeft.style.opacity = "0";
@@ -12252,15 +12504,17 @@ function _renderDeathLesson(panel, after) {
 function _renderCosmPreview(panel, after) {
   let el = document.getElementById("gameover-cosm");
   let games = 0; try { games = parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10); } catch (e) {}
-  const free = Object.keys(COSMETICS).filter(id => id === "cini" ? !_ciniAll() : !_cosmOwned(id));
+  const free = Object.keys(COSMETICS).filter(id => id === "cini" ? !_ciniAll() : id === "oda" ? !_odaAll() : !_cosmOwned(id));
   if (!AKCE_SYSTEM_ENABLED || games < 1 || !free.length) { el?.remove(); return; }
   if (!el) { el = document.createElement("div"); el.id = "gameover-cosm"; }
   after.insertAdjacentElement("afterend", el);
   const en = window.LANG === 'en', id = free[games % free.length], c = COSMETICS[id];
   const cf = id === "cini" ? CINI_FRAMES.find(f => !_ciniOwned(f.k)) : null; // tek tek satılan desenlerden sahip olunmayan ilki
-  const price = cf ? cf.price : c.price;
+  const rm = id === "oda" ? ODA_ROOMS.find(r => !_odaOwned(r.k)) : null; // F-A: sahip olunmayan ilk oda
+  const price = cf ? cf.price : rm ? rm.price : c.price;
   const chr = (currentCard && currentCard.character && !String(currentCard.character).includes("/")) ? currentCard.character : "1-sultan";
-  const prev = id === "kaftan"
+  const prev = rm ? `<div class="cp-thumb cp-oda" style="background-image:url('assets/oda/oda-${rm.k}-on.jpg')"></div>`
+    : id === "kaftan"
     ? `<div class="cp-thumb cp-death" style="background-image:url('assets/deaths/death-${_deathSceneImage(_deathCause || "saray_0")}.jpg')"><img class="cosm-kaftan cp-kaftan" src="${c.icon}" alt=""></div>`
     : id === "cini"
       ? `<div class="cp-thumb cp-card cf-card has-frame frame-${cf.k}"><img src="assets/characters/${encodeURIComponent(chr)}.jpg" alt="" onerror="this.src='assets/characters/1-sultan.jpg'"></div>`
@@ -12268,22 +12522,22 @@ function _renderCosmPreview(panel, after) {
       : id === "kedi" ? `<div class="cp-thumb cp-cat">${DIVAN_CAT_SVG}</div>`
       : `<div class="cp-thumb cp-gild"><span class="cp-dc">${en ? "T" : "S"}</span><i></i><i></i><i></i><i></i></div>`;
   el.innerHTML = `${prev}<div class="cp-info"><div class="cp-kick">${en ? "IT COULD HAVE LOOKED LIKE THIS" : "BÖYLE DE GÖRÜNEBİLİRDİ"}</div>
-    <div class="cp-name">${en ? c.en : c.tr}${cf ? ` · ${en ? cf.en : cf.tr}` : ""}</div><div class="cp-desc">${en ? c.den : c.dtr}</div>
+    <div class="cp-name">${en ? c.en : c.tr}${cf ? ` · ${en ? cf.en : cf.tr}` : rm ? ` · ${en ? rm.en : rm.tr}` : ""}</div><div class="cp-desc">${en ? c.den : c.dtr}</div>
     <button type="button" class="mi-buy cp-buy">${price} ${AKCE_COIN_SVG}</button><div class="cp-msg" aria-live="polite"></div></div>`;
   const btn = el.querySelector(".cp-buy"), msg = el.querySelector(".cp-msg");
   btn.onclick = () => {
-    if (cf ? _ciniOwned(cf.k) : _cosmOwned(id)) return;
+    if (cf ? _ciniOwned(cf.k) : rm ? _odaOwned(rm.k) : _cosmOwned(id)) return;
     if (!spendAkce(price)) {
       msg.textContent = en ? `You need ${price} akce.` : `${price} akçe gerekiyor.`;
       showAkceScreen();
       setTimeout(_marketShowAkce, 250);
       return;
     }
-    if (cf) _ciniBuy(cf.k); else { const o = _cosmGet(); o[id] = true; if (c.opts) o[id + "Sel"] = c.opts[0][0]; _cosmSet(o); }
+    if (cf) _ciniBuy(cf.k); else if (rm) _odaBuy(rm.k); else { const o = _cosmGet(); o[id] = true; if (c.opts) o[id + "Sel"] = c.opts[0][0]; _cosmSet(o); }
     if (id === "kedi") setTimeout(() => DivanCat.walk(true), 800);
     if (window.playSelectConfirm) playSelectConfirm();
     updateAkceUI(); _applyCosmetics();
-    _an("cosmetic_buy", { id: cf ? "cini_" + cf.k : id, where: "gameover" });
+    _an("cosmetic_buy", { id: cf ? "cini_" + cf.k : rm ? "oda_" + rm.k : id, where: "gameover" });
     btn.disabled = true; btn.textContent = en ? "YOURS" : "SENİN";
     msg.textContent = en ? "It is yours. Change it any time in the Market." : "Artık senin. Market'ten istediğin zaman değiştirebilirsin.";
   };
