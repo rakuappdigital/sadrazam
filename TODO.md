@@ -1,6 +1,17 @@
 # Sadrazam — TODO
 
-## ⏭ ŞU AN — 1.7.1 / build 48 ASC'DE HAZIR, GÖNDERİM KULLANICIDA (10 Ekim 2026)
+## ⏭ DERİN ANALİZ (10 Ekim 2026) — kullanıcı seçimi bekleniyor · 1.7.1 (48) İNCELEMEDE (kullanıcı gönderdi)
+Sayfa: https://claude.ai/artifact/2BQFywirHjRULv1cewbHCa — kodlar O (omurga) · K (Kayırma) · M (menü), her biri A/B/C;
+önerilerim O-A K-A M-A. Kaynak: TelemetryDeck 1.7.0, 6–10 Ekim, geliştirici cihazı (clientUser d91a02…, 26 oyun) hariç 15 oyuncu.
+Bulgular: 15 ilk oyun → 1 ikinci oyun; başka gün geri gelen 0; ölümle biten 2 (gerisi yarıda bırakıldı); 9 oyuncu 1. yılı,
+5 oyuncu 2. yılı bitirdi; ücretsiz sınıra 4 → satın alan 0; menüden Tam Sürüm'e bakan 9 → alan 1; kart ortanca 8 sn;
+Kayırma 12 oyuncuda 39 kez (27'si 1. yıl, en erken 3. kart, ortanca 11). Ücretsiz 2 yılda 11 düğümün 9'u, Öteki Oda (y4),
+zirve (y4+), Lütuf (y3) görülmüyor. Öneriler: O-A "Günde bir yıl" (süre sınırı yerine tempo; ilk gün 2 yıl; reklam/3 akçe/
+Tam Sürüm ile beklemeden), O-B Günün Saltanatı (tohumlu günlük mod + paylaşım), O-C ilk saltanat sınırsız; K-A ilk tetik
+yalnız uyarı; M-A ilk saltanata kadar sade menü. Karar takvimi: 1.7.1 yayından 2 hafta sonra veriyle (app_hidden, bildirim
+izni, Kayırma sıklığı) karşılaştır, sonra kodla. Taslak betikleri: scratchpad an/mocks.js, an/flow.js.
+
+## 1.7.1 / build 48 — KULLANICI İNCELEMEYE GÖNDERDİ (10 Ekim 2026)
 - **Build 48 yüklendi:** Delivery `68861a2a-f14c-4d4f-aca2-67f0e0f1b170`, commit c39cc1b; arşiv kontrolü 1.7.1/48, 8 oda görseli,
   yeni kod. VALID, şifreleme false (API), 1.7.1'e BAĞLANDI (build 47'nin yerine).
 - **Taslak gönderim** `5dc387f4-5a2a-4a75-9034-79b85c1a3863`: 1.7.1 + 42 başarım + 1 liderlik (years_survived) = 44 öğe, hepsi
