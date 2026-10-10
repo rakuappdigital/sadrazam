@@ -556,6 +556,34 @@ Plan sayfası: https://claude.ai/artifact/RKvHHKqeuVWjdXccW6FR2E . Modül game.j
 - **Ölçüm:** game_start `nux`, `nux_first_card {sec}`, `first_year_end`, `app_hidden {cp, year, n, nux}` (analytics.js, `window.__anCtx`).
 - Test: scratchpad nux/journey.js `<lang> <seed> <out> <max> new|veteran|second` + check.py; chance.js (şans kartı stres).
 
+## 3l. 10 Ekim 2026 — ince ayar (K-A G-A M-C U-A D-A E-C F-A, build 48 adayı)
+
+- **Kritik An rozeti (K-A):** `#critical-offer` kart kaydırılınca/✕ ile silinmez → `_collapseCriticalOffer()` `.mini`
+  yapar ve `_placeCriticalMini` öğeyi `#header-row` İÇİNE taşır (gerçek satır; sabit konumda Tahkik düğmesine ve
+  Kader İpleri'ne biniyordu). `#game.co-wait` iken portre rozet kadar kısalır (320x568'de taşma artmasın).
+  `_expandCriticalOffer` body'ye geri taşır (alttan panel). Kalkış: kullanılınca ya da güçler > CRITICAL_THRESHOLD
+  (dealNext'te kontrol). `_criticalShownCount` rozet beklerken artmaz. Bedel `CRITICAL_COST = 2`.
+- **Güce dokun (G-A):** `showStatBoost(k)` — güç ≤20 iken bara dokun (`#stats-bar .stat.boostable`, etikette "+"):
+  +15, `BOOST_COST = 3` akçe ya da ödüllü reklam (onEarned + onReward → tek seferlik success), yılda 1
+  (`_boostYear`, `_v8Save` alanı `bt`). Lütuf görsellerini (assets/lutuf) kullanır.
+- **Sonuç mührü (M-C):** `_playConsequenceStamp` 1,1 sn sonra `_landConsequenceStamp` → köşedeki mühür `.land` ile
+  söner, `#card-stamp-chip` `#card-char-name` içine eklenir; `_hideConsequenceStamp` (dealNext) temizler.
+- **Tek bildirim şeridi (U-A):** `_notify(html, ms, kind)` — kuyruk `_NQ` (en çok 4, aynı ileti bir kez), tek
+  `#notice-strip` (body, fixed, z 400, pointer-events none), köşede "1/3". Konumu `_notifyTop`: header-row /
+  ferman-chip / rozetin altına. `_cagToast`, `showItemToast`, `showItemExpiredToast`, `_showCurseWhisper`,
+  `_showRelToast`, `_showEndToast`, `_eraToast` hepsi buraya yazar. Başarım mührü (altta) ayrı kaldı.
+  DİKKAT: `#game` ve rozet sabit konumlu → `offsetParent` hep null; görünürlük için `getClientRects().length`.
+- **Divan Bölündü (D-A):** `triggerCurse` kırık mühür (`_imperialSealSVG` iki yarım, clip-path), Cinzel başlık,
+  üç −6 çipi; 1,9 sn ya da dokununca kapanır. `_coachBusy` artık yalnız `#curse-overlay:not(.hidden)` sayar.
+- **Fiyatlar (E-C):** 1 akçelikler 2: CRITICAL_COST, KATIB_COST (Kâtip/Müneccim), ITEM_AKCE_COST, SOOTHE_COST,
+  LUTUF_COST, KADER_COST_CHANCE. Ferman değiştirme 1 akçe KALDI (kullanıcı kararı). Kozmetik/İkinci Şans/Market
+  eşyalarının kendi fiyatları değişmedi.
+- **Divan Odası (F-A):** `ODA_ROOMS` (Arz 8, Lale 10, Boğaz 10, Kış 12), `COSMETICS.oda`, kayıt `odaOwn`/`odaSel`
+  (sadrazam_cosmetics), `showOdaPreview`, `_applyOda` → `#divan-bg` background-image (Yaşayan Divan ışıkları
+  aynen). Görseller: assets/oda/oda-X.jpg (540x960, blur 9, parlaklık .62) + oda-X-on.jpg (net önizleme).
+  Ölüm ekranı kozmetik önerisine (`_renderCosmPreview`) de girdi.
+- **Günün Sorusu ödülsüz:** `TRIVIA_REWARD = 0` (addAkce yalnız > 0 ise); metinler + notifications.js "Günün sorusu hazır".
+
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 
 - **Dönemler** `ERA_DEFS`, `_eraState` (kayıtta `era`), `_eraPick` (getNextCard'da, %30, ayrı kanal;

@@ -6738,3 +6738,18 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 @media (prefers-reduced-motion: reduce) {
   #curse-overlay, #curse-overlay * { animation-duration: .01s !important; animation-delay: 0s !important; }
 }
+
+/* K-A: rozet başlıkta beklerken portre rozet kadar kısalır (320x568'de güç barları ekrandan taşıyordu) */
+#game.co-wait #card-image, #game.co-wait #card-image-knot, #game.co-wait #card-knot-seam { max-height: calc(46vh - 40px); }
+@media (max-height: 760px) { #game.co-wait #card.has-chips #card-image { max-height: calc(24vh - 40px); } }
+@media (max-height: 600px) {
+  #game.co-wait #card-image, #game.co-wait #card-image-knot, #game.co-wait #card-knot-seam, #game.co-wait #card.has-chips #card-image { max-height: calc(18vh - 30px); }
+  #critical-offer.mini { margin-top: 3px; }
+  #critical-offer.mini .co-mini { padding: 3px 5px; font-size: 11px; }
+  #critical-offer .co-mini img { width: 16px; height: 16px; }
+  #critical-offer .co-mini em { padding: 2px 8px; font-size: 10px; }
+}
+@media (max-height: 560px) {
+  #game.co-wait #card-image, #game.co-wait #card-image-knot, #game.co-wait #card-knot-seam, #game.co-wait #card.has-chips #card-image { max-height: calc(15vh - 30px); }
+}
+#notice-strip.ns-top { top: calc(env(safe-area-inset-top, 0px) + 8px); }

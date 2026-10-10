@@ -1,30 +1,17 @@
 # Sadrazam — TODO
 
-## ⏭ SONRAKİ OTURUM BURADAN BAŞLA (10 Ekim 2026 gece, kullanıcı ara verdi)
-**Aşağıdaki 9 Ekim listesinin HEPSİ KODLANDI (F-A dahil — görseller geldi) ve commit'lendi. Henüz senkron/build/push YOK.**
-Yapılanlar (game.js, style.css, notifications.js, assets/oda/):
-- K-A: Kritik An ✕/kaydırma ile kapanmaz → rozet `#critical-offer.mini`, `#header-row` içine GERÇEK satır olarak girer
-  (sabit konumda Tahkik düğmesine/Kader İpleri'ne biniyordu); dokununca panel alttan açılır (body'ye geri taşınır).
-  `_collapseCriticalOffer/_expandCriticalOffer/_placeCriticalMini`, `CRITICAL_COST = 2`.
-- G-A: `showStatBoost` (+15, `BOOST_COST = 3` ya da reklam, yılda 1; `_boostYear` → `_v8Save` `bt`), bar `.boostable` "+" alır.
-- M-C: `_landConsequenceStamp` → `#card-stamp-chip` ad yanında. U-A: `_notify(html, ms, kind)` tek kuyruk `#notice-strip`
-  (_cagToast, showItemToast, fısıltı, rel/end/era/eşya tükendi hepsi buradan; başarım mührü hariç).
-- D-A: triggerCurse kırık mühür (+ `_coachBusy` gizli curse-overlay'i artık meşgul saymıyor — eski hata).
-- E-C: Kâtip/Müneccim (`KATIB_COST`), eşya dükkânı, yatıştırma, Lütuf, Kader Mührü şans → 2. Ferman değiştirme 1 akçe KALDI
-  (listede yoktu) — kullanıcıya sor.
-- F-A: Divan Odası (ODA_ROOMS: Arz 8, Lale 10, Boğaz 10, Kış 12) Market Kozmetik + önizleme + ölüm ekranı önerisi;
-  assets/oda/oda-X.jpg (540x960 bulanık .62) + oda-X-on.jpg (önizleme).
-- Günün Sorusu ödülsüz (`TRIVIA_REWARD = 0`), bildirim metinleri "Günün sorusu hazır".
-**Test:** yeni test `new10_test.js` (K/G/M/U/D/E/F/soru; webkit+chromium, TR/EN, 390/320, ses açık/kapalı) → ALL PASS (323).
-Test takımı: /private/tmp/claude-501/-Users-mac/8cd0a3b3-2462-4592-b79e-e76d5192e97c/scratchpad/t (pw.js, runall.sh,
-new10_test.js, look320.js). Sunucu: `python3 -m http.server 8765 --directory .`; koşu: `node new10_test.js <t klasörü> <shots>`.
-**Kalan sıra:**
-1. Eski takımı koş (`./runall.sh r10` + v8_money, daily, fuzz, flow, long/webkit): eski 1 akçe fiyatı ve ödüllü soru
-   bekleyen testler kırılacak → beklentiyi yeni fiyata çevir, gerçek hata varsa düzelt. tsc tanımsız isim denetimi (§7b),
-   `python3 tools/denge.py`, `node --check`.
-2. 320px'te bir koşuda #game -9px kaymış göründü (uzun metinli Rakip Vezir kartı) — eski koddan mı, kontrol et.
-3. CLAUDE.md'ye §3l (10 Ekim sistemleri) yaz.
-4. Senkron (www + ios public + cap sync) → onayla build 48 → ASC 1.7.1'e bağla + Game Center 42 başarım + liderlik yeniden ekle.
+## ⏭ SONRAKİ ADIM: BUILD 48 (10 Ekim 2026) — kod, test ve senkron TAMAM, build onayı bekleniyor
+K-A G-A M-C U-A D-A E-C F-A + Günün Sorusu ödülsüz uygulandı (ayrıntı CLAUDE.md §3l). Ferman değiştirme 1 akçe kalır (kullanıcı).
+10 Ekim ek düzeltmeler: rozet beklerken portre kısalır (`#game.co-wait`; 320x568'de güç barları ekrandan taşıyordu),
+pencere açıkken bildirim şeridi ekranın en üstüne çıkar (`.ns-top`; takviye penceresinin başlığını örtüyordu).
+**Testler (10 Ekim, hepsi geçti):** new10 (323), runall 30 grup, v8_money, v8_feat, daily, ui8, oteki, fuzz ×4
+(webkit native / chromium free / webkit tr full / chromium full), denge.py 0 hata, tsc tanımsız isim farkı yok.
+Bayat testler güncellendi: eski 1 akçe fiyatları, ödüllü soru, 1-1-2-2-3-4-5 hediye, Belgrad (11 düğüm; asır testi
+9 Ekim'den beri kırıktı — oyun doğru, test bayat), eski bildirim seçicileri → pw.js `__nt(tür)` yardımcısı.
+**Bilinen, eskiden kalma:** 320x568'de uzun metinli 17 kartta oyun ekranı 4–17px taşıyor (stats-bar üstü kesik) —
+eski kodda da aynı; düzeltilmedi, kullanıcıya soruldu.
+**Kalan:** onayla build 48 (pbxproj CURRENT_PROJECT_VERSION 47→48, MARKETING 1.7.1) → upload → ASC 1.7.1'e bağla +
+Game Center 42 başarım + liderlik yeniden ekle (aşağıda, 8 Ekim yöntemi) → kullanıcı gönderir. Push + Vercel deploy onay bekliyor.
 
 ## (Eski) 9 Ekim 2026 akşam listesi — YUKARIDA UYGULANDI
 **Kullanıcı seçimi (öneri sayfası https://claude.ai/artifact/DJeL91ifMZirZWKY4h9bTq): K-A · G-A · M-C · U-A · D-A · E-C · F-A**

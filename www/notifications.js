@@ -65,9 +65,9 @@ const Notif = (() => {
         }
       } else { mAt = at(d, GIFT_HOUR); kind = "both"; amt = d === 1 ? _dailyGiftReward(nextDay) : 0; }
       if (mAt) {
-        const body = kind === "trivia" ? ["Ödüllü sorun hazır, Divan seni bekliyor!", "Your prize question is ready, the Divan awaits!"][E]
+        const body = kind === "trivia" ? ["Günün sorusu hazır, Divan seni bekliyor!", "The question of the day is ready, the Divan awaits!"][E]
           : kind === "gift" ? (amt ? [`Hediyen hazır: bugün +${amt} akçe. Seriyi bozma!`, `Your gift is ready: +${amt} akce today. Keep the streak!`][E] : ["Hazineden bugünün akçesi seni bekliyor. Seriyi bozma!", "Today's akce from the treasury awaits you. Keep the streak!"][E])
-          : (amt ? [`Hediyen (+${amt} akçe) ve ödüllü sorun hazır. Divan seni bekliyor!`, `Your gift (+${amt} akce) and prize question are ready. The Divan awaits!`][E] : ["Günün hediyesi ve ödüllü sorusu hazır. Divan seni bekliyor!", "Today's gift and prize question are ready. The Divan awaits!"][E]);
+          : (amt ? [`Hediyen (+${amt} akçe) ve günün sorusu hazır. Divan seni bekliyor!`, `Your gift (+${amt} akce) and the question of the day are ready. The Divan awaits!`][E] : ["Günün hediyesi ve sorusu hazır. Divan seni bekliyor!", "Today's gift and question of the day are ready. The Divan awaits!"][E]);
         out.push({ at: mAt, extra: { kind }, title: T[kind === "trivia" ? "trivia" : "gift"][E], body });
       }
       // ── Akşam: seri uyarısı / haftalık özet / geri çağırma ──

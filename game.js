@@ -6913,6 +6913,7 @@ const _STAT_NAMES = { saray: ["Saray", "Palace"], "yeniçeri": ["Ordu", "Army"],
 function _hideCriticalOffer() {
   const el = document.getElementById("critical-offer");
   if (el) el.remove();
+  document.getElementById("game")?.classList.remove("co-wait");
   document.querySelectorAll(".stat.critical-focus").forEach(x => x.classList.remove("critical-focus"));
 }
 
@@ -6940,6 +6941,7 @@ function _collapseCriticalOffer() {
 function _placeCriticalMini(el) {
   const hr = document.getElementById("header-row");
   if (hr && el.parentElement !== hr) hr.appendChild(el);
+  document.getElementById("game")?.classList.add("co-wait"); // portre rozet kadar kısalır, ekran taşmaz
   const ns = document.getElementById("notice-strip"); // açık bildirim şeridi rozetin altına kaysın
   if (ns && ns.classList.contains("on")) { try { _notifyTop(ns); } catch (e) {} }
 }
@@ -6954,6 +6956,7 @@ function _expandCriticalOffer() {
     document.querySelector('.stat[data-stat="' + (key === "yeniçeri" ? "yeniceri" : key) + '"]')?.classList.add("critical-focus");
   }
   if (el.parentElement !== document.body) document.body.appendChild(el);
+  document.getElementById("game")?.classList.remove("co-wait");
   el.classList.remove("mini");
   if (window.playButtonTap) playButtonTap();
 }
@@ -10720,6 +10723,9 @@ function _notifyCount() {
 function _notifyTop(s) {
   // S7 (6 Ekim 2026) kuralı korunur: üst satırı asla örtmez — başlığın o anki alt kenarının altında açılır
   let top = 0;
+  // Pencere açıkken (Market, Lütuf/takviye, Kâtip, Yıl Sonu, ferman…) şerit ekranın en üstünde açılır — pencerenin başlığını örtmesin
+  try { if (document.querySelector(".info-panel-overlay.on, #akce-screen.visible, #katib-overlay, #yil-sonu, #ferman-overlay, #paywall-screen.visible, #trivia-overlay, #daily-gift-overlay")) { s.style.top = ""; s.classList.add("ns-top"); return; } } catch (e) {}
+  s.classList.remove("ns-top");
   try {
     const g = document.getElementById("game");
     if (g && !g.classList.contains("hidden") && getComputedStyle(g).display !== "none") { // #game sabit konumlu: offsetParent hep null
