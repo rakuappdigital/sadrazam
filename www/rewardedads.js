@@ -61,6 +61,16 @@ const RewardedAds = (() => {
     }
   };
 
+  // GDPR (Google UMP, 11 Ekim 2026): AB/İngiltere/İsviçre'de bir kez onay penceresi
+  // (AdMob > Gizlilik ve mesajlaşma'da yayınlanan mesaj). Başka yerlerde NOT_REQUIRED
+  // döner, pencere çıkmaz. Hata olursa reklam akışı yine devam eder.
+  const _requestGDPR = async () => {
+    try {
+      const ci = await _cap.requestConsentInfo();
+      if (ci && ci.status === "REQUIRED" && ci.isConsentFormAvailable) await _cap.showConsentForm();
+    } catch (e) { console.warn("GDPR onayı alınamadı:", e); }
+  };
+
   const init = () => {
     if (!_cap) return; // ID'ler girilmeden veya web/tarayıcıda hiç başlatılmaz
 
@@ -84,6 +94,7 @@ const RewardedAds = (() => {
     // cevabından sonra yapılır. interstitialads.js de aynı promise'i bekler
     // (bkz. window.__admobReady).
     window.__admobReady = _requestATT()
+      .then(_requestGDPR)
       .then(() => _cap.initialize());
     window.__admobReady
       .then(() => { _ready = true; prepare(); })
