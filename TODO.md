@@ -1,5 +1,9 @@
 # Sadrazam — TODO
 
+## ⏳ Bir sonraki build'e girecek
+- **GDPR onayı (11 Ekim 2026):** AdMob başlamadan önce Google UMP onay penceresi eklendi (AB/İngiltere/İsviçre; AdMob'da tek GDPR mesajı tüm uygulamalar için yayınlandı). Bir sonraki build ile çıkar. KALAN: AB kullanıcısı için menüye "Gizlilik seçenekleri" düğmesi (AdMob.showPrivacyOptionsForm, yalnız privacyOptionsRequirementStatus=REQUIRED iken) — Google şartı. Meltix'te örnek: elemento/www/js/native.js + ui.js.
+
+
 ## ⏭ DERİN ANALİZ (10 Ekim 2026) — KARAR ERTELENDİ · 1.7.1 (48) İNCELEMEDE (kullanıcı gönderdi)
 **Kullanıcı kararı (10 Ekim):** veri çok az, şimdi DEĞİŞİKLİK YOK. O/K/M kararı 1.7.1 verisiyle birlikte verilecek.
 Yapılacak: 1.7.1 yayına çıkınca ~2 hafta bekle → TelemetryDeck'ten aynı ölçümleri 1.7.1 için çıkar (ilk oyun → ikinci oyun,
