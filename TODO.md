@@ -1,5 +1,14 @@
 # Sadrazam — TODO
 
+## 📦 1.7.2 / build 49 YÜKLENDİ (17 Ekim 2026) — "yükle ve bekle" (kullanıcı kararı)
+- Delivery `1f60f900-8e3a-46ca-b357-a05ea028fbb0`. İçerik: build 48 + GOD MODE kaldırıldı + GDPR onayı (UMP).
+  Archive'da doğrulandı: 1.7.2/49, game.js'te GOD MODE yok, footer v1.7.2.
+- İncelemedeki 1.7.1 (48)'e DOKUNULMADI. Onaylanınca: ASC'de 1.7.2 sürümü aç → build 49'u bağla → gönder.
+  Build ASC'de VALID mi, kontrol et (`GET /v1/builds?filter[version]=49`).
+- Öncesi: denge.py 0 hata, node --check, dosya adı kontrolü boş; ayar matrisi (ses/müzik on-off × TR/EN × WebKit/Chromium)
+  sayfa hatası 0. (Testte "erken ölüm" görüldü → test düzeneği aynı kartı animasyonu beklemeden tekrar kararlaştırıyordu; oyun hatası değil.)
+- Henüz yapılmadı: AB için "Gizlilik seçenekleri" düğmesi (aşağıda) — 49'da YOK.
+
 ## ⏳ Bir sonraki build'e girecek
 - **GOD MODE kaldırıldı (17 Ekim 2026) — Apple 2.5.19:** intro footer'a 20 dokunuşla açılan test hilesi (statlar düşmez,
   her 3 kartta sürpriz kart, "⚡ GOD" rozeti) game.js'ten (36 satır) ve style.css'ten (#god-badge) silindi; www/ +
