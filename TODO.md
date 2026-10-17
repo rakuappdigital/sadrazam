@@ -1,6 +1,17 @@
 # Sadrazam — TODO
 
 ## ⏳ Bir sonraki build'e girecek
+- **GOD MODE kaldırıldı (17 Ekim 2026) — Apple 2.5.19:** intro footer'a 20 dokunuşla açılan test hilesi (statlar düşmez,
+  her 3 kartta sürpriz kart, "⚡ GOD" rozeti) game.js'ten (36 satır) ve style.css'ten (#god-badge) silindi; www/ +
+  ios/App/App/public/ senkron, cap sync yapıldı. Test: Chromium + WebKit, 40 kart, 0 hata, 25 dokunuşta rozet yok.
+  **Kullanıcı kararı: web'e (Vercel) DEPLOY EDİLMEDİ, GitHub'a push edilmedi** (yalnız yerel commit). Canlı web sürümünde
+  GOD MODE hâlâ var — web deploy'u kullanıcı isteyince. **İncelemedeki 1.7.1 (48) GOD MODE'u İÇERİYOR** (onaylanırsa
+  canlıya çıkar); temiz kod bir sonraki build'le gider.
+- **Apple Kuralları güncellemesi (Ekim 2026) — yapılacaklar:**
+  - 2.5.19 (gizli/uyuyan/belgelenmemiş özellik yasak, ceza hesap kapatma): binary'ye test/hile/debug menüsü KOYMA;
+    yeni ve nadir tetiklenen içerikleri (Öteki Oda gibi 4 yılda bir) Notes for Review'da nasıl ulaşılacağıyla yaz.
+  - 2.3.14 (Creative assets — ürün sayfası başlığı/arama sonucu görseli): "ASC ürün sayfası stratejisi" işinde
+    değerlendir; görsellerde fiyat/indirim, doğrulanamaz iddia ("en iyi") olamaz.
 - **GDPR onayı (11 Ekim 2026):** AdMob başlamadan önce Google UMP onay penceresi eklendi (AB/İngiltere/İsviçre; AdMob'da tek GDPR mesajı tüm uygulamalar için yayınlandı). Bir sonraki build ile çıkar. KALAN: AB kullanıcısı için menüye "Gizlilik seçenekleri" düğmesi (AdMob.showPrivacyOptionsForm, yalnız privacyOptionsRequirementStatus=REQUIRED iken) — Google şartı. Meltix'te örnek: elemento/www/js/native.js + ui.js.
 
 

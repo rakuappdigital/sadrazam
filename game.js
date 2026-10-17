@@ -859,17 +859,6 @@ const HICRI_MONTHS = [
 ];
 const SULTAN_HICRI_START = { kanuni: 927, yavuz: 918, murad3: 982, murad4: 1032, ahmed3: 1115 };
 
-// ★ GOD MODE — test için geçici. Kaldırmak için ★ GOD MODE etiketli tüm satırları sil.
-let godMode = false; // ★ GOD MODE
-function toggleGodMode() { // ★ GOD MODE
-  godMode = !godMode; // ★ GOD MODE
-  const badge = document.getElementById('god-badge'); // ★ GOD MODE
-  if (godMode) { // ★ GOD MODE
-    if (!badge) { const b = document.createElement('div'); b.id='god-badge'; b.textContent='⚡ GOD'; document.body.appendChild(b); } // ★ GOD MODE
-  } else { // ★ GOD MODE
-    if (badge) badge.remove(); // ★ GOD MODE
-  } // ★ GOD MODE
-} // ★ GOD MODE
 
 // ── Dinamik başlıklar ─────────────────────────────────────────────
 const DYNAMIC_SUBTITLES = [
@@ -2679,16 +2668,6 @@ const negotiationPanel = document.getElementById("negotiation-panel");
 const cardChoices      = document.getElementById("card-choices");
 
 // ── Ekran Geçişleri ───────────────────────────────────────────────
-// ★ GOD MODE — intro footer'a 3 hızlı tap ile toggle
-(function() { // ★ GOD MODE
-  let tapCount = 0, tapTimer = null; // ★ GOD MODE
-  document.getElementById("intro-footer").addEventListener("click", () => { // ★ GOD MODE
-    tapCount++; // ★ GOD MODE
-    clearTimeout(tapTimer); // ★ GOD MODE
-    tapTimer = setTimeout(() => { tapCount = 0; }, 600); // ★ GOD MODE
-    if (tapCount >= 20) { tapCount = 0; toggleGodMode(); } // ★ GOD MODE
-  }); // ★ GOD MODE
-})(); // ★ GOD MODE
 
 // ── Ses Ayarları ──────────────────────────────────────────────────
 window.musicEnabled = localStorage.getItem('sadrazam_music') !== 'off';
@@ -10236,7 +10215,6 @@ function applyEffects(effects) {
       continue;
     }
 
-    if (godMode && raw < 0) raw = 0; // ★ GOD MODE — negatif stat değişimini engelle
     if (_sultanFavorTurns > 0 && raw < 0) raw = 0; // Padişah Ödülü tılsımı — 3 tur boyunca negatif etki yok
     if (hasAdvisor("sokollu")) raw = Math.round(raw * 0.85);
     if (hasAdvisor("sinan") && (stat === "saray" || stat === "ulema")) raw = Math.round(raw * 1.2);
@@ -11526,20 +11504,6 @@ function decide(dir) {
 
   // Easter egg injection'ları (sayaç bazlı — seyrek)
   if (!isGameOver && !isPaywalled) {
-    // ★ GOD MODE — her 3 kartta rastgele easter egg
-    if (godMode && cardsPlayed > 0 && cardsPlayed % 3 === 0) { // ★ GOD MODE
-      const godEggs = [ // ★ GOD MODE
-        () => ({ ...EASTER_CARDS.saray_kedisi }), // ★ GOD MODE
-        () => ({ ...EASTER_CARDS.yanlis_adam }), // ★ GOD MODE
-        () => ({ ...EASTER_CARDS.pargali }), // ★ GOD MODE
-        getEvliyaCard, getZamanCard, getFisildayanCard, // ★ GOD MODE
-        getBarbarosCard, getLeonardoCard, getHalitCard, // ★ GOD MODE
-        getKehanetCard, getDonumCard, // ★ GOD MODE
-        () => getFelaketCard(), () => getMucizeCard() // ★ GOD MODE
-      ]; // ★ GOD MODE
-      const fn = godEggs[Math.floor(Math.random() * godEggs.length)]; // ★ GOD MODE
-      forcedQueue.unshift(fn()); // ★ GOD MODE
-    } // ★ GOD MODE
 
     // Rastgele varyasyon: hedef aralığın ±%25'i
     const _rndIv = (base) => Math.round(base * (0.75 + Math.random() * 0.5));
