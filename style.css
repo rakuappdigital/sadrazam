@@ -5859,13 +5859,16 @@ body:has(#game.hidden) #critical-offer { display: none; }
 /* Çini Kart Çerçevesi (8 Ekim 2026: kullanıcının 5 gerçek çini görseli, tek tek satılır).
    Kartın üstüne çizilir, yerleşimi değiştirmez. Görseldeki desen bandı (~%11) border-image ile 13 px'e
    ölçeklenir; köşe rozetleri bozulmaz. Kart overflow:hidden + radius olduğu için köşeler kırpılır. */
-#card.has-frame::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+#card.has-frame::after, #card-back.has-frame::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
   border: 13px solid transparent; border-image-width: 13px; border-image-repeat: stretch; }
-#card.frame-iznik::after   { border-image-source: url("assets/frames/cini-iznik.png");   border-image-slice: 62 62 64 62; }
-#card.frame-kutahya::after { border-image-source: url("assets/frames/cini-kutahya.png"); border-image-slice: 68 64 82 64; }
-#card.frame-lale::after    { border-image-source: url("assets/frames/cini-lale.png");    border-image-slice: 63 62 77 61; }
-#card.frame-tekfur::after  { border-image-source: url("assets/frames/cini-tekfur.png");  border-image-slice: 62 61 78 60; }
-#card.frame-rustem::after  { border-image-source: url("assets/frames/cini-rustem.png");  border-image-slice: 69 69 85 68; }
+#card.frame-iznik::after,   #card-back.frame-iznik::after   { border-image-source: url("assets/frames/cini-iznik.png");   border-image-slice: 62 62 64 62; }
+#card.frame-kutahya::after, #card-back.frame-kutahya::after { border-image-source: url("assets/frames/cini-kutahya.png"); border-image-slice: 68 64 82 64; }
+#card.frame-lale::after,    #card-back.frame-lale::after    { border-image-source: url("assets/frames/cini-lale.png");    border-image-slice: 63 62 77 61; }
+#card.frame-tekfur::after,  #card-back.frame-tekfur::after  { border-image-source: url("assets/frames/cini-tekfur.png");  border-image-slice: 62 61 78 60; }
+#card.frame-rustem::after,  #card-back.frame-rustem::after  { border-image-source: url("assets/frames/cini-rustem.png");  border-image-slice: 69 69 85 68; }
+/* kart arkası (çini desenine sahip oyuncuda): #card ile aynı border-image, 2px daha ince
+   (box-shadow'daki iç altın halkayla üst üste binmesin) */
+#card-back.has-frame::after { border-width: 11px; border-image-width: 11px; }
 #card.frame-iznik #card-bottom { background: linear-gradient(180deg, #0d1730, #0a1124); }
 #card.frame-kutahya #card-bottom { background: linear-gradient(180deg, #0c2219, #08180f); }
 #card.frame-lale #card-bottom { background: linear-gradient(180deg, #200b0b, #160707); }

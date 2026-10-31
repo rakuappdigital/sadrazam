@@ -5883,6 +5883,11 @@ function _playCardBack() {
   // K2: tuğra sahibine kart arkasında seçtiği tuğra
   const tg = _tugraCardBack(), img = back.querySelector(".cb-medal img");
   if (img) { const want = tg || "assets/emblem-tugra.png"; if (img.getAttribute("src") !== want) img.setAttribute("src", want); back.classList.toggle("tg", !!tg); }
+  // 31 Ekim 2026: çini desenine sahip oyuncuda kart arkası da aynı deseni taşısın —
+  // önceden yalnız #card (ön yüz) alıyordu, arka hep sabit lacivert/beyaz baklavaydı.
+  back.classList.remove("has-frame", ...CINI_FRAMES.map(f => "frame-" + f.k));
+  const cf = _cosmSel("cini");
+  if (cf && cf !== "off" && _ciniOwned(cf)) back.classList.add("has-frame", "frame-" + cf);
   back.classList.remove("flip");
   void back.offsetWidth;
   back.classList.add("flip");
@@ -9359,7 +9364,9 @@ function renderCosmeticRows() {
       ctrl = _cosmOwned(id) ? `<span class="mc-owned">${en ? "OWNED" : "SENİN"}</span>` : `<button type="button" class="mi-buy mc-btn mc-buy">${c.price} ${AKCE_COIN_SVG}</button>`;
     }
     if (id === "oda") ctrl = "";
-    const ico = id === "kaftan" && _cosmOwned("kaftan") ? `<img class="cosm-kaftan k-${_cosmSel("kaftan")}" src="${c.icon}" alt="">` : `<img src="${c.icon}" alt="">`;
+    const ico = id === "kaftan" && _cosmOwned("kaftan") ? `<img class="cosm-kaftan k-${_cosmSel("kaftan")}" src="${c.icon}" alt="">`
+              : id === "tugra" && _cosmOwned("tugra") ? `<img src="${_tugraCardBack() || c.icon}" alt="">`
+              : `<img src="${c.icon}" alt="">`;
     row.innerHTML = `<div class="mc-prev mc-ico">${ico}</div><div class="mc-info"><div class="mc-name">${en ? c.en : c.tr}</div><div class="mc-desc">${en ? c.den : c.dtr}</div>${extra}</div>${ctrl}`;
     box.appendChild(row);
     if (id === "cini") row.querySelectorAll(".cf-tile").forEach(b => b.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showCiniPreview(b.dataset.k); }));
