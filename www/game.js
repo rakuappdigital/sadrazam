@@ -9284,7 +9284,7 @@ const COSMETICS = {
             dtr: "Fermanlarına o anki sultanın gerçek tuğrası çekilir; kart arkasında seçtiğin tuğra parlar.", den: "Your decrees bear the reigning Sultan's real tughra; your card backs carry the tughra you choose.",
             opts: [["auto", "Sultanınki", "Reigning"], ["yavuz", "Yavuz", "Selim I"], ["kanuni", "Kanunî", "Suleiman"], ["murad3", "III. Murad", "Murad III"], ["murad4", "IV. Murad", "Murad IV"], ["ahmed3", "III. Ahmed", "Ahmed III"]] },
   // K7 (8 Ekim 2026): Divan kedisi — ara sıra ekranın altından yürüyerek geçer (dokunmayı engellemez)
-  kedi:   { price: 4, icon: "assets/icons/divan-kedisi.svg", tr: "Divan Kedisi", en: "The Divan Cat",
+  kedi:   { price: 4, icon: "assets/cat/cat-full.png", tr: "Divan Kedisi", en: "The Divan Cat",
             dtr: "Topkapı'nın tekir kedisi ara sıra Divan'dan ve ana menüden geçer. Kartlarına dokunmaz.", den: "Topkapı's tabby cat strolls through the Divan and the main menu now and then. It never touches your cards.",
             opts: [["on", "Açık", "On"], ["off", "Kapalı", "Off"]] },
 };
@@ -9519,16 +9519,20 @@ function showKaftanPreview() {
   requestAnimationFrame(() => ov.classList.add("on"));
 }
 
-// ── K7 (8 Ekim 2026): Divan kedisi — sahibi açtıysa ara sıra ekranın en altından yürüyerek geçer.
+// ── K7 (8 Ekim 2026, kullanıcının gönderdiği görselle 1 Kasım 2026'da güncellendi):
+// Divan kedisi — sahibi açtıysa ara sıra ekranın en altından yürüyerek geçer.
 // pointer-events: none (dokunmayı engellemez), kartın altındaki şeritte; açık bir pencere varken çıkmaz.
-const DIVAN_CAT_SVG = `<svg viewBox="0 0 120 72" aria-hidden="true"><g stroke="#3b1f08" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
-  <path class="dc-tail" d="M24 36 C 10 32, 6 16, 15 8" fill="none" stroke="#c9822e" stroke-width="6"/>
-  <g class="dc-leg l1"><path d="M32 46 L30 64" stroke="#b8732a" stroke-width="5.5"/></g><g class="dc-leg l2"><path d="M40 47 L42 64" stroke="#9c6020" stroke-width="5.5"/></g>
-  <g class="dc-leg l3"><path d="M68 47 L66 64" stroke="#9c6020" stroke-width="5.5"/></g><g class="dc-leg l4"><path d="M76 46 L79 64" stroke="#b8732a" stroke-width="5.5"/></g>
-  <ellipse cx="52" cy="38" rx="31" ry="13" fill="#d08a3a"/><path d="M40 27 q2 8 0 22 M50 25 q2 9 0 26 M60 26 q2 8 0 23" fill="none" stroke="#8a4f1a" stroke-width="2.2"/>
-  <g class="dc-head"><path d="M78 20 L80 6 L88 15 Z M94 18 L97 5 L101 16 Z" fill="#d08a3a"/><circle cx="90" cy="26" r="12.5" fill="#d08a3a"/>
-  <path d="M80 32 q10 5 19 -1" fill="none" stroke="#e8c84a" stroke-width="2.6"/><circle cx="89" cy="36" r="2.2" fill="#e8c84a" stroke="none"/>
-  <path d="M93 24 q2 -2 4 0" fill="none" stroke="#1a1006" stroke-width="1.8"/><circle cx="101" cy="28" r="1.4" fill="#5a1f12" stroke="none"/><path d="M101 30 l9 -1 M101 31 l9 2" stroke="#3b1f08" stroke-width=".8"/></g></g></svg>`;
+// Elle çizilmiş düz SVG yerine gerçek bir illüstrasyon (assets/cat/). 3 katman:
+// gövde+kuyruk (cat_body.png, but/kalça dahil — sabit), arka alt bacak+pati
+// (cat_hind.png, dizden sallanır), ön alt bacak+pati (cat_front.png, omuzdan
+// sallanır). Kesim çizgisi DİZİN ALTINDA tutulmalı — but'a kadar çıkınca tuhaf
+// görünüyordu (kullanıcı geri bildirimi). Gövdeye senkron bir iniş-kalkış/denge
+// sallantısı (.cat-bob) eklendi; onsuz bacak hareketi zayıf/sabit duruyordu.
+const DIVAN_CAT_HTML = `<div class="cat-rig"><div class="cat-bob">
+  <img class="cat-body" src="assets/cat/cat_body.png" alt="">
+  <img class="cat-leg" src="assets/cat/cat_hind.png" alt="">
+  <img class="cat-leg front" src="assets/cat/cat_front.png" alt="">
+</div></div>`;
 const DivanCat = (() => {
   let timer = 0, walking = false;
   const on = () => { try { return _cosmOwned("kedi") && _cosmSel("kedi") === "on"; } catch (e) { return false; } };
@@ -9539,14 +9543,14 @@ const DivanCat = (() => {
     if (game && !game.classList.contains("hidden") && !isGameOver) return "game";
     return null;
   };
-  const busy = () => !!document.querySelector(".info-panel-overlay, #ferman-overlay, #yil-sonu, #death-scene, #culus-overlay, #akce-screen.visible, #daily-gift-overlay, #trivia-overlay, #game-menu-overlay, #brand-splash, #sultan-event-overlay");
+  const busy = () => !!document.querySelector(".info-panel-overlay, #ferman-overlay, #yil-sonu, #death-scene, #culus-overlay, #akce-screen.visible, #daily-gift-overlay, #trivia-overlay, #game-menu-overlay, #brand-splash, #ls-splash, #sultan-event-overlay");
   function walk(force) {
     if (!on() || walking || document.hidden || reduce()) return false;
     const where = screenOk(); if (!where || (!force && busy())) return false;
     walking = true;
     const el = document.createElement("div");
     el.className = "divan-cat " + where + (Math.random() < 0.5 ? " rtl" : "");
-    el.innerHTML = DIVAN_CAT_SVG;
+    el.innerHTML = DIVAN_CAT_HTML;
     document.body.appendChild(el);
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("go")));
     setTimeout(() => { el.remove(); walking = false; }, 11500);
@@ -12505,7 +12509,7 @@ function _renderCosmPreview(panel, after) {
     : id === "cini"
       ? `<div class="cp-thumb cp-card cf-card has-frame frame-${cf.k}"><img src="assets/characters/${encodeURIComponent(chr)}.jpg" alt="" onerror="this.src='assets/characters/1-sultan.jpg'"></div>`
       : id === "tugra" ? `<div class="cp-thumb cp-tg"><img src="${_tugraFor(selectedSultan && selectedSultan.id) || c.icon}" alt=""></div>`
-      : id === "kedi" ? `<div class="cp-thumb cp-cat">${DIVAN_CAT_SVG}</div>`
+      : id === "kedi" ? `<div class="cp-thumb cp-cat"><img src="assets/cat/cat-full.png" alt=""></div>`
       : `<div class="cp-thumb cp-gild"><span class="cp-dc">${en ? "T" : "S"}</span><i></i><i></i><i></i><i></i></div>`;
   el.innerHTML = `${prev}<div class="cp-info"><div class="cp-kick">${en ? "IT COULD HAVE LOOKED LIKE THIS" : "BÖYLE DE GÖRÜNEBİLİRDİ"}</div>
     <div class="cp-name">${en ? c.en : c.tr}${cf ? ` · ${en ? cf.en : cf.tr}` : rm ? ` · ${en ? rm.en : rm.tr}` : ""}</div><div class="cp-desc">${en ? c.den : c.dtr}</div>

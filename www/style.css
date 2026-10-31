@@ -6580,19 +6580,37 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 #game.night-mode #season-tint { opacity: .6; }
 @media (prefers-reduced-motion: reduce) { #season-tint i { transition: none; } }
 /* K7 (8 Ekim 2026): Divan kedisi */
-.divan-cat { position: fixed; left: 0; bottom: calc(env(safe-area-inset-bottom, 0px) + 2px); width: 78px; height: 47px; z-index: 120; pointer-events: none; transform: translateX(-90px); }
-.divan-cat.menu { bottom: calc(env(safe-area-inset-bottom, 0px) - 4px); width: 56px; height: 34px; } /* menüde sürüm yazısı hizasında, düğmeleri örtmez */
-.divan-cat svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 3px 3px rgba(0,0,0,.45)); }
+/* 1 Kasım 2026: kullanıcının gönderdiği gerçek illüstrasyonla değiştirildi (eskiden
+   elle çizilmiş düz SVG'ydi, "çok kötü görünüyor" denildi). Boyut ~%20 küçültüldü
+   (78→62 / 56→45), gerçek en-boy oranı (537:421) için aspect-ratio kullanılıyor —
+   eski sabit height değerleri yeni görseli esnetirdi. Detaylı rig CSS'i (.cat-rig/
+   .cat-bob/.cat-leg, kalça/omuz-diz pivotları, bob animasyonu) aşağıda, kedi
+   bölümünün devamında. */
+.divan-cat { position: fixed; left: 0; bottom: calc(env(safe-area-inset-bottom, 0px) + 2px); width: 62px; aspect-ratio: 537/421; z-index: 120; pointer-events: none; transform: translateX(-72px); }
+.divan-cat.menu { bottom: calc(env(safe-area-inset-bottom, 0px) - 4px); width: 45px; } /* menüde sürüm yazısı hizasında, düğmeleri örtmez */
 .divan-cat.go { animation: catWalk 11s linear forwards; }
-.divan-cat.rtl svg { transform: scaleX(-1); }
+.divan-cat.rtl .cat-rig { transform: scaleX(-1); }
 .divan-cat.rtl.go { animation-name: catWalkR; }
-@keyframes catWalk { from { transform: translateX(-90px); } to { transform: translateX(calc(100vw + 90px)); } }
-@keyframes catWalkR { from { transform: translateX(calc(100vw + 90px)); } to { transform: translateX(-90px); } }
-.divan-cat .dc-leg { transform-box: fill-box; transform-origin: 50% 0; animation: catLeg .5s ease-in-out infinite alternate; }
-.divan-cat .dc-leg.l2, .divan-cat .dc-leg.l4 { animation-delay: -.25s; }
-@keyframes catLeg { from { transform: rotate(16deg); } to { transform: rotate(-16deg); } }
-.divan-cat .dc-tail { transform-box: fill-box; transform-origin: 100% 100%; animation: catTail 1.6s ease-in-out infinite alternate; }
-@keyframes catTail { from { transform: rotate(-8deg); } to { transform: rotate(10deg); } }
+@keyframes catWalk { from { transform: translateX(-72px); } to { transform: translateX(calc(100vw + 72px)); } }
+@keyframes catWalkR { from { transform: translateX(calc(100vw + 72px)); } to { transform: translateX(-72px); } }
+
+/* Kedi rig: gövde+kuyruk (sabit, but/kalça dahil) + arka/ön alt bacak+pati (diz/
+   bilekten sallanır). Önce bacaklar da but'tan sallanıyordu, "beline kadar çıkınca
+   tuhaf" denildi — kesim çizgisi dizin altına indirildi. İlk açı denemesi (±3-4°)
+   10 karelik karşılaştırmada neredeyse görünmüyordu ("bozuk duruyor" hissi
+   oradandı); diz pivotu but sorunu yaratmadığı için açı güvenle büyütüldü. Gövdeye
+   senkron bir iniş-kalkış/denge sallantısı (.cat-bob) eklendi — o olmadan bacak
+   hareketi tek başına cansız/mekanik duruyordu (klasik yürüme animasyonu kuralı). */
+.divan-cat .cat-rig { position:relative; width:100%; height:100%; filter: drop-shadow(0 3px 3px rgba(0,0,0,.45)); }
+.divan-cat .cat-bob { position:relative; width:100%; height:100%; animation: catBob .62s ease-in-out infinite; }
+@keyframes catBob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-7%) rotate(-2.2deg); } }
+.divan-cat .cat-bob img { position:absolute; display:block; width:100%; height:100%; }
+.divan-cat .cat-body { top:0; left:0; }
+.divan-cat .cat-leg { width:42.83% !important; height:23.28% !important; top:76.6%; left:0; transform-origin: 55% 10%; animation: legHind .62s ease-in-out infinite alternate; }
+.divan-cat .cat-leg.front { width:52.14% !important; height:27.08% !important; top:73.04%; left:47.95%; transform-origin: 45% 8%; animation: legFront .62s ease-in-out infinite alternate; animation-delay:-.31s; }
+@keyframes legHind  { from { transform: rotate(14deg); }  to { transform: rotate(-16deg); } }
+@keyframes legFront { from { transform: rotate(-14deg); } to { transform: rotate(16deg); } }
+@media (prefers-reduced-motion: reduce){ .divan-cat .cat-leg, .divan-cat .cat-bob { animation: none; } }
 #card-back.tg .cb-medal img { width: 82%; filter: drop-shadow(0 0 8px rgba(232,200,74,0.4)); }
 .fm-tugra-img { background-color: #7a2a12; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; }
 #gameover-cosm .cp-tg { display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 40%, #1d1636, #0b0918); }
