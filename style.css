@@ -37,6 +37,95 @@
 #brand-splash.visible { opacity: 1; pointer-events: auto; }
 #brand-splash img { width: 46%; max-width: 320px; }
 
+/* ── Açılış sahneleri (Raku sonrası, 4 sahne kart kaydırmalı) ── */
+#ls-splash {
+  position: fixed; inset: 0; z-index: 99998; /* brand-splash'ın (99999) altında, çakışmada görünür */
+  background: #0a120d;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+  overflow: hidden;
+}
+#ls-splash.visible { opacity: 1; pointer-events: auto; }
+
+.ls-card-slot { position: absolute; inset: 0; }
+.ls-card {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: translateX(0) rotate(0deg);
+  transition: transform .42s cubic-bezier(.4,0,.2,1), opacity .42s ease;
+}
+.ls-card.active       { opacity: 1; transform: translateX(0) rotate(0deg); z-index: 5; }
+.ls-card.enter-right  { opacity: 0; transform: translateX(42%) rotate(7deg); }
+.ls-card.enter-left   { opacity: 0; transform: translateX(-42%) rotate(-7deg); }
+.ls-card.exit-left    { opacity: 0; transform: translateX(-60%) rotate(-10deg); }
+.ls-card.exit-right   { opacity: 0; transform: translateX(60%) rotate(10deg); }
+
+.ls-vignette {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.72) 100%);
+  pointer-events: none;
+  z-index: 8;
+}
+
+.ls-loading-wrap {
+  position: absolute;
+  left: max(28px, env(safe-area-inset-left, 28px));
+  right: max(28px, env(safe-area-inset-right, 28px));
+  bottom: max(9%, env(safe-area-inset-bottom, 0px) + 7%);
+  z-index: 12;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 12px 16px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(10,16,11,.58), rgba(10,16,11,.42));
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 8px 18px rgba(0,0,0,.35);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.ls-loading-wrap.show { opacity: 1; }
+.ls-loading-label {
+  font-family: 'Alegreya SC', serif;
+  font-size: .8rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #fff3d6;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0,0,0,.9), 0 0 10px rgba(0,0,0,.6);
+  min-height: 1.3em;
+}
+.ls-loading-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.28);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0,0,0,.5) inset;
+}
+.ls-loading-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #a6801f, var(--gold-light) 50%, #a6801f);
+  box-shadow: 0 0 10px rgba(236,214,140,.7);
+  position: relative;
+}
+.ls-loading-fill::after {
+  content: "";
+  position: absolute; inset: 0 0 50% 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0));
+  border-radius: 5px 5px 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ls-card { transition-duration: .01ms !important; }
+}
+
 /* Oyun içi görsellere uzun basınca kaydet/kopyala menüsü çıkmasın */
 img {
   -webkit-touch-callout: none;

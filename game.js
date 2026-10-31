@@ -3820,11 +3820,20 @@ function _tryStartMenuMusic() {
   else _menuMusicRequested = true;
 }
 
-// Sayfa yüklenince otomatik başlat — Capacitor/iOS native'de etkileşim gerekmez
-setTimeout(() => {
+// Açılış sahneleri (index.html'deki #ls-splash) bitmeden 1 sn önce fade-in
+// başlasın diye index.html bir 'sadrazam:splash-music-cue' olayı yayınlar —
+// Capacitor/iOS native'de etkileşim gerekmediği için bunu dinlemek yeterli.
+// Olay game.js yüklenmeden ÖNCE ateşlenmiş olabilir (yavaş script yüklemesi),
+// o yüzden önce bayrağı kontrol et.
+function _onSplashMusicCue() {
   _menuMusicReady = true;
   if (window.musicEnabled) playMenuMusic();
-}, 300);
+}
+if (window.__sadrazamMusicCueFired) {
+  _onSplashMusicCue();
+} else {
+  document.addEventListener('sadrazam:splash-music-cue', _onSplashMusicCue, { once: true });
+}
 
 // Web browser fallback — autoplay policy nedeniyle ilk dokunuş/tık gerekir
 function _startMusicOnInteraction() {

@@ -78,6 +78,104 @@
     })();
   </script>
 
+  <!-- ── AÇILIŞ SAHNELERİ (Raku'dan sonra, 4 sahne kart kaydırmalı, 5 sn) ── -->
+  <div id="ls-splash">
+    <div class="ls-card-slot">
+      <img class="ls-card" data-i="0" src="assets/splash/splash-1.png" alt="">
+      <img class="ls-card" data-i="1" src="assets/splash/splash-2.png" alt="">
+      <img class="ls-card" data-i="2" src="assets/splash/splash-3.png" alt="">
+      <img class="ls-card" data-i="3" src="assets/splash/splash-4.png" alt="">
+    </div>
+    <div class="ls-vignette"></div>
+    <div class="ls-loading-wrap" id="ls-loading-wrap">
+      <div class="ls-loading-label" id="ls-loading-label">Divan hazırlanıyor</div>
+      <div class="ls-loading-track"><div class="ls-loading-fill" id="ls-loading-fill"></div></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var wrap  = document.getElementById('ls-splash');
+      var cards = Array.prototype.slice.call(wrap.querySelectorAll('.ls-card'));
+      var lWrap = document.getElementById('ls-loading-wrap');
+      var label = document.getElementById('ls-loading-label');
+      var fill  = document.getElementById('ls-loading-fill');
+
+      // Oyun yalnızca TR/EN destekliyor (translations.js) — metin kartla
+      // birlikte dönüşümlü dilden dile geçer.
+      var TEXTS = [
+        'Divan hazırlanıyor', 'The Divan is convening',
+        'Fermanlar hazırlanıyor', 'The decrees are being prepared'
+      ];
+      var START_DELAY = 1650; // Raku'nun fade-out'a başladığı an (çapraz geçiş)
+      var DECK_MS      = 5000;
+      var SLOT_MS       = DECK_MS / cards.length;
+      var MUSIC_CUE_AT  = DECK_MS - 1000; // ana menü müziği bitmeden 1 sn önce fade-in başlasın
+      var dirs = [
+        { exit: 'left',  enter: 'right' },
+        { exit: 'right', enter: 'left'  },
+        { exit: 'left',  enter: 'right' }
+      ];
+
+      function fadeLabel(text) {
+        label.style.transition = 'opacity .18s ease';
+        label.style.opacity = '0';
+        setTimeout(function () {
+          label.textContent = text;
+          label.style.opacity = '1';
+        }, 180);
+      }
+
+      function showCard(idx, exitDir, enterDir) {
+        cards.forEach(function (c, i) {
+          if (i === idx) return;
+          if (c.classList.contains('active')) {
+            c.classList.remove('active', 'enter-left', 'enter-right');
+            c.classList.add(exitDir === 'left' ? 'exit-left' : 'exit-right');
+          }
+        });
+        var next = cards[idx];
+        next.classList.remove('exit-left', 'exit-right');
+        next.classList.add(enterDir === 'left' ? 'enter-left' : 'enter-right');
+        void next.offsetWidth; // reflow: enter transformu uygulansın
+        requestAnimationFrame(function () {
+          next.classList.remove('enter-left', 'enter-right');
+          next.classList.add('active');
+        });
+      }
+
+      setTimeout(function () {
+        wrap.classList.add('visible');
+        cards[0].classList.add('active');
+        fadeLabel(TEXTS[0]);
+        lWrap.classList.add('show');
+        requestAnimationFrame(function () {
+          fill.style.transition = 'width ' + DECK_MS + 'ms linear';
+          fill.style.width = '100%';
+        });
+
+        for (var i = 1; i < cards.length; i++) {
+          (function (i) {
+            setTimeout(function () {
+              showCard(i, dirs[i - 1].exit, dirs[i - 1].enter);
+              fadeLabel(TEXTS[i]);
+            }, SLOT_MS * i);
+          })(i);
+        }
+
+        // Ana menü müziği: açılış sahneleri bitmeden 1 sn önce fade-in başlasın.
+        setTimeout(function () {
+          window.__sadrazamMusicCueFired = true;
+          document.dispatchEvent(new Event('sadrazam:splash-music-cue'));
+        }, MUSIC_CUE_AT);
+
+        setTimeout(function () {
+          wrap.classList.remove('visible');
+          setTimeout(function () { wrap.remove(); }, 500);
+        }, DECK_MS);
+      }, START_DELAY);
+    })();
+  </script>
+
   <!-- ── GİRİŞ EKRANI ── -->
   <div id="intro-screen">
     <div id="intro-radial"></div>
