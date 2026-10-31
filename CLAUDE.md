@@ -584,6 +584,42 @@ Plan sayfası: https://claude.ai/artifact/RKvHHKqeuVWjdXccW6FR2E . Modül game.j
   Ölüm ekranı kozmetik önerisine (`_renderCosmPreview`) de girdi.
 - **Günün Sorusu ödülsüz:** `TRIVIA_REWARD = 0` (addAkce yalnız > 0 ise); metinler + notifications.js "Günün sorusu hazır".
 
+## 3m. 31 Ekim – 1 Kasım 2026 sistemleri (v1.7.3, build 53)
+
+- **Açılış sahneleri** (index.html, `#brand-splash`'ın hemen altında): Raku filigranı değişmedi (beyaz zemin,
+  2sn). Ardından `#ls-splash` (z 99998, brand-splash'ın 99999'unun altında → çapraz geçiş) — 4 sahne görseli
+  (`assets/splash/splash-1..4.png`) `.ls-card` kart kaydırma efektiyle (sağa/sola dönüşümlü) 5sn boyunca sırayla
+  gösterilir, altta `.ls-loading-wrap` (TR/EN dönüşümlü "Divan hazırlanıyor" yazısı + dolan altın çubuk, kartla
+  senkron). Sahne bitmeden 1sn önce `sadrazam:splash-music-cue` DOM olayı yayınlanır; game.js bunu dinleyip
+  `playMenuMusic()`'i tetikler (eski sabit 300ms gecikme yerine). `DivanCat.busy()` kontrolüne `#ls-splash`
+  eklendi — unutulursa kedi açılış sahnesi üstünde yürüyebilir.
+- **Divan Kedisi gerçek illüstrasyon** (eski elle çizilmiş SVG yerine, kullanıcı görseli): `DIVAN_CAT_HTML` 3
+  katman — `assets/cat/cat_body.png` (gövde+kuyruk+but/kalça, SABİT), `cat_hind.png`/`cat_front.png` (yalnız
+  dizin/bileğin altı — but'a kadar sallanınca tuhaf duruyordu, kesim çizgisi bilerek dizin altında).
+  `.cat-rig > .cat-bob` gövdeye senkron iniş-kalkış/denge sallantısı (`catBob`, olmadan bacak hareketi
+  cansız/mekanik duruyordu); `.cat-leg`/`.cat-leg.front` `legHind`/`legFront` ile ±14-16° sallanır (ilk deneme
+  ±3-4°'ydi, 10 kare karşılaştırmasında görünmüyordu). **DİKKAT — CSS özgüllük tuzağı:** `.cat-rig img` (sınıf+
+  etiket) ile tek sınıflı bir kural (`.cat-leg`) AYNI özelliği (top/left) ayarlarsa etiketli kural kazanır — bu
+  yüzden top/left artık yalnız `.cat-body`/`.cat-leg`/`.cat-leg.front` gibi tam sınıflarda, `.cat-rig img`'de
+  DEĞİL. Boyut ~%20 küçültüldü (78→62 / 56→45px, `aspect-ratio: 537/421`). Market ikonu ve "böyle de
+  görünebilirdi" önizlemesi `assets/cat/cat-full.png` (tek kare, tam gövde) kullanıyor — rig değil.
+- **Tuğra ikonu düzeltmesi:** Market satırındaki tuğra ikonu `renderCosmeticRows`'ta hep sabit `c.icon`
+  (Kanunî) kullanıyordu; seçim (`_cosmSel("tugra")`) doğru kaydediliyordu ama ikon hiç yansımıyordu. Kaftan'ın
+  zaten yaptığı gibi `_tugraCardBack() || c.icon` ile düzeltildi.
+- **Çini kart arkası tam yüzey:** Önceki düzeltme (border-image ::after) yalnız kenara ince bir şerit
+  ekliyordu, orta alan sabit lacivert/beyaz baklava kalıyordu. Her `cini-<k>.png`'nin köşe motifi (rozet/yıldız)
+  kesilip `assets/frames/cini-<k>-tile.png` olarak kaydedildi — `#card-back.frame-<k>` artık bunu
+  `background: ... url(...) center/34px repeat` ile TÜM yüzeye döşüyor (gerçek İznik çini panosu gibi dikişsiz).
+  Kenar çerçevesi (::after) aynen üstte kalıyor.
+- **Bildirimler ikiye ayrıldı** (`notifications.js`): eskiden oynanmayan HER akşam `CALLS` havuzundan mesaj
+  gidiyordu. Artık `plan()`'daki akşam dalı: gün 1/3/4/6 sessiz, **gün 2'de bir kez** `MISSED` (5 metin,
+  kind:"missed2", "özledik" tonu), **gün 5'ten başlayıp 3 günde bir** `CALLS` (5 metin, kind:"call3",
+  akçe/sultan çağrısı). Hediye/Günün Sorusu/seri uyarısı/haftalık özet akışları değişmedi.
+- Test: bu turda otomatik test dosyası proje köküne eklenmedi — tüm doğrulama scratchpad'te Playwright ile
+  yapıldı (tughra icon swap, çini border-image specificity, kedi top/left specificity, bildirim plan() zamanlama
+  tablosu). Bir dahaki sefere bu alanlara dokunursan önce bu maddeyi oku, aynı tuzaklara (özgüllük, dize/omuz
+  kesim çizgisi) tekrar düşme.
+
 ## 3g. 4 Ekim 2026 (3. tur) sistemleri
 
 - **Dönemler** `ERA_DEFS`, `_eraState` (kayıtta `era`), `_eraPick` (getNextCard'da, %30, ayrı kanal;
@@ -871,71 +907,19 @@ numarası gibi somut kararları kullanıcı belirtmediyse sorup netleştir).
 
 ## 8b. Bekleyen (TODO)
 
-- **v1.6.0 / build 40 (4 Ekim 2026, yüklendi, Delivery UUID `aca17f91-6674-4633-8afe-35fa0b4b020d`)** —
-  dönemler, Yıl Sonu, hafıza kartları, 88 yeni kart, market eşyaları, kozmetikler, diplomasi
-  (§3g). ASC ayarlarını kullanıcı yaptı; `fullnoads` IAP sürüme eklenmeli / RevenueCat'e import.
-  **Build öncesi ZORUNLU kontrol** (ilk yükleme 90328 ile reddedildi: www/ ve public/ içinde
-  zsh'ın tek yol sandığı listeden kalma, adında `\n` olan boş klasörler vardı):
-  ```bash
-  python3 -c "import os,re;print([os.path.join(r,f) for r,d,fs in os.walk('ios/App/App/public') for f in d+fs if not re.fullmatch(r'[A-Za-z0-9._-]+',f)])"
-  ```
-  Boş liste değilse build alma. zsh'ta dosya listelerini her zaman dizi olarak geçir.
-
-- **v1.5.0 / build 29 (30 Eylül 2026, yüklendi, Delivery UUID `583a6571-7d53-4aa3-8f1d-ced35cc921c8`)** — build 28 + ATT düzeltmesi
-  (App Store 2.1 reddi: iOS/iPadOS 27'de ATT penceresi görünmedi). İzin artık
-  uygulama görünür + 2,5 sn sonra, AdMob başlatılmadan ÖNCE soruluyor
-  (`rewardedads.js` `_requestATT`). İncelemeye **build 29** seçilmeli; Notes
-  alanına fiziksel cihaz ekran kaydı (temiz kurulum → ATT penceresi → akış)
-  eklenmeli. build 28 notlarındaki IAP maddeleri (welcome + noads) hâlâ geçerli.
-
-- **v1.5.0 / build 28 (29 Eylül 2026, yüklendi, Delivery UUID `3ec279aa-a04e-4eea-8a74-03a1ed6e13ce`)** — build 27 + Hoşgeldin Kesesi (Tam
-  Sürüm + 30 akçe, ₺39,99) + İkinci Şans 2 akçe. İncelemeye **build 28**
-  seçilmeli; sürüme **`welcome` ve `noads` IAP'ları eklenmeli** (`noads`
-  1.4.x'te eklenmediği için hiç onaylanmadı → yayındaki 1.4.1'de Reklamsız
-  fiyatı boş, "ürün bulunamadı"). `akce30start` EKLENMEMELİ.
-
-- **v1.5.0 / build 27 (29 Eylül 2026, yüklendi, Delivery UUID `01f48819-af94-4b28-b3d0-e25f15a96fb5`)** — build 26 + ses efektleri
-  kapalıyken ilk kaydırmada donma düzeltmesi (§9). İncelemeye **build 27**
-  seçilmeli, 26 değil.
-
-- **v1.5.0 / build 26 (28 Eylül 2026'da yüklendi, Delivery UUID
-  `7ae8f5dc-3ef2-45c4-ad92-d786e75bf29a`)** — büyük paket + görsel paket +
-  mühür damgası + yaşlı portreler + kenar sekmeleri + görsel sıkıştırma + EN
-  eşya süresi hatası düzeltmesi. (akce30start notu geçersiz — bkz.
-  build 28.) Kullanıcı sürüm notlarını ve
-  promosyon metnini kendisi girip gönderecek.
-
-- **v1.4.1/build 25 (26 Eylül 2026'da yüklendi, Delivery UUID
-  `04631759-f487-44c9-8d66-b9e83f247f74`, ASC'de VALID)** — ödüllü reklam
-  45sn hangGuard kök neden fix'i + canlıda sahte reklam kaldırıldı. Kullanıcı
-  1.4.1 sürüm sayfasına build'i seçip review'a kendisi gönderecek. Yayına
-  çıkınca: gerçek reklamda ödül + sayaç düşüşü, AdMob'da gösterim/gelir kontrolü.
-
-- **v1.4.0/build 24 (25 Eylül 2026'da yüklendi, Delivery UUID
-  `98a7a7b7-f668-4328-9129-b4b76573876a`) — build 23'ün üstüne Market +
-  Reklamsız eklendi.** TestFlight'ta doğrulanacak: Market açılıyor mu,
-  Reklamsız fiyatı (₺59,99) geliyor mu, satın alınca geçiş reklamı kesiliyor
-  mu, "Geri Yükle" çalışıyor mu. `noads` IAP'ı ASC'de READY_TO_SUBMIT — ilk
-  kez eklendiği için 1.4.0 App Store sürümü incelemeye gönderilirken sürüme
-  eklenmeli. **Karar (kullanıcı):** Tam Sürüm alanlar geçiş reklamını görmeye
-  devam eder, Reklamsız tamamen ayrı bir ürün — ikisini birleştirme.
-
-- **v1.4.0/build 23 doğrulaması (25 Eylül 2026'da yüklendi, Delivery UUID
-  `ac472189-bb59-42d3-8104-159c734c2416`):** Kullanıcı TestFlight'ta kendi
-  kontrol edip sonucu bildirecek. Bildirdiğinde:
-  1. Build App Store Connect'te işlendi mi, ilgili versiyona bağlandı mı
-     (otomatik olmuyor — bkz. §2 "Upload sonrası") kontrol et/bağla.
-  2. Geçiş reklamının (interstitial) gerçek cihazda **her 2. "OYUNA BAŞLA"
-     basışında** doğru tetiklendiğini teyit et (`interstitialads.js`,
-     `game.js` içindeki `_maybeShowInterstitialThenStartGame()`).
-  3. Ayarlar → "HAKKINDA" panelinin (buton + açılır panel, TR/EN metin)
-     gerçek cihazda düzgün açılıp kapandığını teyit et.
-  - Kullanıcı bir sorun bildirirse: önce bu maddeyi ve ilgili commit'leri
-    (`721a3eb`, `1c9171f`, `89c4555`, `a32fa06`) tara, kod tarafında zaten
-    headless Chrome ile test edilmiş senaryoları (§7'ye bak) tekrar
-    doğrulamak yerine gerçek cihaza özgü farkı (native SDK doldurma oranı,
-    ATT izni, gerçek reklam süresi vb.) araştır.
-  - Sonuç olumluysa bu maddeyi silip §9'a kısa bir kayıt düş.
+- **v1.7.3 / build 53 (1 Kasım 2026, yüklendi, Delivery UUID
+  `389e35f3-0581-4e5c-8bea-2a29384d9f8a`)** — açılış sahneleri (Raku 2sn →
+  4 sahne kart kaydırmalı 5sn + senkron yükleme çubuğu + ana menü müziği
+  sahne bitmeden 1sn önce fade-in, bkz. §3m), Divan Kedisi gerçek
+  illüstrasyonla değişti + bacaklar artık hareketli (3 katman: gövde+kuyruk
+  sabit, alt bacak+pati dizden/bilekten sallanıyor, ~%20 küçültüldü), Market
+  tuğra ikonu düzeltmesi (seçim kaydediliyordu ama ikon hiç güncellenmiyordu),
+  kart arkası çini deseni artık tüm yüzeyi kaplıyor (önceden yalnız ince kenar
+  şeridiydi), bildirim sistemi 2 gün sessizlikte tek "özledik" mesajı + 3
+  günde bir "çağrı" mesajına ayrıldı (önceden her oynanmayan akşam mesaj
+  gidiyordu). **Kullanıcı kendisi review'a gönderecek** — önce build App
+  Store Connect'te işlenip 1.7.3 sürümüne bağlanmalı (otomatik olmuyor, bkz.
+  §2 "Upload sonrası").
 
 ## 9. Değişiklik Geçmişi (kronolojik, en yeni en üstte)
 
