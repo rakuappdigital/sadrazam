@@ -5,9 +5,12 @@
 // Kurallar:
 //  - Günde EN FAZLA 2 bildirim (8 Ekim 2026, kullanıcı seçimi):
 //      10:00  hediye + Günün Sorusu (hangisi bekliyorsa; ikisi birden tek bildirimde)
-//      19:30  geri çağırma (N1 N2 N3 N7 N9 sırayla) — o gün oynandıysa gitmez
-//      21:00  seri uyarısı (N-E1): seri 3+ gündeyse ve o gün hediye alınmadıysa geri çağırmanın YERİNE
-//      Pazar 19:30 haftalık özet (N-E4): o hafta en az bir saltanat oynandıysa geri çağırmanın YERİNE
+//      19:30  (31 Ekim 2026, kullanıcı onayı) tam 2 gün sessizlikte BİR KEZ "özledik" mesajı
+//             (MISSED, kind:"missed2"), ondan sonra 3 günde bir "çağrı" mesajı (CALLS,
+//             kind:"call3") — eskiden her oynanmayan akşam aynı havuzdan mesaj gidiyordu,
+//             artık aradaki günler (1, 3, 4, 6) sessiz. O gün oynandıysa hiç gitmez.
+//      21:00  seri uyarısı (N-E1): seri 3+ gündeyse ve o gün hediye alınmadıysa 19:30'un YERİNE
+//      Pazar 19:30 haftalık özet (N-E4): o hafta en az bir saltanat oynandıysa 19:30'un YERİNE
 //  - Plan uygulama her açıldığında / öne geldiğinde baştan kurulur (bekleyenler silinir, 7 gün yeniden yazılır).
 //    Böylece oyuncu o gün oynadıysa "geri dön" bildirimi gitmez, hediyesini aldıysa hediye hatırlatması gitmez.
 //  - İzin: önce oyun içi yumuşak soru (_notifAsk), "Evet" denirse iOS izni. Reddedilirse bir daha sorulmaz;
@@ -19,13 +22,24 @@ const Notif = (() => {
   const ID_BASE = 7100;                    // 7100–7139: bizim bildirimlerimiz (iOS sınırı 64)
   const DAYS = 7;
   const GIFT_HOUR = [10, 0], CALL_HOUR = [19, 30];
-  // Geri çağırma metinleri (kullanıcı seçimi: N1 N2 N3 N7 N9), sırayla döner.
+  // 31 Ekim 2026 (kullanıcı onayı): eskiden her oynanmayan akşam aynı CALLS havuzundan tek tip
+  // mesaj gidiyordu (pratikte her gün). Artık iki ayrı, daha seyrek parça:
+  //  - MISSED: tam 2 gün sessizlikte BİR KEZ, daha yumuşak/hüzünlü "özledik" tonu.
+  //  - CALLS: ondan sonra 3 günde bir, daha canlı/davet edici "çağrı" (akçe/sultan teması).
+  // bkz. plan() içindeki d===2 / (d-2)%3===0 dallanması.
+  const MISSED = [
+    ["Divan'da yerin boş duruyor Sadrazam. İki gündür haber yok.", "Your seat in the Divan stands empty, Grand Vizier. No word in two days."],
+    ["Mühür masada bekliyor. Dönmeni istiyoruz.", "The seal waits on the desk. We want you back."],
+    ["Kâtipler fermanları sana getiremiyor artık. Nerelerdesin?", "The scribes can no longer bring you the decrees. Where have you been?"],
+    ["Saray sessiz. Senin sesin eksik Paşam.", "The palace is quiet. Your voice is missing, Pasha."],
+    ["İki gündür Divan'a uğramadın. Umarız her şey yolundadır.", "You haven't visited the Divan in two days. We hope all is well."],
+  ];
   const CALLS = [
-    ["Divan toplandı, makamın boş duruyor. Mühür seni bekliyor Sadrazam.", "The Divan has gathered and your seat stands empty. The seal awaits you, Grand Vizier."],
-    ["Yeniçeriler kazan kaldırmadan bir uğra Paşam.", "Drop by before the Janissaries overturn their cauldrons, Pasha."],
-    ["Padişah'ın sabrı taşmak üzere. Divan seni bekliyor.", "The Sultan's patience is running thin. The Divan awaits you."],
-    ["Bir ulak kapında: Sultan'dan mühürlü bir mektup var.", "A messenger is at your door with a sealed letter from the Sultan."],
-    ["Kahvehanelerde adın konuşuluyor. Ne dediklerini merak etmiyor musun?", "Your name is on every tongue in the coffeehouses. Don't you wonder what they say?"],
+    ["Bedava akçen hazır, almadan harcanmayacak — gel al.", "Your free akce is ready and waiting — come claim it."],
+    ["Hünkâr seni çağırıyor. Divan'a dön, Sadrazam.", "The Sultan summons you. Return to the Divan, Grand Vizier."],
+    ["Hazineden bugün sana bir pay ayrıldı. Gelip almaz mısın?", "The treasury has set aside a share for you today. Won't you come claim it?"],
+    ["Yeni bir ferman imza bekliyor. Sende mi kaldı mühür?", "A new decree awaits your signature. Do you still have the seal?"],
+    ["Topkapı'da bir şeyler değişti. Bir bak, hoşuna gidecek.", "Something has changed at Topkapi. Take a look, you'll like it."],
   ];
   const STREAK_HOUR = [21, 0];
   const plugin = () => {
@@ -86,8 +100,16 @@ const Notif = (() => {
         out.push({ at: ev, extra: { kind: "week" }, title: T.call[E], body: [`Bu hafta ${w.games} saltanat, en uzunu ${w.best} yıl.`, `This week: ${w.games} reign${w.games > 1 ? "s" : ""}, the longest ${w.best} year${w.best === 1 ? "" : "s"}.`][E] + rec });
         continue;
       }
-      const i = Math.floor(ev.getTime() / 864e5) % CALLS.length;
-      out.push({ at: ev, extra: { kind: "call" }, title: T.call[E], body: CALLS[i][E] });
+      // d===2: tam 2 gün sessizlikte BİR KEZ "özledik" mesajı. Ondan sonra 3 günde bir
+      // (d=5, d=8, …) daha canlı "çağrı" mesajı. Aradaki günler (1, 3, 4, 6) sessiz —
+      // eskiden her akşam bir mesaj gidiyordu, kullanıcı bunu azalttı (31 Ekim 2026).
+      if (d === 2) {
+        const i = Math.floor(ev.getTime() / 864e5) % MISSED.length;
+        out.push({ at: ev, extra: { kind: "missed2" }, title: T.call[E], body: MISSED[i][E] });
+      } else if (d > 2 && (d - 2) % 3 === 0) {
+        const i = Math.floor(ev.getTime() / 864e5) % CALLS.length;
+        out.push({ at: ev, extra: { kind: "call3" }, title: T.call[E], body: CALLS[i][E] });
+      }
     }
     // Günde en fazla 2 (güvence) ve yalnız gelecekteki anlar
     const perDay = {};
@@ -202,7 +224,7 @@ const Notif = (() => {
     document.addEventListener("visibilitychange", () => { reschedule(); });
   }
 
-  return { init, ask, reschedule, setEnabled, enabled, permission, plan, state, CALLS, _tap: onTap }; // _tap: test için
+  return { init, ask, reschedule, setEnabled, enabled, permission, plan, state, CALLS, MISSED, _tap: onTap }; // _tap: test için
 })();
 window.Notif = Notif;
 Notif.init();
