@@ -181,8 +181,14 @@ const Notif = (() => {
   async function setEnabled(on) {
     if (!plugin()) { set(KEY, on ? "on" : "off"); return on; }
     if (on) {
-      let perm = await permission();
-      if (perm === "prompt" || perm === "prompt-with-rationale") perm = (await request()) ? "granted" : "denied";
+      // Doğrudan requestPermissions çağır: zaten izin verilmişse anında "granted" döner (soru
+      // çıkmaz), zaten reddedilmişse anında "denied" döner (soru çıkmaz, aşağıda Ayarlar'a
+      // yönlendirilir), henüz sorulmadıysa sistem izni sorusu çıkar. checkPermissions() üzerinden
+      // önce "prompt" mu diye bakıp SADECE o zaman request() çağırmak riskliydi: checkPermissions
+      // kendi içinde hata fırlatırsa (bazı cihaz/ortamlarda olabiliyor) kod izni hiç SORMADAN
+      // "denied" kabul edip Ayarlar'a yönlendiriyordu — kullanıcı bildirimi Ayarlar'dan hiç
+      // açamıyor gibi görünüyordu. requestPermissions zaten her durumda güvenli/idempotent.
+      const perm = (await request()) ? "granted" : "denied";
       if (perm !== "granted") {
         set(KEY, "off");
         try { showItemToast(en() ? "Notifications are turned off in iPhone Settings › Divan: Sadrazam." : "Bildirimler iPhone Ayarlar › Divan: Sadrazam bölümünde kapalı."); } catch (e) {}

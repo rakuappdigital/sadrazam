@@ -9405,7 +9405,7 @@ function showCiniPreview(k0) {
     ov.innerHTML = `<div class="ip-box cp-box">
       <div class="ip-title">${en ? "TILE" : "ÇİNİ"} · ${(en ? f.en : f.tr).toLocaleUpperCase(en ? "en" : "tr")}</div>
       <div class="cf-card has-frame frame-${k}"><div class="cf-img" style="background-image:url('assets/characters/1-sultan.jpg')"></div>
-        <div class="cf-bt"><b>${en ? "MY SULTAN" : "PADİŞAHIM"}</b><span>${en ? "News has come from the Divan. Are you loyal to me?" : "Divan'dan haberler geldi. Bana sadık mısın?"}</span></div><div class="cf-back"></div></div>
+        <div class="cf-bt"><b>${en ? "MY SULTAN" : "PADİŞAHIM"}</b><span>${en ? "News has come from the Divan. Are you loyal to me?" : "Divan'dan haberler geldi. Bana sadık mısın?"}</span></div><div class="cf-back frame-${k}"></div></div>
       <div class="cf-tiles cf-pop-tiles">${CINI_FRAMES.map(x => `<button type="button" class="cf-tile mini${x.k === k ? " on" : ""}${_ciniOwned(x.k) ? " own" : ""}" data-k="${x.k}" aria-label="${en ? x.en : x.tr}"><span class="cf-sw" style="background-image:url('assets/frames/cini-${x.k}.png')"></span></button>`).join("")}</div>
       <div class="cp-price">${own ? (en ? "This pattern is yours" : "Bu desen senin") : `${AKCE_COIN_SVG} ${f.price} ${en ? "AKCE" : "AKÇE"}`}</div>
       <div class="cp-actions"><button type="button" class="cp-close">${en ? "CLOSE" : "KAPAT"}</button>
