@@ -1,5 +1,26 @@
 # Sadrazam — TODO
 
+## 📦 1.7.3 / build 54 YÜKLENDİ (1 Kasım 2026) — bildirim + çini önizleme düzeltmesi
+- Delivery UUID `fbdd5efa-7e33-46bb-92d6-1d0a5c52cb7f`. İçerik: build 53 (açılış sahneleri, Divan Kedisi,
+  tuğra ikonu, çini kart arkası tam yüzey, bildirim 2'ye ayrılmış akşam mesajı) + bu turdaki 2 düzeltme:
+  1. **Bildirim izni Ayarlar'dan açılamıyordu (kullanıcı şikayeti, kendi MacBook'unda denedi):**
+     `notifications.js` `setEnabled()` önce `checkPermissions()` ile duruma bakıp SADECE "prompt" ise
+     `requestPermissions()` çağırıyordu; `checkPermissions()` native tarafta hata fırlatırsa kod izni hiç
+     SORMADAN "denied" kabul edip kullanıcıyı iPhone Ayarlar'a yönlendiriyordu. Artık doğrudan
+     `requestPermissions()` çağrılıyor (idempotent, Apple dokümantasyonuna göre her durumda güvenli).
+     **DİKKAT:** gerçek cihazda `checkPermissions()`'ın hata fırlattığını native ortamda doğrulayamadım
+     (yalnız Playwright simülasyonuyla test edildi) — kullanıcı bu build'i kendi MacBook'unda/cihazında
+     tekrar deneyip "çözüldü" diye onaylamalı; onaylamazsa native event log'larına (Xcode konsolu) bakılmalı.
+  2. **Çini çerçeve satın alma önizlemesi eski görsel gösteriyordu (kullanıcı şikayeti):** `showCiniPreview`
+     (game.js) kartın arkasını (`.cf-back`) hâlâ 31 Ekim öncesi sabit lacivert/beyaz kareli placeholder ile
+     gösteriyordu — gerçek karta o tarihte eklenen tam yüzey çini dokusu (`#card-back.frame-<k>`) önizlemeye
+     hiç yansımamıştı. `.cf-back.frame-<k>` kuralları eklendi (style.css), JS'te sınıf bağlandı. Ekran
+     görüntüsüyle doğrulandı (İznik + Rüstem Paşa). **Kesin çözüldü.**
+- Öncesi: denge.py 0 hata (684 karar kartı, 628 gerçek ikilem), `node --check game.js` + `analytics.js` OK.
+  Build 53'ten versiyon değişmedi (1.7.3), yalnız build no 54.
+- **Sıradaki:** build 54 ASC'de işlenip 1.7.3 sürümüne bağlanmalı (otomatik olmuyor, bkz. CLAUDE.md §2
+  "Upload sonrası"). Kullanıcı kendisi review'a gönderecek.
+
 ## 📦 1.7.2 / build 49 YÜKLENDİ (17 Ekim 2026) — "yükle ve bekle" (kullanıcı kararı)
 - Delivery `1f60f900-8e3a-46ca-b357-a05ea028fbb0`. İçerik: build 48 + GOD MODE kaldırıldı + GDPR onayı (UMP).
   Archive'da doğrulandı: 1.7.2/49, game.js'te GOD MODE yok, footer v1.7.2.
