@@ -191,7 +191,7 @@ const Notif = (() => {
       const perm = (await request()) ? "granted" : "denied";
       if (perm !== "granted") {
         set(KEY, "off");
-        try { showItemToast(en() ? "Notifications are turned off in iPhone Settings › Divan: Sadrazam." : "Bildirimler iPhone Ayarlar › Divan: Sadrazam bölümünde kapalı."); } catch (e) {}
+        try { showItemToast(en() ? "Notifications are turned off in Settings › Divan: Sadrazam." : "Bildirimler cihazın Ayarlar'ında, Divan: Sadrazam bölümünde kapalı."); } catch (e) {}
         return false;
       }
     }

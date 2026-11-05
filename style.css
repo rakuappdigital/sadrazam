@@ -6801,7 +6801,7 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 
 /* ── U-A Tek bildirim şeridi (10 Ekim 2026) ── */
 #notice-strip {
-  position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 54px); z-index: 400; pointer-events: none;
+  position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 54px); z-index: 510; pointer-events: none;
   width: max-content; max-width: min(340px, calc(100vw - 32px)); box-sizing: border-box;
   padding: 8px 14px; border-radius: 12px;
   background: rgba(12,9,20,0.96); border: 1px solid rgba(201,162,39,0.5); box-shadow: 0 6px 18px rgba(0,0,0,0.65);
