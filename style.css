@@ -6873,3 +6873,18 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
   #game.co-wait #card-image, #game.co-wait #card-image-knot, #game.co-wait #card-knot-seam, #game.co-wait #card.has-chips #card-image { max-height: calc(15vh - 30px); }
 }
 #notice-strip.ns-top { top: calc(env(safe-area-inset-top, 0px) + 8px); }
+
+/* Yeni rekor: paylaşım butonu öne çıksın */
+#share-btn.record-pulse {
+  border-color: var(--gold);
+  color: #070511;
+  background: var(--gold);
+  animation: shareRecordPulse 1.6s ease-in-out infinite;
+}
+@keyframes shareRecordPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,162,39,0.55); }
+  50% { box-shadow: 0 0 0 7px rgba(201,162,39,0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #share-btn.record-pulse { animation: none; }
+}

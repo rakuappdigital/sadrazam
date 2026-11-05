@@ -516,6 +516,11 @@ window.UI_STRINGS = {
     'gameover.title_init':  'SADRAZAMLIK SONA ERDİ',
     'btn.restart':          'YENİDEN BAŞLA',
     'btn.share':            'PAYLAŞ',
+    'btn.share_record':     'YENİ REKORUNU PAYLAŞ!',
+    'menu.t_leaderboard':   'LİDERLİK<br>TABLOSU',
+    'btn.invite_friend':    'ARKADAŞINI DAVET ET',
+    'share.invite_text':    "Divan: Sadrazam'da Osmanlı'nın Sadrazamıyım — benden fazla dayanabilir misin? ⚔️",
+    'share.invite_copied':  'Davet bağlantısı kopyalandı',
     // Oyun menüsü (duraklat)
     'gamemenu.title':       'DURAKLAT',
     'gamemenu.quit':        'OYUNU BİTİR',
@@ -750,6 +755,11 @@ window.UI_STRINGS = {
     'gameover.title_init':  'YOUR TENURE AS GRAND VIZIER HAS ENDED',
     'btn.restart':          'PLAY AGAIN',
     'btn.share':            'SHARE',
+    'btn.share_record':     'SHARE YOUR NEW RECORD!',
+    'menu.t_leaderboard':   'LEADER<br>BOARD',
+    'btn.invite_friend':    'INVITE A FRIEND',
+    'share.invite_text':    "I'm the Grand Vizier of the Ottoman Empire in Divan: Sadrazam — can you survive longer than me? ⚔️",
+    'share.invite_copied':  'Invite link copied',
     // Game menu
     'gamemenu.title':       'PAUSED',
     'gamemenu.quit':        'END GAME',

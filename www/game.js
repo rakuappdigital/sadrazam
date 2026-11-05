@@ -12339,11 +12339,14 @@ function showGameOver(reason) {
     const divider = document.getElementById("gameover-divider");
     if (divider) divider.parentNode.insertBefore(recBanner, divider.nextSibling);
   }
+  const shareBtn = document.getElementById("share-btn");
   if (isNewRecord) {
     recBanner.innerHTML = isEN ? `${GAME_ICONS.trophy} NEW RECORD!` : `${GAME_ICONS.trophy} YENİ REKOR!`;
     recBanner.style.display = "block";
+    if (shareBtn) { shareBtn.textContent = t('btn.share_record'); shareBtn.classList.add("record-pulse"); }
   } else {
     recBanner.style.display = "none";
+    if (shareBtn) { shareBtn.textContent = t('btn.share'); shareBtn.classList.remove("record-pulse"); }
     const oldBest = document.getElementById("gameover-year");
     if (oldBest) oldBest.textContent += isEN ? ` · Record: ${best} years` : ` · Rekor: ${best} yıl`;
   }
@@ -12896,6 +12899,24 @@ function saveHighScore() {
 
 // ── Paylaşım ─────────────────────────────────────────────────────
 document.getElementById("share-btn").addEventListener("click", showShareMenu);
+document.getElementById("btn-leaderboard")?.addEventListener("click", () => GameCenter.showLeaderboard());
+document.getElementById("btn-invite-friend")?.addEventListener("click", inviteFriend);
+
+function inviteFriend() {
+  const isEN = window.LANG === 'en';
+  const text = t('share.invite_text');
+  const url = isEN ? "https://apps.apple.com/app/id6783881003" : "https://apps.apple.com/tr/app/divan-sadrazam/id6783881003";
+  try {
+    if (navigator.share) {
+      navigator.share({ title: "Divan: Sadrazam", text, url }).catch(() => {});
+      return;
+    }
+  } catch (e) {}
+  try {
+    navigator.clipboard.writeText(text + " " + url);
+    _notify(t('share.invite_copied'), 2200, "invite");
+  } catch (e) {}
+}
 
 function getShareText() {
   const _isENshare = window.LANG === 'en';
