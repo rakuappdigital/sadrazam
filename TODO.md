@@ -1,5 +1,25 @@
 # Sadrazam — TODO
 
+## ✅ Game Center: Liderlik Tablosu + Arkadaşını Davet Et + yeni ikon (5 Kasım 2026)
+Commit `96de2ba`, push + Vercel deploy yapıldı (bu sürüm henüz bir iOS build'e girmedi —
+native tarafta değişiklik yok, `GameCenterPlugin.swift`'teki `showLeaderboard()` zaten
+vardı, sadece JS'ten bağlandı; bir sonraki build'de otomatik gelir).
+- **Liderlik Tablosu**: `progress-grid`'e `#btn-leaderboard` tile'ı → `GameCenter.showLeaderboard()`.
+- **Arkadaşını Davet Et**: `ghost-buttons-row`'a `#btn-invite-friend` → `inviteFriend()` (native
+  share sheet, Castle Bop `shareInvite` deseni; skor içermez, oyun bitmeden her an erişilebilir).
+- **Yeni rekor vurgusu**: `showGameOver`'daki mevcut (zaten vardı) `#share-btn`/`showShareMenu`
+  skor paylaşımı artık yeni rekor anında `.record-pulse` (altın glow) + "YENİ REKORUNU PAYLAŞ!"
+  metniyle öne çıkıyor; normalde eski "PAYLAŞ" metnine dönüyor.
+- Gerçek Game Center `GKChallenge` API'si KULLANILMADI (kullanıcı kararı — iOS 14'ten beri
+  deprecated, Game Center'da "Challenges" sekmesi bile yok).
+- Uygulama ikonu değişti (kullanıcının verdiği görsel → `AppIcon.appiconset`).
+- Test: Playwright chromium+webkit, TR/EN, 320/375/390 — hepsi geçti (önemli ders: yerel test
+  sunucusunda `sadrazam_web_access` localStorage'a yazılmazsa `#gate-screen` yüzünden TÜM
+  elementler "not visible" çıkıyor — bu projede test yazarken bunu unutma).
+- **Sıradaki (opsiyonel, istenirse)**: `design-sources/icon-192/512/1024.png` eski ikonlar hâlâ
+  güncellenmedi (hiçbir yerde referans edilmiyor, arşiv); bir sonraki native build'de yeni ikonun
+  gerçekten Xcode'a yansıdığını simülatörde doğrula.
+
 ## 📦 1.7.3 / build 54 YÜKLENDİ (1 Kasım 2026) — bildirim + çini önizleme düzeltmesi
 - Delivery UUID `fbdd5efa-7e33-46bb-92d6-1d0a5c52cb7f`. İçerik: build 53 (açılış sahneleri, Divan Kedisi,
   tuğra ikonu, çini kart arkası tam yüzey, bildirim 2'ye ayrılmış akşam mesajı) + bu turdaki 2 düzeltme:
