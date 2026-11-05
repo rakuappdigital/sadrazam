@@ -1,5 +1,27 @@
 # Sadrazam — TODO
 
+## ⏭ SONRAKİ OTURUM BURADAN BAŞLA (5 Kasım 2026)
+
+**ASC durumu (API ile doğrulandı):** 1.7.3 → **READY_FOR_SALE (canlı)**. Build 54 (bildirim izni
+checkPermissions fix + çini önizleme fix) VALID ama hiçbir sürüme BAĞLI DEĞİL (şu an ASC'de açık/
+hazırlanan bir sürüm yok). Game Center liderlik tablosu + arkadaşını davet et + yeni ikon (hemen
+aşağıdaki madde, commit `96de2ba`) de henüz hiçbir build'e girmedi — web/Vercel'de yaşıyor.
+**Yapılacak:** ASC'de yeni bir sürüm aç (1.7.4?) → build 54'ü bağla (ya da Game Center değişikliği
+native tarafı etkilemiyorsa önce onu bağlayıp, gerekiyorsa yeni bir build 55 alıp onu bağla) →
+kullanıcı inceleye gönderir.
+
+**Bekleyen 3 eski madde (hâlâ cevapsız, defalarca ertelendi):**
+1. **Derin analiz O/K/M kararı** (aşağıdaki "DERİN ANALİZ" bölümü, sayfa
+   https://claude.ai/artifact/2BQFywirHjRULv1cewbHCa) — 10 Ekim'de "1.7.1 verisiyle ~2 hafta sonra
+   (27 Ekim civarı) karar verilecek" denmişti, HÂLÂ verilmedi. TelemetryDeck'ten güncel veriyle
+   (artık 1.7.2/1.7.3 de var) aynı ölçümleri çıkar, sayfayı güncelle, kullanıcıdan O/K/M seçimini al.
+2. **ASC ürün sayfası stratejisi** (Product Page Optimization A/B + Custom Product Pages) — hiç başlanmadı.
+3. **Kozmetik/akçe ile satılabilecek yeni öğeler analizi** — hiç başlanmadı.
+
+**How to apply:** "sadrazam" ya da "devam" dendiğinde önce bu bölümü oku, ASC'yi tekrar kontrol et
+(durum değişmiş olabilir), sonra kullanıcıya hangisinden başlamak istediğini sor. Madde çözülünce
+buradan sil/güncelle.
+
 ## ✅ Game Center: Liderlik Tablosu + Arkadaşını Davet Et + yeni ikon (5 Kasım 2026)
 Commit `96de2ba`, push + Vercel deploy yapıldı (bu sürüm henüz bir iOS build'e girmedi —
 native tarafta değişiklik yok, `GameCenterPlugin.swift`'teki `showLeaderboard()` zaten
