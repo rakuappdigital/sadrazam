@@ -4088,9 +4088,9 @@ function startGame() {
   _nuxGame = _nuxPending && !isPasaMode && !isChallengeMode; _nuxPending = false; _nuxFirstCardSent = false; _nuxPromised = false; // Y1-A: yalnız _nuxStart'tan gelen saltanat
   stats = { ...selectedSultan.stats };
   sultanSabir = selectedSultan.sultanSabir;
-  // Kaftan avantajı (5 Kasım 2026): üç renkli kaftandan biri satın alınmışsa Sultan ilk günden daha olumlu karşılar.
-  // Bilerek yalnız sultanSabir'e dokunuyor — saray/yeniçeri/ulema/hazine dengesine (denge.py) asla dokunulmaz.
-  if (_cosmOwned("kaftan")) sultanSabir = Math.min(100, sultanSabir + 3);
+  // Hünkâr kaftanı avantajı (6 Kasım 2026): yalnız hünkâr kaftanı giyiliyorsa Sultan ilk günden daha olumlu
+  // karşılar. Bilerek yalnız sultanSabir'e dokunuyor — saray/yeniçeri/ulema/hazine dengesine (denge.py) asla dokunulmaz.
+  if (_kaftanKey() === "hunkar") sultanSabir = Math.min(100, sultanSabir + 3);
   _an("game_start", { sultan: selectedSultan?.id, diff: difficultyId, pasa: isPasaMode ? 1 : 0, nux: _nuxGame ? 1 : 0,
     n: (() => { try { return parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10) + 1; } catch (e) { return 0; } })() });
 
@@ -8158,7 +8158,7 @@ function _showFermanOverlay(item, done) {
   } else {
     const rrLeft = FERMAN_REROLLS - _fermanRerollsUsed(f);
     const canReroll = item.kind === "new" && rrLeft > 0 && !f.noRr;
-    const _tg = _tugraOwned() ? _tugraFor(selectedSultan && selectedSultan.id) : null; // K2: gerçek tuğra
+    const _tg = _tugraFor(selectedSultan && selectedSultan.id); // K2: gerçek tuğra, 6 Kasım'dan beri herkeste ücretsiz
     body = `${_tg ? `<span class="fm-tugra fm-tugra-img" style="-webkit-mask-image:url('${_tg}');mask-image:url('${_tg}')" aria-hidden="true"></span>` : _TUGRA_SVG}<div class="fm-from">${fromTxt}</div>
       <p class="fm-intro">${intro}</p>
       <ul class="fm-list">${list}</ul>
@@ -8532,12 +8532,15 @@ function _defterRecordReign() {
   const cause = _deathCause || "";
   let deathSeal = 0;
   if (cause && cause !== "free_limit" && !d.deaths.includes(cause)) { d.deaths.push(cause); d.seals++; deathSeal = 1; }
+  // Hattat Kalemi avantajı (6 Kasım 2026): altın varak takılıyken her saltanat sonunda +1 ekstra mühür
+  let inkSeal = 0;
+  if (_vakKey() === "altin") { d.seals++; inkSeal = 1; }
   d.pages.unshift({ s: selectedSultan?.id || "kanuni", y: year, h0: (selectedSultan && SULTAN_HICRI_START[selectedSultan.id]) || hicriYear, h1: hicriYear,
-    f: _fermanDoneThisGame, ft: _fermanTotalThisGame, c: cause, ev: top ? [top.n, top.ne, top.t, top.te] : null, sl: _fermanDoneThisGame + deathSeal,
+    f: _fermanDoneThisGame, ft: _fermanTotalThisGame, c: cause, ev: top ? [top.n, top.ne, top.t, top.te] : null, sl: _fermanDoneThisGame + deathSeal + inkSeal,
     tr: (_dipState && _dipState.treaties.slice()) || [] });
   d.pages = d.pages.slice(0, DEFTER_MAX_PAGES);
   _defterSet(d);
-  _defterSealsThisGame = _fermanDoneThisGame + deathSeal;
+  _defterSealsThisGame = _fermanDoneThisGame + deathSeal + inkSeal;
   _defterIhsanThisGame = _defterClaimIhsan();
 }
 // Birikmiş mühür eşikleri için akçe ihsanı (bir kez)
@@ -9293,11 +9296,11 @@ const COSM_KEY = "sadrazam_cosmetics";
 // 8 Ekim 2026: çini çerçeveler tek tek satılır (kullanıcının 5 gerçek çini görseli, assets/frames).
 // Eski kayıt {cini:true} = ilk üç desen (İznik/Kütahya/Lale) satın alınmış sayılır; yeniler ciniOwn listesinde.
 const CINI_FRAMES = [
-  { k: "iznik",   tr: "İznik",          en: "Iznik",          price: 3 },
-  { k: "kutahya", tr: "Kütahya",        en: "Kütahya",        price: 3 },
-  { k: "lale",    tr: "Lale",           en: "Tulip",          price: 3 },
+  { k: "iznik",   tr: "İznik",          en: "Iznik",          price: 4 },
+  { k: "kutahya", tr: "Kütahya",        en: "Kütahya",        price: 4 },
+  { k: "lale",    tr: "Lale",           en: "Tulip",          price: 4 },
   { k: "tekfur",  tr: "Tekfur Sarayı",  en: "Tekfur Palace",  price: 4 },
-  { k: "rustem",  tr: "Rüstem Paşa",    en: "Rüstem Pasha",   price: 5 },
+  { k: "rustem",  tr: "Rüstem Paşa",    en: "Rüstem Pasha",   price: 4 },
 ];
 const CINI_LEGACY = ["iznik", "kutahya", "lale"];
 // F-A (10 Ekim 2026): Divan Odası — kartın arkasındaki salon (Yaşayan Divan'ın üç ışığı aynen kalır).
@@ -9315,61 +9318,82 @@ const COSMETICS = {
   cini:   { price: 3, icon: "assets/icons/item-cini-cerceve.png", tr: "Çini Kart Çerçevesi", en: "Tile Card Frame",
             dtr: "Kartlarının kenarı gerçek çini deseniyle döşenir. Beş desen, her biri ayrı; dokun, önizle.", den: "Your cards are framed in real tile patterns. Five patterns, each sold separately; tap to preview.",
             opts: CINI_FRAMES.map(f => [f.k, f.tr, f.en]) },
-  kaftan: { price: 6, icon: "assets/icons/item-kaftan-zumrut.png", tr: "Sadrazam Kaftanı", en: "Grand Vizier's Kaftan",
-            dtr: "Üç gerçek kaftan + her saltanata +3 Sultan sabrıyla başlama. Sade kaftan zaten ücretsiz senin.", den: "Three real kaftans + start every reign with +3 Sultan's patience. The plain kaftan is already yours for free.",
-            opts: [["zumrut", "Zümrüt", "Emerald"], ["lacivert", "Lacivert", "Navy"], ["hunkar", "Hünkâr", "Imperial"]] },
-  kalem:  { price: 5, icon: "assets/icons/item-kalem-sade.png", tr: "Hattat Kalemi", en: "Calligrapher's Pen",
-            dtr: "Vakayiname üç tezhip renginden biriyle süslenir; paylaşılan görsel de. Sade hokka zaten ücretsiz senin.", den: "Your Chronicle is illuminated in one of three ink colours; your shared image too. The plain inkwell is already yours for free.",
-            opts: [["gumus", "Gümüş Mürekkep", "Silver Ink"], ["altin", "Altın Varak", "Gilded Gold"], ["lacivert", "Lacivert Tezhip", "Indigo Illumination"]] },
+  // 6 Kasım 2026: kaftan/kalem/tuğra artık tek fiyatla hepsi açılan paket değil — her renk/mürekkep/
+  // tuğra AYRI satılıyor (opts: [key, tr, en, akçe]). Her birinin "sade/varsayılan" seçeneği (sırayla
+  // basit/sade/auto) her zaman ücretsiz ve opts dışında tutulur — bkz. _kaftanOwnedK/_kalemOwnedK/_tugraOwnedK.
+  kaftan: { icon: "assets/icons/item-kaftan-zumrut.png", tr: "Sadrazam Kaftanı", en: "Grand Vizier's Kaftan",
+            dtr: "Üç gerçek kaftan, her biri ayrı satılır. Hünkâr kaftanı her saltanata +3 Sultan sabrıyla başlatır. Sade kaftan zaten ücretsiz senin.", den: "Three real kaftans, each sold separately. The Imperial kaftan starts every reign with +3 Sultan's patience. The plain kaftan is already yours for free.",
+            opts: [["zumrut", "Zümrüt", "Emerald", 3], ["lacivert", "Lacivert", "Navy", 3], ["hunkar", "Hünkâr", "Imperial", 5]] },
+  kalem:  { icon: "assets/icons/item-kalem-sade.png", tr: "Hattat Kalemi", en: "Calligrapher's Pen",
+            dtr: "Üç mürekkep, her biri ayrı satılır. Altın varak her saltanat sonunda Defter'e +1 ekstra mühür kazandırır. Sade hokka zaten ücretsiz senin.", den: "Three inks, each sold separately. Gilded gold adds +1 extra seal to the Ledger at the end of every reign. The plain inkwell is already yours for free.",
+            opts: [["gumus", "Gümüş Mürekkep", "Silver Ink", 3], ["altin", "Altın Varak", "Gilded Gold", 3], ["lacivert", "Lacivert Tezhip", "Indigo Illumination", 3]] },
   // K2 (8 Ekim 2026): gerçek padişah tuğraları (Wikimedia Commons, kamu malı) — fermanın başında o anki
-  // sultanın tuğrası; kart arkasının madalyonunda seçilen tuğra ("auto" = o anki sultan).
-  tugra:  { price: 4, icon: "assets/tugra/tugra-kanuni.png", tr: "Padişah Tuğraları", en: "Imperial Tughras",
-            dtr: "Fermanlarına o anki sultanın gerçek tuğrası çekilir; kart arkasında seçtiğin tuğra parlar.", den: "Your decrees bear the reigning Sultan's real tughra; your card backs carry the tughra you choose.",
-            opts: [["auto", "Sultanınki", "Reigning"], ["yavuz", "Yavuz", "Selim I"], ["kanuni", "Kanunî", "Suleiman"], ["murad3", "III. Murad", "Murad III"], ["murad4", "IV. Murad", "Murad IV"], ["ahmed3", "III. Ahmed", "Ahmed III"]] },
+  // sultanın tuğrası ARTIK HERKESTE ücretsiz; kart arkasının madalyonundaki 5 isimli tuğra ayrı ayrı satılır.
+  tugra:  { icon: "assets/tugra/tugra-kanuni.png", tr: "Padişah Tuğraları", en: "Imperial Tughras",
+            dtr: "Fermanlarına o anki sultanın gerçek tuğrası zaten ücretsiz çekilir. Kart arkasında parlayacak 5 tuğra, her biri ayrı satılır.", den: "The reigning Sultan's real tughra already appears on your decrees for free. The 5 tughras that shine on your card backs are each sold separately.",
+            opts: [["yavuz", "Yavuz", "Selim I", 3], ["kanuni", "Kanunî", "Suleiman", 3], ["murad3", "III. Murad", "Murad III", 3], ["murad4", "IV. Murad", "Murad IV", 3], ["ahmed3", "III. Ahmed", "Ahmed III", 3]] },
   // K7 (8 Ekim 2026): Divan kedisi — ara sıra ekranın altından yürüyerek geçer (dokunmayı engellemez)
   kedi:   { price: 4, icon: "assets/cat/cat-full.png", tr: "Divan Kedisi", en: "The Divan Cat",
             dtr: "Topkapı'nın tekir kedisi ara sıra Divan'dan ve ana menüden geçer. Kartlarına dokunmaz.", den: "Topkapı's tabby cat strolls through the Divan and the main menu now and then. It never touches your cards.",
             opts: [["on", "Açık", "On"], ["off", "Kapalı", "Off"]] },
 };
+function _cosmGet() { try { const o = JSON.parse(localStorage.getItem(COSM_KEY) || "{}"); return (o && typeof o === "object") ? o : {}; } catch (e) { return {}; } }
+function _cosmSet(o) { try { localStorage.setItem(COSM_KEY, JSON.stringify(o)); } catch (e) {} }
+
+// 6 Kasım 2026: tuğra/kaftan/kalem artık "tek fiyata hepsi açılır" değil — her biri AYRI satılır,
+// aynı oda/çini deseni (Own dizisi + Sel seçili anahtar). Her birinin "sade/varsayılan" hâli
+// (auto/basit/sade) HERKESTE ücretsiz, opts dizisinin dışında, hiç satın alma gerektirmez.
+// Eski tek seferlik satın almalar (o.kaftan/o.kalem/o.tugra === true) geriye dönük hepsini açık sayar.
 const TUGRA_SULTANS = ["yavuz", "kanuni", "murad3", "murad4", "ahmed3"];
 function _tugraFor(sid) { return TUGRA_SULTANS.includes(sid) ? `assets/tugra/tugra-${sid}.png` : null; }
-function _tugraOwned() { return !!_cosmGet().tugra; }
-function _tugraCardBack() { if (!_tugraOwned()) return null; const sel = _cosmSel("tugra"); return _tugraFor(sel === "auto" ? (selectedSultan && selectedSultan.id) : sel); }
-// 5 Kasım 2026: kaftan artık hue-rotate ile boyanan tek çizim değil, 4 gerçek ayrı illüstrasyon.
-// "basit" (lacivert) HERKESTE ücretsiz/varsayılan; zümrüt/lacivert(kürklü)/hünkâr satın alınca açılan 3 seçenek.
-// Eski kayıtlarda kaftanSel "kirmizi" olabilir (artık yok) — _kaftanKey() bunu "zumrut"a yönlendirir.
+function _tugraOwnedK(k) { const o = _cosmGet(); if (o.tugra === true) return true; return Array.isArray(o.tugraOwn) && o.tugraOwn.includes(k); }
+function _tugraAny() { return TUGRA_SULTANS.some(_tugraOwnedK); }
+function _tugraAll() { return TUGRA_SULTANS.every(_tugraOwnedK); }
+function _tugraBuy(k) { const o = _cosmGet(); const own = Array.isArray(o.tugraOwn) ? o.tugraOwn : []; if (!own.includes(k)) own.push(k); o.tugraOwn = own; o.tugraSel = k; _cosmSet(o); }
+function _tugraSelK() { const k = _cosmGet().tugraSel; return (k && TUGRA_SULTANS.includes(k) && _tugraOwnedK(k)) ? k : null; }
+// Kart arkasındaki madalyonda yalnız SATIN ALINMIŞ ve SEÇİLMİŞ bir tuğra görünür; fermanlardaki
+// gerçek sultan tuğrası (8161. satır civarı) bundan bağımsız, herkeste zaten ücretsiz.
+function _tugraCardBack() { const sel = _tugraSelK(); return sel ? _tugraFor(sel) : null; }
+
 const KAFTAN_IMG = {
   basit:    "assets/icons/item-kaftan-basit.png",
   zumrut:   "assets/icons/item-kaftan-zumrut.png",
   lacivert: "assets/icons/item-kaftan-lacivert.png",
   hunkar:   "assets/icons/item-kaftan-hunkar.png",
 };
-const KAFTAN_SW = { zumrut: "#1f5c3c", lacivert: "#182a5c", hunkar: "#3a1530" };
+const KAFTAN_KEYS = ["zumrut", "lacivert", "hunkar"];
+function _kaftanOwnedK(k) { const o = _cosmGet(); if (o.kaftan === true) return true; return Array.isArray(o.kaftanOwn) && o.kaftanOwn.includes(k); }
+function _kaftanAny() { return KAFTAN_KEYS.some(_kaftanOwnedK); }
+function _kaftanAll() { return KAFTAN_KEYS.every(_kaftanOwnedK); }
+function _kaftanBuy(k) { const o = _cosmGet(); const own = Array.isArray(o.kaftanOwn) ? o.kaftanOwn : []; if (!own.includes(k)) own.push(k); o.kaftanOwn = own; o.kaftanSel = k; _cosmSet(o); }
 function _kaftanKey() {
-  if (!_cosmOwned("kaftan")) return "basit";
-  const raw = _cosmSel("kaftan");
-  return KAFTAN_IMG[raw] && raw !== "basit" ? raw : "zumrut";
+  const sel = _cosmGet().kaftanSel;
+  if (sel && KAFTAN_KEYS.includes(sel) && _kaftanOwnedK(sel)) return sel;
+  return KAFTAN_KEYS.find(_kaftanOwnedK) || "basit";
 }
-// Vakayiname kalemi: aynı kaftan deseni — sade herkeste ücretsiz, 3 mürekkep satın alınca açılır.
+
 const KALEM_IMG = {
   sade:     "assets/icons/item-kalem-sade.png",
   gumus:    "assets/icons/item-kalem-gumus.png",
   altin:    "assets/icons/item-kalem-altin.png",
   lacivert: "assets/icons/item-kalem-lacivert.png",
 };
+const VAKAYINAME_INKS = ["gumus", "altin", "lacivert"];
+function _kalemOwnedK(k) { const o = _cosmGet(); if (o.kalem === true) return true; return Array.isArray(o.kalemOwn) && o.kalemOwn.includes(k); }
+function _kalemAny() { return VAKAYINAME_INKS.some(_kalemOwnedK); }
+function _kalemAll() { return VAKAYINAME_INKS.every(_kalemOwnedK); }
+function _kalemBuy(k) { const o = _cosmGet(); const own = Array.isArray(o.kalemOwn) ? o.kalemOwn : []; if (!own.includes(k)) own.push(k); o.kalemOwn = own; o.kalemSel = k; _cosmSet(o); }
+// null = sade (ücretsiz, varsayılan); aksi hâlde sahip olunan + seçili mürekkep
+function _vakKey() {
+  const sel = _cosmGet().kalemSel;
+  if (sel && VAKAYINAME_INKS.includes(sel) && _kalemOwnedK(sel)) return sel;
+  return VAKAYINAME_INKS.find(_kalemOwnedK) || null;
+}
 function _kalemImg(cls) {
-  const k = _vakKey() || "sade"; // _vakKey: owned değilse null (sade)
+  const k = _vakKey() || "sade";
   return `<img class="${cls || ""}" src="${KALEM_IMG[k]}" alt="">`;
 }
-const VAKAYINAME_INKS = ["gumus", "altin", "lacivert"];
-// Hattat Kalemi: owned değilse null (sade/ücretsiz sayfa, mevcut temel görünüm); owned ise 3 mürekkepten biri.
-function _vakKey() {
-  if (!_cosmOwned("kalem")) return null;
-  const raw = _cosmSel("kalem");
-  return VAKAYINAME_INKS.includes(raw) ? raw : "altin";
-}
-function _cosmGet() { try { const o = JSON.parse(localStorage.getItem(COSM_KEY) || "{}"); return (o && typeof o === "object") ? o : {}; } catch (e) { return {}; } }
-function _cosmSet(o) { try { localStorage.setItem(COSM_KEY, JSON.stringify(o)); } catch (e) {} }
+
 function _ciniOwned(k) { const o = _cosmGet(); return (o.cini === true && CINI_LEGACY.includes(k)) || (Array.isArray(o.ciniOwn) && o.ciniOwn.includes(k)); }
 function _ciniAny() { return CINI_FRAMES.some(f => _ciniOwned(f.k)); }
 function _ciniAll() { return CINI_FRAMES.every(f => _ciniOwned(f.k)); }
@@ -9428,26 +9452,32 @@ function renderCosmeticRows() {
       const sel = _odaSel();
       extra = `<div class="cf-tiles oda-tiles">${ODA_ROOMS.map(r => { const own = _odaOwned(r.k), on = sel === r.k;
         return `<button type="button" class="cf-tile${own ? " own" : ""}${on ? " on" : ""}" data-k="${r.k}" aria-label="${en ? r.en : r.tr}"><span class="cf-sw oda-sw" style="background-image:url('assets/oda/oda-${r.k}-on.jpg')"></span><span class="cf-l">${en ? r.en : r.tr}</span><span class="cf-p">${on ? (en ? "ON" : "AÇIK") : own ? (en ? "YOURS" : "SENİN") : `${r.price} ${AKCE_COIN_SVG}`}</span></button>`; }).join("")}</div>`;
-    } else if (id === "kaftan") {
-      const own = _cosmOwned("kaftan");
-      ctrl = `<button type="button" class="mi-buy mc-btn mc-open">${own ? (en ? "COLOUR" : "RENK") : `${c.price} ${AKCE_COIN_SVG}`}</button>`;
-    } else if (c.opts && _cosmOwned(id)) { // tuğra / kedi: sahibine seçenekler
+    } else if (id === "kaftan" || id === "kalem" || id === "tugra") {
+      // 6 Kasım 2026: üçü de artık ayrı ayrı satılan "varyant" ürünler — çini/oda ile aynı kalıp.
+      const ownedFn = id === "kaftan" ? _kaftanOwnedK : id === "kalem" ? _kalemOwnedK : _tugraOwnedK;
+      const selNow = id === "kaftan" ? _kaftanKey() : id === "kalem" ? _vakKey() : _tugraSelK();
+      const imgFor = id === "kaftan" ? (k => KAFTAN_IMG[k]) : id === "kalem" ? (k => KALEM_IMG[k]) : (k => _tugraFor(k));
+      extra = `<div class="cf-tiles">${c.opts.map(([k, tr, enN, price]) => { const own = ownedFn(k), on = own && selNow === k;
+        return `<button type="button" class="cf-tile${own ? " own" : ""}${on ? " on" : ""}" data-k="${k}" aria-label="${en ? enN : tr}"><span class="cf-sw" style="background-image:url('${imgFor(k)}')"></span><span class="cf-l">${en ? enN : tr}</span><span class="cf-p">${on ? (en ? "ON" : "TAKILI") : own ? (en ? "YOURS" : "SENİN") : `${price} ${AKCE_COIN_SVG}`}</span></button>`; }).join("")}</div>`;
+    } else if (c.opts && _cosmOwned(id)) { // kedi: sahibine seçenekler
       const sel = _cosmSel(id);
       extra = `<div class="mc-opts">${c.opts.map(([k, tr, enN]) => `<button type="button" class="mc-opt${sel === k ? " on" : ""}" data-k="${k}">${en ? enN : tr}</button>`).join("")}</div>`;
     } else {
       ctrl = _cosmOwned(id) ? `<span class="mc-owned">${en ? "OWNED" : "SENİN"}</span>` : `<button type="button" class="mi-buy mc-btn mc-buy">${c.price} ${AKCE_COIN_SVG}</button>`;
     }
-    if (id === "oda") ctrl = "";
+    if (id === "oda" || id === "kaftan" || id === "kalem" || id === "tugra") ctrl = "";
     const ico = id === "kaftan" ? _kaftanImg()
               : id === "kalem" ? _kalemImg()
-              : id === "tugra" && _cosmOwned("tugra") ? `<img src="${_tugraCardBack() || c.icon}" alt="">`
+              : id === "tugra" ? `<img src="${_tugraCardBack() || c.icon}" alt="">`
               : `<img src="${c.icon}" alt="">`;
     row.innerHTML = `<div class="mc-prev mc-ico">${ico}</div><div class="mc-info"><div class="mc-name">${en ? c.en : c.tr}</div><div class="mc-desc">${en ? c.den : c.dtr}</div>${extra}</div>${ctrl}`;
     box.appendChild(row);
     if (id === "cini") row.querySelectorAll(".cf-tile").forEach(b => b.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showCiniPreview(b.dataset.k); }));
     if (id === "oda") { row.querySelectorAll(".cf-tile").forEach(b => b.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showOdaPreview(b.dataset.k); }));
       row.querySelector(".mc-ico")?.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showOdaPreview(_odaSel() || ODA_ROOMS[0].k); }); }
-    if (id === "kaftan") { const open = () => { if (window.playButtonTap) playButtonTap(); showKaftanPreview(); }; row.querySelector(".mc-open")?.addEventListener("click", open); row.querySelector(".mc-ico")?.addEventListener("click", open); }
+    if (id === "kaftan" || id === "kalem" || id === "tugra") {
+      row.querySelectorAll(".cf-tile").forEach(b => b.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showCosmVariantPreview(id, b.dataset.k); }));
+    }
     row.querySelectorAll(".mc-opt").forEach(b => b.addEventListener("click", () => {
       const o = _cosmGet(); o[id + "Sel"] = b.dataset.k; _cosmSet(o);
       if (window.playSelectConfirm) playSelectConfirm();
@@ -9466,6 +9496,57 @@ function renderCosmeticRows() {
       updateAkceUI(); _applyCosmetics(); renderCosmeticRows();
     });
   }
+}
+// 6 Kasım 2026: kaftan/kalem/tuğra için ortak önizleme penceresi — çini/oda'daki desenle aynı:
+// büyük görsel, mini önizleme şeridi, fiyat, SATIN AL/GİY, sahip olunca "varsayılana dön".
+function _cosmVariantImgFor(id) { return id === "kaftan" ? KAFTAN_IMG : id === "kalem" ? KALEM_IMG : null; }
+function showCosmVariantPreview(id, k0) {
+  document.getElementById("cv-preview")?.remove();
+  const en = window.LANG === 'en', c = COSMETICS[id];
+  const ownedFn = id === "kaftan" ? _kaftanOwnedK : id === "kalem" ? _kalemOwnedK : _tugraOwnedK;
+  const selFn = id === "kaftan" ? _kaftanKey : id === "kalem" ? _vakKey : _tugraSelK;
+  const buyFn = id === "kaftan" ? _kaftanBuy : id === "kalem" ? _kalemBuy : _tugraBuy;
+  const imgMap = _cosmVariantImgFor(id);
+  const imgFor = (k) => imgMap ? imgMap[k] : _tugraFor(k);
+  const freeKey = id === "kaftan" ? "basit" : id === "kalem" ? "sade" : null; // tuğra'da "sade" yok, ferman tuğrası zaten ayrı/ücretsiz
+  const ov = document.createElement("div"); ov.id = "cv-preview"; ov.className = "info-panel-overlay cosm-pop";
+  let k = c.opts.some(o => o[0] === k0) ? k0 : c.opts[0][0], busy = false;
+  const close = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 250); };
+  const render = () => {
+    const opt = c.opts.find(o => o[0] === k), price = opt[3];
+    const own = ownedFn(k), on = own && selFn() === k;
+    ov.innerHTML = `<div class="ip-box cp-box">
+      <div class="ip-title">${(en ? c.en : c.tr).toLocaleUpperCase(en ? "en" : "tr")}</div>
+      <img class="kp-img" src="${imgFor(k)}" alt="">
+      <div class="kp-sw">${c.opts.map(([key, tr, enN]) => `<button type="button" class="sw img-sw${key === k ? " on" : ""}" data-k="${key}" aria-label="${en ? enN : tr}"><img src="${imgFor(key)}" alt=""></button>`).join("")}</div>
+      <div class="kp-name">${(opt)[en ? 2 : 1]}</div>
+      <div class="cp-price">${own ? (en ? "Yours" : "Senin") : `${AKCE_COIN_SVG} ${price} ${en ? "AKCE" : "AKÇE"}`}</div>
+      <div class="cp-actions"><button type="button" class="cp-close">${en ? "CLOSE" : "KAPAT"}</button>
+        ${own ? `<button type="button" class="cp-main cp-wear"${on ? " disabled" : ""}>${on ? (en ? "WORN ✓" : "GİYİLİ ✓") : (en ? "WEAR" : "GİY")}</button>` : `<button type="button" class="cp-main cp-buy">${en ? "BUY" : "SATIN AL"}</button>`}</div>
+      ${freeKey && on ? `<button type="button" class="cp-off">${en ? "Use the free default" : "Varsayılana dön"}</button>` : ""}
+      <div class="cp-msg" aria-live="polite"></div></div>`;
+    ov.querySelector(".cp-close").onclick = close;
+    ov.querySelectorAll(".kp-sw .sw").forEach(b => b.onclick = () => { if (busy) return; k = b.dataset.k; render(); });
+    const buy = ov.querySelector(".cp-buy");
+    if (buy) buy.onclick = () => {
+      if (busy || ownedFn(k)) return; busy = true; buy.disabled = true;
+      if (!spendAkce(price)) { busy = false; buy.disabled = false; _cosmNeedAkce(ov.querySelector(".cp-msg"), price, close); return; }
+      buyFn(k);
+      if (window.playSelectConfirm) playSelectConfirm();
+      _an("cosmetic_buy", { id: id + "_" + k, where: "market" });
+      updateAkceUI(); _applyCosmetics(); renderCosmeticRows();
+      busy = false; render();
+      ov.querySelector(".cp-msg").textContent = en ? "It is yours." : "Artık senin.";
+    };
+    const wear = ov.querySelector(".cp-wear");
+    if (wear) wear.onclick = () => { const o = _cosmGet(); o[id + "Sel"] = k; _cosmSet(o); if (window.playSelectConfirm) playSelectConfirm(); _applyCosmetics(); renderCosmeticRows(); render(); };
+    const off = ov.querySelector(".cp-off");
+    if (off) off.onclick = () => { const o = _cosmGet(); o[id + "Sel"] = freeKey; _cosmSet(o); if (window.playSelectConfirm) playSelectConfirm(); _applyCosmetics(); renderCosmeticRows(); render(); };
+  };
+  render();
+  ov.addEventListener("click", e => { if (e.target === ov) close(); });
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("on"));
 }
 // M2-A (8 Ekim 2026): çini önizleme penceresi — gerçek kart, seçili çerçeve, arka yüzden dönüş,
 // desenler arası geçiş, fiyat düğmenin üstünde. Sahip olunan desende SATIN AL pasif "SENİN"; TAK / TAKILI.
@@ -9554,47 +9635,6 @@ function showOdaPreview(k0) {
   document.body.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("on"));
 }
-// M3-A (8 Ekim 2026): kaftan penceresi — resim + üç renk; alınmadıysa fiyat + SATIN AL, alındıysa GİY
-function showKaftanPreview() {
-  document.getElementById("kaftan-preview")?.remove();
-  const en = window.LANG === 'en', c = COSMETICS.kaftan;
-  const ov = document.createElement("div"); ov.id = "kaftan-preview"; ov.className = "info-panel-overlay cosm-pop";
-  const ownedKeyNow = _kaftanKey();
-  let k = (_cosmOwned("kaftan") ? ownedKeyNow : null) || "zumrut", busy = false;
-  const close = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 250); };
-  const render = () => {
-    const own = _cosmOwned("kaftan"), on = own && _kaftanKey() === k;
-    ov.innerHTML = `<div class="ip-box cp-box">
-      <div class="ip-title">${(en ? c.en : c.tr).toLocaleUpperCase(en ? "en" : "tr")}</div>
-      <img class="cosm-kaftan kp-img" src="${KAFTAN_IMG[k]}" alt="">
-      <div class="kp-sw">${c.opts.map(([key, tr, enN]) => `<button type="button" class="sw${key === k ? " on" : ""}" data-k="${key}" style="background:${KAFTAN_SW[key]}" aria-label="${en ? enN : tr}"></button>`).join("")}</div>
-      <div class="kp-name">${(c.opts.find(o => o[0] === k) || [])[en ? 2 : 1] || ""}</div>
-      <p class="kp-d">${en ? "Seen on your Ledger page and in death and ending scenes. One purchase, all three. You already wear the plain kaftan for free — these three also start every reign with +3 Sultan's patience." : "Defter sayfanda, ölüm ve son sahnelerinde görünür. Bir kez alınır, üçü de senin. Sade kaftan zaten ücretsiz senin — bu üçü ayrıca her saltanata +3 Sultan sabrıyla başlar."}</p>
-      <div class="cp-price">${own ? (en ? "Your kaftan" : "Kaftan senin") : `${AKCE_COIN_SVG} ${c.price} ${en ? "AKCE" : "AKÇE"}`}</div>
-      <div class="cp-actions"><button type="button" class="cp-close">${en ? "CLOSE" : "KAPAT"}</button>
-        ${own ? `<button type="button" class="cp-main cp-wear"${on ? " disabled" : ""}>${on ? (en ? "WORN ✓" : "GİYİLİ ✓") : (en ? "WEAR" : "GİY")}</button>` : `<button type="button" class="cp-main cp-buy">${en ? "BUY" : "SATIN AL"}</button>`}</div>
-      <div class="cp-msg" aria-live="polite"></div></div>`;
-    ov.querySelector(".cp-close").onclick = close;
-    ov.querySelectorAll(".kp-sw .sw").forEach(b => b.onclick = () => { if (busy) return; k = b.dataset.k; render(); });
-    const buy = ov.querySelector(".cp-buy");
-    if (buy) buy.onclick = () => {
-      if (busy || _cosmOwned("kaftan")) return; busy = true; buy.disabled = true;
-      if (!spendAkce(c.price)) { busy = false; buy.disabled = false; _cosmNeedAkce(ov.querySelector(".cp-msg"), c.price, close); return; }
-      const o = _cosmGet(); o.kaftan = true; o.kaftanSel = k; _cosmSet(o);
-      if (window.playSelectConfirm) playSelectConfirm();
-      _an("cosmetic_buy", { id: "kaftan", where: "market" });
-      updateAkceUI(); renderCosmeticRows(); busy = false; render();
-      ov.querySelector(".cp-msg").textContent = en ? "It is yours." : "Artık senin.";
-    };
-    const wear = ov.querySelector(".cp-wear");
-    if (wear) wear.onclick = () => { const o = _cosmGet(); o.kaftanSel = k; _cosmSet(o); if (window.playSelectConfirm) playSelectConfirm(); renderCosmeticRows(); render(); };
-  };
-  render();
-  ov.addEventListener("click", e => { if (e.target === ov) close(); });
-  document.body.appendChild(ov);
-  requestAnimationFrame(() => ov.classList.add("on"));
-}
-
 // ── K7 (8 Ekim 2026, kullanıcının gönderdiği görselle 1 Kasım 2026'da güncellendi):
 // Divan kedisi — sahibi açtıysa ara sıra ekranın en altından yürüyerek geçer.
 // pointer-events: none (dokunmayı engellemez), kartın altındaki şeritte; açık bir pencere varken çıkmaz.
@@ -12574,41 +12614,50 @@ function _renderDeathLesson(panel, after) {
 function _renderCosmPreview(panel, after) {
   let el = document.getElementById("gameover-cosm");
   let games = 0; try { games = parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10); } catch (e) {}
-  const free = Object.keys(COSMETICS).filter(id => id === "cini" ? !_ciniAll() : id === "oda" ? !_odaAll() : !_cosmOwned(id));
+  const free = Object.keys(COSMETICS).filter(id => id === "cini" ? !_ciniAll() : id === "oda" ? !_odaAll()
+    : id === "kaftan" ? !_kaftanAll() : id === "kalem" ? !_kalemAll() : id === "tugra" ? !_tugraAll() : !_cosmOwned(id));
   if (!AKCE_SYSTEM_ENABLED || games < 1 || !free.length) { el?.remove(); return; }
   if (!el) { el = document.createElement("div"); el.id = "gameover-cosm"; }
   after.insertAdjacentElement("afterend", el);
   const en = window.LANG === 'en', id = free[games % free.length], c = COSMETICS[id];
   const cf = id === "cini" ? CINI_FRAMES.find(f => !_ciniOwned(f.k)) : null; // tek tek satılan desenlerden sahip olunmayan ilki
   const rm = id === "oda" ? ODA_ROOMS.find(r => !_odaOwned(r.k)) : null; // F-A: sahip olunmayan ilk oda
-  const price = cf ? cf.price : rm ? rm.price : c.price;
+  // 6 Kasım 2026: kaftan/kalem/tuğra da artık ayrı ayrı satılıyor — cf/rm ile aynı mantık, sahip olunmayan ilk varyant
+  const kv = id === "kaftan" ? c.opts.map(([k, tr, enN, price]) => ({ k, tr, en: enN, price })).find(x => !_kaftanOwnedK(x.k))
+    : id === "kalem" ? c.opts.map(([k, tr, enN, price]) => ({ k, tr, en: enN, price })).find(x => !_kalemOwnedK(x.k))
+    : id === "tugra" ? c.opts.map(([k, tr, enN, price]) => ({ k, tr, en: enN, price })).find(x => !_tugraOwnedK(x.k))
+    : null;
+  const price = cf ? cf.price : rm ? rm.price : kv ? kv.price : c.price;
   const chr = (currentCard && currentCard.character && !String(currentCard.character).includes("/")) ? currentCard.character : "1-sultan";
   const prev = rm ? `<div class="cp-thumb cp-oda" style="background-image:url('assets/oda/oda-${rm.k}-on.jpg')"></div>`
     : id === "kaftan"
-    ? `<div class="cp-thumb cp-death" style="background-image:url('assets/deaths/death-${_deathSceneImage(_deathCause || "saray_0")}.jpg')"><img class="cosm-kaftan cp-kaftan" src="${c.icon}" alt=""></div>`
+    ? `<div class="cp-thumb cp-death" style="background-image:url('assets/deaths/death-${_deathSceneImage(_deathCause || "saray_0")}.jpg')"><img class="cosm-kaftan cp-kaftan" src="${KAFTAN_IMG[kv.k]}" alt=""></div>`
     : id === "cini"
       ? `<div class="cp-thumb cp-card cf-card has-frame frame-${cf.k}"><img src="assets/characters/${encodeURIComponent(chr)}.jpg" alt="" onerror="this.src='assets/characters/1-sultan.jpg'"></div>`
-      : id === "tugra" ? `<div class="cp-thumb cp-tg"><img src="${_tugraFor(selectedSultan && selectedSultan.id) || c.icon}" alt=""></div>`
+      : id === "tugra" ? `<div class="cp-thumb cp-tg"><img src="${_tugraFor(kv.k) || c.icon}" alt=""></div>`
       : id === "kedi" ? `<div class="cp-thumb cp-cat"><img src="assets/cat/cat-full.png" alt=""></div>`
-      : id === "kalem" ? `<div class="cp-thumb cp-pen"><img src="${KALEM_IMG.altin}" alt=""></div>`
+      : id === "kalem" ? `<div class="cp-thumb cp-pen"><img src="${KALEM_IMG[kv.k]}" alt=""></div>`
       : `<div class="cp-thumb cp-gild"><span class="cp-dc">${en ? "T" : "S"}</span><i></i><i></i><i></i><i></i></div>`;
   el.innerHTML = `${prev}<div class="cp-info"><div class="cp-kick">${en ? "IT COULD HAVE LOOKED LIKE THIS" : "BÖYLE DE GÖRÜNEBİLİRDİ"}</div>
-    <div class="cp-name">${en ? c.en : c.tr}${cf ? ` · ${en ? cf.en : cf.tr}` : rm ? ` · ${en ? rm.en : rm.tr}` : ""}</div><div class="cp-desc">${en ? c.den : c.dtr}</div>
+    <div class="cp-name">${en ? c.en : c.tr}${cf ? ` · ${en ? cf.en : cf.tr}` : rm ? ` · ${en ? rm.en : rm.tr}` : kv ? ` · ${en ? kv.en : kv.tr}` : ""}</div><div class="cp-desc">${en ? c.den : c.dtr}</div>
     <button type="button" class="mi-buy cp-buy">${price} ${AKCE_COIN_SVG}</button><div class="cp-msg" aria-live="polite"></div></div>`;
   const btn = el.querySelector(".cp-buy"), msg = el.querySelector(".cp-msg");
   btn.onclick = () => {
-    if (cf ? _ciniOwned(cf.k) : rm ? _odaOwned(rm.k) : _cosmOwned(id)) return;
+    if (cf ? _ciniOwned(cf.k) : rm ? _odaOwned(rm.k) : kv ? (id === "kaftan" ? _kaftanOwnedK : id === "kalem" ? _kalemOwnedK : _tugraOwnedK)(kv.k) : _cosmOwned(id)) return;
     if (!spendAkce(price)) {
       msg.textContent = en ? `You need ${price} akce.` : `${price} akçe gerekiyor.`;
       showAkceScreen();
       setTimeout(_marketShowAkce, 250);
       return;
     }
-    if (cf) _ciniBuy(cf.k); else if (rm) _odaBuy(rm.k); else { const o = _cosmGet(); o[id] = true; if (c.opts) o[id + "Sel"] = c.opts[0][0]; _cosmSet(o); }
+    if (cf) _ciniBuy(cf.k);
+    else if (rm) _odaBuy(rm.k);
+    else if (kv) (id === "kaftan" ? _kaftanBuy : id === "kalem" ? _kalemBuy : _tugraBuy)(kv.k);
+    else { const o = _cosmGet(); o[id] = true; if (c.opts) o[id + "Sel"] = c.opts[0][0]; _cosmSet(o); }
     if (id === "kedi") setTimeout(() => DivanCat.walk(true), 800);
     if (window.playSelectConfirm) playSelectConfirm();
     updateAkceUI(); _applyCosmetics();
-    _an("cosmetic_buy", { id: cf ? "cini_" + cf.k : rm ? "oda_" + rm.k : id, where: "gameover" });
+    _an("cosmetic_buy", { id: cf ? "cini_" + cf.k : rm ? "oda_" + rm.k : kv ? id + "_" + kv.k : id, where: "gameover" });
     btn.disabled = true; btn.textContent = en ? "YOURS" : "SENİN";
     msg.textContent = en ? "It is yours. Change it any time in the Market." : "Artık senin. Market'ten istediğin zaman değiştirebilirsin.";
   };
@@ -13326,25 +13375,45 @@ document.getElementById('sett-preview-on')?.addEventListener('click',  () => {
   });
 });
 document.getElementById('sett-preview-off')?.addEventListener('click', () => { window.previewMode = false; localStorage.setItem('sadrazam_preview_mode','off'); _settUpdateUI(); });
-document.getElementById('sett-promo-btn')?.addEventListener('click', async () => {
-  const isEN = window.LANG === 'en';
-  const status = document.getElementById('sett-promo-status');
-  const RC = window.RevenueCatPurchases;
-  // presentCodeRedemptionSheet Apple'ın kendi native kod giriş ekranını açar
-  // (iOS 14+, App Store hesabına bağlı) — kod doğrulaması/uygulanması tamamen
-  // Apple tarafında yapılır, redeem sonrası customerInfo listener (initRevenueCat
-  // içinde) hem Tam Sürüm hem akçe kredilerini otomatik işler.
-  if (!_rcReady || !RC || !window.Capacitor?.isNativePlatform?.() || typeof RC.presentCodeRedemptionSheet !== 'function') {
-    if (status) status.textContent = isEN ? 'Not available right now.' : 'Şu an kullanılamıyor.';
-    return;
-  }
-  try {
-    if (status) status.textContent = '';
-    await RC.presentCodeRedemptionSheet();
-  } catch (e) {
-    console.warn('Promosyon kodu ekranı açılamadı:', e);
-  }
-});
+// 6 Kasım 2026: Apple'ın App Store promosyon kodu sistemi (presentCodeRedemptionSheet) yerine
+// kendi kampanya kodlarımız — "oyunu indir, kodu gir, akçe kazan" gibi basit pazarlama kodları
+// için. Apple'ın sistemi yalnız gerçek IAP ürünlerine kod üretir, rastgele metin kodu kabul etmez;
+// bu yüzden kendi doğrulamamızı yapıyoruz. Kodlar büyük/küçük harf ve boşluğa duyarsız, her kod bu
+// cihazda yalnız bir kez kullanılabilir (sadrazam_promo_used).
+const PROMO_CODES = { "DIVANA2026": 5 }; // KOD: ödül (akçe) — yeni kampanya kodu eklemek için buraya satır ekle
+function _promoUsed(code) { try { const u = JSON.parse(localStorage.getItem('sadrazam_promo_used') || '{}'); return !!u[code]; } catch (e) { return false; } }
+function _promoMarkUsed(code) { try { const u = JSON.parse(localStorage.getItem('sadrazam_promo_used') || '{}'); u[code] = true; localStorage.setItem('sadrazam_promo_used', JSON.stringify(u)); } catch (e) {} }
+function showPromoCodeModal() {
+  document.getElementById('promo-modal')?.remove();
+  const en = window.LANG === 'en';
+  const ov = document.createElement('div'); ov.id = 'promo-modal'; ov.className = 'info-panel-overlay cosm-pop';
+  ov.innerHTML = `<div class="ip-box cp-box">
+    <div class="ip-title">${en ? 'PROMO CODE' : 'PROMOSYON KODU'}</div>
+    <p class="kp-d">${en ? 'Got a code from a Divan: Sadrazam campaign? Enter it below.' : 'Divan: Sadrazam kampanyasından bir kodun mu var? Aşağıya yaz.'}</p>
+    <input id="promo-input" class="se-txt" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" placeholder="${en ? 'CODE' : 'KOD'}" style="width:100%;text-align:center;margin:10px 0;">
+    <div class="cp-actions"><button type="button" class="cp-close">${en ? 'CLOSE' : 'KAPAT'}</button><button type="button" class="cp-main cp-promo-use">${en ? 'USE' : 'KULLAN'}</button></div>
+    <div class="cp-msg" aria-live="polite"></div></div>`;
+  const close = () => { ov.classList.remove('on'); setTimeout(() => ov.remove(), 250); };
+  ov.querySelector('.cp-close').onclick = close;
+  const msg = ov.querySelector('.cp-msg'), input = ov.querySelector('#promo-input');
+  ov.querySelector('.cp-promo-use').onclick = () => {
+    const code = (input.value || '').trim().toLocaleUpperCase('en');
+    if (!code) { msg.textContent = en ? 'Write a code.' : 'Bir kod yaz.'; return; }
+    const reward = PROMO_CODES[code];
+    if (!reward) { msg.textContent = en ? 'This code is not valid.' : 'Bu kod geçerli değil.'; return; }
+    if (_promoUsed(code)) { msg.textContent = en ? 'You already used this code.' : 'Bu kodu zaten kullandın.'; return; }
+    _promoMarkUsed(code);
+    addAkce(reward);
+    if (window.playSelectConfirm) playSelectConfirm();
+    _an('promo_code', { code });
+    msg.textContent = en ? `+${reward} akce! It is yours.` : `+${reward} akçe! Artık senin.`;
+    input.disabled = true; ov.querySelector('.cp-promo-use').disabled = true;
+  };
+  ov.addEventListener('click', e => { if (e.target === ov) close(); });
+  document.body.appendChild(ov);
+  requestAnimationFrame(() => { ov.classList.add('on'); input.focus(); });
+}
+document.getElementById('sett-promo-btn')?.addEventListener('click', () => { if (window.playButtonTap) playButtonTap(); showPromoCodeModal(); });
 document.getElementById('sett-close').addEventListener('click',   hideSettingsOverlay);
 _settOv.addEventListener('click', e => { if (e.target === _settOv) hideSettingsOverlay(); });
 
