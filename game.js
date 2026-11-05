@@ -4088,6 +4088,9 @@ function startGame() {
   _nuxGame = _nuxPending && !isPasaMode && !isChallengeMode; _nuxPending = false; _nuxFirstCardSent = false; _nuxPromised = false; // Y1-A: yalnız _nuxStart'tan gelen saltanat
   stats = { ...selectedSultan.stats };
   sultanSabir = selectedSultan.sultanSabir;
+  // Kaftan avantajı (5 Kasım 2026): üç renkli kaftandan biri satın alınmışsa Sultan ilk günden daha olumlu karşılar.
+  // Bilerek yalnız sultanSabir'e dokunuyor — saray/yeniçeri/ulema/hazine dengesine (denge.py) asla dokunulmaz.
+  if (_cosmOwned("kaftan")) sultanSabir = Math.min(100, sultanSabir + 3);
   _an("game_start", { sultan: selectedSultan?.id, diff: difficultyId, pasa: isPasaMode ? 1 : 0, nux: _nuxGame ? 1 : 0,
     n: (() => { try { return parseInt(localStorage.getItem('sadrazam_games_played') || '0', 10) + 1; } catch (e) { return 0; } })() });
 
@@ -8136,6 +8139,13 @@ function _showFermanOverlay(item, done) {
   const list = f.demands.map((d, i) => `<li><b>${["I", "II"][i]}.</b><span>${_fermanDemandText(d, en)}</span>${item.kind !== "new" ? `<em class="${_fermanDemandOk(d) ? "y" : "n"}">${_fermanDemandOk(d) ? "✓" : "✗"}</em>` : ""}</li>`).join("");
   const ov = document.createElement("div");
   ov.id = "ferman-overlay";
+  // IAP/ilk-2-yıl (5 Kasım 2026): oyuncunun hayatında gördüğü ilk 3 "yeni ferman" anı, oyunun kalbi
+  // olduğunu erken fark etsin diye hafif ekstra bir parıltı alır — yalnız görsel, mekanik hiç değişmez.
+  if (item.kind === "new") {
+    let seen = 0; try { seen = parseInt(localStorage.getItem('sadrazam_ferman_seen') || '0', 10); } catch (e) {}
+    if (seen < 3) ov.classList.add("fm-first");
+    try { localStorage.setItem('sadrazam_ferman_seen', String(seen + 1)); } catch (e) {}
+  }
   let body;
   if (item.kind === "result") {
     body = `<div class="fm-kick">${en ? `DECREE OF ${f.year}` : `${f.year}. YILIN FERMANI`}</div>
@@ -8482,6 +8492,39 @@ const DEATH_TITLES = {
   yanlis_oda: ["Yanlış Oda", "The Wrong Room"], free_limit: ["Mühür Geri Döndü", "The Seal Returned"],
   emeklilik: ["Onurlu Veda", "An Honourable Farewell"],
 };
+
+// Menü, son saltanatın izini taşısın (5 Kasım 2026): yalnız görsel — hiçbir stat/denge etkisi yok.
+const LAST_REIGN_KEY = "sadrazam_last_reign";
+const REIGN_GOOD_YEARS = 8; // bu yıl ve üzeri "iyi biten saltanat" sayılır
+function _saveLastReign() {
+  try {
+    if (!_deathCause || _deathCause === "free_limit") { localStorage.removeItem(LAST_REIGN_KEY); return; } // nötr: menüyü değiştirme
+    localStorage.setItem(LAST_REIGN_KEY, JSON.stringify({ year, cause: _deathCause, sultan: selectedSultan && selectedSultan.id, title: window._lastReignTitle || "" }));
+  } catch (e) {}
+}
+function _applyLastReignTint() {
+  try {
+    document.getElementById("intro-content")?.classList.remove("reign-good", "reign-bad");
+    document.getElementById("last-reign-plaque")?.remove();
+    const raw = localStorage.getItem(LAST_REIGN_KEY);
+    if (!raw) return;
+    const r = JSON.parse(raw);
+    if (!r || !r.year || !r.cause) return;
+    const isEN = window.LANG === 'en';
+    const good = r.year >= REIGN_GOOD_YEARS;
+    document.getElementById("intro-content")?.classList.add(good ? "reign-good" : "reign-bad");
+    const sObj = (typeof SULTANS !== "undefined" ? SULTANS : []).find(s => s.id === r.sultan);
+    const sName = sObj ? ((isEN && window.EN_SULTANS && window.EN_SULTANS[r.sultan]) ? window.EN_SULTANS[r.sultan].name : sObj.name) : "";
+    const causeTxt = (DEATH_TITLES[r.cause] || [])[isEN ? 1 : 0] || "";
+    const yrs = `${r.year} ${isEN ? (r.year === 1 ? "year" : "years") : "yıl"}`;
+    const bits = [sName ? (isEN ? `Under ${sName}` : `${sName} döneminde`) : null, causeTxt, yrs].filter(Boolean);
+    const plaque = document.createElement("div");
+    plaque.id = "last-reign-plaque";
+    plaque.className = good ? "good" : "bad";
+    plaque.innerHTML = `<span class="lrp-ic">${good ? "✦" : "🕯"}</span><span class="lrp-t">${bits.join(" · ")}${(good && r.title) ? ` — ${r.title}` : ""}</span>`;
+    document.getElementById("intro-header-block")?.insertAdjacentElement("afterend", plaque);
+  } catch (e) {}
+}
 let _defterSealsThisGame = 0, _defterIhsanThisGame = 0;
 function _defterRecordReign() {
   const d = _defterGet();
@@ -9272,12 +9315,12 @@ const COSMETICS = {
   cini:   { price: 3, icon: "assets/icons/item-cini-cerceve.png", tr: "Çini Kart Çerçevesi", en: "Tile Card Frame",
             dtr: "Kartlarının kenarı gerçek çini deseniyle döşenir. Beş desen, her biri ayrı; dokun, önizle.", den: "Your cards are framed in real tile patterns. Five patterns, each sold separately; tap to preview.",
             opts: CINI_FRAMES.map(f => [f.k, f.tr, f.en]) },
-  kaftan: { price: 6, icon: "assets/icons/item-kaftan.png", tr: "Sadrazam Kaftanı", en: "Grand Vizier's Kaftan",
-            dtr: "Vezirler Defteri'nde, ölüm ve son sahnelerinde senin kaftanın görünür. Üç renk.", den: "Your kaftan appears in the Viziers' Ledger and in death and ending scenes. Three colours.",
-            opts: [["kirmizi", "Kırmızı", "Crimson"], ["lacivert", "Lacivert", "Navy"], ["zumrut", "Zümrüt", "Emerald"]] },
+  kaftan: { price: 6, icon: "assets/icons/item-kaftan-zumrut.png", tr: "Sadrazam Kaftanı", en: "Grand Vizier's Kaftan",
+            dtr: "Üç gerçek kaftan + her saltanata +3 Sultan sabrıyla başlama. Sade kaftan zaten ücretsiz senin.", den: "Three real kaftans + start every reign with +3 Sultan's patience. The plain kaftan is already yours for free.",
+            opts: [["zumrut", "Zümrüt", "Emerald"], ["lacivert", "Lacivert", "Navy"], ["hunkar", "Hünkâr", "Imperial"]] },
   kalem:  { price: 5, icon: "assets/icons/item-hattat-kalemi.png", tr: "Hattat Kalemi", en: "Calligrapher's Pen",
-            dtr: "Vakayiname altın varaklı bir hat sayfasına dönüşür; paylaşılan görsel de.", den: "Your Chronicle becomes a gilded calligraphy page, and so does your shared image.",
-            opts: null },
+            dtr: "Vakayiname üç tezhip renginden biriyle süslenir; paylaşılan görsel de. Sade sayfa zaten ücretsiz senin.", den: "Your Chronicle is illuminated in one of three ink colours; your shared image too. The plain page is already yours for free.",
+            opts: [["gumus", "Gümüş Mürekkep", "Silver Ink"], ["altin", "Altın Varak", "Gilded Gold"], ["lacivert", "Lacivert Tezhip", "Indigo Illumination"]] },
   // K2 (8 Ekim 2026): gerçek padişah tuğraları (Wikimedia Commons, kamu malı) — fermanın başında o anki
   // sultanın tuğrası; kart arkasının madalyonunda seçilen tuğra ("auto" = o anki sultan).
   tugra:  { price: 4, icon: "assets/tugra/tugra-kanuni.png", tr: "Padişah Tuğraları", en: "Imperial Tughras",
@@ -9292,7 +9335,28 @@ const TUGRA_SULTANS = ["yavuz", "kanuni", "murad3", "murad4", "ahmed3"];
 function _tugraFor(sid) { return TUGRA_SULTANS.includes(sid) ? `assets/tugra/tugra-${sid}.png` : null; }
 function _tugraOwned() { return !!_cosmGet().tugra; }
 function _tugraCardBack() { if (!_tugraOwned()) return null; const sel = _cosmSel("tugra"); return _tugraFor(sel === "auto" ? (selectedSultan && selectedSultan.id) : sel); }
-const KAFTAN_SW = { kirmizi: "#8a1d12", lacivert: "#1e3a7a", zumrut: "#1e6b45" };
+// 5 Kasım 2026: kaftan artık hue-rotate ile boyanan tek çizim değil, 4 gerçek ayrı illüstrasyon.
+// "basit" (lacivert) HERKESTE ücretsiz/varsayılan; zümrüt/lacivert(kürklü)/hünkâr satın alınca açılan 3 seçenek.
+// Eski kayıtlarda kaftanSel "kirmizi" olabilir (artık yok) — _kaftanKey() bunu "zumrut"a yönlendirir.
+const KAFTAN_IMG = {
+  basit:    "assets/icons/item-kaftan-basit.png",
+  zumrut:   "assets/icons/item-kaftan-zumrut.png",
+  lacivert: "assets/icons/item-kaftan-lacivert.png",
+  hunkar:   "assets/icons/item-kaftan-hunkar.png",
+};
+const KAFTAN_SW = { zumrut: "#1f5c3c", lacivert: "#182a5c", hunkar: "#3a1530" };
+function _kaftanKey() {
+  if (!_cosmOwned("kaftan")) return "basit";
+  const raw = _cosmSel("kaftan");
+  return KAFTAN_IMG[raw] && raw !== "basit" ? raw : "zumrut";
+}
+const VAKAYINAME_INKS = ["gumus", "altin", "lacivert"];
+// Hattat Kalemi: owned değilse null (sade/ücretsiz sayfa, mevcut temel görünüm); owned ise 3 mürekkepten biri.
+function _vakKey() {
+  if (!_cosmOwned("kalem")) return null;
+  const raw = _cosmSel("kalem");
+  return VAKAYINAME_INKS.includes(raw) ? raw : "altin";
+}
 function _cosmGet() { try { const o = JSON.parse(localStorage.getItem(COSM_KEY) || "{}"); return (o && typeof o === "object") ? o : {}; } catch (e) { return {}; } }
 function _cosmSet(o) { try { localStorage.setItem(COSM_KEY, JSON.stringify(o)); } catch (e) {} }
 function _ciniOwned(k) { const o = _cosmGet(); return (o.cini === true && CINI_LEGACY.includes(k)) || (Array.isArray(o.ciniOwn) && o.ciniOwn.includes(k)); }
@@ -9330,8 +9394,7 @@ function _applyCosmetics() {
   _applyOda();
 }
 function _kaftanImg(cls) {
-  const k = _cosmSel("kaftan"); if (!k) return "";
-  return `<img class="cosm-kaftan k-${k} ${cls || ""}" src="${COSMETICS.kaftan.icon}" alt="">`;
+  return `<img class="cosm-kaftan ${cls || ""}" src="${KAFTAN_IMG[_kaftanKey()]}" alt="">`;
 }
 // Yetersiz akçe: pencereyi kapat, Market'in akçe sekmesine geç (oyuncu kese alıp geri dönebilsin)
 function _cosmNeedAkce(msgEl, price, closeFn) {
@@ -9364,7 +9427,7 @@ function renderCosmeticRows() {
       ctrl = _cosmOwned(id) ? `<span class="mc-owned">${en ? "OWNED" : "SENİN"}</span>` : `<button type="button" class="mi-buy mc-btn mc-buy">${c.price} ${AKCE_COIN_SVG}</button>`;
     }
     if (id === "oda") ctrl = "";
-    const ico = id === "kaftan" && _cosmOwned("kaftan") ? `<img class="cosm-kaftan k-${_cosmSel("kaftan")}" src="${c.icon}" alt="">`
+    const ico = id === "kaftan" ? _kaftanImg()
               : id === "tugra" && _cosmOwned("tugra") ? `<img src="${_tugraCardBack() || c.icon}" alt="">`
               : `<img src="${c.icon}" alt="">`;
     row.innerHTML = `<div class="mc-prev mc-ico">${ico}</div><div class="mc-info"><div class="mc-name">${en ? c.en : c.tr}</div><div class="mc-desc">${en ? c.den : c.dtr}</div>${extra}</div>${ctrl}`;
@@ -9484,16 +9547,17 @@ function showKaftanPreview() {
   document.getElementById("kaftan-preview")?.remove();
   const en = window.LANG === 'en', c = COSMETICS.kaftan;
   const ov = document.createElement("div"); ov.id = "kaftan-preview"; ov.className = "info-panel-overlay cosm-pop";
-  let k = _cosmSel("kaftan") || "kirmizi", busy = false;
+  const ownedKeyNow = _kaftanKey();
+  let k = (_cosmOwned("kaftan") ? ownedKeyNow : null) || "zumrut", busy = false;
   const close = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 250); };
   const render = () => {
-    const own = _cosmOwned("kaftan"), on = own && _cosmSel("kaftan") === k;
+    const own = _cosmOwned("kaftan"), on = own && _kaftanKey() === k;
     ov.innerHTML = `<div class="ip-box cp-box">
       <div class="ip-title">${(en ? c.en : c.tr).toLocaleUpperCase(en ? "en" : "tr")}</div>
-      <img class="cosm-kaftan k-${k} kp-img" src="${c.icon}" alt="">
+      <img class="cosm-kaftan kp-img" src="${KAFTAN_IMG[k]}" alt="">
       <div class="kp-sw">${c.opts.map(([key, tr, enN]) => `<button type="button" class="sw${key === k ? " on" : ""}" data-k="${key}" style="background:${KAFTAN_SW[key]}" aria-label="${en ? enN : tr}"></button>`).join("")}</div>
       <div class="kp-name">${(c.opts.find(o => o[0] === k) || [])[en ? 2 : 1] || ""}</div>
-      <p class="kp-d">${en ? "Seen on your Ledger page and in death and ending scenes. One purchase, all three colours." : "Defter sayfanda, ölüm ve son sahnelerinde görünür. Bir kez alınır, üç renk de senin."}</p>
+      <p class="kp-d">${en ? "Seen on your Ledger page and in death and ending scenes. One purchase, all three. You already wear the plain kaftan for free — these three also start every reign with +3 Sultan's patience." : "Defter sayfanda, ölüm ve son sahnelerinde görünür. Bir kez alınır, üçü de senin. Sade kaftan zaten ücretsiz senin — bu üçü ayrıca her saltanata +3 Sultan sabrıyla başlar."}</p>
       <div class="cp-price">${own ? (en ? "Your kaftan" : "Kaftan senin") : `${AKCE_COIN_SVG} ${c.price} ${en ? "AKCE" : "AKÇE"}`}</div>
       <div class="cp-actions"><button type="button" class="cp-close">${en ? "CLOSE" : "KAPAT"}</button>
         ${own ? `<button type="button" class="cp-main cp-wear"${on ? " disabled" : ""}>${on ? (en ? "WORN ✓" : "GİYİLİ ✓") : (en ? "WEAR" : "GİY")}</button>` : `<button type="button" class="cp-main cp-buy">${en ? "BUY" : "SATIN AL"}</button>`}</div>
@@ -12378,6 +12442,7 @@ function showGameOver(reason) {
   try { _goAfter = _renderReignTitle(_goPanel, _goAfter) || _goAfter; } catch (e) { console.warn('[unvan]', e); }
   try { _goAfter = _renderDeathLesson(_goPanel, _goAfter) || _goAfter; } catch (e) { console.warn('[ders]', e); }
   try { _renderCosmPreview(_goPanel, _goAfter); } catch (e) { console.warn('[kozmetik]', e); }
+  try { _saveLastReign(); } catch (e) { console.warn('[son-saltanat]', e); }
   gameoverScreen.classList.add("visible");
 
   // Rating prompt — her 3. oyundan sonra, en az 2 yıl hayatta kaldıysa göster
@@ -12882,7 +12947,7 @@ function renderEpilog() {
     }
   }
   // Vakayiname sayfası (Tarihçilerin Notu cümleleri sayfanın açılışı ve kapanışı oldu)
-  section.className = "vakayiname" + (_cosmOwned("kalem") ? " gilded" : "");
+  { const vk = _vakKey(); section.className = "vakayiname" + (vk ? " ink-" + vk : ""); }
   section.innerHTML = _chronicleHTML();
 }
 
@@ -12993,11 +13058,20 @@ async function shareFerman() {
   c.lineWidth = 1;
   c.strokeRect(28, 28, 744, 1044);
 
-  if (_cosmOwned("kalem")) { // Hattat Kalemi: altın varaklı çift çerçeve + köşe gülleri
-    const gg = c.createLinearGradient(0, 0, 800, 1100); gg.addColorStop(0, "#f3d98a"); gg.addColorStop(0.5, "#b8892a"); gg.addColorStop(1, "#f3d98a");
-    c.strokeStyle = gg; c.lineWidth = 7; c.strokeRect(8, 8, 784, 1084);
-    c.lineWidth = 2; c.strokeRect(40, 40, 720, 1020);
-    [[40,40],[760,40],[40,1060],[760,1060]].forEach(([x, y]) => { c.beginPath(); c.arc(x, y, 14, 0, Math.PI * 2); c.fillStyle = "#9a1d12"; c.fill(); c.lineWidth = 2; c.strokeStyle = gg; c.stroke(); c.beginPath(); c.arc(x, y, 5, 0, Math.PI * 2); c.fillStyle = "#f3d98a"; c.fill(); });
+  { // Hattat Kalemi: sade (owned değil) = alttaki ince çerçeve yeterli; 3 mürekkepten biri sahipse varaklı çift çerçeve + köşe gülleri
+    const vk = _vakKey();
+    const VK_COLORS = { // [gradient 3 durak, köşe gülü dolgu]
+      gumus:    ["#eef2f6", "#9aa7b4", "#eef2f6", "#3a4452"],
+      altin:    ["#f3d98a", "#b8892a", "#f3d98a", "#9a1d12"],
+      lacivert: ["#9fb3e8", "#1e3a7a", "#9fb3e8", "#13224a"],
+    };
+    if (vk && VK_COLORS[vk]) {
+      const [s1, s2, s3, dot] = VK_COLORS[vk];
+      const gg = c.createLinearGradient(0, 0, 800, 1100); gg.addColorStop(0, s1); gg.addColorStop(0.5, s2); gg.addColorStop(1, s3);
+      c.strokeStyle = gg; c.lineWidth = 7; c.strokeRect(8, 8, 784, 1084);
+      c.lineWidth = 2; c.strokeRect(40, 40, 720, 1020);
+      [[40,40],[760,40],[40,1060],[760,1060]].forEach(([x, y]) => { c.beginPath(); c.arc(x, y, 14, 0, Math.PI * 2); c.fillStyle = dot; c.fill(); c.lineWidth = 2; c.strokeStyle = gg; c.stroke(); c.beginPath(); c.arc(x, y, 5, 0, Math.PI * 2); c.fillStyle = s1; c.fill(); });
+    }
   }
   // Köşe bezemeleri
   const corners = [[28,28],[772,28],[28,1072],[772,1072]];
@@ -13162,6 +13236,7 @@ function restartGame() {
   if (cinematicEl) cinematicEl.classList.add("hidden");
 
   introScreen.style.display = "";
+  try { _applyLastReignTint(); } catch (e) {}
   setTimeout(maybeShowStarterOffer, 700); // 5. oyundan sonra Başlangıç Kesesi (bir kez)
   // 8 Ekim 2026: ilk saltanat bittikten sonra ana menüde (başka pencere yoksa) bildirim izni yumuşak sorusu
   setTimeout(() => { try { if (window.Notif && introScreen.style.display !== "none") Notif.ask("menu"); } catch (e) {} }, 1600);
@@ -13695,6 +13770,20 @@ document.getElementById("akce-x")?.addEventListener("click", () => hideAkceScree
   updateAkceUI();
 })();
 
+// İLERLEMEN çekmecesi (5 Kasım 2026): tetikleyici satır + alttan açılan sheet
+(function initProgressSheet() {
+  const trig = document.getElementById("progress-trigger");
+  const sheet = document.getElementById("progress-sheet");
+  const backdrop = document.getElementById("progress-sheet-backdrop");
+  if (!trig || !sheet || !backdrop) return;
+  const open = () => { sheet.classList.add("on"); backdrop.classList.add("on"); trig.setAttribute("aria-expanded", "true"); };
+  const close = () => { sheet.classList.remove("on"); backdrop.classList.remove("on"); trig.setAttribute("aria-expanded", "false"); };
+  trig.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); open(); });
+  backdrop.addEventListener("click", close);
+  // İçerideki herhangi bir karta dokunulunca (başka bir ekran açılacağı için) sheet de kapanır
+  document.getElementById("progress-grid")?.addEventListener("click", e => { if (e.target.closest(".prog-tile")) close(); });
+})();
+
 // D6 (6 Ekim 2026): uzun ekranlarda "aşağıda daha var" ipucu — yalnız ekran en üstteyken ve
 // gerçekten aşağıda içerik varken; dokunmayı engellemez (pointer-events: none).
 (function initScrollHint() {
@@ -13721,3 +13810,4 @@ document.getElementById("akce-x")?.addEventListener("click", () => hideAkceScree
 
 // ── Init ──────────────────────────────────────────────────────────
 updateStatUI();
+try { _applyLastReignTint(); } catch (e) {}

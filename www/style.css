@@ -260,6 +260,16 @@ html, body {
   to   { opacity: 1; }
 }
 
+/* Menü, son saltanatın izini taşır (5 Kasım 2026) — yalnız görsel, hiçbir mekaniği etkilemez */
+#intro-content.reign-bad { filter: saturate(.5) brightness(.85); }
+#intro-content.reign-good { filter: saturate(1.18) brightness(1.05); }
+#last-reign-plaque { display: flex; align-items: center; gap: 7px; font-family: 'Alegreya', serif; font-style: italic;
+  font-size: 11.5px; line-height: 1.3; padding: 6px 14px; border-radius: 20px; margin-bottom: 10px; max-width: 100%; }
+#last-reign-plaque .lrp-ic { flex: none; font-size: 13px; }
+#last-reign-plaque .lrp-t { overflow-wrap: anywhere; }
+#last-reign-plaque.bad { background: rgba(10,6,6,.4); border: 1px solid rgba(201,82,74,.35); color: rgba(230,180,160,.9); }
+#last-reign-plaque.good { background: rgba(20,15,5,.35); border: 1px solid rgba(232,200,74,.4); color: #F0D08A; }
+
 /* Tuğra SVG */
 #intro-tugra {
   width: auto;
@@ -5032,6 +5042,10 @@ html, body {
   #item-bar { padding-top: 4px; padding-bottom: 6px; }
   /* Birleşik kart zaten bölünmüş portre + altın çerçeveyle belli; üst satır sığmıyor */
   #card-knot-kicker.visible { display: none; }
+  /* iPhone SE (320×568) gibi en kısa ekranlarda uzun metinli kartlar stats-bar'ı yukarı itiyordu —
+     .letter-card #card-text zaten aynı max-height+scroll çözümünü kullanıyor, buraya da uygulandı
+     (5 Kasım 2026). Font küçültülmedi, sadece taşan metin kendi içinde kayıyor. */
+  #card-text { max-height: 22vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 }
 @media (max-height: 560px) {
   #card-image, #card-image-knot, #card-knot-seam { max-height: 15vh; }
@@ -5500,6 +5514,11 @@ body:has(#game.hidden) #critical-offer { display: none; }
 #ferman-chip .fc-dot.n { background: #e0a020; box-shadow: 0 0 6px #e0a020; }
 #ferman-overlay { position: fixed; inset: 0; z-index: 270; background: rgba(4,3,8,0.78); display: flex; align-items: center; justify-content: center; padding: 18px; opacity: 0; transition: opacity 0.3s ease; }
 #ferman-overlay.on { opacity: 1; }
+/* İlk 3 ferman: hafif altın parıltı — oyuncunun hayatında ilk kez, mekanik aynı */
+#ferman-overlay.fm-first.on { background: radial-gradient(ellipse at 50% 38%, rgba(232,200,74,.2), rgba(4,3,8,0.78) 68%); }
+.fm-first .fm-tugra { animation: fmFirstGlow 1.8s ease-out 1; }
+@keyframes fmFirstGlow { 0% { filter: drop-shadow(0 0 0 rgba(232,200,74,0)); } 40% { filter: drop-shadow(0 0 16px rgba(232,200,74,.9)); } 100% { filter: drop-shadow(0 0 0 rgba(232,200,74,0)); } }
+@media (prefers-reduced-motion: reduce) { .fm-first .fm-tugra { animation: none; } }
 .fm-scroll { width: min(92vw, 360px); display: flex; flex-direction: column; align-items: center; }
 .fm-rod { width: 106%; height: 13px; border-radius: 7px; background: linear-gradient(180deg, #a07c33, #5a4012 70%, #3b2a0b); box-shadow: 0 3px 8px rgba(0,0,0,0.6); position: relative; z-index: 2; }
 .fm-rod::before, .fm-rod::after { content: ''; position: absolute; top: -3px; width: 12px; height: 19px; border-radius: 4px; background: linear-gradient(180deg, #c9a227, #6b4a10); }
@@ -5883,21 +5902,27 @@ body:has(#game.hidden) #critical-offer { display: none; }
 .cf-card.frame-rustem::after  { border-image-source: url("assets/frames/cini-rustem.png");  border-image-slice: 69 69 85 68; }
 /* Sadrazam Kaftanı */
 .cosm-kaftan { display: block; object-fit: contain; margin: 0 auto; }
-.cosm-kaftan.k-lacivert { filter: hue-rotate(205deg) saturate(1.1); }
-.cosm-kaftan.k-zumrut { filter: hue-rotate(115deg) saturate(.9); }
 .df-kaftan { width: 44px; height: 44px; margin-bottom: 2px; }
 .ds-kaftan { width: 54px; height: 54px; margin-bottom: 6px; filter: drop-shadow(0 0 8px rgba(232,200,74,.35)); }
-.ds-kaftan.k-lacivert { filter: hue-rotate(205deg) saturate(1.1) drop-shadow(0 0 8px rgba(232,200,74,.35)); }
-.ds-kaftan.k-zumrut { filter: hue-rotate(115deg) saturate(.9) drop-shadow(0 0 8px rgba(232,200,74,.35)); }
 .en-kaftan { width: 48px; height: 48px; margin: 4px auto 2px; }
-/* Hattat Kalemi: varaklı Vakayiname */
-#gameover-epilog.vakayiname.gilded { background: radial-gradient(ellipse at 50% 0%, rgba(232,200,74,.28), transparent 60%), linear-gradient(180deg, #f3e8cc, #e6d3a8);
+/* Hattat Kalemi: 3 tezhip rengi (sade/ücretsiz sayfa hiçbir ek sınıf almaz, temel görünümde kalır) */
+#gameover-epilog.vakayiname.ink-altin { background: radial-gradient(ellipse at 50% 0%, rgba(232,200,74,.28), transparent 60%), linear-gradient(180deg, #f3e8cc, #e6d3a8);
   border-image: linear-gradient(135deg, #f3d98a, #b8892a 30%, #f3d98a 50%, #b8892a 70%, #f3d98a) 12; outline: 1px solid #b8892a; outline-offset: -16px; }
-.vakayiname.gilded .vk-title::before, .vakayiname.gilded .vk-title::after { content: "❦"; color: #b8892a; margin: 0 8px; }
-.vakayiname.gilded .vk-intro::first-letter { float: left; font-family: 'Cinzel Decorative', serif; font-size: 40px; line-height: .9; padding: 3px 6px 0 0; color: #9a1d12; }
-.vakayiname.gilded .vk-intro { text-align: left; }
-.vakayiname.gilded .vk-list li { border-left: 2px solid rgba(184,137,42,.45); padding-left: 8px; }
-.vakayiname.gilded .vk-yr { color: #9a1d12; }
+#gameover-epilog.vakayiname.ink-gumus { background: radial-gradient(ellipse at 50% 0%, rgba(154,167,180,.28), transparent 60%), linear-gradient(180deg, #eef1f4, #d7dde3);
+  border-image: linear-gradient(135deg, #eef2f6, #9aa7b4 30%, #eef2f6 50%, #9aa7b4 70%, #eef2f6) 12; outline: 1px solid #9aa7b4; outline-offset: -16px; }
+#gameover-epilog.vakayiname.ink-lacivert { background: radial-gradient(ellipse at 50% 0%, rgba(30,58,122,.22), transparent 60%), linear-gradient(180deg, #e3e8f5, #c7d0ea);
+  border-image: linear-gradient(135deg, #9fb3e8, #1e3a7a 30%, #9fb3e8 50%, #1e3a7a 70%, #9fb3e8) 12; outline: 1px solid #1e3a7a; outline-offset: -16px; }
+.vakayiname.ink-altin .vk-title::before, .vakayiname.ink-altin .vk-title::after { content: "❦"; color: #b8892a; margin: 0 8px; }
+.vakayiname.ink-gumus .vk-title::before, .vakayiname.ink-gumus .vk-title::after { content: "❦"; color: #6b7684; margin: 0 8px; }
+.vakayiname.ink-lacivert .vk-title::before, .vakayiname.ink-lacivert .vk-title::after { content: "❦"; color: #1e3a7a; margin: 0 8px; }
+.vakayiname.ink-altin .vk-intro::first-letter, .vakayiname.ink-gumus .vk-intro::first-letter, .vakayiname.ink-lacivert .vk-intro::first-letter { float: left; font-family: 'Cinzel Decorative', serif; font-size: 40px; line-height: .9; padding: 3px 6px 0 0; color: #9a1d12; }
+.vakayiname.ink-altin .vk-intro, .vakayiname.ink-gumus .vk-intro, .vakayiname.ink-lacivert .vk-intro { text-align: left; }
+.vakayiname.ink-altin .vk-list li { border-left: 2px solid rgba(184,137,42,.45); padding-left: 8px; }
+.vakayiname.ink-gumus .vk-list li { border-left: 2px solid rgba(106,118,132,.45); padding-left: 8px; }
+.vakayiname.ink-lacivert .vk-list li { border-left: 2px solid rgba(30,58,122,.45); padding-left: 8px; }
+.vakayiname.ink-altin .vk-yr { color: #9a1d12; }
+.vakayiname.ink-gumus .vk-yr { color: #3a4452; }
+.vakayiname.ink-lacivert .vk-yr { color: #13224a; }
 
 /* ── Diplomasi (4 Ekim 2026) ── */
 .dh-sub { margin-top: 14px; }
@@ -6337,11 +6362,29 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 .mode-opt { min-height: 44px; padding: 4px; border-radius: 6px; border: 1px solid var(--gold-dim); background: transparent; color: rgba(201,162,39,0.8);
   font-family: 'Alegreya SC', serif; font-size: 11px; letter-spacing: 1.2px; line-height: 1.15; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .mode-opt.on { border-color: var(--gold); color: var(--gold); background: var(--gold-faint); box-shadow: inset 0 0 0 1px rgba(201,162,39,0.25); }
-.menu-head-line { display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%; max-width: 330px; margin-top: 6px;
-  font-family: 'Alegreya SC', serif; font-size: 10.5px; letter-spacing: 3px; color: rgba(201,162,39,0.75); }
-.menu-head-line::before, .menu-head-line::after { content: ''; flex: 1; max-width: 70px; height: 1px; background: linear-gradient(90deg, transparent, rgba(201,162,39,0.45)); }
-.menu-head-line::after { background: linear-gradient(90deg, rgba(201,162,39,0.45), transparent); }
-#progress-grid { width: 100%; max-width: 330px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+/* İLERLEMEN artık çekmecede (5 Kasım 2026) — tetikleyici satır + alttan açılan sheet */
+#progress-trigger { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 330px; margin-top: 6px;
+  padding: 11px 14px; border-radius: 6px; border: 1px solid rgba(201,162,39,0.28);
+  background: linear-gradient(180deg, rgba(240,225,189,.05), rgba(240,225,189,.02));
+  color: var(--gold); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#progress-trigger:active { background: rgba(201,162,39,0.1); }
+#progress-trigger .pt-icons { display: flex; flex: none; }
+#progress-trigger .pt-ic { width: 26px; height: 26px; margin-left: -8px; border-radius: 50%; background: #1a1330;
+  border: 1px solid rgba(201,162,39,0.5); display: flex; align-items: center; justify-content: center; }
+#progress-trigger .pt-ic:first-child { margin-left: 0; }
+#progress-trigger .pt-ic svg { width: 13px; height: 13px; }
+#progress-trigger .pt-label { flex: 1; text-align: left; font-family: 'Alegreya SC', serif; font-size: 12.5px; letter-spacing: 1.4px; color: var(--gold-light); }
+#progress-trigger .pt-chev { width: 15px; height: 15px; flex: none; opacity: .75; }
+#progress-sheet-backdrop { position: fixed; inset: 0; z-index: 459; background: rgba(3,2,8,.72); opacity: 0; pointer-events: none; transition: opacity .22s ease; }
+#progress-sheet-backdrop.on { opacity: 1; pointer-events: auto; }
+#progress-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 460; background: linear-gradient(180deg, #1a1330, #120d22);
+  border-top: 1px solid rgba(201,162,39,.35); border-radius: 18px 18px 0 0; padding: 10px 18px calc(22px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -14px 40px rgba(0,0,0,.6); transform: translateY(100%); transition: transform .26s cubic-bezier(.2,.9,.3,1);
+  max-height: 80vh; overflow-y: auto; }
+#progress-sheet.on { transform: translateY(0); }
+#progress-sheet .ps-handle { width: 36px; height: 4px; border-radius: 3px; background: rgba(201,162,39,.35); margin: 2px auto 14px; }
+#progress-sheet .ps-title { font-family: 'Alegreya SC', serif; font-size: 13px; letter-spacing: 2px; color: #F0D08A; text-align: center; margin-bottom: 14px; }
+#progress-grid { width: 100%; max-width: 330px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .prog-tile { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-height: 118px; padding: 12px 8px;
   border-radius: 12px; border: 1px solid rgba(201,162,39,0.3); background: radial-gradient(ellipse at 50% 0%, rgba(201,162,39,0.12), rgba(201,162,39,0.03) 70%);
   color: var(--gold); text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -6445,8 +6488,6 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 .ip-box > button.cp-off { background: none; border: 0; min-height: 36px; margin-top: 0; color: rgba(240,230,208,.55); font-size: 11px; }
 .cp-msg { min-height: 16px; font-family: 'Alegreya', serif; font-size: 13px; color: var(--gold-light); text-align: center; }
 .kp-img { width: 132px; height: 132px; filter: drop-shadow(0 0 12px rgba(232,200,74,.3)); }
-.kp-img.k-lacivert { filter: hue-rotate(205deg) saturate(1.1) drop-shadow(0 0 12px rgba(232,200,74,.3)); }
-.kp-img.k-zumrut { filter: hue-rotate(115deg) saturate(.9) drop-shadow(0 0 12px rgba(232,200,74,.3)); }
 .kp-sw, .ms-sw { display: flex; gap: 10px; justify-content: center; }
 .kp-sw .sw, .ms-sw .sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid rgba(232,200,74,.35); cursor: pointer; padding: 0; }
 .kp-sw .sw.on, .ms-sw .sw.on { border-color: var(--gold-light); box-shadow: 0 0 0 2px rgba(232,200,74,.35); }
