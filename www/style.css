@@ -6669,6 +6669,8 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 #gameover-cosm .cp-tg img { width: 92%; height: auto; }
 #gameover-cosm .cp-cat { display: flex; align-items: flex-end; justify-content: center; background: linear-gradient(180deg, #1d1636, #0b0918); }
 #gameover-cosm .cp-cat svg { width: 92%; height: auto; margin-bottom: 10px; }
+#gameover-cosm .cp-pen { display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 40%, #1d1636, #0b0918); }
+#gameover-cosm .cp-pen img { width: 88%; height: auto; }
 /* E4 (8 Ekim 2026): başarım ilerlemesi */
 .ach-prog { height: 4px; border-radius: 2px; background: rgba(201,162,39,.14); margin-top: 6px; overflow: hidden; }
 .ach-prog i { display: block; height: 100%; border-radius: 2px; background: linear-gradient(90deg, #B38D1C, #E8C84A); }

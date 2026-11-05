@@ -9318,8 +9318,8 @@ const COSMETICS = {
   kaftan: { price: 6, icon: "assets/icons/item-kaftan-zumrut.png", tr: "Sadrazam Kaftanı", en: "Grand Vizier's Kaftan",
             dtr: "Üç gerçek kaftan + her saltanata +3 Sultan sabrıyla başlama. Sade kaftan zaten ücretsiz senin.", den: "Three real kaftans + start every reign with +3 Sultan's patience. The plain kaftan is already yours for free.",
             opts: [["zumrut", "Zümrüt", "Emerald"], ["lacivert", "Lacivert", "Navy"], ["hunkar", "Hünkâr", "Imperial"]] },
-  kalem:  { price: 5, icon: "assets/icons/item-hattat-kalemi.png", tr: "Hattat Kalemi", en: "Calligrapher's Pen",
-            dtr: "Vakayiname üç tezhip renginden biriyle süslenir; paylaşılan görsel de. Sade sayfa zaten ücretsiz senin.", den: "Your Chronicle is illuminated in one of three ink colours; your shared image too. The plain page is already yours for free.",
+  kalem:  { price: 5, icon: "assets/icons/item-kalem-sade.png", tr: "Hattat Kalemi", en: "Calligrapher's Pen",
+            dtr: "Vakayiname üç tezhip renginden biriyle süslenir; paylaşılan görsel de. Sade hokka zaten ücretsiz senin.", den: "Your Chronicle is illuminated in one of three ink colours; your shared image too. The plain inkwell is already yours for free.",
             opts: [["gumus", "Gümüş Mürekkep", "Silver Ink"], ["altin", "Altın Varak", "Gilded Gold"], ["lacivert", "Lacivert Tezhip", "Indigo Illumination"]] },
   // K2 (8 Ekim 2026): gerçek padişah tuğraları (Wikimedia Commons, kamu malı) — fermanın başında o anki
   // sultanın tuğrası; kart arkasının madalyonunda seçilen tuğra ("auto" = o anki sultan).
@@ -9349,6 +9349,17 @@ function _kaftanKey() {
   if (!_cosmOwned("kaftan")) return "basit";
   const raw = _cosmSel("kaftan");
   return KAFTAN_IMG[raw] && raw !== "basit" ? raw : "zumrut";
+}
+// Vakayiname kalemi: aynı kaftan deseni — sade herkeste ücretsiz, 3 mürekkep satın alınca açılır.
+const KALEM_IMG = {
+  sade:     "assets/icons/item-kalem-sade.png",
+  gumus:    "assets/icons/item-kalem-gumus.png",
+  altin:    "assets/icons/item-kalem-altin.png",
+  lacivert: "assets/icons/item-kalem-lacivert.png",
+};
+function _kalemImg(cls) {
+  const k = _vakKey() || "sade"; // _vakKey: owned değilse null (sade)
+  return `<img class="${cls || ""}" src="${KALEM_IMG[k]}" alt="">`;
 }
 const VAKAYINAME_INKS = ["gumus", "altin", "lacivert"];
 // Hattat Kalemi: owned değilse null (sade/ücretsiz sayfa, mevcut temel görünüm); owned ise 3 mürekkepten biri.
@@ -9428,6 +9439,7 @@ function renderCosmeticRows() {
     }
     if (id === "oda") ctrl = "";
     const ico = id === "kaftan" ? _kaftanImg()
+              : id === "kalem" ? _kalemImg()
               : id === "tugra" && _cosmOwned("tugra") ? `<img src="${_tugraCardBack() || c.icon}" alt="">`
               : `<img src="${c.icon}" alt="">`;
     row.innerHTML = `<div class="mc-prev mc-ico">${ico}</div><div class="mc-info"><div class="mc-name">${en ? c.en : c.tr}</div><div class="mc-desc">${en ? c.den : c.dtr}</div>${extra}</div>${ctrl}`;
@@ -12578,6 +12590,7 @@ function _renderCosmPreview(panel, after) {
       ? `<div class="cp-thumb cp-card cf-card has-frame frame-${cf.k}"><img src="assets/characters/${encodeURIComponent(chr)}.jpg" alt="" onerror="this.src='assets/characters/1-sultan.jpg'"></div>`
       : id === "tugra" ? `<div class="cp-thumb cp-tg"><img src="${_tugraFor(selectedSultan && selectedSultan.id) || c.icon}" alt=""></div>`
       : id === "kedi" ? `<div class="cp-thumb cp-cat"><img src="assets/cat/cat-full.png" alt=""></div>`
+      : id === "kalem" ? `<div class="cp-thumb cp-pen"><img src="${KALEM_IMG.altin}" alt=""></div>`
       : `<div class="cp-thumb cp-gild"><span class="cp-dc">${en ? "T" : "S"}</span><i></i><i></i><i></i><i></i></div>`;
   el.innerHTML = `${prev}<div class="cp-info"><div class="cp-kick">${en ? "IT COULD HAVE LOOKED LIKE THIS" : "BÖYLE DE GÖRÜNEBİLİRDİ"}</div>
     <div class="cp-name">${en ? c.en : c.tr}${cf ? ` · ${en ? cf.en : cf.tr}` : rm ? ` · ${en ? rm.en : rm.tr}` : ""}</div><div class="cp-desc">${en ? c.den : c.dtr}</div>
