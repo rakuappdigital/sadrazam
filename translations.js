@@ -521,6 +521,7 @@ window.UI_STRINGS = {
     'btn.invite_friend':    'ARKADAŞINI DAVET ET',
     'share.invite_text':    "Divan: Sadrazam'da Osmanlı'nın Sadrazamıyım — benden fazla dayanabilir misin? ⚔️",
     'share.invite_copied':  'Davet bağlantısı kopyalandı',
+    'share.invite_reward':  'Daveti gönderdiğin için +3 akçe!',
     // Oyun menüsü (duraklat)
     'gamemenu.title':       'DURAKLAT',
     'gamemenu.quit':        'OYUNU BİTİR',
@@ -760,6 +761,7 @@ window.UI_STRINGS = {
     'btn.invite_friend':    'INVITE A FRIEND',
     'share.invite_text':    "I'm the Grand Vizier of the Ottoman Empire in Divan: Sadrazam — can you survive longer than me? ⚔️",
     'share.invite_copied':  'Invite link copied',
+    'share.invite_reward':  '+3 akçe for sending an invite!',
     // Game menu
     'gamemenu.title':       'PAUSED',
     'gamemenu.quit':        'END GAME',

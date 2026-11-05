@@ -12902,19 +12902,31 @@ document.getElementById("share-btn").addEventListener("click", showShareMenu);
 document.getElementById("btn-leaderboard")?.addEventListener("click", () => GameCenter.showLeaderboard());
 document.getElementById("btn-invite-friend")?.addEventListener("click", inviteFriend);
 
+const INVITE_SEND_REWARD = 3; // tek seferlik, davet eden kişiye; davet edilenin oynayıp oynamadığını doğrulayacak bir sunucumuz yok
+
+function _maybeRewardInviteSend() {
+  try {
+    if (localStorage.getItem('sadrazam_invite_rewarded') === '1') return;
+    localStorage.setItem('sadrazam_invite_rewarded', '1');
+    addAkce(INVITE_SEND_REWARD);
+    _notify(t('share.invite_reward'), 2400, "invite");
+  } catch (e) {}
+}
+
 function inviteFriend() {
   const isEN = window.LANG === 'en';
   const text = t('share.invite_text');
   const url = isEN ? "https://apps.apple.com/app/id6783881003" : "https://apps.apple.com/tr/app/divan-sadrazam/id6783881003";
   try {
     if (navigator.share) {
-      navigator.share({ title: "Divan: Sadrazam", text, url }).catch(() => {});
+      navigator.share({ title: "Divan: Sadrazam", text, url }).then(_maybeRewardInviteSend).catch(() => {});
       return;
     }
   } catch (e) {}
   try {
-    navigator.clipboard.writeText(text + " " + url);
+    navigator.clipboard.writeText(text + " " + url).catch(() => {});
     _notify(t('share.invite_copied'), 2200, "invite");
+    _maybeRewardInviteSend();
   } catch (e) {}
 }
 

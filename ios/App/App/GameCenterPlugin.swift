@@ -15,6 +15,7 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
     ]
 
     private let leaderboardID = "years_survived"
+    private let weeklyLeaderboardID = "weekly_years"
 
     @objc func authenticate(_ call: CAPPluginCall) {
         let localPlayer = GKLocalPlayer.local
@@ -40,7 +41,9 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
         let value = call.getInt("value", 0)
-        GKLeaderboard.submitScore(value, context: 0, player: GKLocalPlayer.local, leaderboardIDs: [leaderboardID]) { error in
+        // Aynı skor hem ömür boyu hem haftalık (recurring) tabloya tek çağrıda gider — GKLeaderboard
+        // birden fazla leaderboardID kabul ediyor, haftalık tablonun sıfırlanması Apple tarafında otomatik.
+        GKLeaderboard.submitScore(value, context: 0, player: GKLocalPlayer.local, leaderboardIDs: [leaderboardID, weeklyLeaderboardID]) { error in
             if let error = error {
                 call.reject("Failed to submit score", nil, error)
             } else {
@@ -77,7 +80,9 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
         DispatchQueue.main.async {
-            let vc = GKGameCenterViewController(leaderboardID: self.leaderboardID, playerScope: .global, timeScope: .allTime)
+            // state: .leaderboards tüm tabloları (ömür boyu + haftalık) sekmeli gösterir —
+            // tek bir ID'ye sabitlemek yerine Apple'ın kendi liderlik ekranını kullanıyoruz.
+            let vc = GKGameCenterViewController(state: .leaderboards)
             vc.gameCenterDelegate = self
             self.bridge?.viewController?.present(vc, animated: true)
             call.resolve()
