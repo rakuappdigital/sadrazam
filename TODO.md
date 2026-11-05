@@ -1,26 +1,43 @@
 # Sadrazam — TODO
 
-## ⏭ SONRAKİ OTURUM BURADAN BAŞLA (5 Kasım 2026)
+## ⏭ SONRAKİ OTURUM BURADAN BAŞLA (5 Kasım 2026, akşam turu)
 
-**ASC durumu (API ile doğrulandı):** 1.7.3 → **READY_FOR_SALE (canlı)**. Build 54 (bildirim izni
-checkPermissions fix + çini önizleme fix) VALID ama hiçbir sürüme BAĞLI DEĞİL (şu an ASC'de açık/
-hazırlanan bir sürüm yok). Game Center liderlik tablosu + arkadaşını davet et + yeni ikon (hemen
-aşağıdaki madde, commit `96de2ba`) de henüz hiçbir build'e girmedi — web/Vercel'de yaşıyor.
-**Yapılacak:** ASC'de yeni bir sürüm aç (1.7.4?) → build 54'ü bağla (ya da Game Center değişikliği
-native tarafı etkilemiyorsa önce onu bağlayıp, gerekiyorsa yeni bir build 55 alıp onu bağla) →
-kullanıcı inceleye gönderir.
+**Durum:** main'de commit `8cfe4b9` (+ öncesinde `12e500e`) ile BÜYÜK bir paket var, **henüz
+push/deploy/build YOK** — kullanıcı onayı bekliyor. ASC'de 1.7.3 hâlâ READY_FOR_SALE (canlı),
+build 54 hâlâ hiçbir sürüme bağlı değil.
 
-**Bekleyen 3 eski madde (hâlâ cevapsız, defalarca ertelendi):**
-1. **Derin analiz O/K/M kararı** (aşağıdaki "DERİN ANALİZ" bölümü, sayfa
-   https://claude.ai/artifact/2BQFywirHjRULv1cewbHCa) — 10 Ekim'de "1.7.1 verisiyle ~2 hafta sonra
-   (27 Ekim civarı) karar verilecek" denmişti, HÂLÂ verilmedi. TelemetryDeck'ten güncel veriyle
-   (artık 1.7.2/1.7.3 de var) aynı ölçümleri çıkar, sayfayı güncelle, kullanıcıdan O/K/M seçimini al.
-2. **ASC ürün sayfası stratejisi** (Product Page Optimization A/B + Custom Product Pages) — hiç başlanmadı.
-3. **Kozmetik/akçe ile satılabilecek yeni öğeler analizi** — hiç başlanmadı.
+**Bu turda YAPILDI (main'de, deploy edilmedi):**
+- Haftalık Game Center liderlik tablosu (`weekly_years`, ASC'de API ile oluşturuldu + TR/EN
+  localizasyon + ikon yüklendi) + davet gönderme ödülü (+3 akçe, tek seferlik) + Promosyon kodu
+  düğmesi Ayarlar'a geri kondu (commit `12e500e`).
+- Gerçek 4 kaftan illüstrasyonu (kullanıcının `~/Desktop/gorseller1/` görselleri; basit=ücretsiz
+  varsayılan, zümrüt/lacivert/hünkâr=satın alınca açılan 3 seçenek), satın alana +3 Sultan sabrı.
+- Vakayiname 4 mürekkep kademesi (sade ücretsiz + gümüş/altın/lacivert 3 ücretli).
+- Ana menü: İLERLEMEN artık alttan açılan çekmecede (Kompakt Defter tasarımı, gerçek oyun ikonlarıyla).
+- Menü son saltanatın izini taşıyor (kötü/iyi biten saltanata göre ton + levha).
+- Padişah Fermanı ilk 3 görünüşte hafif altın parıltı alıyor (IAP/ilk-2-yıl bulgusu için).
+- 320×568 (iPhone SE) taşma düzeltmesi (#card-text artık letter-card'daki gibi kendi içinde kayıyor).
+- `data/trivia.json` 55 → 120 soru (65 yeni, TR+EN tam).
+(commit `8cfe4b9`)
 
-**How to apply:** "sadrazam" ya da "devam" dendiğinde önce bu bölümü oku, ASC'yi tekrar kontrol et
-(durum değişmiş olabilir), sonra kullanıcıya hangisinden başlamak istediğini sor. Madde çözülünce
-buradan sil/güncelle.
+**Kullanıcı onayı bekleyen:** push + Vercel deploy, ardından native build (yeni kaftan assetleri +
+menü + diğer tüm JS/CSS değişiklikleri için `cap sync` + yeni build no ile Xcode archive gerekiyor).
+
+**Hâlâ ertelenen/bekleyen maddeler:**
+1. **Derin analiz O/K/M kararı** — bu turda TAZE TelemetryDeck verisiyle (son 30 gün: 240 kullanıcı,
+   paywall gören 112, alan 13 = ~%12) tablo düzeltildi, 19 Ekim'deki kötümser "0 satış" verisi
+   güncel değilmiş. Asıl O/K/M kararı (temel oyun döngüsü) kullanıcı kararıyla hâlâ ertelendi —
+   sohbette detaylı irdeleme yapıldı, karar kullanıcıda.
+2. **ASC ürün sayfası stratejisi** — hiç başlanmadı.
+3. **Vezirler Defteri → Hanedan Ağacı** — kullanıcı kararıyla ERTELENDİ (gerekçe: önceki saltanatlar
+   padişah değil sadrazam, "hanedan" çerçevesi gerçekçiliği azaltıyor; yeniden düşünülecek).
+4. **Divan Kedisi kıyafetleri, mevsimsel oda/mühür, kart arka plan paletleri** — kullanıcı kararıyla
+   şimdilik gerek yok / ertelendi.
+5. **Market'teki 3 ürün karışıklığı (fullnoads yetim ürün)** — bilinçli DOKUNULMADI, satın alma
+   mantığına çok derin bağlı, risk/fayda dengesizdi.
+
+**How to apply:** "sadrazam" ya da "devam" dendiğinde önce bu bölümü oku, deploy/build onayı
+istenip istenmediğini sor; ASC'yi tekrar kontrol et. Madde çözülünce buradan sil/güncelle.
 
 ## ✅ Game Center: Liderlik Tablosu + Arkadaşını Davet Et + yeni ikon (5 Kasım 2026)
 Commit `96de2ba`, push + Vercel deploy yapıldı (bu sürüm henüz bir iOS build'e girmedi —
