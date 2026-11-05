@@ -4337,23 +4337,26 @@ html, body {
   color: currentColor;
 }
 
+/* 5 Kasım 2026: "Arkadaşını Davet Et" eklenince 4 düğme oldu — eski tek satır + nowrap
+   (3 düğme için yazılmıştı) metni birbirine bindiriyordu. 2×2 ızgaraya çevrildi, metin
+   sarmasına izin verildi. */
 #ghost-buttons-row {
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
   width: 100%;
   max-width: 330px; /* G1-A1: kutularla aynı genişlik */
   margin-top: 4px;
 }
 #ghost-buttons-row .intro-btn.ghost {
-  flex: 1 1 0;
   min-width: 0;
   max-width: none;
-  /* 3 düğme (Market · Hediye · Ayarlar) satıra sığsın — 27 Eylül 2026 */
-  padding: 12px 4px;
-  letter-spacing: 1px;
+  padding: 10px 6px;
+  letter-spacing: .6px;
   font-size: 10.5px;
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.25;
+  text-align: center;
 }
 
 #settings-content {
