@@ -1,5 +1,43 @@
 # Sadrazam — TODO
 
+## ✅ TAMAMLANDI — Mühür/kaftan/kalem/tuğra görsel düzeltmeleri + SADRAZAM başlığı Tuğra Akışı (6 Kasım 2026)
+
+**Durum: hepsi push + Vercel deploy edildi, canlıda doğrulandı** (son: `style.css?v=12`,
+`game.js?v=15`). Commit'ler: `32aae18`, `32fa65a`, `a262386`.
+
+**Yapılanlar:**
+1. **5 kişisel mühür görselindeki beyaz hale** (koyu panel üstünde görünen gölge artığı) —
+   eski floodfill tek köşeden + düşük fuzz'du, yetersiz kalıyordu. 12 tohum noktalı +
+   %32 fuzz + alfa blur/level ile yeniden işlendi, hepsi temiz.
+2. **"Mühür Baskısı" tasarımı baştan değişti** — kullanıcının yeni ürettiği görsel
+   (`~/Desktop/muhur/muhurbaskisi.png`, mavi-altın, dolu merkez) kullanıldı, eski boş/şeffaf
+   halka kaldırıldı. Harf rengi koyu kızıldan altına çevrildi (`MUHUR_TXT_COLOR.baski`).
+3. **Kozmetik önizlemeleri dikey uzuyordu (kaftan/kalem/mühür/tuğra)** — kök neden: ortak
+   `.cf-sw` kuralı yalnız çini kartları (540×720, gerçek 3:4) için yazılmıştı;
+   kaftan/kalem/mühür görselleri kare (384×384), tuğra yatay (360×~150-200) olduğu halde
+   aynı `aspect-ratio:3/4 + background-size:100% 100%` kuralına giriyordu. Düzeltme:
+   `.cf-sw.muhur-sw` (1:1, contain — kaftan/kalem/mühür paylaşıyor) ve `.cf-sw.tugra-sw`
+   (16:9, contain) eklendi; popup'taki büyük önizleme `.kp-img`'e de `object-fit:contain`
+   eklendi. **Not:** "basit kaftan"/"sade hokka" zaten mevcuttu ve doğru çalışıyordu —
+   satır ikonunda otomatik gösteriliyor, 3 ücretli varyant ayrı kutularda (muhur'daki "sade"
+   ile birebir aynı mimari, bu bir hata değildi, kullanıcıya ekran görüntüsüyle doğrulandı).
+4. **SADRAZAM başlığına "Tuğra Akışı" eklendi** (kullanıcı 4 Osmanlı-motifi önerisinden A'yı
+   seçti: https://claude.ai/artifact/FKjvpXfbhU5DH2fdBFtGGF ) — yazının arkasından padişah
+   tuğrası gibi akıcı bir SVG hat çizgisi geçiyor, Kandil Halkası titreşimiyle (zaten canlıydı)
+   birlikte çalışıyor. B/C/D (Çini Dolgu, Yaldızlı Tezhip, Ferman Mührü) seçilmedi, kodlanmadı.
+5. **Promosyon kodu ↔ Apple çakışması sorusu cevaplandı** (sohbette): özel `PROMO_CODES`/
+   `showPromoCodeModal()` sistemi Apple'ın kendi IAP kod sistemine hiç dokunmuyor, StoreKit'e
+   bağlı değil, native'de de web'deki gibi çalışır — çakışma riski yok.
+
+**Bekleyen (kullanıcı "ekranı kapatıp sonra devam edeceğim" dedi):**
+- **Native build YAPILMADI** — bu turdaki tüm değişiklikler yalnız web'de (3 kopya senkron +
+  Vercel). Bir sonraki iOS build'inde `cap sync ios` + build no artırma + archive gerekiyor
+  (CLAUDE.md §2), kullanıcı isteyince.
+- Başka açık madde yok — bu görev tamamlandı.
+
+**How to apply:** "sadrazam" ya da "devam" dendiğinde önce bu bölümü oku; native build
+istenirse CLAUDE.md §2'deki adımları izle (versiyon/build no kullanıcıya sorulmalı).
+
 ## ⏭ SONRAKİ OTURUM BURADAN BAŞLA (5 Kasım 2026, akşam turu)
 
 **Durum:** main'de commit `8cfe4b9` (+ öncesinde `12e500e`) ile BÜYÜK bir paket var, **henüz
