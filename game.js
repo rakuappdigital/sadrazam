@@ -3178,7 +3178,7 @@ function renderMarketCosmetics() {
   const box = document.getElementById("market-cosmetic-list"); if (!box) return;
   const en = window.LANG === 'en', k = _muhurKey();
   const tiles = `<div class="cf-tiles">${MUHUR_KEYS.map(key => { const own = _muhurOwnedK(key), on = own && k === key, price = COSMETICS.muhur.opts.find(o => o[0] === key)[3];
-    return `<button type="button" class="cf-tile${own ? " own" : ""}${on ? " on" : ""}" data-k="${key}" aria-label="${key}"><span class="cf-sw" style="background-image:url('${MUHUR_IMG[key]}')"></span><span class="cf-p">${on ? (en ? "ON" : "TAKILI") : own ? (en ? "YOURS" : "SENİN") : `${price} ${AKCE_COIN_SVG}`}</span></button>`; }).join("")}</div>`;
+    return `<button type="button" class="cf-tile${own ? " own" : ""}${on ? " on" : ""}" data-k="${key}" aria-label="${key}"><span class="cf-sw muhur-sw" style="background-image:url('${MUHUR_IMG[key]}')"></span><span class="cf-p">${on ? (en ? "ON" : "TAKILI") : own ? (en ? "YOURS" : "SENİN") : `${price} ${AKCE_COIN_SVG}`}</span></button>`; }).join("")}</div>`;
   const txt = _muhurTxt();
   const editor = k !== "sade" ? `<div class="ms-ed">
       <label class="ms-l" for="ms-txt">${en ? "LETTERS (1–2)" : "HARFLER (1–2)"}</label>

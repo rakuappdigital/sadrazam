@@ -325,6 +325,11 @@ html, body {
 .kandil.k5 { top: 46%; left: -.22em; } .kandil.k6 { top: 42%; right: -.22em; }
 @media (prefers-reduced-motion: reduce) { #intro-title { animation: introFadeIn 1s ease 0.5s forwards; } .kandil { animation: none; opacity: .6; } }
 
+/* Tuğra Akışı (6 Kasım 2026): başlığın arkasından tuğra hattı gibi akan tek bir çizgi. */
+.tugra-flow { position: absolute; left: -6%; top: -18%; width: 112%; height: 136%; z-index: -1; pointer-events: none; overflow: visible; }
+.tugra-flow path { fill: none; stroke: var(--gold-light); stroke-width: 1.4; opacity: .5; }
+.tugra-flow .tf-dot { fill: var(--gold-light); opacity: .75; }
+
 /* Başlık alt çizgisi */
 #intro-title-line {
   display: flex;
@@ -6485,6 +6490,7 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 .cf-p { display: inline-flex; align-items: center; gap: 2px; font-family: 'Alegreya SC', serif; font-size: 9.5px; color: var(--gold-light); white-space: nowrap; }
 .cf-p .akce-coin-svg { width: 10px; height: 10px; }
 .cf-tile.mini { padding: 3px; } .cf-tile.mini .cf-sw { max-width: 34px; }
+.cf-sw.muhur-sw { aspect-ratio: 1 / 1; background-color: transparent; background-size: contain; }
 .cp-box { gap: 10px; }
 .cf-card { position: relative; width: min(56vw, 200px); border-radius: 12px; overflow: hidden; background: #0E0B1A; border: 1px solid rgba(201,162,39,.55); box-shadow: 0 12px 30px rgba(0,0,0,.55); }
 .cf-card .cf-img { aspect-ratio: 3 / 3.3; background: #1a1430 center 15% / cover no-repeat; }
