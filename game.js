@@ -3143,79 +3143,59 @@ async function purchaseBundle(statusEl) {
 // 10 akçe, kalıcı. Oyuncunun 1–2 harfi + şekil (yuvarlak/sekizgen/tuğralı) + mum rengi.
 // Resim dosyası yok: her seferinde SVG çizilir. Görünür: ferman kabulünde basılır, Divan
 // Oturumu MÜHÜRLE düğmesi, Defter sayfası, Vakayiname. Sahibi ücretsiz yeniden düzenler.
-const SEAL_KEY = "sadrazam_seal", SEAL_PRICE = 10;
-const SEAL_WAX = { crimson: ["#d4473a", "#8a1d12", "#5e110a", "#e8c84a"], lapis: ["#4a6fc4", "#1e3a7a", "#11224a", "#e8c84a"], emerald: ["#3fa36e", "#1e6b45", "#0f3a25", "#e8c84a"], onyx: ["#4a423c", "#1b1715", "#0a0807", "#d8b44a"] };
-function _getSeal() { try { const s = JSON.parse(localStorage.getItem(SEAL_KEY) || "null"); return s && s.owned ? s : null; } catch (e) { return null; } }
-function _setSeal(s) { try { localStorage.setItem(SEAL_KEY, JSON.stringify(s)); } catch (e) {} }
-let _sealGid = 0;
-function _personalSealSVG(cfg, cls) {
-  if (!cfg) return "";
-  const [c0, c1, c2, g] = SEAL_WAX[cfg.color] || SEAL_WAX.crimson, id = "psw" + (_sealGid++);
-  const J = [3, -2, 4, 1, -3, 2, 5, -1, 2, -4, 3, 0, 4, -2, 1, 3, -3, 2, 0, 4, -1, 2, -2, 3];
-  const P = J.map((j, i) => { const a = i / J.length * Math.PI * 2, r = 43 + j * 0.55; return [50 + r * Math.cos(a), 50 + r * Math.sin(a)]; });
-  const M = P.map((p, i) => { const q = P[(i + 1) % P.length]; return [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; });
-  const f1 = (n) => n.toFixed(1);
-  const edge = `M${f1(M[0][0])} ${f1(M[0][1])} ` + P.map((_, i) => { const p = P[(i + 1) % P.length], m = M[(i + 1) % P.length]; return `Q${f1(p[0])} ${f1(p[1])} ${f1(m[0])} ${f1(m[1])}`; }).join(" ") + "Z";
-  const oct = (r) => Array.from({ length: 8 }, (_, i) => { const a = (i / 8) * Math.PI * 2 + Math.PI / 8; return `${(50 + r * Math.cos(a)).toFixed(1)},${(50 + r * Math.sin(a)).toFixed(1)}`; }).join(" ");
-  const ring = cfg.shape === "oct"
-    ? `<polygon points="${oct(31)}" fill="none" stroke="${g}" stroke-width="1.6"/><polygon points="${oct(26.5)}" fill="none" stroke="${g}" stroke-width=".6" stroke-dasharray="1.5 2"/>`
-    : `<circle cx="50" cy="50" r="30" fill="none" stroke="${g}" stroke-width="1.6"/><circle cx="50" cy="50" r="26" fill="none" stroke="${g}" stroke-width=".6" stroke-dasharray="1.5 2"/>`;
-  const t = String(cfg.txt || "S").toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, "").slice(0, 2) || "S";
-  let mid;
-  if (cfg.shape === "tugra") {
-    const tg = _TUGRA_SVG.replace('class="fm-tugra"', 'x="29" y="18" width="42" height="27"').replace('aria-hidden="true"', '');
-    mid = `<g style="color:${g}" opacity=".85">${tg}</g><text x="50" y="72" text-anchor="middle" font-family="'Cinzel Decorative','Alegreya SC',serif" font-weight="700" font-size="${t.length > 1 ? 15 : 18}" fill="${g}">${t}</text>`;
-  } else {
-    mid = `<text x="50" y="${t.length > 1 ? 58 : 60}" text-anchor="middle" font-family="'Cinzel Decorative','Alegreya SC',serif" font-weight="700" font-size="${t.length > 1 ? 22 : 28}" fill="${g}" letter-spacing="1">${t}</text>`;
-  }
-  return `<svg class="${cls || ""}" viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="${id}" cx="38%" cy="32%"><stop offset="0" stop-color="${c0}"/><stop offset=".7" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient></defs><path d="${edge}" fill="url(#${id})"/>${ring}${mid}</svg>`;
+// 6 Kasım 2026: prosedürel SVG mühür yerine kullanıcının 5 gerçek illüstrasyonu — sade (ücretsiz/
+// varsayılan, HİÇ harf yazılmaz) + klasik/bronz/baskı/mücevher (ayrı ayrı satılır). Aynı
+// kaftan/kalem/tuğra mimarisi: muhurOwn dizisi, muhurSel seçili tasarım; harfler ayrıca muhurTxt'te.
+const MUHUR_IMG = {
+  sade:     "assets/icons/item-muhur-sade.png",
+  klasik:   "assets/icons/item-muhur-klasik.png",
+  bronz:    "assets/icons/item-muhur-bronz.png",
+  baski:    "assets/icons/item-muhur-baski.png",
+  mucevher: "assets/icons/item-muhur-mucevher.png",
+};
+// Her tasarımın zemin rengine göre harf rengi — "baski" içi şeffaf/karanlık zemine oturacağı için koyu kızıl.
+const MUHUR_TXT_COLOR = { klasik: "#F0D28A", bronz: "#2a1d0a", baski: "#7a1812", mucevher: "#F0D28A" };
+const MUHUR_KEYS = ["klasik", "bronz", "baski", "mucevher"];
+function _muhurOwnedK(k) { const o = _cosmGet(); return Array.isArray(o.muhurOwn) && o.muhurOwn.includes(k); }
+function _muhurAny() { return MUHUR_KEYS.some(_muhurOwnedK); }
+function _muhurAll() { return MUHUR_KEYS.every(_muhurOwnedK); }
+function _muhurBuy(k) { const o = _cosmGet(); const own = Array.isArray(o.muhurOwn) ? o.muhurOwn : []; if (!own.includes(k)) own.push(k); o.muhurOwn = own; o.muhurSel = k; _cosmSet(o); }
+function _muhurKey() {
+  const sel = _cosmGet().muhurSel;
+  if (sel && MUHUR_KEYS.includes(sel) && _muhurOwnedK(sel)) return sel;
+  return MUHUR_KEYS.find(_muhurOwnedK) || "sade";
+}
+function _muhurTxt() { try { return (_cosmGet().muhurTxt || "").toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, "").slice(0, 2); } catch (e) { return ""; } }
+// Harfler yalnız ücretli bir tasarım giyiliyken basılır — sade'de hiçbir zaman yazı yok (kullanıcı kuralı).
+function _personalSealSVG() {
+  const k = _muhurKey(), txt = k === "sade" ? "" : _muhurTxt();
+  // txt zaten _muhurTxt() içinde [A-ZÇĞİÖŞÜ] dışındaki her şey süzülerek geliyor, ayrıca escape gerekmiyor
+  return `<span class="muhur-wrap"><img src="${MUHUR_IMG[k]}" alt="">${txt ? `<b class="muhur-txt" style="color:${MUHUR_TXT_COLOR[k]}">${txt}</b>` : ""}</span>`;
 }
 // M1-C (8 Ekim 2026, kullanıcı seçimi): mühür ayrı pencerede değil, Market satırında düzenlenir.
 // Her değişiklik anında kaydedilir (Kaydet/Kapat yok → Market'e "geri dönememe" sorunu olamaz).
 function renderMarketCosmetics() {
   const box = document.getElementById("market-cosmetic-list"); if (!box) return;
-  const en = window.LANG === 'en', own = _getSeal();
-  const preview = own ? { ...own, txt: own.txt || "?" } : { color: "crimson", shape: "round", txt: en ? "GV" : "SD" };
-  const SH = [["round", en ? "Round" : "Yuvarlak"], ["oct", en ? "Octagon" : "Sekizgen"], ["tugra", en ? "Tughra" : "Tuğralı"]];
-  const editor = own ? `<div class="ms-ed">
+  const en = window.LANG === 'en', k = _muhurKey();
+  const tiles = `<div class="cf-tiles">${MUHUR_KEYS.map(key => { const own = _muhurOwnedK(key), on = own && k === key, price = COSMETICS.muhur.opts.find(o => o[0] === key)[3];
+    return `<button type="button" class="cf-tile${own ? " own" : ""}${on ? " on" : ""}" data-k="${key}" aria-label="${key}"><span class="cf-sw" style="background-image:url('${MUHUR_IMG[key]}')"></span><span class="cf-p">${on ? (en ? "ON" : "TAKILI") : own ? (en ? "YOURS" : "SENİN") : `${price} ${AKCE_COIN_SVG}`}</span></button>`; }).join("")}</div>`;
+  const txt = _muhurTxt();
+  const editor = k !== "sade" ? `<div class="ms-ed">
       <label class="ms-l" for="ms-txt">${en ? "LETTERS (1–2)" : "HARFLER (1–2)"}</label>
-      <input id="ms-txt" class="se-txt ms-txt" type="text" maxlength="2" autocomplete="off" autocapitalize="characters" value="${own.txt || ""}">
-      <div class="ms-opts">${SH.map(([k, l]) => `<button type="button" class="se-opt ms-opt${own.shape === k ? " on" : ""}" data-shape="${k}">${l}</button>`).join("")}</div>
-      <div class="ms-sw">${Object.keys(SEAL_WAX).map(k => `<button type="button" class="sw${own.color === k ? " on" : ""}" data-color="${k}" style="background:${SEAL_WAX[k][1]}" aria-label="${k}"></button>`).join("")}</div>
-      <div class="ms-ok" aria-live="polite"></div></div>` : "";
-  box.innerHTML = `<div class="mc-row mc-seal${own ? " open" : ""}"><div class="mc-prev">${_personalSealSVG(preview)}</div>
-    <div class="mc-info"><div class="mc-name">${en ? "Personal Seal" : "Kişisel Mühür"}</div><div class="mc-desc">${en ? "Your initials, your shape and wax colour. Pressed on your decrees, Divan decisions and Ledger pages." : "Baş harflerin, seçtiğin şekil ve mum rengi. Fermanlarına, Divan kararlarına ve Defter sayfalarına basılır."}</div>${editor}</div>
-    ${own ? "" : `<button type="button" class="mi-buy mc-btn">${SEAL_PRICE} ${AKCE_COIN_SVG}</button>`}</div>`;
-  const buy = box.querySelector(".mc-seal .mc-btn");
-  if (buy) buy.onclick = () => {
-    const status = document.getElementById("akce-status");
-    if (_getSeal()) return;
-    buy.disabled = true;
-    if (!spendAkce(SEAL_PRICE)) { buy.disabled = false; _cosmNeedAkce(status, SEAL_PRICE); return; }
-    _setSeal({ owned: true, txt: "", shape: "round", color: "crimson" });
-    updateAkceUI();
-    if (window.playSelectConfirm) playSelectConfirm();
-    _an("cosmetic_buy", { id: "seal", where: "market" });
-    if (status) status.textContent = en ? "Your seal is ready. Choose your letters." : "Mührün hazır. Harflerini seç.";
-    _renderCosmTab();
-    setTimeout(() => { try { document.getElementById("ms-txt")?.focus(); } catch (e) {} }, 60);
-  };
-  if (!own) return;
-  const cfg = { txt: own.txt || "", shape: own.shape || "round", color: own.color || "crimson" };
-  const prevEl = box.querySelector(".mc-seal .mc-prev"), okEl = box.querySelector(".ms-ok");
+      <input id="ms-txt" class="se-txt ms-txt" type="text" maxlength="2" autocomplete="off" autocapitalize="characters" value="${txt}">
+      <div class="ms-ok" aria-live="polite"></div></div>` : `<p class="ms-hint">${en ? "The plain seal carries no initials. Choose a design below to add yours." : "Sade mühüre harf basılmaz. Harflerini eklemek için aşağıdan bir tasarım seç."}</p>`;
+  box.innerHTML = `<div class="mc-row mc-seal open"><div class="mc-prev">${_personalSealSVG()}</div>
+    <div class="mc-info"><div class="mc-name">${en ? "Personal Seal" : "Kişisel Mühür"}</div><div class="mc-desc">${en ? "Five designs. The plain one is already yours, free — the other four are sold separately, each with your initials. Pressed on your decrees, Divan decisions and Ledger pages." : "Beş tasarım. Sade olan zaten ücretsiz senin — diğer dördü ayrı ayrı satılır, hepsinde baş harflerin basılır. Fermanlarına, Divan kararlarına ve Defter sayfalarına basılır."}</div>${tiles}${editor}</div></div>`;
+  box.querySelectorAll(".cf-tile").forEach(b => b.addEventListener("click", () => { if (window.playButtonTap) playButtonTap(); showCosmVariantPreview("muhur", b.dataset.k); }));
+  const inp = box.querySelector("#ms-txt"), okEl = box.querySelector(".ms-ok");
+  if (!inp) return;
   let okT = 0;
-  const save = () => {
-    _setSeal({ owned: true, ...cfg });
-    prevEl.innerHTML = _personalSealSVG({ ...cfg, txt: cfg.txt || "?" });
-    box.querySelectorAll(".ms-opt").forEach(b => b.classList.toggle("on", b.dataset.shape === cfg.shape));
-    box.querySelectorAll(".ms-sw .sw").forEach(b => b.classList.toggle("on", b.dataset.color === cfg.color));
-    okEl.textContent = cfg.txt ? (en ? "Saved ✓" : "Kaydedildi ✓") : (en ? "Write 1–2 letters" : "1–2 harf yaz");
-    clearTimeout(okT); if (cfg.txt) okT = setTimeout(() => { if (okEl.isConnected) okEl.textContent = ""; }, 1800);
-  };
-  const inp = box.querySelector("#ms-txt");
-  inp.addEventListener("input", () => { cfg.txt = inp.value.toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, "").slice(0, 2); inp.value = cfg.txt; save(); });
-  box.querySelectorAll(".ms-opt").forEach(b => b.onclick = () => { cfg.shape = b.dataset.shape; save(); });
-  box.querySelectorAll(".ms-sw .sw").forEach(b => b.onclick = () => { cfg.color = b.dataset.color; save(); });
+  inp.addEventListener("input", () => {
+    const o = _cosmGet(); o.muhurTxt = inp.value.toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, "").slice(0, 2); _cosmSet(o); inp.value = o.muhurTxt;
+    box.querySelector(".mc-seal .mc-prev").innerHTML = _personalSealSVG();
+    okEl.textContent = o.muhurTxt ? (en ? "Saved ✓" : "Kaydedildi ✓") : (en ? "Write 1–2 letters" : "1–2 harf yaz");
+    clearTimeout(okT); if (o.muhurTxt) okT = setTimeout(() => { if (okEl.isConnected) okEl.textContent = ""; }, 1800);
+  });
 }
 // Kozmetik sekmesini (mühür + çini/kaftan/kalem) her zaman birlikte çiz; isteğe bağlı onay yazısı
 function _renderCosmTab(msg) {
@@ -8174,10 +8154,9 @@ function _showFermanOverlay(item, done) {
   if (item.kind === "result") { setTimeout(() => ov.querySelector(".fm-verdict")?.classList.add("stamped"), 650); _fermanAfBind(ov, item); }
   const close = () => { ov.classList.remove("on"); setTimeout(() => { ov.remove(); done(); }, 320); };
   ov.querySelector(".fm-btn").onclick = () => {
-    const seal = item.kind === "new" ? _getSeal() : null;
-    if (!seal) { close(); return; }
-    // Kişisel mühür: kabul ederken fermanın altına basılır
-    const st = document.createElement("div"); st.className = "fm-pseal"; st.innerHTML = _personalSealSVG(seal);
+    if (item.kind !== "new") { close(); return; }
+    // Kişisel mühür: kabul ederken fermanın altına basılır (sade de dahil, 6 Kasım 2026'dan beri herkeste var)
+    const st = document.createElement("div"); st.className = "fm-pseal"; st.innerHTML = _personalSealSVG();
     ov.querySelector(".fm-paper").appendChild(st);
     requestAnimationFrame(() => st.classList.add("on"));
     try { Haptics.cardPickup(); } catch (e) {}
@@ -8439,7 +8418,7 @@ function showDivanOturumu(c) {
         <span class="dv-delta"></span>
       </button>`; }).join("")}</div>
     <div class="dv-hint">${en ? "Back one voice. The other two will remember." : "Bir görüşü destekle. Diğer ikisi bunu unutmaz."}</div>
-    <button type="button" class="dv-seal" disabled>${_getSeal() ? _personalSealSVG(_getSeal(), "dv-pseal") : ""}${en ? "SEAL THE DECISION" : "MÜHÜRLE"}</button>
+    <button type="button" class="dv-seal" disabled><span class="dv-pseal">${_personalSealSVG()}</span>${en ? "SEAL THE DECISION" : "MÜHÜRLE"}</button>
     <button type="button" class="dv-sultan">${en ? "Leave it to the Sultan · Patience −5" : "Kararı Sultan'a bırak · Sabır −5"}</button>
   </div>`;
   document.body.appendChild(ov);
@@ -8592,7 +8571,7 @@ function showDefter(startPage) {
       <div class="df-spread">
         <div class="df-page df-left"><div class="df-pagein">${pageHTML()}</div>
           ${d.pages.length > 1 ? `<div class="df-nav"><button type="button" class="df-prev" aria-label="${en ? "Older" : "Önceki"}">‹</button><span>${idx + 1} / ${d.pages.length}</span><button type="button" class="df-next-btn" aria-label="${en ? "Newer" : "Sonraki"}">›</button></div>` : ""}</div>
-        <div class="df-page df-right">${trackHTML()}<button type="button" class="df-paths">${en ? "PATHS OF FATE" : "KADER YOLLARI"} · ${d.end.done.length}/${ENDINGS.length}</button>${_getSeal() ? `<div class="df-pseal">${_personalSealSVG(_getSeal())}</div>` : ""}</div>
+        <div class="df-page df-right">${trackHTML()}<button type="button" class="df-paths">${en ? "PATHS OF FATE" : "KADER YOLLARI"} · ${d.end.done.length}/${ENDINGS.length}</button><div class="df-pseal">${_personalSealSVG()}</div></div>
       </div>
       <button type="button" class="df-close">${en ? "CLOSE" : "KAPAT"}</button>
     </div>`;
@@ -9336,6 +9315,11 @@ const COSMETICS = {
   kedi:   { price: 4, icon: "assets/cat/cat-full.png", tr: "Divan Kedisi", en: "The Divan Cat",
             dtr: "Topkapı'nın tekir kedisi ara sıra Divan'dan ve ana menüden geçer. Kartlarına dokunmaz.", den: "Topkapı's tabby cat strolls through the Divan and the main menu now and then. It never touches your cards.",
             opts: [["on", "Açık", "On"], ["off", "Kapalı", "Off"]] },
+  // 6 Kasım 2026: Market'te KENDİ satırında çizilir (renderMarketCosmetics) — burada yalnız
+  // showCosmVariantPreview'ün opts/fiyat okuyabilmesi için tanımlı; renderCosmeticRows'ta atlanır.
+  muhur:  { icon: "assets/icons/item-muhur-klasik.png", tr: "Kişisel Mühür", en: "Personal Seal",
+            dtr: "", den: "",
+            opts: [["klasik", "Klasik", "Classic", 4], ["bronz", "Bronz Madalyon", "Bronze Medallion", 4], ["baski", "Mühür Baskısı", "Ink Stamp", 4], ["mucevher", "Mücevherli Saltanat", "Jewelled Imperial", 6]] },
 };
 function _cosmGet() { try { const o = JSON.parse(localStorage.getItem(COSM_KEY) || "{}"); return (o && typeof o === "object") ? o : {}; } catch (e) { return {}; } }
 function _cosmSet(o) { try { localStorage.setItem(COSM_KEY, JSON.stringify(o)); } catch (e) {} }
@@ -9442,6 +9426,7 @@ function renderCosmeticRows() {
   const en = window.LANG === 'en';
   box.querySelectorAll(".mc-cosm").forEach(e => e.remove());
   for (const [id, c] of Object.entries(COSMETICS)) {
+    if (id === "muhur") continue; // kendi satırı var, bkz. renderMarketCosmetics
     const row = document.createElement("div"); row.className = "mc-row mc-cosm"; row.dataset.id = id;
     let extra = "", ctrl = "";
     if (id === "cini") {
@@ -9499,16 +9484,16 @@ function renderCosmeticRows() {
 }
 // 6 Kasım 2026: kaftan/kalem/tuğra için ortak önizleme penceresi — çini/oda'daki desenle aynı:
 // büyük görsel, mini önizleme şeridi, fiyat, SATIN AL/GİY, sahip olunca "varsayılana dön".
-function _cosmVariantImgFor(id) { return id === "kaftan" ? KAFTAN_IMG : id === "kalem" ? KALEM_IMG : null; }
+function _cosmVariantImgFor(id) { return id === "kaftan" ? KAFTAN_IMG : id === "kalem" ? KALEM_IMG : id === "muhur" ? MUHUR_IMG : null; }
 function showCosmVariantPreview(id, k0) {
   document.getElementById("cv-preview")?.remove();
   const en = window.LANG === 'en', c = COSMETICS[id];
-  const ownedFn = id === "kaftan" ? _kaftanOwnedK : id === "kalem" ? _kalemOwnedK : _tugraOwnedK;
-  const selFn = id === "kaftan" ? _kaftanKey : id === "kalem" ? _vakKey : _tugraSelK;
-  const buyFn = id === "kaftan" ? _kaftanBuy : id === "kalem" ? _kalemBuy : _tugraBuy;
+  const ownedFn = id === "kaftan" ? _kaftanOwnedK : id === "kalem" ? _kalemOwnedK : id === "muhur" ? _muhurOwnedK : _tugraOwnedK;
+  const selFn = id === "kaftan" ? _kaftanKey : id === "kalem" ? _vakKey : id === "muhur" ? _muhurKey : _tugraSelK;
+  const buyFn = id === "kaftan" ? _kaftanBuy : id === "kalem" ? _kalemBuy : id === "muhur" ? _muhurBuy : _tugraBuy;
   const imgMap = _cosmVariantImgFor(id);
   const imgFor = (k) => imgMap ? imgMap[k] : _tugraFor(k);
-  const freeKey = id === "kaftan" ? "basit" : id === "kalem" ? "sade" : null; // tuğra'da "sade" yok, ferman tuğrası zaten ayrı/ücretsiz
+  const freeKey = id === "kaftan" ? "basit" : id === "kalem" ? "sade" : id === "muhur" ? "sade" : null; // tuğra'da "sade" yok, ferman tuğrası zaten ayrı/ücretsiz
   const ov = document.createElement("div"); ov.id = "cv-preview"; ov.className = "info-panel-overlay cosm-pop";
   let k = c.opts.some(o => o[0] === k0) ? k0 : c.opts[0][0], busy = false;
   const close = () => { ov.classList.remove("on"); setTimeout(() => ov.remove(), 250); };
@@ -9534,14 +9519,14 @@ function showCosmVariantPreview(id, k0) {
       buyFn(k);
       if (window.playSelectConfirm) playSelectConfirm();
       _an("cosmetic_buy", { id: id + "_" + k, where: "market" });
-      updateAkceUI(); _applyCosmetics(); renderCosmeticRows();
+      updateAkceUI(); _applyCosmetics(); renderCosmeticRows(); if (id === "muhur") renderMarketCosmetics();
       busy = false; render();
       ov.querySelector(".cp-msg").textContent = en ? "It is yours." : "Artık senin.";
     };
     const wear = ov.querySelector(".cp-wear");
-    if (wear) wear.onclick = () => { const o = _cosmGet(); o[id + "Sel"] = k; _cosmSet(o); if (window.playSelectConfirm) playSelectConfirm(); _applyCosmetics(); renderCosmeticRows(); render(); };
+    if (wear) wear.onclick = () => { const o = _cosmGet(); o[id + "Sel"] = k; _cosmSet(o); if (window.playSelectConfirm) playSelectConfirm(); _applyCosmetics(); renderCosmeticRows(); if (id === "muhur") renderMarketCosmetics(); render(); };
     const off = ov.querySelector(".cp-off");
-    if (off) off.onclick = () => { const o = _cosmGet(); o[id + "Sel"] = freeKey; _cosmSet(o); if (window.playSelectConfirm) playSelectConfirm(); _applyCosmetics(); renderCosmeticRows(); render(); };
+    if (off) off.onclick = () => { const o = _cosmGet(); o[id + "Sel"] = freeKey; _cosmSet(o); if (window.playSelectConfirm) playSelectConfirm(); _applyCosmetics(); renderCosmeticRows(); if (id === "muhur") renderMarketCosmetics(); render(); };
   };
   render();
   ov.addEventListener("click", e => { if (e.target === ov) close(); });
@@ -12994,7 +12979,7 @@ function _chronicleHTML() {
     <p class="vk-intro">${esc(epilog[0] || "")}</p>
     <ol class="vk-list">${items}</ol>
     <div class="vk-end">${epilog.slice(1).map(l => `<p>${esc(l)}</p>`).join("")}</div>
-    <div class="vk-stamps"><div class="vk-stamp"><b>${year}</b><span>${en ? (year === 1 ? "YEAR" : "YEARS") : "YIL"}</span></div>${_getSeal() ? `<div class="vk-pseal">${_personalSealSVG(_getSeal())}</div>` : ""}</div>`;
+    <div class="vk-stamps"><div class="vk-stamp"><b>${year}</b><span>${en ? (year === 1 ? "YEAR" : "YEARS") : "YIL"}</span></div><div class="vk-pseal">${_personalSealSVG()}</div></div>`;
 }
 
 function renderEpilog() {
@@ -13864,6 +13849,18 @@ document.getElementById("akce-x")?.addEventListener("click", () => hideAkceScree
   backdrop.addEventListener("click", close);
   // İçerideki herhangi bir karta dokunulunca (başka bir ekran açılacağı için) sheet de kapanır
   document.getElementById("progress-grid")?.addEventListener("click", e => { if (e.target.closest(".prog-tile")) close(); });
+})();
+
+// Kandil Halkası (6 Kasım 2026): SADRAZAM başlığının çevresindeki 6 nokta kendi rastgele
+// ritminde yanıp sönsün diye her birine farklı animation-duration/delay veriliyor —
+// hepsi aynı CSS keyframe'ini paylaşsaydı eş zamanlı (düzenli) titrerdi.
+(function initKandil() {
+  document.querySelectorAll('#intro-title .kandil').forEach(k => {
+    const dur = (1.3 + Math.random() * 2.3).toFixed(2);
+    const del = (Math.random() * 3).toFixed(2);
+    k.style.animationDuration = dur + 's';
+    k.style.animationDelay = '-' + del + 's';
+  });
 })();
 
 // D6 (6 Ekim 2026): uzun ekranlarda "aşağıda daha var" ipucu — yalnız ekran en üstteyken ve

@@ -292,6 +292,7 @@ html, body {
 
 /* Ana başlık */
 #intro-title {
+  position: relative;
   font-family: 'Cinzel Decorative', serif;
   font-size: clamp(42px, 13vw, 64px);
   color: var(--gold);
@@ -304,13 +305,25 @@ html, body {
     0 0 60px rgba(201,162,39,0.3),
     0 2px 4px rgba(0,0,0,0.8);
   opacity: 0;
-  animation: introFadeIn 1s ease 0.5s forwards, titleGlow 3s ease-in-out 1.5s infinite;
+  animation: introFadeIn 1s ease 0.5s forwards, kandilAmbient 5s ease-in-out 1.5s infinite;
 }
 
-@keyframes titleGlow {
-  0%,100% { text-shadow: 0 0 20px rgba(201,162,39,0.7), 0 0 60px rgba(201,162,39,0.3), 0 2px 4px rgba(0,0,0,0.8); }
-  50%      { text-shadow: 0 0 30px rgba(201,162,39,0.9), 0 0 80px rgba(201,162,39,0.5), 0 2px 4px rgba(0,0,0,0.8); }
+/* Kandil Halkası (6 Kasım 2026): düzenli nefes alma yerine düzensiz kandil ışığı — başlığın
+   genel parlaklığı hafifçe dalgalanır, çevresindeki 6 küçük kandil noktası kendi ritminde
+   bağımsızca yanıp söner (JS'te randomize edilen animation-delay/duration ile, init.js). */
+@keyframes kandilAmbient {
+  0%,100% { filter: brightness(1); }
+  30% { filter: brightness(1.12); }
+  55% { filter: brightness(.92); }
+  78% { filter: brightness(1.05); }
 }
+.kandil { position: absolute; width: .09em; height: .09em; border-radius: 50%; background: var(--gold-light);
+  box-shadow: 0 0 .18em .05em rgba(232,200,74,.8); animation-name: kandilFlicker; animation-timing-function: ease-in-out; animation-iteration-count: infinite; pointer-events: none; }
+@keyframes kandilFlicker { 0%,100% { opacity: 1; } 50% { opacity: .18; } }
+.kandil.k1 { top: -.22em; left: 4%; } .kandil.k2 { top: -.1em; right: 2%; }
+.kandil.k3 { bottom: -.24em; left: 12%; } .kandil.k4 { bottom: -.16em; right: 14%; }
+.kandil.k5 { top: 46%; left: -.22em; } .kandil.k6 { top: 42%; right: -.22em; }
+@media (prefers-reduced-motion: reduce) { #intro-title { animation: introFadeIn 1s ease 0.5s forwards; } .kandil { animation: none; opacity: .6; } }
 
 /* Başlık alt çizgisi */
 #intro-title-line {
@@ -5738,6 +5751,8 @@ body:has(#game.hidden) #critical-offer { display: none; }
 #market-cosmetic-list { width: 100%; }
 .mc-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(201,162,39,0.4); background: rgba(201,162,39,0.06); text-align: left; }
 .mc-prev svg { width: 54px; height: 54px; display: block; filter: drop-shadow(0 3px 4px rgba(0,0,0,.5)); }
+.mc-prev .muhur-wrap { width: 54px; height: 54px; }
+.mc-prev .muhur-wrap img { filter: drop-shadow(0 3px 4px rgba(0,0,0,.5)); }
 .mc-info { flex: 1; min-width: 0; }
 .mc-name { font-family: 'Alegreya SC', serif; font-weight: 600; font-size: 12.5px; color: var(--gold-light); }
 .mc-desc { font-family: 'Alegreya', serif; font-size: 12.5px; line-height: 1.3; color: rgba(240,230,208,0.75); }
@@ -5752,17 +5767,24 @@ body:has(#game.hidden) #critical-offer { display: none; }
 .se-sw { width: 34px; height: 34px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
 .se-sw.on { box-shadow: 0 0 0 2px #0b0812, 0 0 0 4px var(--gold-light); }
 .se-save { width: 100%; margin-top: 8px; padding: 12px; border-radius: 6px; border: 1px solid #E8C84A; background: linear-gradient(180deg, #E8C84A, #B38D1C); color: #1a1006; font-family: 'Alegreya SC', serif; font-weight: 700; font-size: 12.5px; letter-spacing: 2px; cursor: pointer; }
+/* 6 Kasım 2026: prosedürel SVG mühür yerine gerçek illüstrasyon + üstüne yazılan harf (.muhur-txt) */
+.muhur-wrap { position: relative; display: block; width: 100%; height: 100%; }
+.muhur-wrap img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.muhur-wrap .muhur-txt { position: absolute; left: 50%; top: 53%; transform: translate(-50%, -50%); font-family: 'Cinzel Decorative', serif; font-weight: 700; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,.35); pointer-events: none; font-size: 28%; }
 .fm-paper { position: relative; }
 .fm-pseal { position: absolute; right: 14px; top: 46%; width: 70px; height: 70px; transform: scale(2.2) rotate(-14deg); opacity: 0; transition: transform .35s cubic-bezier(.3,1.5,.5,1), opacity .2s; pointer-events: none; }
 .fm-pseal.on { transform: scale(1) rotate(-10deg); opacity: 1; }
-.fm-pseal svg { width: 100%; height: 100%; filter: drop-shadow(0 3px 4px rgba(60,20,5,.5)); }
+.fm-pseal .muhur-wrap img { filter: drop-shadow(0 3px 4px rgba(60,20,5,.5)); }
 .dv-seal { display: flex; align-items: center; justify-content: center; gap: 8px; }
-.dv-seal .dv-pseal { width: 26px; height: 26px; }
-.df-pseal { margin-top: auto; align-self: flex-end; }
-.df-pseal svg { width: 56px; height: 56px; transform: rotate(-10deg); filter: drop-shadow(0 2px 3px rgba(60,20,5,.4)); }
+.dv-seal .dv-pseal { width: 26px; height: 26px; display: inline-block; }
+.df-pseal { margin-top: auto; align-self: flex-end; width: 56px; height: 56px; }
+.df-pseal .muhur-wrap { transform: rotate(-10deg); }
+.df-pseal .muhur-wrap img { filter: drop-shadow(0 2px 3px rgba(60,20,5,.4)); }
 .vakayiname .vk-stamps { display: flex; align-items: center; justify-content: center; gap: 14px; }
 .vakayiname .vk-stamps .vk-stamp { margin: 10px 0 0; }
-.vakayiname .vk-pseal svg { width: 62px; height: 62px; margin-top: 8px; transform: rotate(8deg); filter: drop-shadow(0 2px 3px rgba(60,20,5,.4)); }
+.vakayiname .vk-pseal { width: 62px; height: 62px; margin-top: 8px; }
+.vakayiname .vk-pseal .muhur-wrap { transform: rotate(8deg); }
+.vakayiname .vk-pseal .muhur-wrap img { filter: drop-shadow(0 2px 3px rgba(60,20,5,.4)); }
 
 /* ── Sonlar ve Nişanlar (4 Ekim 2026) ── */
 .end-toast { top: calc(env(safe-area-inset-top, 0px) + 92px); padding: 7px 14px; }
@@ -6507,6 +6529,7 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 .ms-opts .ms-opt { min-height: 34px; padding: 5px 10px; }
 .ms-sw { justify-content: flex-start; }
 .ms-ok { min-height: 15px; font-family: 'Alegreya', serif; font-size: 12.5px; color: var(--gold-light); }
+.ms-hint { font-family: 'Alegreya', serif; font-style: italic; font-size: 12.5px; color: rgba(240,230,208,.55); margin-top: 8px; }
 /* K1-A (8 Ekim 2026): akçe miktarı taşıyan mühürler kullanıcının mum mühür görseliyle (assets/icons/akce-seal.png, 10 KB).
    Rakam mumun düz ortasına kabartma gibi oturur; çizilmiş halka/çift çerçeve kapanır. */
 #akce-screen .akce-pack-btn .ferman, #akce-screen .starter-pack .ferman, .qp-box .ferman.qp-seal, #akce-ceremony .ferman.ac-seal, #starter-offer .so-seal {
