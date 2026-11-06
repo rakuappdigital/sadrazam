@@ -9442,8 +9442,11 @@ function renderCosmeticRows() {
       const ownedFn = id === "kaftan" ? _kaftanOwnedK : id === "kalem" ? _kalemOwnedK : _tugraOwnedK;
       const selNow = id === "kaftan" ? _kaftanKey() : id === "kalem" ? _vakKey() : _tugraSelK();
       const imgFor = id === "kaftan" ? (k => KAFTAN_IMG[k]) : id === "kalem" ? (k => KALEM_IMG[k]) : (k => _tugraFor(k));
+      // kaftan/kalem gerçek görselleri 1:1 kare, tuğra yatay — .cf-sw'nin varsayılan 3:4+stretch'i (çini için
+      // yazılmıştı) hepsini dikey uzatıyordu; her birine kendi oranına uygun sınıf veriliyor (6 Kasım 2026).
+      const swCls = id === "tugra" ? "cf-sw tugra-sw" : "cf-sw muhur-sw";
       extra = `<div class="cf-tiles">${c.opts.map(([k, tr, enN, price]) => { const own = ownedFn(k), on = own && selNow === k;
-        return `<button type="button" class="cf-tile${own ? " own" : ""}${on ? " on" : ""}" data-k="${k}" aria-label="${en ? enN : tr}"><span class="cf-sw" style="background-image:url('${imgFor(k)}')"></span><span class="cf-l">${en ? enN : tr}</span><span class="cf-p">${on ? (en ? "ON" : "TAKILI") : own ? (en ? "YOURS" : "SENİN") : `${price} ${AKCE_COIN_SVG}`}</span></button>`; }).join("")}</div>`;
+        return `<button type="button" class="cf-tile${own ? " own" : ""}${on ? " on" : ""}" data-k="${k}" aria-label="${en ? enN : tr}"><span class="${swCls}" style="background-image:url('${imgFor(k)}')"></span><span class="cf-l">${en ? enN : tr}</span><span class="cf-p">${on ? (en ? "ON" : "TAKILI") : own ? (en ? "YOURS" : "SENİN") : `${price} ${AKCE_COIN_SVG}`}</span></button>`; }).join("")}</div>`;
     } else if (c.opts && _cosmOwned(id)) { // kedi: sahibine seçenekler
       const sel = _cosmSel(id);
       extra = `<div class="mc-opts">${c.opts.map(([k, tr, enN]) => `<button type="button" class="mc-opt${sel === k ? " on" : ""}" data-k="${k}">${en ? enN : tr}</button>`).join("")}</div>`;

@@ -6491,6 +6491,7 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 .cf-p .akce-coin-svg { width: 10px; height: 10px; }
 .cf-tile.mini { padding: 3px; } .cf-tile.mini .cf-sw { max-width: 34px; }
 .cf-sw.muhur-sw { aspect-ratio: 1 / 1; background-color: transparent; background-size: contain; }
+.cf-sw.tugra-sw { aspect-ratio: 16 / 9; background-color: transparent; background-size: contain; }
 .cp-box { gap: 10px; }
 .cf-card { position: relative; width: min(56vw, 200px); border-radius: 12px; overflow: hidden; background: #0E0B1A; border: 1px solid rgba(201,162,39,.55); box-shadow: 0 12px 30px rgba(0,0,0,.55); }
 .cf-card .cf-img { aspect-ratio: 3 / 3.3; background: #1a1430 center 15% / cover no-repeat; }
@@ -6518,7 +6519,7 @@ html[lang="en"] .kodeks-card.new::before { content: 'NEW'; }
 .ip-box .cp-actions .cp-main:disabled { background: rgba(201,162,39,.1); color: rgba(232,200,74,.75); border-color: rgba(201,162,39,.35); cursor: default; }
 .ip-box > button.cp-off { background: none; border: 0; min-height: 36px; margin-top: 0; color: rgba(240,230,208,.55); font-size: 11px; }
 .cp-msg { min-height: 16px; font-family: 'Alegreya', serif; font-size: 13px; color: var(--gold-light); text-align: center; }
-.kp-img { width: 132px; height: 132px; filter: drop-shadow(0 0 12px rgba(232,200,74,.3)); }
+.kp-img { width: 132px; height: 132px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(232,200,74,.3)); }
 .kp-sw, .ms-sw { display: flex; gap: 10px; justify-content: center; }
 .kp-sw .sw, .ms-sw .sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid rgba(232,200,74,.35); cursor: pointer; padding: 0; }
 .kp-sw .sw.on, .ms-sw .sw.on { border-color: var(--gold-light); box-shadow: 0 0 0 2px rgba(232,200,74,.35); }
