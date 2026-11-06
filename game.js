@@ -3153,8 +3153,8 @@ const MUHUR_IMG = {
   baski:    "assets/icons/item-muhur-baski.png",
   mucevher: "assets/icons/item-muhur-mucevher.png",
 };
-// Her tasarımın zemin rengine göre harf rengi — "baski" içi şeffaf/karanlık zemine oturacağı için koyu kızıl.
-const MUHUR_TXT_COLOR = { klasik: "#F0D28A", bronz: "#2a1d0a", baski: "#7a1812", mucevher: "#F0D28A" };
+// Her tasarımın zemin rengine göre harf rengi — "baski" artık dolu mavi/lacivert zemin, altın harf gerekiyor.
+const MUHUR_TXT_COLOR = { klasik: "#F0D28A", bronz: "#2a1d0a", baski: "#F0D28A", mucevher: "#F0D28A" };
 const MUHUR_KEYS = ["klasik", "bronz", "baski", "mucevher"];
 function _muhurOwnedK(k) { const o = _cosmGet(); return Array.isArray(o.muhurOwn) && o.muhurOwn.includes(k); }
 function _muhurAny() { return MUHUR_KEYS.some(_muhurOwnedK); }
